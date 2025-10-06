@@ -1,0 +1,50 @@
+package de.uzk;
+
+import de.uzk.gui.Gui;
+import de.uzk.handler.ConfigHandler;
+import de.uzk.handler.ImageHandler;
+import de.uzk.logger.OLogger;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class Main {
+    public static final OLogger logger;
+    public static final ConfigHandler config;
+    public static final ImageHandler imageHandler;
+
+    static {
+        logger = new OLogger(Main.class.getName());
+        imageHandler = new ImageHandler();
+        config = new ConfigHandler();
+    }
+
+    public static void main(String[] args) {
+        config.loadConfig();
+        // create gui
+        new Gui();
+    }
+
+    public static void closeApplication(Window parentWindow, Window currentWindow, Runnable runForClosing) {
+        if (config.isAskAgainClosingWindow() || currentWindow instanceof Dialog) {
+            Object[] options = {"Yes", "No"};
+            Object[] message;
+            JCheckBox checkBox = new JCheckBox("Don't ask me again");
+            if (currentWindow instanceof Frame) {
+                message = new Object[]{"Do you want to close the app?", checkBox};
+            } else {
+                message = new Object[]{"Do you want to close the app?"};
+            }
+
+            int choice = JOptionPane.showOptionDialog(parentWindow, message, "Confirm",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if (choice != JOptionPane.YES_OPTION) {
+                return;
+            } else if (currentWindow instanceof Frame && checkBox.isSelected()) {
+                config.setAskAgainClosingWindow(false);
+            }
+        }
+        if (runForClosing != null) runForClosing.run();
+        System.exit(0);
+    }
+}
