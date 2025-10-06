@@ -7,6 +7,7 @@ import de.uzk.handler.ConfigHandler;
 import de.uzk.utils.GuiUtils;
 import de.uzk.utils.IconUtils;
 import de.uzk.utils.StringUtils;
+import de.uzk.utils.language.LanguageHandler.Language;
 import de.uzk.utils.tree.OBar;
 import de.uzk.utils.tree.OBarItem;
 import de.uzk.utils.tree.OBarMenu;
@@ -136,7 +137,27 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
                 incrFontItem.getComponent(),
                 decrFontItem.getComponent(),
                 restoreFontItem.getComponent()).actionPerformed(null);
+
+        optTreeMenu.addSeparator();
+
+        OBarItem changeLanguageItem = new OBarItem(getWord("items.opt.changeLanguage"));
+        changeLanguageItem.setAction(changeLanguageListener());
+        optTreeMenu.add(changeLanguageItem);
+
         return optTreeMenu;
+    }
+
+    private ActionListener changeLanguageListener() {
+        return a -> {
+            JComboBox<Language> selectBox = new JComboBox<>(Language.values());
+            JOptionPane.showConfirmDialog( null, selectBox, getWord("items.opt.changeLanguage"), JOptionPane.DEFAULT_OPTION);
+            Language lang = (Language) selectBox.getSelectedItem();
+            if(lang != null) {
+                config.setLanguage(lang);
+                config.saveConfig();
+                JOptionPane.showMessageDialog(null, getWord("items.opt.languageChanged.body"), getWord("items.opt.languageChanged.title"), JOptionPane.INFORMATION_MESSAGE);
+            }
+        };
     }
 
     private ActionListener updateOptionsMenu(Runnable runnable, JComponent incrFontItem, JComponent decrFontItem, JComponent restoreFontItem) {

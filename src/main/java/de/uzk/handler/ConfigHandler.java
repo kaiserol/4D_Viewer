@@ -2,6 +2,7 @@ package de.uzk.handler;
 
 import de.uzk.utils.GuiUtils;
 import de.uzk.utils.SystemConstants;
+import de.uzk.utils.language.LanguageHandler;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -13,7 +14,6 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
-
 import static de.uzk.Main.imageHandler;
 import static de.uzk.Main.logger;
 import static de.uzk.handler.ImageFileConstants.*;
@@ -28,10 +28,15 @@ public class ConfigHandler {
     public static final int MIN_FONT_SIZE = 10;
     public static final int DEFAULT_FONT_SIZE = 16;
     public static final int MAX_FONT_SIZE = 22;
+    public static final LanguageHandler.Language SYSTEM_LANGUAGE = LanguageHandler.Language.getSystemDefault();
+
+
+
     private final SimpleDateFormat dateFormat;
     private boolean askAgainClosingWindow;
     private Theme theme;
     private int fontSize;
+    private LanguageHandler.Language language;
 
     public ConfigHandler() {
         this.dateFormat = new SimpleDateFormat("yyyy-dd-MM");
@@ -69,6 +74,15 @@ public class ConfigHandler {
         this.fontSize = newFontSize;
     }
 
+    public LanguageHandler.Language getLanguage() {
+        return this.language;
+    }
+
+    public void setLanguage(LanguageHandler.Language language) {
+        this.language = language;
+        LanguageHandler.initialize(language);
+    }
+
     private void createConfigIfNeeded() {
         try {
             if (!CONFIG_FILE.exists() && !CONFIG_FILE.createNewFile()) {
@@ -104,9 +118,19 @@ public class ConfigHandler {
         this.askAgainClosingWindow = DEFAULT_ASK_AGAIN_CLOSING_WINDOW;
         this.theme = DEFAULT_THEME;
         this.fontSize = DEFAULT_FONT_SIZE;
+        this.language = SYSTEM_LANGUAGE;
+
     }
 
     private void readProperties(Properties properties) {
+
+        //language
+        //Needs to be initialized first since others (e.g. imageDetails) need correct labels
+        String languageName = loadString(properties, "Language", SYSTEM_LANGUAGE.getId());
+        LanguageHandler.Language language = LanguageHandler.Language.fromId(languageName);
+        setLanguage(language);
+        logger.info("Found language setting '"+languageName+"', selecting language " + language);
+
         // folderDir
         imageHandler.setImageFolder(loadImageFolder(properties));
 
@@ -131,6 +155,7 @@ public class ConfigHandler {
         int tempFontSize = loadNumber(properties, "FontSize", -1).intValue();
         boolean legalFontSize = tempFontSize >= MIN_FONT_SIZE && tempFontSize <= MAX_FONT_SIZE;
         setFontSize(legalFontSize ? tempFontSize : DEFAULT_FONT_SIZE);
+
     }
 
     public void saveConfig() {
@@ -152,6 +177,7 @@ public class ConfigHandler {
             cfg.setProperty("AskAgainClosingWindow", String.valueOf(isAskAgainClosingWindow()));
             cfg.setProperty("Theme", String.valueOf(getTheme()));
             cfg.setProperty("FontSize", String.valueOf(getFontSize()));
+            cfg.setProperty("Language", getLanguage().getId());
         } catch (IOException e) {
             logger.logException(e);
         }
