@@ -16,7 +16,7 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 
 import static de.uzk.Main.imageHandler;
-import static de.uzk.utils.language.LanguageHandler.getWord;
+import static de.uzk.handler.LanguageHandler.getWord;
 
 public class OStats extends InteractiveContainer<JPanel> implements ActionTypeListener {
     private JLabel timeStateLabel;

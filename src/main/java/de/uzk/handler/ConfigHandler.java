@@ -2,7 +2,6 @@ package de.uzk.handler;
 
 import de.uzk.utils.GuiUtils;
 import de.uzk.utils.SystemConstants;
-import de.uzk.utils.language.LanguageHandler;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

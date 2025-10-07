@@ -21,7 +21,7 @@ import java.awt.event.MouseEvent;
 
 import static de.uzk.Main.imageHandler;
 import static de.uzk.utils.GuiUtils.SLIDER_DRAGGED;
-import static de.uzk.utils.language.LanguageHandler.getWord;
+import static de.uzk.handler.LanguageHandler.getWord;
 
 public class OViewer extends InteractiveContainer<JPanel> implements ActionTypeListener {
     private final ActionHandler actionHandler;

@@ -21,7 +21,7 @@ import static de.uzk.Main.*;
 import static de.uzk.handler.ImageFileConstants.IMAGE_TYPES;
 import static de.uzk.utils.GuiUtils.ERROR_MSG;
 import static de.uzk.utils.SystemConstants.DOWNLOAD_FOLDER;
-import static de.uzk.utils.language.LanguageHandler.getWord;
+import static de.uzk.handler.LanguageHandler.getWord;
 
 public class ODirectory extends InteractiveContainer<JPanel> implements LoadingImageListener, ActionTypeListener {
     private JTextField pathField;

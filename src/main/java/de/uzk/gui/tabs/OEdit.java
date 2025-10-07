@@ -11,7 +11,7 @@ import java.awt.*;
 import static de.uzk.Main.config;
 import static de.uzk.Main.imageHandler;
 import static de.uzk.utils.ActionUtils.SCREENSHOT_ACTION;
-import static de.uzk.utils.language.LanguageHandler.getWord;
+import static de.uzk.handler.LanguageHandler.getWord;
 
 public class OEdit extends OTabContent implements ActionTypeListener, WindowFocusListener {
     private final ActionHandler actionHandler;

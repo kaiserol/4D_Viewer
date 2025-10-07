@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.uzk.Main.*;
-import static de.uzk.utils.language.LanguageHandler.getWord;
+import static de.uzk.handler.LanguageHandler.getWord;
 
 public class Gui extends InteractiveContainer<JFrame> implements WindowFocusListener, ActionTypeListener {
     private final List<ToggleListener> toggleListeners;

@@ -12,7 +12,7 @@ import java.io.File;
 
 import static de.uzk.Main.config;
 import static de.uzk.Main.imageHandler;
-import static de.uzk.utils.language.LanguageHandler.getWord;
+import static de.uzk.handler.LanguageHandler.getWord;
 
 public class OImager extends InteractiveContainer<JPanel> implements ActionTypeListener, WindowFocusListener {
     private BufferedImage originalImage;

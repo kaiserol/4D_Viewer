@@ -2,7 +2,7 @@ package de.uzk.handler;
 
 import de.uzk.utils.StringUtils;
 
-import static de.uzk.utils.language.LanguageHandler.getWord;
+import static de.uzk.handler.LanguageHandler.getWord;
 
 public class ImageType {
     private static final String FILES = getWord("file.files");
