@@ -2,7 +2,7 @@ package de.uzk.gui.others;
 
 import de.uzk.gui.Gui;
 import de.uzk.gui.InteractiveContainer;
-import de.uzk.utils.GuiUtils;
+import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -10,7 +10,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 
-import static de.uzk.handler.LanguageHandler.getWord;
+import static de.uzk.config.LanguageHandler.getWord;
 
 public class OImprint extends InteractiveContainer<JPanel> {
     public OImprint(Gui gui) {

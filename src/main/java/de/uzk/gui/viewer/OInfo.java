@@ -2,11 +2,11 @@ package de.uzk.gui.viewer;
 
 import de.uzk.gui.Gui;
 import de.uzk.gui.InteractiveContainer;
-import de.uzk.handler.ImageFile;
-import de.uzk.handler.ImageLayer;
+import de.uzk.image.ImageFile;
+import de.uzk.image.ImageLayer;
 import de.uzk.logger.OLogInfo;
-import de.uzk.utils.GuiUtils;
-import de.uzk.utils.IconUtils;
+import de.uzk.gui.GuiUtils;
+import de.uzk.gui.IconUtils;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;

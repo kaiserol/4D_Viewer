@@ -1,13 +1,13 @@
 package de.uzk.gui.viewer;
 
-import de.uzk.gui.ActionType;
-import de.uzk.gui.ActionTypeListener;
+import de.uzk.actions.ActionType;
+import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.Gui;
 import de.uzk.gui.InteractiveContainer;
-import de.uzk.handler.ActionHandler;
-import de.uzk.handler.ImageLayer;
-import de.uzk.utils.GuiUtils;
-import de.uzk.utils.IconUtils;
+import de.uzk.actions.ActionHandler;
+import de.uzk.image.ImageLayer;
+import de.uzk.gui.GuiUtils;
+import de.uzk.gui.IconUtils;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
@@ -20,8 +20,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import static de.uzk.Main.imageHandler;
-import static de.uzk.utils.GuiUtils.SLIDER_DRAGGED;
-import static de.uzk.handler.LanguageHandler.getWord;
+import static de.uzk.gui.GuiUtils.SLIDER_DRAGGED;
+import static de.uzk.config.LanguageHandler.getWord;
 
 public class OViewer extends InteractiveContainer<JPanel> implements ActionTypeListener {
     private final ActionHandler actionHandler;

@@ -1,6 +1,6 @@
 package de.uzk.logger;
 
-import de.uzk.utils.SystemConstants;
+import de.uzk.config.SystemConstants;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

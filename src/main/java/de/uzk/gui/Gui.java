@@ -1,14 +1,14 @@
 package de.uzk.gui;
 
+import de.uzk.actions.ActionType;
+import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.others.OImprint;
 import de.uzk.gui.others.OMenuBar;
 import de.uzk.gui.others.ODirectory;
 import de.uzk.gui.tabs.OTabs;
 import de.uzk.gui.viewer.OViewer;
-import de.uzk.handler.ActionHandler;
-import de.uzk.handler.ImageLayer;
-import de.uzk.utils.GuiUtils;
-import de.uzk.utils.IconUtils;
+import de.uzk.actions.ActionHandler;
+import de.uzk.image.ImageLayer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.uzk.Main.*;
-import static de.uzk.handler.LanguageHandler.getWord;
+import static de.uzk.config.LanguageHandler.getWord;
 
 public class Gui extends InteractiveContainer<JFrame> implements WindowFocusListener, ActionTypeListener {
     private final List<ToggleListener> toggleListeners;

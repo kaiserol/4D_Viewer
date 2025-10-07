@@ -1,6 +1,6 @@
 package de.uzk.gui;
 
-import de.uzk.handler.ImageLayer;
+import de.uzk.image.ImageLayer;
 
 import java.awt.*;
 

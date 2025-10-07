@@ -1,6 +1,6 @@
 package de.uzk.gui.others;
 
-import de.uzk.handler.ImageType;
+import de.uzk.image.ImageType;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;

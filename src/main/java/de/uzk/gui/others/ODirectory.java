@@ -1,12 +1,12 @@
 package de.uzk.gui.others;
 
-import de.uzk.gui.ActionType;
-import de.uzk.gui.ActionTypeListener;
+import de.uzk.actions.ActionType;
+import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.Gui;
 import de.uzk.gui.InteractiveContainer;
-import de.uzk.handler.ImageType;
-import de.uzk.handler.LoadingImageListener;
-import de.uzk.utils.GuiUtils;
+import de.uzk.image.ImageType;
+import de.uzk.image.LoadingImageListener;
+import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,9 +18,9 @@ import java.io.File;
 import java.util.Objects;
 
 import static de.uzk.Main.*;
-import static de.uzk.handler.ImageFileConstants.IMAGE_TYPES;
-import static de.uzk.utils.GuiUtils.ERROR_MSG;
-import static de.uzk.handler.LanguageHandler.getWord;
+import static de.uzk.image.ImageFileConstants.IMAGE_TYPES;
+import static de.uzk.gui.GuiUtils.ERROR_MSG;
+import static de.uzk.config.LanguageHandler.getWord;
 
 public class ODirectory extends InteractiveContainer<JPanel> implements LoadingImageListener, ActionTypeListener {
     private JTextField pathField;

@@ -2,16 +2,16 @@ package de.uzk.gui.others;
 
 import de.uzk.gui.Gui;
 import de.uzk.gui.InteractiveContainer;
-import de.uzk.handler.ActionHandler;
-import de.uzk.handler.ConfigHandler;
-import de.uzk.utils.GuiUtils;
-import de.uzk.utils.IconUtils;
+import de.uzk.actions.ActionHandler;
+import de.uzk.config.ConfigHandler;
+import de.uzk.gui.GuiUtils;
+import de.uzk.gui.IconUtils;
 import de.uzk.utils.StringUtils;
-import de.uzk.handler.LanguageHandler.Language;
-import de.uzk.utils.tree.OBar;
-import de.uzk.utils.tree.OBarItem;
-import de.uzk.utils.tree.OBarMenu;
-import de.uzk.utils.tree.OBarNode;
+import de.uzk.config.LanguageHandler.Language;
+import de.uzk.gui.tree.OBar;
+import de.uzk.gui.tree.OBarItem;
+import de.uzk.gui.tree.OBarMenu;
+import de.uzk.gui.tree.OBarNode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static de.uzk.Main.config;
-import static de.uzk.utils.ActionUtils.*;
-import static de.uzk.handler.LanguageHandler.getWord;
+import static de.uzk.actions.ActionUtils.*;
+import static de.uzk.config.LanguageHandler.getWord;
 
 public class OMenuBar extends InteractiveContainer<JMenuBar> {
     private OBar tree;

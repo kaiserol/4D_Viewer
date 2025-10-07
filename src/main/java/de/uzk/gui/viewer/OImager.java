@@ -1,9 +1,11 @@
 package de.uzk.gui.viewer;
 
+import de.uzk.actions.ActionType;
+import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.*;
-import de.uzk.handler.ImageLayer;
-import de.uzk.utils.GuiUtils;
-import de.uzk.utils.IconUtils;
+import de.uzk.image.ImageLayer;
+import de.uzk.gui.GuiUtils;
+import de.uzk.gui.IconUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +14,7 @@ import java.io.File;
 
 import static de.uzk.Main.config;
 import static de.uzk.Main.imageHandler;
-import static de.uzk.handler.LanguageHandler.getWord;
+import static de.uzk.config.LanguageHandler.getWord;
 
 public class OImager extends InteractiveContainer<JPanel> implements ActionTypeListener, WindowFocusListener {
     private BufferedImage originalImage;

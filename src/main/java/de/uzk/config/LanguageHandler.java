@@ -1,4 +1,4 @@
-package de.uzk.handler;
+package de.uzk.config;
 
 import java.util.Locale;
 import java.util.ResourceBundle;

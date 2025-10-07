@@ -1,5 +1,6 @@
 package de.uzk.utils;
 
+import de.uzk.config.SystemConstants;
 import de.uzk.logger.OLogInfo;
 
 import java.awt.*;

@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import de.uzk.handler.ImageHandler;
+import de.uzk.image.ImageHandler;
 
 import java.io.File;
 

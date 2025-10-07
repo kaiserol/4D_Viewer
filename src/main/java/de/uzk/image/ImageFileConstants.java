@@ -1,4 +1,4 @@
-package de.uzk.handler;
+package de.uzk.image;
 
 import de.uzk.utils.StringUtils;
 

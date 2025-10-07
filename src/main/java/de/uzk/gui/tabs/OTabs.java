@@ -1,11 +1,11 @@
 package de.uzk.gui.tabs;
 
-import de.uzk.gui.ActionType;
-import de.uzk.gui.ActionTypeListener;
+import de.uzk.actions.ActionType;
+import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.Gui;
 import de.uzk.gui.InteractiveContainer;
-import de.uzk.handler.ActionHandler;
-import de.uzk.utils.GuiUtils;
+import de.uzk.actions.ActionHandler;
+import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -13,9 +13,9 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 import static de.uzk.Main.imageHandler;
-import static de.uzk.utils.ActionUtils.*;
-import static de.uzk.utils.IconUtils.*;
-import static de.uzk.handler.LanguageHandler.getWord;
+import static de.uzk.actions.ActionUtils.*;
+import static de.uzk.gui.IconUtils.*;
+import static de.uzk.config.LanguageHandler.getWord;
 
 public class OTabs extends InteractiveContainer<JPanel> implements ActionTypeListener {
     private final ActionHandler actionHandler;

@@ -1,0 +1,15 @@
+package de.uzk.actions;
+
+public enum ActionType {
+    EDIT_IMAGE,
+    UPDATE_IMAGE,
+    LOAD_IMAGES,
+    TOGGLE_PIN_TIME,
+    UPDATE_PIN_TIME,
+    TAKE_SCREENSHOT,
+    UPDATE_SCREENSHOT_COUNTER,
+    TURN_IMAGE_90_LEFT,
+    TURN_IMAGE_90_RIGHT,
+    UPDATE_TIME_UNIT,
+    UPDATE_LEVEL_UNIT
+}

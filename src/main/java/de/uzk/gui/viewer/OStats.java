@@ -1,12 +1,12 @@
 package de.uzk.gui.viewer;
 
-import de.uzk.gui.ActionType;
-import de.uzk.gui.ActionTypeListener;
+import de.uzk.actions.ActionType;
+import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.Gui;
 import de.uzk.gui.InteractiveContainer;
-import de.uzk.handler.ImageFile;
-import de.uzk.handler.ImageLayer;
-import de.uzk.utils.GuiUtils;
+import de.uzk.image.ImageFile;
+import de.uzk.image.ImageLayer;
+import de.uzk.gui.GuiUtils;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 
 import static de.uzk.Main.imageHandler;
-import static de.uzk.handler.LanguageHandler.getWord;
+import static de.uzk.config.LanguageHandler.getWord;
 
 public class OStats extends InteractiveContainer<JPanel> implements ActionTypeListener {
     private JLabel timeStateLabel;

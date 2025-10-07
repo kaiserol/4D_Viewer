@@ -1,9 +1,9 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import de.uzk.utils.SystemConstants;
-import de.uzk.utils.tree.OBar;
-import de.uzk.utils.tree.OBarItem;
-import de.uzk.utils.tree.OBarMenu;
+import de.uzk.config.SystemConstants;
+import de.uzk.gui.tree.OBar;
+import de.uzk.gui.tree.OBarItem;
+import de.uzk.gui.tree.OBarMenu;
 
 import static org.junit.jupiter.api.Assertions.*;
 

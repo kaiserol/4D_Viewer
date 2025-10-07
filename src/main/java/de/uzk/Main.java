@@ -1,8 +1,8 @@
 package de.uzk;
 
 import de.uzk.gui.Gui;
-import de.uzk.handler.ConfigHandler;
-import de.uzk.handler.ImageHandler;
+import de.uzk.config.ConfigHandler;
+import de.uzk.image.ImageHandler;
 import de.uzk.logger.OLogger;
 
 import javax.swing.*;

@@ -1,9 +1,11 @@
 package de.uzk.gui.tabs;
 
+import de.uzk.actions.ActionType;
+import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.*;
-import de.uzk.handler.ActionHandler;
-import de.uzk.handler.ImageLayer;
-import de.uzk.utils.GuiUtils;
+import de.uzk.actions.ActionHandler;
+import de.uzk.image.ImageLayer;
+import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,8 +16,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 import static de.uzk.Main.imageHandler;
-import static de.uzk.utils.GuiUtils.FOCUS_COLOR;
-import static de.uzk.handler.LanguageHandler.getWord;
+import static de.uzk.gui.GuiUtils.FOCUS_COLOR;
+import static de.uzk.config.LanguageHandler.getWord;
 
 public class ONavigation extends OTabContent implements ActionTypeListener {
     private final ActionHandler actionHandler;

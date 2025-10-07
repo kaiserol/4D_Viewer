@@ -1,8 +1,10 @@
 package de.uzk.gui.tabs;
 
+import de.uzk.actions.ActionType;
+import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.*;
-import de.uzk.handler.ActionHandler;
-import de.uzk.utils.GuiUtils;
+import de.uzk.actions.ActionHandler;
+import de.uzk.gui.GuiUtils;
 import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
@@ -10,8 +12,8 @@ import java.awt.*;
 
 import static de.uzk.Main.config;
 import static de.uzk.Main.imageHandler;
-import static de.uzk.utils.ActionUtils.SCREENSHOT_ACTION;
-import static de.uzk.handler.LanguageHandler.getWord;
+import static de.uzk.actions.ActionUtils.SCREENSHOT_ACTION;
+import static de.uzk.config.LanguageHandler.getWord;
 
 public class OEdit extends OTabContent implements ActionTypeListener, WindowFocusListener {
     private final ActionHandler actionHandler;
