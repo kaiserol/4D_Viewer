@@ -155,7 +155,10 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
             if(lang != null) {
                 config.setLanguage(lang);
                 config.saveConfig();
-                JOptionPane.showMessageDialog(null, getWord("items.opt.languageChanged.body"), getWord("items.opt.languageChanged.title"), JOptionPane.INFORMATION_MESSAGE);
+                int choice = JOptionPane.showConfirmDialog(null, getWord("items.opt.languageChanged.body"), getWord("items.opt.languageChanged.title"), JOptionPane.YES_NO_OPTION);
+                if(choice == JOptionPane.YES_OPTION) {
+                    gui.rebuild();
+                }
             }
         };
     }

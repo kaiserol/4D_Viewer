@@ -41,6 +41,11 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
         create();
     }
 
+    public void rebuild() {
+        this.container.getContentPane().removeAll();
+        create();
+    }
+
     private void create() {
         logger.info("Creating UI...");
         GuiUtils.initFlatLaf();
