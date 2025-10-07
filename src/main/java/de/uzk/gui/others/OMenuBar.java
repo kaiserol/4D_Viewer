@@ -98,19 +98,15 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
 
     private OBarMenu getNavMenu(ActionHandler actionHandler) {
         OBarMenu navTreeMenu = new OBarMenu(getWord("items.nav"), true);
-        navTreeMenu.add(new OBarItem(getWord("items.nav.image.first"), IconUtils.FIRST_IMAGE_ICON, actionHandler, FIRST_IMAGE_ACTION),
-                new OBarItem(getWord("items.nav.image.last"), IconUtils.LAST_IMAGE_ICON, actionHandler, LAST_IMAGE_ACTION),
-                new OBarItem(getWord("items.nav.image.prev"), IconUtils.PREV_IMAGE_ICON, actionHandler, PREV_IMAGE_ACTION),
-                new OBarItem(getWord("items.nav.image.next"), IconUtils.NEXT_IMAGE_ICON, actionHandler, NEXT_IMAGE_ACTION));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.image.first"), IconUtils.FIRST_IMAGE_ICON, actionHandler, FIRST_IMAGE_ACTION));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.image.prev"), IconUtils.PREV_IMAGE_ICON, actionHandler, PREV_IMAGE_ACTION));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.image.next"), IconUtils.NEXT_IMAGE_ICON, actionHandler, NEXT_IMAGE_ACTION));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.image.last"), IconUtils.LAST_IMAGE_ICON, actionHandler, LAST_IMAGE_ACTION));
         navTreeMenu.addSeparator();
-        navTreeMenu.add(new OBarItem(getWord("items.nav.level.first"), IconUtils.FIRST_LEVEL_ICON, actionHandler, FIRST_LEVEL_ACTION),
-                new OBarItem(getWord("items.nav.level.last"), IconUtils.LAST_LEVEL_ICON, actionHandler, LAST_LEVEL_ACTION),
-                new OBarItem(getWord("items.nav.level.prev"), IconUtils.PREV_LEVEL_ICON, actionHandler, PREV_LEVEL_ACTION),
-                new OBarItem(getWord("items.nav.level.next"), IconUtils.NEXT_LEVEL_ICON, actionHandler, NEXT_LEVEL_ACTION));
-        navTreeMenu.addSeparator();
-        navTreeMenu.add(new OBarItem(getWord("items.nav.both.first"), IconUtils.FIRST_IMAGE_LEVEL_ICON, actionHandler, FIRST_IMAGE_LEVEL_ACTION),
-                new OBarItem(getWord("items.nav.both.last"), IconUtils.LAST_IMAGE_LEVEL_ICON, actionHandler, LAST_IMAGE_LEVEL_ACTION));
-
+        navTreeMenu.add(new OBarItem(getWord("items.nav.level.first"), IconUtils.FIRST_LEVEL_ICON, actionHandler, FIRST_LEVEL_ACTION));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.level.prev"), IconUtils.PREV_LEVEL_ICON, actionHandler, PREV_LEVEL_ACTION));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.level.next"), IconUtils.NEXT_LEVEL_ICON, actionHandler, NEXT_LEVEL_ACTION));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.level.last"), IconUtils.LAST_LEVEL_ICON, actionHandler, LAST_LEVEL_ACTION));
         return navTreeMenu;
     }
 
@@ -150,9 +146,9 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
     private ActionListener changeLanguageListener() {
         return a -> {
             JComboBox<Language> selectBox = new JComboBox<>(Language.values());
-            JOptionPane.showConfirmDialog( null, selectBox, getWord("items.opt.changeLanguage"), JOptionPane.DEFAULT_OPTION);
+            JOptionPane.showConfirmDialog(null, selectBox, getWord("items.opt.changeLanguage"), JOptionPane.DEFAULT_OPTION);
             Language lang = (Language) selectBox.getSelectedItem();
-            if(lang != null) {
+            if (lang != null) {
                 config.setLanguage(lang);
                 config.saveConfig();
                 JOptionPane.showMessageDialog(null, getWord("items.opt.languageChanged.body"), getWord("items.opt.languageChanged.title"), JOptionPane.INFORMATION_MESSAGE);

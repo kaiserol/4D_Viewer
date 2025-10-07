@@ -25,8 +25,8 @@ import static de.uzk.utils.SystemConstants.SCREENSHOT_FOLDER;
 public class ConfigHandler {
     public static final boolean DEFAULT_ASK_AGAIN_CLOSING_WINDOW = true;
     public static final Theme DEFAULT_THEME = Theme.LIGHT_MODE;
-    public static final int MIN_FONT_SIZE = 10;
-    public static final int DEFAULT_FONT_SIZE = 16;
+    public static final int MIN_FONT_SIZE = 12;
+    public static final int DEFAULT_FONT_SIZE = 18;
     public static final int MAX_FONT_SIZE = 22;
     public static final LanguageHandler.Language SYSTEM_LANGUAGE = LanguageHandler.Language.getSystemDefault();
 

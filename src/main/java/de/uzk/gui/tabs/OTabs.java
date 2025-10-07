@@ -62,17 +62,12 @@ public class OTabs extends InteractiveContainer<JPanel> implements ActionTypeLis
         this.addJButton(TURN_RIGHT_ICON, getWord("items.edit.turnImageRight"), a -> actionHandler.executeEdit(TURN_IMAGE_RIGHT_ACTION));
         this.toolBar.addSeparator(new Dimension(1, 20));
 
-        // first, last in one dimension buttons
+        // first, last in one-dimension buttons
         this.addJButton(FIRST_IMAGE_ICON, getWord("items.nav.image.first"), a -> actionHandler.keyPressed(FIRST_IMAGE_ACTION));
         this.addJButton(LAST_IMAGE_ICON, getWord("items.nav.image.last"), a -> actionHandler.keyPressed(LAST_IMAGE_ACTION));
 
         this.addJButton(FIRST_LEVEL_ICON, getWord("items.nav.level.first"), a -> actionHandler.keyPressed(FIRST_LEVEL_ACTION));
         this.addJButton(LAST_LEVEL_ICON, getWord("items.nav.level.last"), a -> actionHandler.keyPressed(LAST_LEVEL_ACTION));
-        this.toolBar.addSeparator(new Dimension(1, 20));
-
-        // first, last in both dimensions buttons
-        this.addJButton(FIRST_IMAGE_LEVEL_ICON, getWord("items.nav.both.first"), a -> actionHandler.keyPressed(FIRST_IMAGE_LEVEL_ACTION));
-        this.addJButton(LAST_IMAGE_LEVEL_ICON, getWord("items.nav.both.last"), a -> actionHandler.keyPressed(LAST_IMAGE_LEVEL_ACTION));
     }
 
     private void addJButton(Icon icon, String toolTipText, ActionListener action) {

@@ -20,7 +20,6 @@ import java.util.Objects;
 import static de.uzk.Main.*;
 import static de.uzk.handler.ImageFileConstants.IMAGE_TYPES;
 import static de.uzk.utils.GuiUtils.ERROR_MSG;
-import static de.uzk.utils.SystemConstants.DOWNLOAD_FOLDER;
 import static de.uzk.utils.language.LanguageHandler.getWord;
 
 public class ODirectory extends InteractiveContainer<JPanel> implements LoadingImageListener, ActionTypeListener {
@@ -102,8 +101,13 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
                 imageHandler.getImageDetails().getImageType().getTypeDescription());
         fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
 
-        if (imageHandler.hasImageFolder()) fileChooser.setSelectedFile(imageHandler.getImageFolder());
-        else fileChooser.setCurrentDirectory(DOWNLOAD_FOLDER);
+        if (imageHandler.hasImageFolder()) {
+            fileChooser.setSelectedFile(imageHandler.getImageFolder());
+        } else {
+            // set to user dir if existing
+            String userDir = System.getProperty("user.dir");
+            if (userDir != null) fileChooser.setCurrentDirectory(new File(userDir));
+        }
         fileChooser.addPropertyChangeListener(evt -> {
             if (evt.getNewValue() instanceof File file) {
                 File newFolder = file.isDirectory() ? file : file.getParentFile();

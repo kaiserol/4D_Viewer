@@ -46,7 +46,7 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
         GuiUtils.initFlatLaf();
 
         SwingUtilities.invokeLater(() -> {
-            this.container.setIconImage(IconUtils.APP_ICON);
+            this.container.setIconImage(IconUtils.APP_IMAGE);
             this.container.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {

@@ -101,7 +101,8 @@ public class OViewer extends InteractiveContainer<JPanel> implements ActionTypeL
         southToolBar.add(this.pinTimeLabel);
 
         // warningButton
-        JButton logsButton = new JButton(IconUtils.WARNING_ICON);
+        // TODO: muss entfernt werden und in die MenuBar verschoben werden
+        JButton logsButton = new JButton("[Info]");
         logsButton.setToolTipText(getWord("tooltips.showInformation"));
         logsButton.addActionListener(e -> new OInfo(gui));
         southToolBar.add(logsButton, BorderLayout.EAST);

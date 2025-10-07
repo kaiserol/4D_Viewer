@@ -44,15 +44,14 @@ class OBarTest {
 
     @Test
     void testToStringWithMultipleMenus() {
-
         OBarMenu fileMenu = new OBarMenu("File");
-        fileMenu.add(new OBarItem("Open"),
-                new OBarItem("Save"));
+        fileMenu.add(new OBarItem("Open"));
+        fileMenu.add(new OBarItem("Save"));
         fileMenu.addSeparator();
 
         OBarMenu editMenu = new OBarMenu("Edit");
-        editMenu.add(new OBarItem("Cut"),
-                new OBarItem("Copy"));
+        editMenu.add(new OBarItem("Cut"));
+        editMenu.add(new OBarItem("Copy"));
 
         OBar tree = new OBar();
         tree.add(fileMenu, editMenu);

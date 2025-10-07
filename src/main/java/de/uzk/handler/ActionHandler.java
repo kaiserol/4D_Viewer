@@ -30,57 +30,26 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     }
 
     public void executeMove(KeyEvent e) {
-        if (allowMove(true) && !isTimeLayerMove(e) && !isLevelLayerMove(e)) {
-            checkEqualsTimeAndLevelMove(e);
+        if (allowMove(true)) {
+            int oldTime = imageHandler.getTime();
+
+            // checks whether the event equals a move in the time layer
+            if (equals(e, FIRST_IMAGE_ACTION)) imageHandler.toFirst(ImageLayer.TIME);
+            else if (equals(e, PREV_IMAGE_ACTION)) imageHandler.prev(ImageLayer.TIME);
+            else if (equals(e, NEXT_IMAGE_ACTION)) imageHandler.next(ImageLayer.TIME);
+            else if (equals(e, LAST_IMAGE_ACTION)) imageHandler.toLast(ImageLayer.TIME);
+
+            // checks whether the event equals a move in the level layer
+            int oldLevel = imageHandler.getLevel();
+            if (equals(e, FIRST_LEVEL_ACTION)) imageHandler.toFirst(ImageLayer.LEVEL);
+            else if (equals(e, PREV_LEVEL_ACTION)) imageHandler.prev(ImageLayer.LEVEL);
+            else if (equals(e, NEXT_LEVEL_ACTION)) imageHandler.next(ImageLayer.LEVEL);
+            else if (equals(e, LAST_LEVEL_ACTION)) imageHandler.toLast(ImageLayer.LEVEL);
+
+            // check if time or level changed
+            if (imageHandler.getTime() != oldTime) gui.update(ImageLayer.TIME);
+            if (imageHandler.getLevel() != oldLevel) gui.update(ImageLayer.LEVEL);
         }
-    }
-
-    public void executeEdit(KeyEvent e) {
-        if (equals(e, TURN_IMAGE_LEFT_ACTION)) gui.handleAction(ActionType.TURN_IMAGE_90_LEFT);
-        else if (equals(e, TURN_IMAGE_RIGHT_ACTION)) gui.handleAction(ActionType.TURN_IMAGE_90_RIGHT);
-        if (equals(e, PIN_TIME_ACTION)) gui.handleAction(ActionType.TOGGLE_PIN_TIME);
-        else if (equals(e, SCREENSHOT_ACTION)) gui.handleAction(ActionType.TAKE_SCREENSHOT);
-    }
-
-    // checks whether the event equals FIRST_IMAGE_LEVEL_ACTION or LAST_IMAGE_LEVEL_ACTION
-    private void checkEqualsTimeAndLevelMove(KeyEvent e) {
-        int oldTime = imageHandler.getTime();
-        int oldLevel = imageHandler.getLevel();
-        if (equals(e, FIRST_IMAGE_LEVEL_ACTION)) imageHandler.toFirst();
-        else if (equals(e, LAST_IMAGE_LEVEL_ACTION)) imageHandler.toLast();
-        else return;
-
-        // check if time or level changed
-        if (imageHandler.getTime() != oldTime) gui.update(ImageLayer.TIME);
-        if (imageHandler.getLevel() != oldLevel) gui.update(ImageLayer.LEVEL);
-    }
-
-    // checks whether the event equals a move in the level layer
-    private boolean isLevelLayerMove(KeyEvent e) {
-        int oldLevel = imageHandler.getLevel();
-        if (equals(e, PREV_LEVEL_ACTION)) imageHandler.prev(ImageLayer.LEVEL);
-        else if (equals(e, NEXT_LEVEL_ACTION)) imageHandler.next(ImageLayer.LEVEL);
-        else if (equals(e, FIRST_LEVEL_ACTION)) imageHandler.toFirst(ImageLayer.LEVEL);
-        else if (equals(e, LAST_LEVEL_ACTION)) imageHandler.toLast(ImageLayer.LEVEL);
-        else return false;
-
-        // check if level changed
-        if (imageHandler.getLevel() != oldLevel) gui.update(ImageLayer.LEVEL);
-        return true;
-    }
-
-    // checks whether the event equals a move in the time layer
-    private boolean isTimeLayerMove(KeyEvent e) {
-        int oldTime = imageHandler.getTime();
-        if (equals(e, PREV_IMAGE_ACTION)) imageHandler.prev(ImageLayer.TIME);
-        else if (equals(e, NEXT_IMAGE_ACTION)) imageHandler.next(ImageLayer.TIME);
-        else if (equals(e, FIRST_IMAGE_ACTION)) imageHandler.toFirst(ImageLayer.TIME);
-        else if (equals(e, LAST_IMAGE_ACTION)) imageHandler.toLast(ImageLayer.TIME);
-        else return false;
-
-        // check if time changed
-        if (imageHandler.getTime() != oldTime) gui.update(ImageLayer.TIME);
-        return true;
     }
 
     private boolean allowMove(boolean isKeyPressed) {
@@ -100,6 +69,13 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             lastMouseWheelTime = currentTime;
         }
         return true;
+    }
+
+    public void executeEdit(KeyEvent e) {
+        if (equals(e, PIN_TIME_ACTION)) gui.handleAction(ActionType.TOGGLE_PIN_TIME);
+        else if (equals(e, TURN_IMAGE_RIGHT_ACTION)) gui.handleAction(ActionType.TURN_IMAGE_90_RIGHT);
+        else if (equals(e, SCREENSHOT_ACTION)) gui.handleAction(ActionType.TAKE_SCREENSHOT);
+        else if (equals(e, TURN_IMAGE_LEFT_ACTION)) gui.handleAction(ActionType.TURN_IMAGE_90_LEFT);
     }
 
     // ----------------------- movement with mouse wheeler --------------------
