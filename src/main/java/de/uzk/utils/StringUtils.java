@@ -1,7 +1,7 @@
 package de.uzk.utils;
 
 import de.uzk.config.SystemConstants;
-import de.uzk.logger.OLogInfo;
+import de.uzk.logger.LogData;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -48,17 +48,17 @@ public class StringUtils {
                 replace("\t", "    ") + "</pre>";
     }
 
-    public static String toHTML(OLogInfo logInfo) {
+    public static String toHTML(LogData logData) {
         String color;
-        switch (logInfo.getLevel()) {
+        switch (logData.getLevel()) {
             case DEBUG -> color = "blue";
             case ERROR -> color = "red";
             case INFO -> color = "green";
             case WARNING -> color = "orange";
             default -> color = "black";
         }
-        return "<b>" + logInfo.getDateTime() + "</b> " + logInfo.getSource() + SystemConstants.NEXT_LINE +
-                "<font color=" + color + ">[" + logInfo.getLevel() + "]:</font> " + logInfo.getMessage();
+        return "<b>" + logData.getDateTime() + "</b> " + logData.getSource() + SystemConstants.NEXT_LINE +
+                "<font color=" + color + ">[" + logData.getLevel() + "]:</font> " + logData.getMessage();
     }
 
     public static String[] splitTextInWords(String text) {

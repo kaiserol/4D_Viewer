@@ -4,7 +4,7 @@ import de.uzk.gui.Gui;
 import de.uzk.gui.InteractiveContainer;
 import de.uzk.image.ImageFile;
 import de.uzk.image.ImageLayer;
-import de.uzk.logger.OLogInfo;
+import de.uzk.logger.LogData;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.IconUtils;
 import de.uzk.utils.StringUtils;
@@ -100,9 +100,9 @@ public class OInfo extends InteractiveContainer<JDialog> {
 
     private JComponent getLogs() {
         StringBuilder htmlBuilder = new StringBuilder();
-        for (OLogInfo info : logger.getLogs()) {
-            String newInfo = StringUtils.javaToHTML(StringUtils.toHTML(info));
-            htmlBuilder.append(newInfo);
+        for (LogData logData : logger.getLogs()) {
+            String logMessage = StringUtils.javaToHTML(StringUtils.toHTML(logData));
+            htmlBuilder.append(logMessage);
         }
         return getEditorPane(htmlBuilder.toString());
     }
