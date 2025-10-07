@@ -12,7 +12,7 @@ public final class ImageFileConstants {
     public static final String DEFAULT_SEP_LEVEL = "L";
     public static final boolean DEFAULT_MIRROR_IMAGE = false;
     public static final int DEFAULT_IMAGE_ROTATION = 0;
-    public static final int DEFAULT_TIME_UNIT = 30;
+    public static final double DEFAULT_TIME_UNIT = 30.0;
     public static final double DEFAULT_LEVEL_UNIT = 1;
     public static final int DEFAULT_PIN_TIME = -1;
 
