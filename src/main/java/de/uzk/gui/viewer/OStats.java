@@ -16,6 +16,7 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 
 import static de.uzk.Main.imageHandler;
+import static de.uzk.handler.LanguageHandler.getWord;
 
 public class OStats extends InteractiveContainer<JPanel> implements ActionTypeListener {
     private JLabel timeStateLabel;
@@ -42,14 +43,14 @@ public class OStats extends InteractiveContainer<JPanel> implements ActionTypeLi
         gbc.insets = new Insets(0, 0, 0, 5);
 
         // timeLabel
-        JLabel timeLabel = new JLabel("Image:");
+        JLabel timeLabel = new JLabel(getWord("viewer.labels.image"));
         this.container.add(timeLabel, gbc);
 
         // gbc
         gbc.gridy++;
 
         // timeLabel
-        JLabel levelLabel = new JLabel("Level:");
+        JLabel levelLabel = new JLabel(getWord("viewer.labels.level"));
         this.container.add(levelLabel, gbc);
 
         // gbc

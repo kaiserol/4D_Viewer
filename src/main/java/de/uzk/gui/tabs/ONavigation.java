@@ -15,7 +15,7 @@ import java.util.List;
 
 import static de.uzk.Main.imageHandler;
 import static de.uzk.utils.GuiUtils.FOCUS_COLOR;
-import static de.uzk.utils.language.LanguageHandler.getWord;
+import static de.uzk.handler.LanguageHandler.getWord;
 
 public class ONavigation extends OTabContent implements ActionTypeListener {
     private final ActionHandler actionHandler;

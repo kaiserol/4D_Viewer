@@ -49,14 +49,5 @@ public class NumberUtils {
         return number != null && number.getClass() == Double.class;
     }
 
-    // if sum operation does not work properly, the first number will be returned
-    // (both numbers have to be of the same class)
-    public static Number sum(Number first, Number second, boolean negateSecondNum) {
-        int factor = negateSecondNum ? -1 : 1;
-        if (first.getClass() == second.getClass()) {
-            if (isInteger(first)) return first.intValue() + second.intValue() * factor;
-            else if (isDouble(first)) return first.doubleValue() + second.doubleValue() * factor;
-        }
-        return first;
-    }
+
 }

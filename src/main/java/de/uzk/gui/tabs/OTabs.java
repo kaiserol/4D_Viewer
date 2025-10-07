@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import static de.uzk.Main.imageHandler;
 import static de.uzk.utils.ActionUtils.*;
 import static de.uzk.utils.IconUtils.*;
-import static de.uzk.utils.language.LanguageHandler.getWord;
+import static de.uzk.handler.LanguageHandler.getWord;
 
 public class OTabs extends InteractiveContainer<JPanel> implements ActionTypeListener {
     private final ActionHandler actionHandler;

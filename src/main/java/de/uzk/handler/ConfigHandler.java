@@ -2,7 +2,6 @@ package de.uzk.handler;
 
 import de.uzk.utils.GuiUtils;
 import de.uzk.utils.SystemConstants;
-import de.uzk.utils.language.LanguageHandler;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -106,6 +105,8 @@ public class ConfigHandler {
     }
 
     private void setDefaultValues() {
+        // language. needs to be initialized first since the default imageDetails need translated text
+        this.setLanguage(SYSTEM_LANGUAGE);
         // imageDetails
         imageHandler.setImageDetails(new ImageDetails(DEFAULT_SEP_TIME, DEFAULT_SEP_LEVEL, DEFAULT_IMAGE_TYPE,
                 DEFAULT_MIRROR_IMAGE, DEFAULT_MIRROR_IMAGE, DEFAULT_IMAGE_ROTATION));
@@ -118,7 +119,6 @@ public class ConfigHandler {
         this.askAgainClosingWindow = DEFAULT_ASK_AGAIN_CLOSING_WINDOW;
         this.theme = DEFAULT_THEME;
         this.fontSize = DEFAULT_FONT_SIZE;
-        this.language = SYSTEM_LANGUAGE;
 
     }
 

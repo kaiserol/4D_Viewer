@@ -19,7 +19,7 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 import static de.uzk.Main.config;
-import static de.uzk.utils.language.LanguageHandler.getWord;
+import static de.uzk.handler.LanguageHandler.getWord;
 
 public final class GuiUtils {
     public static final String ERROR_MSG = getWord("optionPane.titles.error");

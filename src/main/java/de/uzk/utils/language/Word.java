@@ -2,7 +2,7 @@ package de.uzk.utils.language;
 
 import java.util.ArrayList;
 import java.util.List;
-
+// todo: Noch notwendig?
 public abstract class Word {
     private static final List<Character> VOWELS;
     private static final List<Character> CONSONANTS;
