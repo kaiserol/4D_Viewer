@@ -1,25 +1,19 @@
 package de.uzk.gui.others;
 
-import de.uzk.gui.Gui;
-import de.uzk.gui.InteractiveContainer;
 import de.uzk.actions.ActionHandler;
 import de.uzk.config.ConfigHandler;
+import de.uzk.config.LanguageHandler.Language;
+import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.IconUtils;
-import de.uzk.utils.StringUtils;
-import de.uzk.config.LanguageHandler.Language;
+import de.uzk.gui.InteractiveContainer;
 import de.uzk.gui.tree.OBar;
 import de.uzk.gui.tree.OBarItem;
 import de.uzk.gui.tree.OBarMenu;
 import de.uzk.gui.tree.OBarNode;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import static de.uzk.Main.config;
 import static de.uzk.actions.ActionUtils.*;
@@ -41,48 +35,6 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
 
         for (OBarNode nodes : this.tree.getNodes()) {
             this.container.add(nodes.getComponent());
-        }
-
-        setMnemonics(this.container.getComponents());
-    }
-
-    private void setMnemonics(Component[] children) {
-        if (children == null) return;
-
-        Map<String, Integer> usedWords = new TreeMap<>(String::compareTo);
-        for (Component component : children) {
-            if (component instanceof JMenuItem item) StringUtils.updateUsedWords(item.getText(), usedWords);
-        }
-
-        List<Character> mnemonics = new ArrayList<>();
-        for (Component component : children) {
-            if (component instanceof JMenuItem item) {
-                List<String> allowedWords = StringUtils.getAllowedWords(item.getText(), usedWords);
-                setMnemonic(item, allowedWords, mnemonics);
-            }
-            if (component instanceof JMenu menu) setMnemonics(menu.getMenuComponents());
-        }
-    }
-
-    private void setMnemonic(JMenuItem item, List<String> allowedWords, List<Character> mnemonics) {
-        if (!allowedWords.isEmpty()) {
-            String lower = item.getText().toLowerCase();
-            char[] chars = lower.toCharArray();
-
-            for (String word : allowedWords) {
-                int index = lower.indexOf(word);
-                int max = index + word.length();
-
-                for (int i = index; i < max; i++) {
-                    char c = chars[i];
-                    if (StringUtils.isAsciiLetter(c) && !mnemonics.contains(c)) {
-                        item.setMnemonic(c);
-                        item.setDisplayedMnemonicIndex(i);
-                        mnemonics.add(c);
-                        return;
-                    }
-                }
-            }
         }
     }
 
@@ -152,7 +104,7 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
                 config.setLanguage(lang);
                 config.saveConfig();
                 int choice = JOptionPane.showConfirmDialog(null, getWord("items.opt.languageChanged.body"), getWord("items.opt.languageChanged.title"), JOptionPane.YES_NO_OPTION);
-                if(choice == JOptionPane.YES_OPTION) {
+                if (choice == JOptionPane.YES_OPTION) {
                     gui.rebuild();
                 }
             }
