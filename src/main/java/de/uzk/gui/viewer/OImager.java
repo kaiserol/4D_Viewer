@@ -44,7 +44,7 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
             g2d.drawImage(currentImage, (this.container.getWidth() - newWidth) / 2, (this.container.getHeight() - newHeight) / 2,
                     newWidth - 1, newHeight - 1, null);
         } else {
-            String noImagesText = imageHandler.isEmpty() ? "No Images" : "Could not load image";
+            String noImagesText = imageHandler.isEmpty() ? getWord("viewer.labels.noImages") : getWord("viewer.labels.couldNotLoadImage");
             FontMetrics metrics = g2d.getFontMetrics(g.getFont());
             int textWidth = metrics.stringWidth(noImagesText);
             int textHeight = metrics.getHeight();
