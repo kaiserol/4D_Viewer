@@ -4,38 +4,36 @@ import java.util.Locale;
 
 import static de.uzk.config.LanguageHandler.getWord;
 
-// To avoid having to manage locales within the GUI
 public enum Language {
     ENGLISH(Locale.ENGLISH),
     GERMAN(Locale.GERMAN);
 
     private final Locale locale;
-    private final String ID;
+    private final String name;
 
     Language(Locale locale) {
         this.locale = locale;
-        this.ID = this.getLocale().getLanguage();
+        this.name = this.getLocale().getLanguage();
     }
 
     public Locale getLocale() {
         return this.locale;
     }
 
-    public String getID() {
-        return this.ID;
+    public String getName() {
+        return this.name;
     }
 
-    public static Language fromID(String ID) {
+    public static Language byLocale(Locale locale) {
+        return byName(locale.getLanguage());
+    }
+
+    public static Language byName(String name) {
         for (Language language : Language.values()) {
-            if (language.getID().equalsIgnoreCase(ID)) return language;
+            if (language.getName().equalsIgnoreCase(name)) return language;
         }
         // fallback to English if no language was found
         return Language.ENGLISH;
-    }
-
-    public static Language getSystemDefault() {
-        Locale defaultLocale = Locale.getDefault();
-        return Language.fromID(defaultLocale.getLanguage());
     }
 
     @Override

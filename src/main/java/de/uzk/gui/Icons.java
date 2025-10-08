@@ -14,53 +14,52 @@ import java.net.URL;
 import static de.uzk.Main.config;
 import static de.uzk.Main.logger;
 
-public final class IconUtils {
+public final class Icons {
     // edit icons
-    public static final FlatSVGIcon PIN_ICON = loadResourceSVG("images/icons_edit/pin.svg");
-    public static final FlatSVGIcon TURN_RIGHT_ICON = loadResourceSVG("images/icons_edit/turn_right.svg");
-    public static final FlatSVGIcon TURN_LEFT_ICON = loadResourceSVG("images/icons_edit/turn_left.svg");
-    public static final FlatSVGIcon SCREENSHOT_ICON = loadResourceSVG("images/icons_edit/screenshot.svg");
+    public static final FlatSVGIcon ICON_PIN = loadResourceSVG("images/icons_edit/pin.svg");
+    public static final FlatSVGIcon ICON_TURN_RIGHT = loadResourceSVG("images/icons_edit/turn_right.svg");
+    public static final FlatSVGIcon ICON_TURN_LEF = loadResourceSVG("images/icons_edit/turn_left.svg");
+    public static final FlatSVGIcon ICON_SCREENSHOT = loadResourceSVG("images/icons_edit/screenshot.svg");
 
     // nav icons
-    public static final FlatSVGIcon PREV_IMAGE_ICON = loadResourceSVG("images/icons_nav/arrow_left.svg");
-    public static final FlatSVGIcon NEXT_IMAGE_ICON = loadResourceSVG("images/icons_nav/arrow_right.svg");
-    public static final FlatSVGIcon FIRST_IMAGE_ICON = loadResourceSVG("images/icons_nav/arrow_left_start.svg");
-    public static final FlatSVGIcon LAST_IMAGE_ICON = loadResourceSVG("images/icons_nav/arrow_right_end.svg");
+    public static final FlatSVGIcon ICON_PREV_IMAGE = loadResourceSVG("images/icons_nav/arrow_left.svg");
+    public static final FlatSVGIcon ICON_NEXT_IMAGE = loadResourceSVG("images/icons_nav/arrow_right.svg");
+    public static final FlatSVGIcon ICON_FIRST_IMAGE = loadResourceSVG("images/icons_nav/arrow_left_start.svg");
+    public static final FlatSVGIcon ICON_LAST_IMAGE = loadResourceSVG("images/icons_nav/arrow_right_end.svg");
 
-    public static final FlatSVGIcon FIRST_LEVEL_ICON = loadResourceSVG("images/icons_nav/arrow_up_start.svg");
-    public static final FlatSVGIcon PREV_LEVEL_ICON = loadResourceSVG("images/icons_nav/arrow_up.svg");
-    public static final FlatSVGIcon NEXT_LEVEL_ICON = loadResourceSVG("images/icons_nav/arrow_down.svg");
-    public static final FlatSVGIcon LAST_LEVEL_ICON = loadResourceSVG("images/icons_nav/arrow_down_end.svg");
+    public static final FlatSVGIcon ICON_FIRST_LEVEL = loadResourceSVG("images/icons_nav/arrow_up_start.svg");
+    public static final FlatSVGIcon ICON_PREV_LEVEL = loadResourceSVG("images/icons_nav/arrow_up.svg");
+    public static final FlatSVGIcon ICON_NEXT_LEVEL = loadResourceSVG("images/icons_nav/arrow_down.svg");
+    public static final FlatSVGIcon ICON_LAST_LEVEL = loadResourceSVG("images/icons_nav/arrow_down_end.svg");
 
-    // option icons
-    public static final FlatSVGIcon DELETE_ICON = loadResourceSVG("images/icons/delete.svg");
+    // icons
+    public static final FlatSVGIcon ICON_DELETE = loadResourceSVG("images/icons/delete.svg");
 
     private static final FlatSVGIcon[] ICONS_ONLY_ONE_COLOR = {
-            PIN_ICON,
-            TURN_RIGHT_ICON,
-            TURN_LEFT_ICON,
-            SCREENSHOT_ICON,
+            ICON_PIN,
+            ICON_TURN_RIGHT,
+            ICON_TURN_LEF,
+            ICON_SCREENSHOT,
     };
     private static final FlatSVGIcon[] ICONS_DIFFERENT_COLORS = {
-            // time layer
-            FIRST_IMAGE_ICON,
-            PREV_IMAGE_ICON,
-            NEXT_IMAGE_ICON,
-            LAST_IMAGE_ICON,
+            // nav icons
+            ICON_FIRST_IMAGE,
+            ICON_PREV_IMAGE,
+            ICON_NEXT_IMAGE,
+            ICON_LAST_IMAGE,
 
-            // level layer
-            FIRST_LEVEL_ICON,
-            PREV_LEVEL_ICON,
-            NEXT_LEVEL_ICON,
-            LAST_LEVEL_ICON,
+            ICON_FIRST_LEVEL,
+            ICON_PREV_LEVEL,
+            ICON_NEXT_LEVEL,
+            ICON_LAST_LEVEL,
 
-            // options
-            DELETE_ICON,
+            // icons
+            ICON_DELETE,
     };
 
     public static final Image APP_IMAGE = readResourcesImage("images/4D.png");
 
-    private IconUtils() {
+    private Icons() {
     }
 
     private static BufferedImage loadImage(Object image, ImageExceptionListener onImageException) {
@@ -78,7 +77,7 @@ public final class IconUtils {
 
     private static BufferedImage readResourcesImage(String imageName) {
         String imageNameCleanedFileSeps = imageName.replace("/", StringUtils.FILE_SEP);
-        URL url = IconUtils.class.getClassLoader().getResource(imageNameCleanedFileSeps);
+        URL url = Icons.class.getClassLoader().getResource(imageNameCleanedFileSeps);
         ImageExceptionListener onImageException = e -> {
             logger.error("The SVG image '" + imageName + "' could not be found.");
             logger.logException(e);
@@ -93,7 +92,7 @@ public final class IconUtils {
     private static FlatSVGIcon loadResourceSVG(String svgName) {
         try {
             String svgNameCleanedFileSeps = svgName.replace("/", StringUtils.FILE_SEP);
-            URL svgUrl = IconUtils.class.getClassLoader().getResource(svgNameCleanedFileSeps);
+            URL svgUrl = Icons.class.getClassLoader().getResource(svgNameCleanedFileSeps);
             if (svgUrl != null) {
                 InputStream svgStream = svgUrl.openStream();
                 return new FlatSVGIcon(svgStream);

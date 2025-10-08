@@ -5,7 +5,7 @@ import de.uzk.config.ConfigHandler;
 import de.uzk.config.Language;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
-import de.uzk.gui.IconUtils;
+import de.uzk.gui.Icons;
 import de.uzk.gui.InteractiveContainer;
 import de.uzk.gui.tree.OBar;
 import de.uzk.gui.tree.OBarItem;
@@ -33,7 +33,8 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
         this.tree = new OBar(this.container);
         this.tree.add(getEditMenu(actionHandler));
         this.tree.add(getNavMenu(actionHandler));
-        this.tree.add(getOptMenu());
+        this.tree.add(getWindowMenu());
+        this.tree.add(getDevToolsMenu());
 
         for (OBarNode nodes : this.tree.getNodes()) {
             this.container.add(nodes.getComponent());
@@ -42,42 +43,48 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
 
     private OBarMenu getEditMenu(ActionHandler actionHandler) {
         OBarMenu editTreeMenu = new OBarMenu(getWord("items.edit"), true);
-        editTreeMenu.add(new OBarItem(getWord("items.edit.turnImageLeft"), IconUtils.TURN_LEFT_ICON, a -> actionHandler.executeEdit(ACTION_TURN_IMAGE_LEFT), ACTION_TURN_IMAGE_LEFT),
-                new OBarItem(getWord("items.edit.turnImageRight"), IconUtils.TURN_RIGHT_ICON, a -> actionHandler.executeEdit(ACTION_TURN_IMAGE_RIGHT), ACTION_TURN_IMAGE_RIGHT),
-                new OBarItem(getWord("items.edit.pinTime"), IconUtils.PIN_ICON, a -> actionHandler.executeEdit(ACTION_PIN_TIME), ACTION_PIN_TIME));
+
+        // pin time, turn image left, right
+        editTreeMenu.add(new OBarItem(getWord("items.edit.pinTime"), Icons.ICON_PIN,
+                a -> actionHandler.executeEdit(ACTION_PIN_TIME), ACTION_PIN_TIME));
+        editTreeMenu.add(new OBarItem(getWord("items.edit.turnImageLeft"), Icons.ICON_TURN_LEF,
+                a -> actionHandler.executeEdit(ACTION_TURN_IMAGE_LEFT), ACTION_TURN_IMAGE_LEFT));
+        editTreeMenu.add(new OBarItem(getWord("items.edit.turnImageRight"), Icons.ICON_TURN_RIGHT,
+                a -> actionHandler.executeEdit(ACTION_TURN_IMAGE_RIGHT), ACTION_TURN_IMAGE_RIGHT));
         editTreeMenu.addSeparator();
-        editTreeMenu.add(new OBarItem(getWord("items.edit.screenshot"), IconUtils.SCREENSHOT_ICON, a -> actionHandler.executeEdit(ACTION_SCREENSHOT), ACTION_SCREENSHOT));
+
+        editTreeMenu.add(new OBarItem(getWord("items.edit.screenshot"), Icons.ICON_SCREENSHOT, a -> actionHandler.executeEdit(ACTION_SCREENSHOT), ACTION_SCREENSHOT));
         return editTreeMenu;
     }
 
     private OBarMenu getNavMenu(ActionHandler actionHandler) {
         OBarMenu navTreeMenu = new OBarMenu(getWord("items.nav"), true);
-        navTreeMenu.add(new OBarItem(getWord("items.nav.image.first"), IconUtils.FIRST_IMAGE_ICON, actionHandler, ACTION_FIRST_IMAGE));
-        navTreeMenu.add(new OBarItem(getWord("items.nav.image.prev"), IconUtils.PREV_IMAGE_ICON, actionHandler, ACTION_PREV_IMAGE));
-        navTreeMenu.add(new OBarItem(getWord("items.nav.image.next"), IconUtils.NEXT_IMAGE_ICON, actionHandler, ACTION_NEXT_IMAGE));
-        navTreeMenu.add(new OBarItem(getWord("items.nav.image.last"), IconUtils.LAST_IMAGE_ICON, actionHandler, ACTION_LAST_IMAGE));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.image.first"), Icons.ICON_FIRST_IMAGE, actionHandler, ACTION_FIRST_IMAGE));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.image.prev"), Icons.ICON_PREV_IMAGE, actionHandler, ACTION_PREV_IMAGE));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.image.next"), Icons.ICON_NEXT_IMAGE, actionHandler, ACTION_NEXT_IMAGE));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.image.last"), Icons.ICON_LAST_IMAGE, actionHandler, ACTION_LAST_IMAGE));
         navTreeMenu.addSeparator();
-        navTreeMenu.add(new OBarItem(getWord("items.nav.level.first"), IconUtils.FIRST_LEVEL_ICON, actionHandler, ACTION_FIRST_LEVEL));
-        navTreeMenu.add(new OBarItem(getWord("items.nav.level.prev"), IconUtils.PREV_LEVEL_ICON, actionHandler, ACTION_PREV_LEVEL));
-        navTreeMenu.add(new OBarItem(getWord("items.nav.level.next"), IconUtils.NEXT_LEVEL_ICON, actionHandler, ACTION_NEXT_LEVEL));
-        navTreeMenu.add(new OBarItem(getWord("items.nav.level.last"), IconUtils.LAST_LEVEL_ICON, actionHandler, ACTION_LAST_LEVEL));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.level.first"), Icons.ICON_FIRST_LEVEL, actionHandler, ACTION_FIRST_LEVEL));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.level.prev"), Icons.ICON_PREV_LEVEL, actionHandler, ACTION_PREV_LEVEL));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.level.next"), Icons.ICON_NEXT_LEVEL, actionHandler, ACTION_NEXT_LEVEL));
+        navTreeMenu.add(new OBarItem(getWord("items.nav.level.last"), Icons.ICON_LAST_LEVEL, actionHandler, ACTION_LAST_LEVEL));
         return navTreeMenu;
     }
 
-    // TODO: opt in Window umbenennen!!!
-    private OBarMenu getOptMenu() {
-        OBarMenu optTreeMenu = new OBarMenu(getWord("items.opt"));
+    private OBarMenu getWindowMenu() {
+        OBarMenu windowTreeMenu = new OBarMenu(getWord("items.window"));
 
         // add language, theme
-        optTreeMenu.add(new OBarItem(getWord("items.opt.changeLanguage"), a -> changeLanguage(), ACTION_CHANGE_LANGUAGE));
-        optTreeMenu.add(new OBarItem(getWord("items.opt.toggleTheme"), a -> GuiUtils.switchThemes(gui), ACTION_TOGGLE_THEME));
-        optTreeMenu.addSeparator();
+        windowTreeMenu.add(new OBarItem(getWord("items.window.changeLanguage"), a -> changeLanguage(), ACTION_CHANGE_LANGUAGE));
+        windowTreeMenu.add(new OBarItem(getWord("items.window.toggleTheme"), a -> GuiUtils.switchThemes(gui), ACTION_TOGGLE_THEME));
+        windowTreeMenu.addSeparator();
 
-        OBarItem incrFontItem = new OBarItem(getWord("items.opt.fontSizeIncr"));
-        OBarItem decrFontItem = new OBarItem(getWord("items.opt.fontSizeDecr"));
-        OBarItem restoreFontItem = new OBarItem(getWord("items.opt.fontSizeRestore"));
+        // add font
+        OBarItem incrFontItem = new OBarItem(getWord("items.window.fontSizeIncr"));
+        OBarItem decrFontItem = new OBarItem(getWord("items.window.fontSizeDecr"));
+        OBarItem restoreFontItem = new OBarItem(getWord("items.window.fontSizeRestore"));
 
-        // set Actions
+        // set font Actions
         incrFontItem.setAction(updateFontItems(GuiUtils::incrFont,
                 incrFontItem.getComponent(), decrFontItem.getComponent(), restoreFontItem.getComponent()), ACTION_INCREASE_FONT, ACTION_INCREASE_FONT_2);
         decrFontItem.setAction(updateFontItems(GuiUtils::decrFont,
@@ -85,18 +92,20 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
         restoreFontItem.setAction(updateFontItems(GuiUtils::restoreFont,
                 incrFontItem.getComponent(), decrFontItem.getComponent(), restoreFontItem.getComponent()), ACTION_RESTORE_FONT);
 
-        // add font
-        optTreeMenu.add(incrFontItem, decrFontItem, restoreFontItem);
+        windowTreeMenu.add(incrFontItem, decrFontItem, restoreFontItem);
         updateFontItems(null,
                 incrFontItem.getComponent(),
                 decrFontItem.getComponent(),
                 restoreFontItem.getComponent()).actionPerformed(null);
-        optTreeMenu.addSeparator();
 
-        // add info
-        optTreeMenu.add(new OBarItem(getWord("items.opt.openLogWindow"), a -> new OInfo(gui)));
+        return windowTreeMenu;
+    }
 
-        return optTreeMenu;
+    private OBarMenu getDevToolsMenu() {
+        OBarMenu devToolsMenu = new OBarMenu(getWord("items.dev-tools"));
+        devToolsMenu.add(new OBarItem(getWord("items.dev-tools.openLogWindow"), a -> new OInfo(gui)));
+
+        return devToolsMenu;
     }
 
     private ActionListener updateFontItems(Runnable runnable, JComponent incrFontItem, JComponent decrFontItem, JComponent restoreFontItem) {
@@ -109,8 +118,6 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
         };
     }
 
-    // TODO: BUG (Antwort Buttons bleiben immer auf deutsch oder englisch abhängig vom Locale), wenn man Locale aber ändert,
-    // dann würde sich vermutlich auch die SYSTEM_LANGUAGE mitändern, was zu verhindern ist.
     private void changeLanguage() {
         Language oldLanguage = config.getLanguage();
         JComboBox<Language> selectBox = new JComboBox<>(Language.values());
@@ -119,15 +126,15 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
         // show dialog
         int option = JOptionPane.showConfirmDialog(OMenuBar.this.gui.getFrame(),
                 selectBox,
-                getWord("items.opt.changeLanguage"),
+                getWord("items.window.changeLanguage"),
                 JOptionPane.OK_CANCEL_OPTION);
         Language language = (Language) selectBox.getSelectedItem();
         if (language == null || oldLanguage == language || option != JOptionPane.OK_OPTION) return;
 
         // show dialog
         option = JOptionPane.showConfirmDialog(OMenuBar.this.gui.getFrame(),
-                getWord("items.opt.languageChanged.body"),
-                getWord("items.opt.languageChanged.title"),
+                getWord("items.window.languageChanged.body"),
+                getWord("items.window.languageChanged.title"),
                 JOptionPane.YES_NO_OPTION);
 
         // set language and save config

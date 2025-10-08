@@ -103,7 +103,7 @@ public final class GuiUtils {
         UIManager.put("Component.hideMnemonics", false);
         UIManager.put("OptionPane.showIcon", true);
 
-        IconUtils.updateSVGIcons();
+        Icons.updateSVGIcons();
 
         font = getDefaultFont();
         setFont(font.deriveFont((float) config.getFontSize()));

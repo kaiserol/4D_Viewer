@@ -5,7 +5,7 @@ import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.*;
 import de.uzk.image.ImageLayer;
 import de.uzk.gui.GuiUtils;
-import de.uzk.gui.IconUtils;
+import de.uzk.gui.Icons;
 import de.uzk.markers.Marker;
 
 import javax.swing.*;
@@ -85,7 +85,7 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
         BufferedImage tempImage = null;
         if (imageHandler.getCurrentImage() != null) {
             File imageFile = imageHandler.getCurrentImage().getFile();
-            tempImage = IconUtils.loadImage(imageFile);
+            tempImage = Icons.loadImage(imageFile);
         }
         this.currentImage = this.originalImage = tempImage;
         editImage();

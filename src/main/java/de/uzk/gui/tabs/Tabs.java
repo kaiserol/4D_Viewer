@@ -3,7 +3,7 @@ package de.uzk.gui.tabs;
 import static de.uzk.Main.imageHandler;
 import static de.uzk.actions.ActionUtils.*;
 import static de.uzk.config.LanguageHandler.getWord;
-import static de.uzk.gui.IconUtils.*;
+import static de.uzk.gui.Icons.*;
 
 import de.uzk.actions.ActionHandler;
 import de.uzk.actions.ActionType;
@@ -67,36 +67,36 @@ public class Tabs
         this.toolBar.setName(getWord("items.edit.toolbar"));
 
         // edit buttons
-        this.pinTimeButton = new JToggleButton(PIN_ICON);
+        this.pinTimeButton = new JToggleButton(ICON_PIN);
         this.initButton(pinTimeButton, getWord("items.edit.pinTime"), a -> {
             if (GuiUtils.isEnabled(pinTimeButton)) actionHandler.executeEdit(
                 ACTION_PIN_TIME
             );
         });
         this.addJButton(
-            TURN_LEFT_ICON,
+                ICON_TURN_LEF,
             getWord("items.edit.turnImageLeft"),
             a -> actionHandler.executeEdit(ACTION_TURN_IMAGE_LEFT)
         );
         this.addJButton(
-            TURN_RIGHT_ICON,
+                ICON_TURN_RIGHT,
             getWord("items.edit.turnImageRight"),
             a -> actionHandler.executeEdit(ACTION_TURN_IMAGE_RIGHT)
         );
         this.toolBar.addSeparator(new Dimension(1, 20));
 
         // first, last in one-dimension buttons
-        this.addJButton(FIRST_IMAGE_ICON, getWord("items.nav.image.first"), a ->
+        this.addJButton(ICON_FIRST_IMAGE, getWord("items.nav.image.first"), a ->
             actionHandler.keyPressed(ACTION_FIRST_IMAGE)
         );
-        this.addJButton(LAST_IMAGE_ICON, getWord("items.nav.image.last"), a ->
+        this.addJButton(ICON_LAST_IMAGE, getWord("items.nav.image.last"), a ->
             actionHandler.keyPressed(ACTION_LAST_IMAGE)
         );
 
-        this.addJButton(FIRST_LEVEL_ICON, getWord("items.nav.level.first"), a ->
+        this.addJButton(ICON_FIRST_LEVEL, getWord("items.nav.level.first"), a ->
             actionHandler.keyPressed(ACTION_FIRST_LEVEL)
         );
-        this.addJButton(LAST_LEVEL_ICON, getWord("items.nav.level.last"), a ->
+        this.addJButton(ICON_LAST_LEVEL, getWord("items.nav.level.last"), a ->
             actionHandler.keyPressed(ACTION_LAST_LEVEL)
         );
     }

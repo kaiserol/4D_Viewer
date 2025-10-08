@@ -2,6 +2,7 @@ package de.uzk.gui.tree;
 
 import javax.swing.*;
 
+// TODO: Umbenennen mitsamt der Geschwister-KLassen
 public final class OBar extends OBarNode {
 
     public OBar(JMenuBar menuBar, boolean toggleable) {

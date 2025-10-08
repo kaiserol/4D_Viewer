@@ -7,7 +7,7 @@ import de.uzk.gui.InteractiveContainer;
 import de.uzk.actions.ActionHandler;
 import de.uzk.image.ImageLayer;
 import de.uzk.gui.GuiUtils;
-import de.uzk.gui.IconUtils;
+import de.uzk.gui.Icons;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
@@ -90,7 +90,7 @@ public class OViewer extends InteractiveContainer<JPanel> implements ActionTypeL
         southToolBar.setLayout(new BorderLayout());
 
         // clearImagesButton
-        this.clearImagesButton = new JButton(IconUtils.DELETE_ICON);
+        this.clearImagesButton = new JButton(Icons.ICON_DELETE);
         this.clearImagesButton.addActionListener(a -> clearImages());
         this.clearImagesButton.setToolTipText(getWord("tooltips.clearImages"));
         southToolBar.add(this.clearImagesButton, BorderLayout.WEST);

@@ -6,7 +6,7 @@ import de.uzk.image.ImageFile;
 import de.uzk.image.ImageLayer;
 import de.uzk.logger.LogData;
 import de.uzk.gui.GuiUtils;
-import de.uzk.gui.IconUtils;
+import de.uzk.gui.Icons;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
@@ -146,7 +146,7 @@ public class OInfo extends InteractiveContainer<JDialog> {
         // gbc
         updateGPC(gbc, 0);
 
-        JButton prevButton = new JButton(IconUtils.PREV_IMAGE_ICON);
+        JButton prevButton = new JButton(Icons.ICON_PREV_IMAGE);
         prevButton.setToolTipText("Previous " + text);
         toolBar.add(prevButton, gbc);
 
@@ -160,7 +160,7 @@ public class OInfo extends InteractiveContainer<JDialog> {
         // gbc
         updateGPC(gbc, 0);
 
-        JButton nextButton = new JButton(IconUtils.NEXT_IMAGE_ICON);
+        JButton nextButton = new JButton(Icons.ICON_NEXT_IMAGE);
         nextButton.setToolTipText("Next " + text);
         toolBar.add(nextButton, gbc);
 

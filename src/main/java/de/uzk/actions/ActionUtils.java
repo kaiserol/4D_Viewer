@@ -26,7 +26,7 @@ public final class ActionUtils {
     public static final KeyEvent ACTION_NEXT_LEVEL = getKeyEvent(KeyEvent.VK_DOWN, KeyEvent.VK_UNDEFINED);
     public static final KeyEvent ACTION_LAST_LEVEL = getKeyEvent(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK);
 
-    // option actions
+    // window actions
     public static final KeyEvent ACTION_CHANGE_LANGUAGE = getKeyEvent(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK);
     public static final KeyEvent ACTION_TOGGLE_THEME = getKeyEvent(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK);
     public static final KeyEvent ACTION_INCREASE_FONT = getKeyEvent(KeyEvent.VK_PLUS, InputEvent.CTRL_DOWN_MASK);

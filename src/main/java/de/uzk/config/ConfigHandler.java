@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Properties;
 
 import static de.uzk.Main.imageHandler;
@@ -30,10 +31,17 @@ public class ConfigHandler {
     public static final int MIN_FONT_SIZE = 12;
     public static final int DEFAULT_FONT_SIZE = 18;
     public static final int MAX_FONT_SIZE = 22;
-    public static final Language SYSTEM_LANGUAGE = Language.getSystemDefault();
-
+    public static final Language SYSTEM_LANGUAGE = Language.byLocale(Locale.getDefault());
     private static final File CONFIG_FILE = new File("config.cfg");
     private static final File SCREENSHOT_FOLDER = new File("screenshots");
+
+    private static final String DEFAULT_SEP_TIME = "X";
+    private static final String DEFAULT_SEP_LEVEL = "L";
+    private static final boolean DEFAULT_IMAGE_MIRROR_X = false;
+    private static final boolean DEFAULT_IMAGE_MIRROR_Y = false;
+    private static final int DEFAULT_IMAGE_ROTATION = 0;
+    private static final double DEFAULT_TIME_UNIT = 30.0;
+    private static final double DEFAULT_LEVEL_UNIT = 1;
 
     private final SimpleDateFormat dateFormat;
     private boolean askAgainClosingWindow;
@@ -83,6 +91,7 @@ public class ConfigHandler {
 
     public void setLanguage(Language language) {
         this.language = language;
+        Locale.setDefault(language.getLocale());
         LanguageHandler.load(language);
     }
 
@@ -110,8 +119,13 @@ public class ConfigHandler {
 
     private void setDefaultValues() {
         // imageDetails
-        imageHandler.setImageDetails(new ImageDetails(DEFAULT_SEP_TIME, DEFAULT_SEP_LEVEL, DEFAULT_IMAGE_TYPE,
-                DEFAULT_MIRROR_IMAGE, DEFAULT_MIRROR_IMAGE, DEFAULT_IMAGE_ROTATION));
+        imageHandler.setImageDetails(new ImageDetails(
+                DEFAULT_SEP_TIME,
+                DEFAULT_SEP_LEVEL,
+                DEFAULT_IMAGE_TYPE,
+                DEFAULT_IMAGE_MIRROR_X,
+                DEFAULT_IMAGE_MIRROR_Y,
+                DEFAULT_IMAGE_ROTATION));
 
         // units
         imageHandler.setTimeUnit(DEFAULT_TIME_UNIT);
@@ -132,8 +146,8 @@ public class ConfigHandler {
         String sepTime = loadString(properties, "SepTime", DEFAULT_SEP_TIME);
         String sepLevel = loadString(properties, "SepLevel", DEFAULT_SEP_LEVEL);
         ImageType imageType = loadImageType(properties);
-        boolean mirrorX = loadBoolean(properties, "MirrorX", DEFAULT_MIRROR_IMAGE);
-        boolean mirrorY = loadBoolean(properties, "MirrorY", DEFAULT_MIRROR_IMAGE);
+        boolean mirrorX = loadBoolean(properties, "MirrorX", DEFAULT_IMAGE_MIRROR_X);
+        boolean mirrorY = loadBoolean(properties, "MirrorY", DEFAULT_IMAGE_MIRROR_Y);
         int rotation = loadNumber(properties, "Rotation", DEFAULT_IMAGE_ROTATION).intValue();
         imageHandler.setImageDetails(new ImageDetails(sepTime, sepLevel, imageType, mirrorX, mirrorY, rotation));
 
@@ -143,16 +157,18 @@ public class ConfigHandler {
 
         // askAgainClosingWindow
         this.askAgainClosingWindow = loadBoolean(properties, "AskAgainClosingWindow", DEFAULT_ASK_AGAIN_CLOSING_WINDOW);
+
         // theme
         setTheme(loadString(properties, "Theme", DEFAULT_THEME.name()));
+
         // font size
         int tempFontSize = loadNumber(properties, "FontSize", -1).intValue();
         boolean legalFontSize = tempFontSize >= MIN_FONT_SIZE && tempFontSize <= MAX_FONT_SIZE;
         setFontSize(legalFontSize ? tempFontSize : DEFAULT_FONT_SIZE);
 
         // language
-        String languageName = loadString(properties, "Language", SYSTEM_LANGUAGE.getID());
-        Language language = Language.fromID(languageName);
+        String languageName = loadString(properties, "Language", SYSTEM_LANGUAGE.getName());
+        Language language = Language.byName(languageName);
         setLanguage(language);
     }
 
@@ -175,7 +191,7 @@ public class ConfigHandler {
             cfg.setProperty("AskAgainClosingWindow", String.valueOf(isAskAgainClosingWindow()));
             cfg.setProperty("Theme", String.valueOf(getTheme()));
             cfg.setProperty("FontSize", String.valueOf(getFontSize()));
-            cfg.setProperty("Language", getLanguage().getID());
+            cfg.setProperty("Language", getLanguage().getName());
         } catch (IOException e) {
             logger.logException(e);
         }
