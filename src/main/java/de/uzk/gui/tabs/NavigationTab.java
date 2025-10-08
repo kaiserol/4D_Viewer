@@ -47,7 +47,7 @@ public class NavigationTab extends TabContent implements ActionTypeListener {
         gbc.setPosAndInsets(0, 1, 0, 0, 0, 15);
 
         // timeSpinner
-        OSpinnerNumberModel timeSpinnerModel = new OSpinnerNumberModel(30, 1, 600, 0.01, true);
+        CyclingSpinnerNumberModel timeSpinnerModel = new CyclingSpinnerNumberModel(30, 1, 600, 0.01);
         JSpinner timeUnitSpinner = getUnitSpinner(timeSpinnerModel, ImageLayer.TIME);
         this.container.add(timeUnitSpinner, gbc);
 
@@ -78,7 +78,7 @@ public class NavigationTab extends TabContent implements ActionTypeListener {
         gbc.setPosAndInsets(0, 4, 0, 0, 0, 15);
 
         // timeSpinner
-        OSpinnerNumberModel levelSpinnerModel = new OSpinnerNumberModel(1, 0.1, 100, 0.01, true);
+        CyclingSpinnerNumberModel levelSpinnerModel = new CyclingSpinnerNumberModel(1, 0.1, 100, 0.01);
         JSpinner levelUnitSpinner = getUnitSpinner(levelSpinnerModel, ImageLayer.LEVEL);
         this.container.add(levelUnitSpinner, gbc);
 
@@ -103,7 +103,7 @@ public class NavigationTab extends TabContent implements ActionTypeListener {
 
     }
 
-    public JSpinner getUnitSpinner(OSpinnerNumberModel spinnerModel, ImageLayer layer) {
+    public JSpinner getUnitSpinner(CyclingSpinnerNumberModel spinnerModel, ImageLayer layer) {
         JSpinner spinner = new JSpinner(spinnerModel);
 
         JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "0.00");

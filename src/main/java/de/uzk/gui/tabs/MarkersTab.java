@@ -63,7 +63,7 @@ public class MarkersTab extends TabContent implements ActionTypeListener {
     }
 
     private JSpinner createNumberField(int initialValue, Consumer<Integer> setter) {
-        JSpinner spinner = new JSpinner(new OSpinnerNumberModel(initialValue,0, Integer.MAX_VALUE, 1, false));
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel(initialValue,0, Integer.MAX_VALUE, 1));
 
         spinner.addChangeListener(e -> {
             setter.accept((Integer)spinner.getModel().getValue());
