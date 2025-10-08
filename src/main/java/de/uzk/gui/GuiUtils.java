@@ -228,7 +228,7 @@ public final class GuiUtils {
         return rotatedImage;
     }
 
-    public static Dimension resizeImageSize(Container container, BufferedImage currentImage) {
+    public static double getImageScaleFactor(Container container, BufferedImage currentImage) {
         int width = container.getWidth();
         int height = container.getHeight();
 
@@ -239,8 +239,7 @@ public final class GuiUtils {
         double scaleHeight = (double) height / imgHeight;
 
         // get the minimum scale factor
-        double scaleFactor = Math.min(scaleWidth, scaleHeight);
-        return new Dimension((int) (imgWidth * scaleFactor), (int) (imgHeight * scaleFactor));
+        return Math.min(scaleWidth, scaleHeight);
     }
 
     public static boolean valueFitsInRange(Number number, SpinnerNumberModel model) {

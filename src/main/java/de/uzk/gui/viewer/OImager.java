@@ -6,14 +6,15 @@ import de.uzk.gui.*;
 import de.uzk.image.ImageLayer;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.IconUtils;
+import de.uzk.markers.Marker;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import static de.uzk.Main.config;
-import static de.uzk.Main.imageHandler;
+import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class OImager extends InteractiveContainer<JPanel> implements ActionTypeListener, WindowFocusListener {
@@ -39,12 +40,19 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
         if (this.currentImage != null) {
-            Dimension dimension = GuiUtils.resizeImageSize(this.container, this.currentImage);
-            int newWidth = dimension.width;
-            int newHeight = dimension.height;
+            double scaleFactor = GuiUtils.getImageScaleFactor(this.container, this.currentImage);
 
-            g2d.drawImage(currentImage, (this.container.getWidth() - newWidth) / 2, (this.container.getHeight() - newHeight) / 2,
-                    newWidth - 1, newHeight - 1, null);
+            int width = (int)(this.currentImage.getWidth() * scaleFactor);
+            int height = (int)(this.currentImage.getHeight() * scaleFactor);
+            int x = (this.container.getWidth() - width) / 2;
+            int y = (this.container.getHeight() - height) / 2;
+
+            g2d.drawImage(currentImage, x, y, width, height, null);
+
+            Marker marker = markerHandler.getMarker(imageHandler.getTime());
+            if(marker != null) {
+                marker.draw(g2d, new Rectangle(x, y, width, height), scaleFactor);
+            }
         } else {
             String noImagesText = imageHandler.isEmpty() ? getWord("viewer.labels.noImages") : getWord("viewer.labels.couldNotLoadImage");
             FontMetrics metrics = g2d.getFontMetrics(g.getFont());
@@ -55,6 +63,8 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
             g2d.drawString(noImagesText, x, y);
         }
     }
+
+
 
     @Override
     public void toggleOn() {

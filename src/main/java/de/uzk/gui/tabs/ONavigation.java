@@ -6,6 +6,7 @@ import de.uzk.gui.*;
 import de.uzk.actions.ActionHandler;
 import de.uzk.image.ImageLayer;
 import de.uzk.gui.GuiUtils;
+import de.uzk.markers.RectMarker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +17,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import static de.uzk.Main.imageHandler;
+import static de.uzk.Main.markerHandler;
 import static de.uzk.gui.GuiUtils.FOCUS_COLOR;
 import static de.uzk.config.LanguageHandler.getWord;
 
@@ -98,6 +100,14 @@ public class ONavigation extends OTabContent implements ActionTypeListener {
         // levelSlider
         this.levelSlider = getSlider(ImageLayer.LEVEL);
         this.container.add(this.levelSlider, gbc);
+
+
+        JButton temp = new JButton("Add Marker to current image");
+        temp.addActionListener(e -> {
+            markerHandler.addMarker(new RectMarker(10, 10, 100, 100));
+            gui.updateUI();
+        });
+        this.container.add(temp);
     }
 
     public JSpinner getUnitSpinner(OSpinnerNumberModel spinnerModel, ImageLayer layer) {

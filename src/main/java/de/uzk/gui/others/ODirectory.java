@@ -248,6 +248,7 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
         if (this.loadingThread != null) return;
         this.loadingThread = new Thread(() -> {
             imageHandler.loadImageFiles(ODirectory.this);
+            markerHandler.resetImageCount(imageHandler.getMaxTime() + 1);
             closeLoadingDialog();
         });
 
