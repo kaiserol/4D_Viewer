@@ -1,6 +1,6 @@
 package de.uzk.logger;
 
-import de.uzk.config.SystemConstants;
+import de.uzk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,19 +41,19 @@ public class LogDataHandler {
     public void logException(Exception e) {
         StringBuilder msg = new StringBuilder();
         msg.append(e.getClass().getPackageName()).append(".").append(e.getClass().getSimpleName()).append(" ");
-        msg.append(e.getMessage()).append(SystemConstants.NEXT_LINE);
+        msg.append(e.getMessage()).append(StringUtils.NEXT_LINE);
 
         StackTraceElement[] stackTrace = e.getStackTrace();
         for (int i = 0; i < stackTrace.length; i++) {
             msg.append("\tat ").append(stackTrace[i]);
-            if (i < stackTrace.length - 1) msg.append(SystemConstants.NEXT_LINE);
+            if (i < stackTrace.length - 1) msg.append(StringUtils.NEXT_LINE);
         }
         error(msg.toString());
     }
 
     private void log(LogLevel level, String message) {
         if (this.open) {
-            LogData logData = new LogData(level, message + SystemConstants.NEXT_LINE);
+            LogData logData = new LogData(level, message + StringUtils.NEXT_LINE);
             if (level != null) {
                 this.logData.add(logData);
                 System.out.print(logData);

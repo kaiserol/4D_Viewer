@@ -1,6 +1,6 @@
 package de.uzk.gui.tree;
 
-import de.uzk.config.SystemConstants;
+import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public abstract sealed class OBarNode permits OBarItem, OBarMenu, OBarItem.OBarS
         final String indent = tab.repeat(Math.max(0, depth));
 
         // OTreeMenu -> getName
-        result.append(node.getText()).append(SystemConstants.NEXT_LINE);
+        result.append(node.getText()).append(StringUtils.NEXT_LINE);
 
         for (OBarNode innerNode : node.getNodes()) {
             result.append(indent).append(tab);

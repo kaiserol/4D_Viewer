@@ -1,6 +1,7 @@
 package de.uzk.gui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import de.uzk.utils.StringUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -76,7 +77,8 @@ public final class IconUtils {
     }
 
     private static BufferedImage readResourcesImage(String imageName) {
-        URL url = IconUtils.class.getClassLoader().getResource(imageName);
+        String imageNameCleanedFileSeps = imageName.replace("/", StringUtils.FILE_SEP);
+        URL url = IconUtils.class.getClassLoader().getResource(imageNameCleanedFileSeps);
         ImageExceptionListener onImageException = e -> {
             logger.error("The SVG image '" + imageName + "' could not be found.");
             logger.logException(e);
@@ -90,13 +92,14 @@ public final class IconUtils {
 
     private static FlatSVGIcon loadResourceSVG(String svgName) {
         try {
-            URL svgUrl = IconUtils.class.getClassLoader().getResource(svgName);
+            String svgNameCleanedFileSeps = svgName.replace("/", StringUtils.FILE_SEP);
+            URL svgUrl = IconUtils.class.getClassLoader().getResource(svgNameCleanedFileSeps);
             if (svgUrl != null) {
                 InputStream svgStream = svgUrl.openStream();
                 return new FlatSVGIcon(svgStream);
             } else {
                 // Die Datei wurde nicht gefunden
-                logger.error("The SVG image '" + svgName + "' could not be found.");
+                logger.error("The SVG image '" + svgNameCleanedFileSeps + "' could not be found.");
             }
         } catch (IOException e) {
             logger.logException(e);

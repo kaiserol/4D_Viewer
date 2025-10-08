@@ -1,9 +1,9 @@
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import de.uzk.config.SystemConstants;
 import de.uzk.gui.tree.OBar;
 import de.uzk.gui.tree.OBarItem;
 import de.uzk.gui.tree.OBarMenu;
+import de.uzk.utils.StringUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -56,14 +56,14 @@ class OBarTest {
         OBar tree = new OBar();
         tree.add(fileMenu, editMenu);
 
-        String expectedOutput = "Root" + SystemConstants.NEXT_LINE +
-                "  File" + SystemConstants.NEXT_LINE +
-                "    > Open" + SystemConstants.NEXT_LINE +
-                "    > Save" + SystemConstants.NEXT_LINE +
-                "    SEP" + SystemConstants.NEXT_LINE +
-                "  Edit" + SystemConstants.NEXT_LINE +
-                "    > Cut" + SystemConstants.NEXT_LINE +
-                "    > Copy" + SystemConstants.NEXT_LINE;
+        String expectedOutput = "Root" + StringUtils.NEXT_LINE +
+                "  File" + StringUtils.NEXT_LINE +
+                "    > Open" + StringUtils.NEXT_LINE +
+                "    > Save" + StringUtils.NEXT_LINE +
+                "    SEP" + StringUtils.NEXT_LINE +
+                "  Edit" + StringUtils.NEXT_LINE +
+                "    > Cut" + StringUtils.NEXT_LINE +
+                "    > Copy" + StringUtils.NEXT_LINE;
 
         assertEquals(expectedOutput, tree.toString(), "toString method does not produce the expected output");
     }

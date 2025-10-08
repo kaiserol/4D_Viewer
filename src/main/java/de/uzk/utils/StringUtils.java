@@ -1,11 +1,14 @@
 package de.uzk.utils;
 
-import de.uzk.config.SystemConstants;
 import de.uzk.logger.LogData;
 
 import java.awt.*;
+import java.io.File;
 
 public class StringUtils {
+    public static final String FILE_SEP = File.separator;
+    public static final String NEXT_LINE = System.lineSeparator();
+
     private StringUtils() {
     }
 
@@ -41,7 +44,7 @@ public class StringUtils {
     }
 
     public static String javaToHTML(String javaString) {
-        return "<pre>" + javaString.replace(SystemConstants.NEXT_LINE, "<br>").
+        return "<pre>" + javaString.replace(StringUtils.NEXT_LINE, "<br>").
                 replace("\t", "    ") + "</pre>";
     }
 
@@ -54,7 +57,7 @@ public class StringUtils {
             case WARNING -> color = "orange";
             default -> color = "black";
         }
-        return "<b>" + logData.getDateTime() + "</b> " + logData.getSource() + SystemConstants.NEXT_LINE +
+        return "<b>" + logData.getDateTime() + "</b> " + logData.getSource() + StringUtils.NEXT_LINE +
                 "<font color=" + color + ">[" + logData.getLevel() + "]:</font> " + logData.getMessage();
     }
 
@@ -70,9 +73,5 @@ public class StringUtils {
 
     public static String[] splitTextInWords(String text) {
         return text == null ? new String[0] : text.split("\\s+");
-    }
-
-    public static boolean isAsciiLetter(char c) {
-        return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
     }
 }

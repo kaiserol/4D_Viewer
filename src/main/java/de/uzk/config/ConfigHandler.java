@@ -5,6 +5,7 @@ import de.uzk.image.ImageDetails;
 import de.uzk.image.ImageFile;
 import de.uzk.image.ImageFileConstants;
 import de.uzk.image.ImageType;
+import de.uzk.utils.StringUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -19,8 +20,6 @@ import java.util.Properties;
 
 import static de.uzk.Main.imageHandler;
 import static de.uzk.Main.logger;
-import static de.uzk.config.SystemConstants.CONFIG_FILE;
-import static de.uzk.config.SystemConstants.SCREENSHOT_FOLDER;
 import static de.uzk.image.ImageFileConstants.*;
 import static de.uzk.utils.NumberUtils.isDouble;
 import static de.uzk.utils.NumberUtils.isInteger;
@@ -32,6 +31,10 @@ public class ConfigHandler {
     public static final int DEFAULT_FONT_SIZE = 18;
     public static final int MAX_FONT_SIZE = 22;
     public static final Language SYSTEM_LANGUAGE = Language.getSystemDefault();
+
+    private static final File CONFIG_FILE = new File("config.cfg");
+    private static final File SCREENSHOT_FOLDER = new File("screenshots");
+
     private final SimpleDateFormat dateFormat;
     private boolean askAgainClosingWindow;
     private Theme theme;
@@ -235,7 +238,7 @@ public class ConfigHandler {
             int screenshotCount = getScreenshots(formattedDate) + 1;
             String filename = getScreenshotName(formattedDate, screenshotCount, imageHandler.getCurrentImage());
 
-            File saveFile = new File(SCREENSHOT_FOLDER.getAbsolutePath() + SystemConstants.FILE_SEP + filename);
+            File saveFile = new File(SCREENSHOT_FOLDER.getAbsolutePath() + StringUtils.FILE_SEP + filename);
             boolean savedImage = saveScreenshot(saveFile, originalImage);
             if (savedImage) return saveFile.getAbsolutePath();
         }

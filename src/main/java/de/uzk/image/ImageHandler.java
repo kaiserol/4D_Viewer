@@ -1,6 +1,6 @@
 package de.uzk.image;
 
-import de.uzk.config.SystemConstants;
+import de.uzk.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static de.uzk.image.ImageFileConstants.DEFAULT_PIN_TIME;
 import static de.uzk.Main.logger;
+import static de.uzk.image.ImageFileConstants.DEFAULT_PIN_TIME;
 
 public class ImageHandler {
     private ImageFile[][] imageFilesMatrix;
@@ -270,12 +270,12 @@ public class ImageHandler {
 
             duplicatedImagesMap.keySet().forEach(imageFile -> {
                 duplicatedImages.append(getImageFileMsg(imageFile.getTime(), imageFile.getLevel(),
-                        "duplicated")).append(SystemConstants.NEXT_LINE);
-                duplicatedImages.append("\t> ").append(imageFile).append(SystemConstants.NEXT_LINE);
+                        "duplicated")).append(StringUtils.NEXT_LINE);
+                duplicatedImages.append("\t> ").append(imageFile).append(StringUtils.NEXT_LINE);
 
                 List<ImageFile> duplicates = duplicatedImagesMap.get(imageFile);
                 for (ImageFile duplicate : duplicates) {
-                    duplicatedImages.append("\t> ").append(duplicate).append(SystemConstants.NEXT_LINE);
+                    duplicatedImages.append("\t> ").append(duplicate).append(StringUtils.NEXT_LINE);
                 }
             });
 
@@ -288,7 +288,7 @@ public class ImageHandler {
         for (int t = 0; t <= this.maxTime; t++) {
             for (int l = 0; l <= this.maxLevel; l++) {
                 if (getImageFile(t, l) == null) {
-                    missingImages.append(getImageFileMsg(t, l, "missing")).append(SystemConstants.NEXT_LINE);
+                    missingImages.append(getImageFileMsg(t, l, "missing")).append(StringUtils.NEXT_LINE);
                     this.missingImagesCount++;
                 }
             }
@@ -305,7 +305,7 @@ public class ImageHandler {
                 if (getImageFile(t, l) != null && !getImageFile(t, l).getFile().exists()) {
                     this.imageFilesMatrix[t][l] = null;
                     lostImagesCount++;
-                    lostImages.append(getImageFileMsg(t, l, "lost")).append(SystemConstants.NEXT_LINE);
+                    lostImages.append(getImageFileMsg(t, l, "lost")).append(StringUtils.NEXT_LINE);
                 }
             }
         }
@@ -317,10 +317,10 @@ public class ImageHandler {
 
     private void showImagesResult(StringBuilder imagesBuilder, int imagesCount, String imagesStateMsg) {
         if (!imagesBuilder.isEmpty()) {
-            String result = "Some Image-Files are " + imagesStateMsg + '.' + SystemConstants.NEXT_LINE;
-            result += "--------------- Information  ---------------" + SystemConstants.NEXT_LINE;
+            String result = "Some Image-Files are " + imagesStateMsg + '.' + StringUtils.NEXT_LINE;
+            result += "--------------- Information  ---------------" + StringUtils.NEXT_LINE;
             result += imagesBuilder.toString();
-            result += "Image-Files: " + imagesCount + SystemConstants.NEXT_LINE;
+            result += "Image-Files: " + imagesCount + StringUtils.NEXT_LINE;
             result += "--------------------------------------------";
 
             logger.warning(result);
@@ -489,22 +489,22 @@ public class ImageHandler {
 
         if (this.missingImagesCount > 0) {
             missingImagesBuilder.append("Missing Images: ").append(this.missingImagesCount).append(" / ").append(this.expectedImagesCount).
-                    append(SystemConstants.NEXT_LINE.repeat(3));
+                    append(StringUtils.NEXT_LINE.repeat(3));
         }
 
         for (int t = 0; t <= this.maxTime; t++) {
             List<Integer> missingLevels = getMissingLevels(t);
 
             if (!missingLevels.isEmpty()) {
-                missingImagesBuilder.append("========== Time: ").append(t).append(" ==========").append(SystemConstants.NEXT_LINE);
+                missingImagesBuilder.append("========== Time: ").append(t).append(" ==========").append(StringUtils.NEXT_LINE);
                 if (missingLevels.size() == this.maxLevel + 1) {
                     missingImagesBuilder.append("Levels: ALL!");
                 } else {
                     missingImagesBuilder.append("Levels: ").append(missingLevels);
                 }
-                missingImagesBuilder.append(SystemConstants.NEXT_LINE).
+                missingImagesBuilder.append(StringUtils.NEXT_LINE).
                         append("Image Names: '").append(getImageName(String.valueOf(t), "(LEVEL)")).append("'").
-                        append(SystemConstants.NEXT_LINE.repeat(2));
+                        append(StringUtils.NEXT_LINE.repeat(2));
             }
         }
 

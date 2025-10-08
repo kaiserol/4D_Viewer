@@ -1,6 +1,6 @@
 package de.uzk.logger;
 
-import de.uzk.config.SystemConstants;
+import de.uzk.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -59,7 +59,7 @@ public class LogData {
 
     @Override
     public String toString() {
-        return this.getDateTime() + " " + this.getSource() + SystemConstants.NEXT_LINE +
+        return this.getDateTime() + " " + this.getSource() + StringUtils.NEXT_LINE +
                 "[" + this.getLevel() + "]: " + this.getMessage();
     }
 }
