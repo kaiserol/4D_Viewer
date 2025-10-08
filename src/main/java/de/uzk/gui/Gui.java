@@ -3,7 +3,7 @@ package de.uzk.gui;
 import de.uzk.actions.ActionType;
 import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.others.OImprint;
-import de.uzk.gui.others.OMenuBar;
+import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.gui.others.ODirectory;
 import de.uzk.gui.tabs.Tabs;
 import de.uzk.gui.viewer.OViewer;
@@ -121,7 +121,7 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
         this.container.add(mainPanel);
 
         // menuBar
-        OMenuBar menuBar = new OMenuBar(this, actionHandler);
+        AppMenuBar menuBar = new AppMenuBar(this, actionHandler);
         this.container.setJMenuBar(menuBar.getContainer());
     }
 

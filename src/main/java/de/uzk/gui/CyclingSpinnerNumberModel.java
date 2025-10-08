@@ -3,8 +3,6 @@ package de.uzk.gui;
 import javax.swing.*;
 
 public class CyclingSpinnerNumberModel extends SpinnerNumberModel {
-
-
     public CyclingSpinnerNumberModel(int value, int minimum, int maximum, int stepSize) {
         super(value, minimum, maximum, stepSize);
     }
@@ -15,14 +13,12 @@ public class CyclingSpinnerNumberModel extends SpinnerNumberModel {
 
     @Override
     public Object getNextValue() {
-
         Comparable<?> next = (Comparable<?>) super.getNextValue();
         return (next != null) ? next : getMinimum(); // Return minimum when maximum is reached
     }
 
     @Override
     public Object getPreviousValue() {
-
         Comparable<?> previous = (Comparable<?>) super.getPreviousValue();
         return (previous != null) ? previous : getMaximum(); // Return maximum when minimum is reached
     }

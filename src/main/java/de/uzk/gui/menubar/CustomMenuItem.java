@@ -1,4 +1,4 @@
-package de.uzk.gui.tree;
+package de.uzk.gui.menubar;
 
 import de.uzk.actions.ActionHandler;
 
@@ -6,31 +6,34 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.util.Objects;
 
-public final class OBarItem extends OBarNode {
+public final class CustomMenuItem extends CustomMenuNode {
     private Icon icon;
     private boolean hasListener;
 
-    public OBarItem(String text, Icon icon, ActionListener action, KeyEvent... accelerators) {
+    // TODO: Warum verwendet man accelerators... und accelerator? Warum nicht das eine löschen
+    // Warum gibt es hasListener & toggleable, und überprüfe ob es richtig verwendet wird, benenne vielleicht besser um
+    // setAction()
+    public CustomMenuItem(String text, Icon icon, ActionListener action, KeyEvent... accelerators) {
         this(text);
         this.setIcon(icon);
         this.setAction(action, accelerators);
     }
 
-    public OBarItem(String text, Icon icon, ActionHandler action, KeyEvent accelerator) {
+    public CustomMenuItem(String text, Icon icon, ActionHandler action, KeyEvent accelerator) {
         this(text);
         this.setIcon(icon);
         this.setAction(action, accelerator);
     }
 
-    public OBarItem(String text, ActionListener action, KeyEvent... accelerators) {
+    public CustomMenuItem(String text, ActionListener action, KeyEvent... accelerators) {
         this(text, null, action, accelerators);
     }
 
-    public OBarItem(String text, boolean toggleable) {
+    public CustomMenuItem(String text, boolean toggleable) {
         super(new JMenuItem(), text, toggleable);
     }
 
-    public OBarItem(String text) {
+    public CustomMenuItem(String text) {
         this(text, false);
     }
 
@@ -53,6 +56,7 @@ public final class OBarItem extends OBarNode {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if (menuItem.contains(e.getPoint())) {
+                        // TODO: muss hier nicht keyReleased stehen? Wenn ja, ändere den Code so ab, dass es funktioniert
                         action.keyPressed(accelerator);
                     }
                 }
@@ -102,19 +106,13 @@ public final class OBarItem extends OBarNode {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        OBarItem oBarItem = (OBarItem) o;
-        return Objects.equals(this.icon, oBarItem.icon) &&
-                Objects.equals(this.hasListener, oBarItem.hasListener);
+        CustomMenuItem menuItem = (CustomMenuItem) o;
+        return Objects.equals(this.icon, menuItem.icon) &&
+                Objects.equals(this.hasListener, menuItem.hasListener);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), this.icon, this.hasListener);
-    }
-
-    static final class OBarSeparator extends OBarNode {
-        public OBarSeparator() {
-            super(new JSeparator(SwingConstants.HORIZONTAL), "SEP", false);
-        }
     }
 }

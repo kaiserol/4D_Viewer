@@ -1,4 +1,4 @@
-package de.uzk.gui.others;
+package de.uzk.gui.menubar;
 
 import de.uzk.actions.ActionHandler;
 import de.uzk.config.ConfigHandler;
@@ -7,10 +7,6 @@ import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.Icons;
 import de.uzk.gui.InteractiveContainer;
-import de.uzk.gui.tree.OBar;
-import de.uzk.gui.tree.OBarItem;
-import de.uzk.gui.tree.OBarMenu;
-import de.uzk.gui.tree.OBarNode;
 import de.uzk.gui.viewer.OInfo;
 
 import javax.swing.*;
@@ -21,68 +17,64 @@ import static de.uzk.Main.logger;
 import static de.uzk.actions.ActionUtils.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class OMenuBar extends InteractiveContainer<JMenuBar> {
-    private OBar tree;
+public class AppMenuBar extends InteractiveContainer<JMenuBar> {
+    private CustomMenuBar menuBar;
 
-    public OMenuBar(Gui gui, ActionHandler actionHandler) {
+    public AppMenuBar(Gui gui, ActionHandler actionHandler) {
         super(new JMenuBar(), gui);
         init(actionHandler);
     }
 
     private void init(ActionHandler actionHandler) {
-        this.tree = new OBar(this.container);
-        this.tree.add(getEditMenu(actionHandler));
-        this.tree.add(getNavMenu(actionHandler));
-        this.tree.add(getWindowMenu());
-        this.tree.add(getDevToolsMenu());
-
-        for (OBarNode nodes : this.tree.getNodes()) {
-            this.container.add(nodes.getComponent());
-        }
+        this.menuBar = new CustomMenuBar(this.container);
+        this.menuBar.add(getMenuEdit(actionHandler));
+        this.menuBar.add(getMenuNavigate(actionHandler));
+        this.menuBar.add(getMenuWindow());
+        this.menuBar.add(getMenuDevTools());
     }
 
-    private OBarMenu getEditMenu(ActionHandler actionHandler) {
-        OBarMenu editTreeMenu = new OBarMenu(getWord("items.edit"), true);
+    private CustomMenu getMenuEdit(ActionHandler actionHandler) {
+        CustomMenu menuEdit = new CustomMenu(getWord("items.edit"), true);
 
         // pin time, turn image left, right
-        editTreeMenu.add(new OBarItem(getWord("items.edit.pinTime"), Icons.ICON_PIN,
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.pinTime"), Icons.ICON_PIN,
                 a -> actionHandler.executeEdit(ACTION_PIN_TIME), ACTION_PIN_TIME));
-        editTreeMenu.add(new OBarItem(getWord("items.edit.turnImageLeft"), Icons.ICON_TURN_LEF,
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageLeft"), Icons.ICON_TURN_LEFT,
                 a -> actionHandler.executeEdit(ACTION_TURN_IMAGE_LEFT), ACTION_TURN_IMAGE_LEFT));
-        editTreeMenu.add(new OBarItem(getWord("items.edit.turnImageRight"), Icons.ICON_TURN_RIGHT,
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageRight"), Icons.ICON_TURN_RIGHT,
                 a -> actionHandler.executeEdit(ACTION_TURN_IMAGE_RIGHT), ACTION_TURN_IMAGE_RIGHT));
-        editTreeMenu.addSeparator();
+        menuEdit.addSeparator();
 
-        editTreeMenu.add(new OBarItem(getWord("items.edit.screenshot"), Icons.ICON_SCREENSHOT, a -> actionHandler.executeEdit(ACTION_SCREENSHOT), ACTION_SCREENSHOT));
-        return editTreeMenu;
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.screenshot"), Icons.ICON_SCREENSHOT, a -> actionHandler.executeEdit(ACTION_SCREENSHOT), ACTION_SCREENSHOT));
+        return menuEdit;
     }
 
-    private OBarMenu getNavMenu(ActionHandler actionHandler) {
-        OBarMenu navTreeMenu = new OBarMenu(getWord("items.nav"), true);
-        navTreeMenu.add(new OBarItem(getWord("items.nav.image.first"), Icons.ICON_FIRST_IMAGE, actionHandler, ACTION_FIRST_IMAGE));
-        navTreeMenu.add(new OBarItem(getWord("items.nav.image.prev"), Icons.ICON_PREV_IMAGE, actionHandler, ACTION_PREV_IMAGE));
-        navTreeMenu.add(new OBarItem(getWord("items.nav.image.next"), Icons.ICON_NEXT_IMAGE, actionHandler, ACTION_NEXT_IMAGE));
-        navTreeMenu.add(new OBarItem(getWord("items.nav.image.last"), Icons.ICON_LAST_IMAGE, actionHandler, ACTION_LAST_IMAGE));
-        navTreeMenu.addSeparator();
-        navTreeMenu.add(new OBarItem(getWord("items.nav.level.first"), Icons.ICON_FIRST_LEVEL, actionHandler, ACTION_FIRST_LEVEL));
-        navTreeMenu.add(new OBarItem(getWord("items.nav.level.prev"), Icons.ICON_PREV_LEVEL, actionHandler, ACTION_PREV_LEVEL));
-        navTreeMenu.add(new OBarItem(getWord("items.nav.level.next"), Icons.ICON_NEXT_LEVEL, actionHandler, ACTION_NEXT_LEVEL));
-        navTreeMenu.add(new OBarItem(getWord("items.nav.level.last"), Icons.ICON_LAST_LEVEL, actionHandler, ACTION_LAST_LEVEL));
-        return navTreeMenu;
+    private CustomMenu getMenuNavigate(ActionHandler actionHandler) {
+        CustomMenu menuNavigate = new CustomMenu(getWord("items.nav"), true);
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.first"), Icons.ICON_FIRST_IMAGE, actionHandler, ACTION_FIRST_IMAGE));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.prev"), Icons.ICON_PREV_IMAGE, actionHandler, ACTION_PREV_IMAGE));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.next"), Icons.ICON_NEXT_IMAGE, actionHandler, ACTION_NEXT_IMAGE));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.last"), Icons.ICON_LAST_IMAGE, actionHandler, ACTION_LAST_IMAGE));
+        menuNavigate.addSeparator();
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.first"), Icons.ICON_FIRST_LEVEL, actionHandler, ACTION_FIRST_LEVEL));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.prev"), Icons.ICON_PREV_LEVEL, actionHandler, ACTION_PREV_LEVEL));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.next"), Icons.ICON_NEXT_LEVEL, actionHandler, ACTION_NEXT_LEVEL));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.last"), Icons.ICON_LAST_LEVEL, actionHandler, ACTION_LAST_LEVEL));
+        return menuNavigate;
     }
 
-    private OBarMenu getWindowMenu() {
-        OBarMenu windowTreeMenu = new OBarMenu(getWord("items.window"));
+    private CustomMenu getMenuWindow() {
+        CustomMenu windowTreeMenu = new CustomMenu(getWord("items.window"));
 
         // add language, theme
-        windowTreeMenu.add(new OBarItem(getWord("items.window.changeLanguage"), a -> changeLanguage(), ACTION_CHANGE_LANGUAGE));
-        windowTreeMenu.add(new OBarItem(getWord("items.window.toggleTheme"), a -> GuiUtils.switchThemes(gui), ACTION_TOGGLE_THEME));
+        windowTreeMenu.add(new CustomMenuItem(getWord("items.window.changeLanguage"), a -> changeLanguage(), ACTION_CHANGE_LANGUAGE));
+        windowTreeMenu.add(new CustomMenuItem(getWord("items.window.toggleTheme"), a -> GuiUtils.switchThemes(gui), ACTION_TOGGLE_THEME));
         windowTreeMenu.addSeparator();
 
         // add font
-        OBarItem incrFontItem = new OBarItem(getWord("items.window.fontSizeIncr"));
-        OBarItem decrFontItem = new OBarItem(getWord("items.window.fontSizeDecr"));
-        OBarItem restoreFontItem = new OBarItem(getWord("items.window.fontSizeRestore"));
+        CustomMenuItem incrFontItem = new CustomMenuItem(getWord("items.window.fontSizeIncr"));
+        CustomMenuItem decrFontItem = new CustomMenuItem(getWord("items.window.fontSizeDecr"));
+        CustomMenuItem restoreFontItem = new CustomMenuItem(getWord("items.window.fontSizeRestore"));
 
         // set font Actions
         incrFontItem.setAction(updateFontItems(GuiUtils::incrFont,
@@ -101,9 +93,9 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
         return windowTreeMenu;
     }
 
-    private OBarMenu getDevToolsMenu() {
-        OBarMenu devToolsMenu = new OBarMenu(getWord("items.dev-tools"));
-        devToolsMenu.add(new OBarItem(getWord("items.dev-tools.openLogWindow"), a -> new OInfo(gui)));
+    private CustomMenu getMenuDevTools() {
+        CustomMenu devToolsMenu = new CustomMenu(getWord("items.dev-tools"));
+        devToolsMenu.add(new CustomMenuItem(getWord("items.dev-tools.openLogWindow"), a -> new OInfo(gui)));
 
         return devToolsMenu;
     }
@@ -124,7 +116,7 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
         selectBox.setSelectedItem(oldLanguage);
 
         // show dialog
-        int option = JOptionPane.showConfirmDialog(OMenuBar.this.gui.getFrame(),
+        int option = JOptionPane.showConfirmDialog(AppMenuBar.this.gui.getFrame(),
                 selectBox,
                 getWord("items.window.changeLanguage"),
                 JOptionPane.OK_CANCEL_OPTION);
@@ -132,7 +124,7 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
         if (language == null || oldLanguage == language || option != JOptionPane.OK_OPTION) return;
 
         // show dialog
-        option = JOptionPane.showConfirmDialog(OMenuBar.this.gui.getFrame(),
+        option = JOptionPane.showConfirmDialog(AppMenuBar.this.gui.getFrame(),
                 getWord("items.window.languageChanged.body"),
                 getWord("items.window.languageChanged.title"),
                 JOptionPane.YES_NO_OPTION);
@@ -150,16 +142,16 @@ public class OMenuBar extends InteractiveContainer<JMenuBar> {
 
     @Override
     public void toggleOn() {
-        enableMenus(this.tree, true);
+        enableMenus(this.menuBar, true);
     }
 
     @Override
     public void toggleOff() {
-        enableMenus(this.tree, false);
+        enableMenus(this.menuBar, false);
     }
 
-    private void enableMenus(OBarNode parent, boolean enabled) {
-        for (OBarNode node : parent.getNodes()) {
+    private void enableMenus(CustomMenuNode parent, boolean enabled) {
+        for (CustomMenuNode node : parent.getNodes()) {
             if (parent.isToggleable()) {
                 node.getComponent().setEnabled(enabled);
             }

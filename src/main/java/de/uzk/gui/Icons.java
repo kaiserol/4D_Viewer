@@ -18,7 +18,7 @@ public final class Icons {
     // edit icons
     public static final FlatSVGIcon ICON_PIN = loadResourceSVG("images/icons_edit/pin.svg");
     public static final FlatSVGIcon ICON_TURN_RIGHT = loadResourceSVG("images/icons_edit/turn_right.svg");
-    public static final FlatSVGIcon ICON_TURN_LEF = loadResourceSVG("images/icons_edit/turn_left.svg");
+    public static final FlatSVGIcon ICON_TURN_LEFT = loadResourceSVG("images/icons_edit/turn_left.svg");
     public static final FlatSVGIcon ICON_SCREENSHOT = loadResourceSVG("images/icons_edit/screenshot.svg");
 
     // nav icons
@@ -38,7 +38,7 @@ public final class Icons {
     private static final FlatSVGIcon[] ICONS_ONLY_ONE_COLOR = {
             ICON_PIN,
             ICON_TURN_RIGHT,
-            ICON_TURN_LEF,
+            ICON_TURN_LEFT,
             ICON_SCREENSHOT,
     };
     private static final FlatSVGIcon[] ICONS_DIFFERENT_COLORS = {
@@ -128,7 +128,7 @@ public final class Icons {
         }
     }
 
-    public interface ImageExceptionListener {
+    private interface ImageExceptionListener {
         void onImageException(Exception e);
     }
 }

@@ -1,4 +1,4 @@
-package de.uzk.gui.tree;
+package de.uzk.gui.menubar;
 
 import de.uzk.utils.StringUtils;
 
@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract sealed class OBarNode permits OBarItem, OBarMenu, OBarItem.OBarSeparator, OBar {
-    protected final List<OBarNode> nodes;
+public abstract sealed class CustomMenuNode permits CustomMenuBar, CustomMenu, CustomMenuItem, CustomMenuSeparator {
+    protected final List<CustomMenuNode> nodes;
     protected final JComponent component;
     protected final String text;
     protected final boolean toggleable;
 
-    protected OBarNode(JComponent component, String text, boolean toggleable) {
+    protected CustomMenuNode(JComponent component, String text, boolean toggleable) {
         this.nodes = new ArrayList<>();
         this.component = this.getComponent(component);
         this.text = this.getText(text);
@@ -44,7 +44,7 @@ public abstract sealed class OBarNode permits OBarItem, OBarMenu, OBarItem.OBarS
         return toggleable;
     }
 
-    public final List<OBarNode> getNodes() {
+    public final List<CustomMenuNode> getNodes() {
         return nodes;
     }
 
@@ -52,7 +52,7 @@ public abstract sealed class OBarNode permits OBarItem, OBarMenu, OBarItem.OBarS
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OBarNode node = (OBarNode) o;
+        CustomMenuNode node = (CustomMenuNode) o;
         return Objects.equals(text, node.text) && Objects.equals(nodes, node.nodes);
     }
 
@@ -66,7 +66,7 @@ public abstract sealed class OBarNode permits OBarItem, OBarMenu, OBarItem.OBarS
         return toString(this, 0);
     }
 
-    private String toString(OBarNode node, int depth) {
+    private String toString(CustomMenuNode node, int depth) {
         StringBuilder result = new StringBuilder();
         final String tab = "  ";
         final String indent = tab.repeat(Math.max(0, depth));
@@ -74,9 +74,9 @@ public abstract sealed class OBarNode permits OBarItem, OBarMenu, OBarItem.OBarS
         // OTreeMenu -> getName
         result.append(node.getText()).append(StringUtils.NEXT_LINE);
 
-        for (OBarNode innerNode : node.getNodes()) {
+        for (CustomMenuNode innerNode : node.getNodes()) {
             result.append(indent).append(tab);
-            if (innerNode instanceof OBarItem) result.append("> ");
+            if (innerNode instanceof CustomMenuItem) result.append("> ");
 
             result.append(toString(innerNode, depth + 1));
         }

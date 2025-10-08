@@ -26,6 +26,7 @@ import static de.uzk.utils.NumberUtils.isDouble;
 import static de.uzk.utils.NumberUtils.isInteger;
 
 public class ConfigHandler {
+    // TODO: DEFAULT_ASK_AGAIN_CLOSING_WINDOW muss über die Einstellugen aktivierbar und wieder nicht sein
     public static final boolean DEFAULT_ASK_AGAIN_CLOSING_WINDOW = true;
     public static final Theme DEFAULT_THEME = Theme.LIGHT_MODE;
     public static final int MIN_FONT_SIZE = 12;

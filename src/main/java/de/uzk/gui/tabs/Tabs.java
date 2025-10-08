@@ -74,7 +74,7 @@ public class Tabs
             );
         });
         this.addJButton(
-                ICON_TURN_LEF,
+                ICON_TURN_LEFT,
             getWord("items.edit.turnImageLeft"),
             a -> actionHandler.executeEdit(ACTION_TURN_IMAGE_LEFT)
         );
