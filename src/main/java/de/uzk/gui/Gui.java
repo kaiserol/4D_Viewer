@@ -5,7 +5,7 @@ import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.others.OImprint;
 import de.uzk.gui.others.OMenuBar;
 import de.uzk.gui.others.ODirectory;
-import de.uzk.gui.tabs.OTabs;
+import de.uzk.gui.tabs.Tabs;
 import de.uzk.gui.viewer.OViewer;
 import de.uzk.actions.ActionHandler;
 import de.uzk.image.ImageLayer;
@@ -105,7 +105,7 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
         splitPane.setOneTouchExpandable(true);
 
         // tabs
-        OTabs tabs = new OTabs(this, actionHandler);
+        Tabs tabs = new Tabs(this, actionHandler);
         splitPane.add(tabs.getContainer());
 
         // viewer

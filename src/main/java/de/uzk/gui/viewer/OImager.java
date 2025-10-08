@@ -10,7 +10,6 @@ import de.uzk.markers.Marker;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -32,6 +31,7 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
         });
         gui.addActionTypeListener(this);
         gui.addWindowFocusListener(this);
+
     }
 
     private void paintImage(Graphics g) {
