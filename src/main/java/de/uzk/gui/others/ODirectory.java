@@ -73,7 +73,7 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
 
         // dirButton
         JButton pathButton = new JButton(getWord("file.chooseDirText"));
-        pathButton.addActionListener(e -> openDirectoryDialog(gui.getFrame()));
+        pathButton.addActionListener(a -> openDirectoryDialog(gui.getFrame()));
         container.add(pathButton, gbc);
     }
 

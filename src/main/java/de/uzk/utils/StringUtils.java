@@ -4,9 +4,6 @@ import de.uzk.config.SystemConstants;
 import de.uzk.logger.LogData;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class StringUtils {
     private StringUtils() {
@@ -61,35 +58,6 @@ public class StringUtils {
                 "<font color=" + color + ">[" + logData.getLevel() + "]:</font> " + logData.getMessage();
     }
 
-    public static String[] splitTextInWords(String text) {
-        return text == null ? new String[0] : text.split("\\s+");
-    }
-
-    public static void updateUsedWords(String text, Map<String, Integer> usedWords) {
-        if (text == null) return;
-        String lower = text.toLowerCase();
-        String[] words = splitTextInWords(lower);
-
-        for (String word : words) {
-            Integer integer = usedWords.put(word, 1);
-            if (integer != null) usedWords.put(word, 1 + integer);
-        }
-    }
-
-    public static List<String> getAllowedWords(String text, Map<String, Integer> usedWords) {
-        final List<String> allowedWords = new ArrayList<>();
-        if ((text != null && !text.isEmpty())) {
-            final String lower = text.toLowerCase();
-            allowedWords.addAll(List.of(splitTextInWords(lower)));
-
-            usedWords.keySet().forEach(w -> {
-                int count = usedWords.get(w);
-                if (count > 1) allowedWords.remove(w);
-            });
-        }
-        return allowedWords;
-    }
-
     public static String colorToHex(Color color) {
         if (color == null) return "#000000";
 
@@ -98,6 +66,10 @@ public class StringUtils {
         int b = color.getBlue();
         int rgb = (r << 16) | (g << 8) | b;
         return String.format("#%06X", rgb);
+    }
+
+    public static String[] splitTextInWords(String text) {
+        return text == null ? new String[0] : text.split("\\s+");
     }
 
     public static boolean isAsciiLetter(char c) {

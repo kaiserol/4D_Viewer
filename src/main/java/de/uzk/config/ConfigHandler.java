@@ -1,10 +1,10 @@
 package de.uzk.config;
 
+import de.uzk.gui.GuiUtils;
 import de.uzk.image.ImageDetails;
 import de.uzk.image.ImageFile;
 import de.uzk.image.ImageFileConstants;
 import de.uzk.image.ImageType;
-import de.uzk.gui.GuiUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -16,13 +16,14 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+
 import static de.uzk.Main.imageHandler;
 import static de.uzk.Main.logger;
+import static de.uzk.config.SystemConstants.CONFIG_FILE;
+import static de.uzk.config.SystemConstants.SCREENSHOT_FOLDER;
 import static de.uzk.image.ImageFileConstants.*;
 import static de.uzk.utils.NumberUtils.isDouble;
 import static de.uzk.utils.NumberUtils.isInteger;
-import static de.uzk.config.SystemConstants.CONFIG_FILE;
-import static de.uzk.config.SystemConstants.SCREENSHOT_FOLDER;
 
 public class ConfigHandler {
     public static final boolean DEFAULT_ASK_AGAIN_CLOSING_WINDOW = true;
@@ -30,15 +31,12 @@ public class ConfigHandler {
     public static final int MIN_FONT_SIZE = 12;
     public static final int DEFAULT_FONT_SIZE = 18;
     public static final int MAX_FONT_SIZE = 22;
-    public static final LanguageHandler.Language SYSTEM_LANGUAGE = LanguageHandler.Language.getSystemDefault();
-
-
-
+    public static final Language SYSTEM_LANGUAGE = Language.getSystemDefault();
     private final SimpleDateFormat dateFormat;
     private boolean askAgainClosingWindow;
     private Theme theme;
     private int fontSize;
-    private LanguageHandler.Language language;
+    private Language language;
 
     public ConfigHandler() {
         this.dateFormat = new SimpleDateFormat("yyyy-dd-MM");
@@ -76,13 +74,13 @@ public class ConfigHandler {
         this.fontSize = newFontSize;
     }
 
-    public LanguageHandler.Language getLanguage() {
+    public Language getLanguage() {
         return this.language;
     }
 
-    public void setLanguage(LanguageHandler.Language language) {
+    public void setLanguage(Language language) {
         this.language = language;
-        LanguageHandler.initialize(language);
+        LanguageHandler.load(language);
     }
 
     private void createConfigIfNeeded() {
@@ -108,8 +106,6 @@ public class ConfigHandler {
     }
 
     private void setDefaultValues() {
-        // language. needs to be initialized first since the default imageDetails need translated text
-        this.setLanguage(SYSTEM_LANGUAGE);
         // imageDetails
         imageHandler.setImageDetails(new ImageDetails(DEFAULT_SEP_TIME, DEFAULT_SEP_LEVEL, DEFAULT_IMAGE_TYPE,
                 DEFAULT_MIRROR_IMAGE, DEFAULT_MIRROR_IMAGE, DEFAULT_IMAGE_ROTATION));
@@ -118,22 +114,14 @@ public class ConfigHandler {
         imageHandler.setTimeUnit(DEFAULT_TIME_UNIT);
         imageHandler.setLevelUnit(DEFAULT_LEVEL_UNIT);
 
-        // askAgainClosingWindow, theme, font size
+        // askAgainClosingWindow, theme, font size, language
         this.askAgainClosingWindow = DEFAULT_ASK_AGAIN_CLOSING_WINDOW;
         this.theme = DEFAULT_THEME;
         this.fontSize = DEFAULT_FONT_SIZE;
-
+        setLanguage(SYSTEM_LANGUAGE);
     }
 
     private void readProperties(Properties properties) {
-
-        //language
-        //Needs to be initialized first since others (e.g. imageDetails) need correct labels
-        String languageName = loadString(properties, "Language", SYSTEM_LANGUAGE.getId());
-        LanguageHandler.Language language = LanguageHandler.Language.fromId(languageName);
-        setLanguage(language);
-        logger.info("Found language setting '"+languageName+"', selecting language " + language);
-
         // folderDir
         imageHandler.setImageFolder(loadImageFolder(properties));
 
@@ -159,6 +147,10 @@ public class ConfigHandler {
         boolean legalFontSize = tempFontSize >= MIN_FONT_SIZE && tempFontSize <= MAX_FONT_SIZE;
         setFontSize(legalFontSize ? tempFontSize : DEFAULT_FONT_SIZE);
 
+        // language
+        String languageName = loadString(properties, "Language", SYSTEM_LANGUAGE.getID());
+        Language language = Language.fromID(languageName);
+        setLanguage(language);
     }
 
     public void saveConfig() {
@@ -180,7 +172,7 @@ public class ConfigHandler {
             cfg.setProperty("AskAgainClosingWindow", String.valueOf(isAskAgainClosingWindow()));
             cfg.setProperty("Theme", String.valueOf(getTheme()));
             cfg.setProperty("FontSize", String.valueOf(getFontSize()));
-            cfg.setProperty("Language", getLanguage().getId());
+            cfg.setProperty("Language", getLanguage().getID());
         } catch (IOException e) {
             logger.logException(e);
         }
@@ -313,7 +305,7 @@ public class ConfigHandler {
     }
 
     private String getScreenshotName(String date, int screenshot, ImageFile imageFile) {
-        return date + "("+ screenshot + ")_" + imageFile.getFileName();
+        return date + "(" + screenshot + ")_" + imageFile.getFileName();
     }
 
     // theme settings

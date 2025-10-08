@@ -180,7 +180,6 @@ public class OInfo extends InteractiveContainer<JDialog> {
     }
 
     private String[] getPrevCurrentNext(ImageLayer layer) {
-        logger.close();
         String current = colorizeString(imageHandler.getCurrentImage(), layer);
         int time = imageHandler.getTime();
         int level = imageHandler.getLevel();
@@ -197,7 +196,6 @@ public class OInfo extends InteractiveContainer<JDialog> {
             imageHandler.prev(layer);
         }
 
-        logger.open();
         String emptyString = "/";
         return new String[]{Objects.equals(prev, current) ? emptyString : prev, current,
                 Objects.equals(current, next) ? emptyString : next};

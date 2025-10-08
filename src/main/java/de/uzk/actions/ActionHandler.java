@@ -34,17 +34,17 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             int oldTime = imageHandler.getTime();
 
             // checks whether the event equals a move in the time layer
-            if (equals(e, FIRST_IMAGE_ACTION)) imageHandler.toFirst(ImageLayer.TIME);
-            else if (equals(e, PREV_IMAGE_ACTION)) imageHandler.prev(ImageLayer.TIME);
-            else if (equals(e, NEXT_IMAGE_ACTION)) imageHandler.next(ImageLayer.TIME);
-            else if (equals(e, LAST_IMAGE_ACTION)) imageHandler.toLast(ImageLayer.TIME);
+            if (equals(e, ACTION_FIRST_IMAGE)) imageHandler.toFirst(ImageLayer.TIME);
+            else if (equals(e, ACTION_PREV_IMAGE)) imageHandler.prev(ImageLayer.TIME);
+            else if (equals(e, ACTION_NEXT_IMAGE)) imageHandler.next(ImageLayer.TIME);
+            else if (equals(e, ACTION_LAST_IMAGE)) imageHandler.toLast(ImageLayer.TIME);
 
             // checks whether the event equals a move in the level layer
             int oldLevel = imageHandler.getLevel();
-            if (equals(e, FIRST_LEVEL_ACTION)) imageHandler.toFirst(ImageLayer.LEVEL);
-            else if (equals(e, PREV_LEVEL_ACTION)) imageHandler.prev(ImageLayer.LEVEL);
-            else if (equals(e, NEXT_LEVEL_ACTION)) imageHandler.next(ImageLayer.LEVEL);
-            else if (equals(e, LAST_LEVEL_ACTION)) imageHandler.toLast(ImageLayer.LEVEL);
+            if (equals(e, ACTION_FIRST_LEVEL)) imageHandler.toFirst(ImageLayer.LEVEL);
+            else if (equals(e, ACTION_PREV_LEVEL)) imageHandler.prev(ImageLayer.LEVEL);
+            else if (equals(e, ACTION_NEXT_LEVEL)) imageHandler.next(ImageLayer.LEVEL);
+            else if (equals(e, ACTION_LAST_LEVEL)) imageHandler.toLast(ImageLayer.LEVEL);
 
             // check if time or level changed
             if (imageHandler.getTime() != oldTime) gui.update(ImageLayer.TIME);
@@ -72,10 +72,10 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     }
 
     public void executeEdit(KeyEvent e) {
-        if (equals(e, PIN_TIME_ACTION)) gui.handleAction(ActionType.TOGGLE_PIN_TIME);
-        else if (equals(e, TURN_IMAGE_RIGHT_ACTION)) gui.handleAction(ActionType.TURN_IMAGE_90_RIGHT);
-        else if (equals(e, SCREENSHOT_ACTION)) gui.handleAction(ActionType.TAKE_SCREENSHOT);
-        else if (equals(e, TURN_IMAGE_LEFT_ACTION)) gui.handleAction(ActionType.TURN_IMAGE_90_LEFT);
+        if (equals(e, ACTION_PIN_TIME)) gui.handleAction(ActionType.TOGGLE_PIN_TIME);
+        else if (equals(e, ACTION_TURN_IMAGE_RIGHT)) gui.handleAction(ActionType.TURN_IMAGE_90_RIGHT);
+        else if (equals(e, ACTION_SCREENSHOT)) gui.handleAction(ActionType.TAKE_SCREENSHOT);
+        else if (equals(e, ACTION_TURN_IMAGE_LEFT)) gui.handleAction(ActionType.TURN_IMAGE_90_LEFT);
     }
 
     // ----------------------- movement with mouse wheeler --------------------

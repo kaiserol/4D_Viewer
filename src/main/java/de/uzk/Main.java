@@ -3,20 +3,20 @@ package de.uzk;
 import de.uzk.gui.Gui;
 import de.uzk.config.ConfigHandler;
 import de.uzk.image.ImageHandler;
-import de.uzk.logger.LogDataManager;
+import de.uzk.logger.LogDataHandler;
 import de.uzk.markers.MarkerHandler;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class Main {
-    public static final LogDataManager logger;
+    public static final LogDataHandler logger;
     public static final ConfigHandler config;
     public static final ImageHandler imageHandler;
     public static final MarkerHandler markerHandler;
 
     static {
-        logger = new LogDataManager(Main.class.getName());
+        logger = new LogDataHandler(Main.class.getName());
         imageHandler = new ImageHandler();
         config = new ConfigHandler();
         markerHandler = new MarkerHandler();

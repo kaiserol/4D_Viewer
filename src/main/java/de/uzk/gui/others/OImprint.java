@@ -41,7 +41,7 @@ public class OImprint extends InteractiveContainer<JPanel> {
         JButton infoButton = new JButton();
         infoButton.setText(getWord("help"));
         infoButton.putClientProperty("JButton.buttonType", "help");
-        infoButton.addActionListener(e -> new OInnerImprint(gui.getFrame()));
+        infoButton.addActionListener(a -> new OInnerImprint(gui.getFrame()));
         infoButton.setToolTipText(getWord("tooltips.showImprint"));
         this.container.add(infoButton, gbc);
     }

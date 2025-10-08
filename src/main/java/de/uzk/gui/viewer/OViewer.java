@@ -89,23 +89,18 @@ public class OViewer extends InteractiveContainer<JPanel> implements ActionTypeL
         southToolBar.setFloatable(false);
         southToolBar.setLayout(new BorderLayout());
 
-        // deleteButton
+        // clearImagesButton
         this.clearImagesButton = new JButton(IconUtils.DELETE_ICON);
-        this.clearImagesButton.addActionListener(e -> clearImages());
+        this.clearImagesButton.addActionListener(a -> clearImages());
         this.clearImagesButton.setToolTipText(getWord("tooltips.clearImages"));
         southToolBar.add(this.clearImagesButton, BorderLayout.WEST);
 
+        // pinTimeLabel
         this.pinTimeLabel = new JLabel();
         this.pinTimeLabel.setBorder(new EmptyBorder(5, 5, 5, 5));
         this.pinTimeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         southToolBar.add(this.pinTimeLabel);
 
-        // warningButton
-        // TODO: muss entfernt werden und in die MenuBar verschoben werden
-        JButton logsButton = new JButton("[Info]");
-        logsButton.setToolTipText(getWord("tooltips.showInformation"));
-        logsButton.addActionListener(e -> new OInfo(gui));
-        southToolBar.add(logsButton, BorderLayout.EAST);
         imagePanel.add(southToolBar, BorderLayout.SOUTH);
         this.container.add(imagePanel, BorderLayout.CENTER);
     }

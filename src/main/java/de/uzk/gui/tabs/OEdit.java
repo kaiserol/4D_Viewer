@@ -12,7 +12,7 @@ import java.awt.*;
 
 import static de.uzk.Main.config;
 import static de.uzk.Main.imageHandler;
-import static de.uzk.actions.ActionUtils.SCREENSHOT_ACTION;
+import static de.uzk.actions.ActionUtils.ACTION_SCREENSHOT;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class OEdit extends OTabContent implements ActionTypeListener, WindowFocusListener {
@@ -89,7 +89,7 @@ public class OEdit extends OTabContent implements ActionTypeListener, WindowFocu
 
         // screenshotButton
         JButton screenshotButton = new JButton(getWord("items.edit.screenshot"));
-        screenshotButton.addActionListener(e -> actionHandler.executeEdit(SCREENSHOT_ACTION));
+        screenshotButton.addActionListener(a -> actionHandler.executeEdit(ACTION_SCREENSHOT));
         this.container.add(screenshotButton, gbc);
     }
 

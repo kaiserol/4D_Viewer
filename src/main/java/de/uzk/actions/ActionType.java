@@ -1,5 +1,6 @@
 package de.uzk.actions;
 
+// TODO: Schaue, wo man ActionType auslagern kann (ist ja ziemlich ähnlich zu ActionUtils)
 public enum ActionType {
     EDIT_IMAGE,
     UPDATE_IMAGE,

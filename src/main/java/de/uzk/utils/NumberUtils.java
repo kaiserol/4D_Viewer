@@ -48,6 +48,4 @@ public class NumberUtils {
     public static boolean isDouble(Number number) {
         return number != null && number.getClass() == Double.class;
     }
-
-
 }

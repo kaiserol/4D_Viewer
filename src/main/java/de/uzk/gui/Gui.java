@@ -43,7 +43,7 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
 
     public void rebuild() {
         this.container.getContentPane().removeAll();
-        create();
+        addContent();
     }
 
     private void create() {
@@ -55,14 +55,11 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
             this.container.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    closeApplication(null, container, config::saveConfig);
+                    closeApplication(getFrame(), container, config::saveConfig);
                 }
             });
             this.container.setLayout(new BorderLayout());
             this.container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-
-            // init menuBar
-            initContent();
             this.container.addWindowFocusListener(new WindowAdapter() {
                 @Override
                 public void windowGainedFocus(WindowEvent e) {
@@ -71,19 +68,24 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
                 }
             });
 
-            // load images -> if there is no path specified, the gui will be toggled off
-            handleAction(ActionType.LOAD_IMAGES);
-
-            // updateUI
-            updateUI();
-
-            // pack
-            this.container.pack();
-            this.container.setLocationRelativeTo(null);
+            // add content
+            addContent();
 
             // set visible
+            this.container.setLocationRelativeTo(null);
             this.container.setVisible(true);
         });
+    }
+
+    private void addContent() {
+        // init
+        initContent();
+        // load images -> if there is no path specified, the gui will be toggled off
+        handleAction(ActionType.LOAD_IMAGES);
+        // updateUI
+        updateUI();
+        // pack
+        this.container.pack();
     }
 
     private void initContent() {

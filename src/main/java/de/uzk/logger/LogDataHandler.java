@@ -7,12 +7,12 @@ import java.util.List;
 
 import static de.uzk.logger.LogLevel.*;
 
-public class LogDataManager {
+public class LogDataHandler {
     private final String name;
     private final List<LogData> logData;
     private boolean open;
 
-    public LogDataManager(String name) {
+    public LogDataHandler(String name) {
         this.name = name;
         this.logData = new ArrayList<>();
         this.open = true;
