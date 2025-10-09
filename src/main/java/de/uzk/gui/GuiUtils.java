@@ -7,6 +7,7 @@ import com.formdev.flatlaf.util.SystemInfo;
 import de.uzk.config.ConfigHandler;
 import de.uzk.image.ImageDetails;
 import de.uzk.utils.NumberUtils;
+import org.intellij.lang.annotations.MagicConstant;
 
 import javax.swing.*;
 import java.awt.*;
@@ -152,7 +153,7 @@ public final class GuiUtils {
         FlatLaf.updateUI();
     }
 
-    public static void updateFontSize(JComponent component, int factor, int style) {
+    public static void updateFontSize(JComponent component, int factor, @MagicConstant(flags = {Font.PLAIN, Font.BOLD, Font.ITALIC}) int style) {
         float newSize = (float) font.getSize() + factor;
         component.setFont(font.deriveFont(newSize).deriveFont(style));
     }

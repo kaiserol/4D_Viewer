@@ -10,6 +10,7 @@ import de.uzk.image.LoadingImageListener;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowAdapter;
@@ -93,12 +94,37 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
         }
     }
 
+    // TODO: Verbessere den Filter, sodass nur Ordner gesehen werden können, die Bilder enthalten...
     private void openDirectoryDialog(Frame parent) {
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        fileChooser.setDialogTitle(getWord("file.chooseDirTitle") + " " +
-                imageHandler.getImageDetails().getImageType().getTypeDescription());
         fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.putClientProperty("FileChooser.readOnly", Boolean.TRUE);
+
+        // Dialogtitel dynamisch setzen
+        String dialogTitle = String.format("%s (%s)",
+                getWord("file.chooseDirTitle"),
+                imageHandler.getImageDetails().getImageType().getTypeDescription());
+        fileChooser.setDialogTitle(dialogTitle);
+
+        // FileFilter einstellen
+        FileFilter filter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if (f.isDirectory()) {
+                    return true;
+                } else {
+                    return true;
+                }
+            }
+
+            @Override
+            public String getDescription() {
+                return imageHandler.getImageDetails().getImageType().toString();
+            }
+        };
+        fileChooser.setFileFilter(filter);
 
         if (imageHandler.hasImageFolder()) {
             fileChooser.setSelectedFile(imageHandler.getImageFolder());
@@ -107,12 +133,6 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
             String userDir = System.getProperty("user.dir");
             if (userDir != null) fileChooser.setCurrentDirectory(new File(userDir));
         }
-        fileChooser.addPropertyChangeListener(evt -> {
-            if (evt.getNewValue() instanceof File file) {
-                File newFolder = file.isDirectory() ? file : file.getParentFile();
-                fileChooser.setDialogTitle(getWord("file.dir") + ": " + newFolder.getAbsolutePath());
-            }
-        });
 
         int state = fileChooser.showOpenDialog(parent);
         if (state == JFileChooser.APPROVE_OPTION) {
