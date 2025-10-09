@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
 public class MarkerPreview extends JPanel implements MouseListener, MouseMotionListener {
     private final BufferedImage background;
     private final Marker marker;
-    private boolean dragging;
+    private Point start;
     private final MarkerEditor editor;
 
     public MarkerPreview(BufferedImage background, Marker marker, MarkerEditor editor) {
@@ -51,34 +51,32 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
     @Override
     public void mousePressed(MouseEvent e) {
         if(e.getButton() == MouseEvent.BUTTON1) {
-            this.dragging = true;
             Point pos = this.getPointRelativeToImage(e.getPoint());
             this.marker.setX(pos.x);
             this.marker.setY(pos.y);
+            this.start = pos;
             this.update();
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        this.dragging = false;
+        this.start = null;
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if(this.dragging) {
+        if(this.start != null) {
             Point pos = this.getPointRelativeToImage(e.getPoint());
-            int width = pos.x - this.marker.getX();
-            int height = pos.y - this.marker.getY();
 
-            if(width < 0) {
-                this.marker.setX(pos.x);
-            }
-            if(height < 0) {
-                this.marker.setY(pos.y);
-            }
-            this.marker.setWidth(Math.abs(width));
-            this.marker.setHeight(Math.abs(height));
+
+            Rectangle rect = new Rectangle(this.start);
+            rect.add(pos);
+
+            this.marker.setX(rect.x);
+            this.marker.setY(rect.y);
+            this.marker.setWidth(rect.width);
+            this.marker.setHeight(rect.height);
             this.update();
         }
     }

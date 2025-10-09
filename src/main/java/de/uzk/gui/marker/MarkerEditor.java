@@ -17,7 +17,7 @@ public class MarkerEditor extends Container {
     private final java.util.List<Runnable> onUpdate = new ArrayList<>();
 
     public MarkerEditor(ImageFile onto) {
-        this.marker = new Marker(0, 0, 100, 100, MarkerShape.RECTANGLE, Color.RED);
+        this.marker = new Marker(0, 0, 100, 100, MarkerShape.RECTANGLE, Color.RED, "Marker");
 
         this.preview = new MarkerPreview(Icons.loadImage(onto.getFile()), marker, this);
         init();

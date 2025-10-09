@@ -36,9 +36,6 @@ public class TabMarkers extends CustomTab implements ActionTypeListener, UpdateI
         if (currentMarker != null) {
             this.container.setLayout(new BorderLayout());
             this.container.add(new JLabel("Edit marker"), BorderLayout.NORTH);
-
-
-
             JButton remove = new JButton("Remove marker");
             this.container.add(remove, BorderLayout.SOUTH);
         } else {
