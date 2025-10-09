@@ -1,20 +1,27 @@
 package de.uzk.markers;
 
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
-public abstract class Marker {
+public class Marker {
 
-    protected int x;
-    protected int y;
-    protected int width;
-    protected int height;
+    private int x;
+    private int y;
+    private int width;
+    private int height;
+    private MarkerShape shape;
+    private Color color;
 
-    public Marker(int x, int y, int width, int height) {
+
+
+    public Marker(int x, int y, int width, int height, MarkerShape shape, Color color) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.shape = shape;
+        this.color = color;
     }
 
     public int getY() {
@@ -49,9 +56,37 @@ public abstract class Marker {
         this.height = height;
     }
 
-    public abstract void draw(Graphics2D to, Rectangle imageArea, double scaleFactor);
+    public MarkerShape getShape() {
+        return shape;
+    }
 
-    protected Rectangle getActualBounds(Rectangle imageBounds, double scale) {
+    public void setShape(MarkerShape shape) {
+        this.shape = shape;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public  void draw(Graphics2D to, Rectangle imageArea, double scaleFactor) {
+        Rectangle actualBounds = this.getActualBounds(imageArea, scaleFactor);
+        Shape finalShape = switch(this.shape) {
+            case RECTANGLE -> actualBounds;
+            case CIRCLE -> new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
+        };
+
+        Color prev = to.getColor();
+        to.setColor(this.color);
+        to.draw(finalShape);
+        to.setColor(prev);
+    }
+
+
+    private Rectangle getActualBounds(Rectangle imageBounds, double scale) {
         int x = imageBounds.x + (int)(this.x * scale);
         int y = imageBounds.y + (int)(this.y * scale);
 

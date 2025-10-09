@@ -4,8 +4,9 @@ import de.uzk.actions.ActionType;
 import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.Gui;
 import de.uzk.gui.OGridBagConstraints;
+import de.uzk.gui.UpdateUIListener;
+import de.uzk.gui.others.MarkerAppearanceSelector;
 import de.uzk.markers.Marker;
-import de.uzk.markers.RectMarker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,18 +15,21 @@ import java.util.function.Consumer;
 import static de.uzk.Main.imageHandler;
 import static de.uzk.Main.markerHandler;
 
-public class TabMarkers extends CustomTab implements ActionTypeListener {
+public class TabMarkers extends CustomTab implements  UpdateUIListener {
+
+    private Marker currentMarker;
 
     public TabMarkers(Gui gui) {
         super(new JPanel(), gui);
-        gui.addActionTypeListener(this);
-        this.render();
+        gui.addUpdateUIListener(this);
+        this.rerender();
     }
 
-    private void render() {
+    private void rerender() {
+
+
         this.container.removeAll();
 
-        Marker currentMarker = markerHandler.getMarker(imageHandler.getTime());
         if (currentMarker != null) {
             this.container.setLayout(new BorderLayout());
             this.container.add(new JLabel("Edit marker"), BorderLayout.NORTH);
@@ -45,9 +49,14 @@ public class TabMarkers extends CustomTab implements ActionTypeListener {
             gbc.anchor = OGridBagConstraints.FIRST_LINE_START;
             JButton add = new JButton("Add Marker to current image");
             add.addActionListener(e -> {
-                markerHandler.addMarker(new RectMarker(10, 10, 100, 100));
-                gui.handleAction(ActionType.ADD_MARKER);
-                gui.updateUI();
+                MarkerAppearanceSelector initial = new MarkerAppearanceSelector();
+                int option = JOptionPane.showConfirmDialog(null, initial, "New Marker", JOptionPane.OK_CANCEL_OPTION);
+                if(option != JOptionPane.CANCEL_OPTION) {
+                    markerHandler.addMarker(new Marker(10, 10, 100, 100, initial.getShape(), initial.getColor()));
+                    gui.handleAction(ActionType.ADD_MARKER);
+                    gui.updateUI();
+                }
+
             });
 
             this.container.add(add, gbc);
@@ -100,10 +109,15 @@ public class TabMarkers extends CustomTab implements ActionTypeListener {
     }
 
 
+
+
     @Override
-    public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.ADD_MARKER || actionType == ActionType.REMOVE_MARKER) {
-            this.render();
+    public void updateUI() {
+
+        Marker current = markerHandler.getMarker(imageHandler.getTime());
+        if(current != this.currentMarker) {
+            this.currentMarker = current;
+            this.rerender();
         }
     }
 }

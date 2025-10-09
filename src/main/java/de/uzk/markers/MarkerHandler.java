@@ -1,6 +1,5 @@
 package de.uzk.markers;
 
-import java.util.HashMap;
 
 import static de.uzk.Main.imageHandler;
 
