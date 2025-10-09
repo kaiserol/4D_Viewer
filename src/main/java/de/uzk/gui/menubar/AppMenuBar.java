@@ -134,7 +134,6 @@ public class AppMenuBar extends InteractiveContainer<JMenuBar> {
         config.setLanguage(language);
         config.saveConfig();
 
-        // TODO: Warum wird beim bauen showLoadedImages() 2 mal hintereinander (siehe Logs) aufgerufen?
         if (option == JOptionPane.YES_OPTION) {
             gui.rebuild();
         }
