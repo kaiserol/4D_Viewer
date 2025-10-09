@@ -15,12 +15,14 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
     private final BufferedImage background;
     private final Marker marker;
     private boolean dragging;
+    private final MarkerEditor editor;
 
-    public MarkerPreview(BufferedImage background, Marker marker) {
+    public MarkerPreview(BufferedImage background, Marker marker, MarkerEditor editor) {
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.background = background;
         this.marker = marker;
+        this.editor = editor;
     }
 
     @Override
@@ -53,6 +55,7 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
             Point pos = this.getPointRelativeToImage(e.getPoint());
             this.marker.setX(pos.x);
             this.marker.setY(pos.y);
+            this.update();
         }
     }
 
@@ -76,11 +79,14 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
             }
             this.marker.setWidth(Math.abs(width));
             this.marker.setHeight(Math.abs(height));
-            this.repaint();
+            this.update();
         }
     }
 
-
+    private void update() {
+        this.repaint();
+        this.editor.changed();
+    }
 
     private Point getPointRelativeToImage(Point2D pointRelativeToWindow) {
         int x = (int) pointRelativeToWindow.getX() - this.getX();

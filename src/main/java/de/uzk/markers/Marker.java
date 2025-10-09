@@ -75,15 +75,21 @@ public class Marker {
         Rectangle actualBounds = this.getActualBounds(imageArea, scaleFactor);
         Shape finalShape = switch(this.shape) {
             case RECTANGLE -> actualBounds;
-            case CIRCLE -> new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
+            case ELLIPSE -> new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
+
         };
 
 
 
-        Color prev = to.getColor();
+        Color prevColor = to.getColor();
+        Stroke prevStroke = to.getStroke();
+
         to.setColor(this.color);
+        to.setStroke(new BasicStroke(5 * (float)scaleFactor));
         to.draw(finalShape);
-        to.setColor(prev);
+
+        to.setColor(prevColor);
+        to.setStroke(prevStroke);
     }
 
 

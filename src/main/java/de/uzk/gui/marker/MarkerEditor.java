@@ -7,16 +7,19 @@ import de.uzk.markers.MarkerShape;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.function.IntConsumer;
+import java.util.function.IntSupplier;
 
 public class MarkerEditor extends Container {
     private final Marker marker;
     private final MarkerPreview preview;
+    private final java.util.List<Runnable> onUpdate = new ArrayList<>();
 
     public MarkerEditor(ImageFile onto) {
         this.marker = new Marker(0, 0, 100, 100, MarkerShape.RECTANGLE, Color.RED);
 
-        this.preview = new MarkerPreview(Icons.loadImage(onto.getFile()), marker);
+        this.preview = new MarkerPreview(Icons.loadImage(onto.getFile()), marker, this);
         init();
     }
 
@@ -79,6 +82,10 @@ public class MarkerEditor extends Container {
 
     }
 
+    void changed() {
+        this.onUpdate.forEach(Runnable::run);
+    }
+
     private JPanel createValuesPanel() {
         JPanel valuesPanel = new JPanel(new GridBagLayout());
 
@@ -87,7 +94,12 @@ public class MarkerEditor extends Container {
 
         JLabel[] labels = {new JLabel("X: "), new JLabel("Y: "), new JLabel("Width: "), new JLabel("Height: "),};
 
-        JSpinner[] spinners = {createNumberField(this.marker.getX(), this.marker::setX), createNumberField(marker.getY(), marker::setY), createNumberField(marker.getWidth(), marker::setWidth), createNumberField(marker.getHeight(), marker::setHeight)};
+        JSpinner[] spinners = {
+                createSpinner(this.marker::getX, this.marker::setX),
+                createSpinner(this.marker::getY, this.marker::setY),
+                createSpinner(this.marker::getWidth, this.marker::setWidth),
+                createSpinner(this.marker::getHeight, this.marker::setHeight)
+        };
 
         gbc.fill = OGridBagConstraints.HORIZONTAL;
         gbc.setSizeAndWeight(1, 1, 0.3, 0);
@@ -108,13 +120,17 @@ public class MarkerEditor extends Container {
         return valuesPanel;
     }
 
-    private JSpinner createNumberField(int initialValue, Consumer<Integer> setter) {
-        JSpinner spinner = new JSpinner(new SpinnerNumberModel(initialValue, 0, Integer.MAX_VALUE, 1));
+    private JSpinner createSpinner(IntSupplier get, IntConsumer set) {
+        SpinnerNumberModel model = new SpinnerNumberModel(get.getAsInt(), 0, Integer.MAX_VALUE, 1);
+        JSpinner spinner = new JSpinner(model);
 
         spinner.addChangeListener(e -> {
-            setter.accept((Integer) spinner.getModel().getValue());
+            set.accept((Integer) spinner.getModel().getValue());
             this.preview.repaint();
         });
+
+        this.onUpdate.add(() -> model.setValue(get.getAsInt()));
+
         return spinner;
     }
 }
