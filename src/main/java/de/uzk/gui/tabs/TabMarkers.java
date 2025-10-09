@@ -4,8 +4,9 @@ import de.uzk.actions.ActionType;
 import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.Gui;
 import de.uzk.gui.OGridBagConstraints;
-import de.uzk.gui.UpdateUIListener;
+import de.uzk.gui.UpdateImageListener;
 import de.uzk.gui.others.MarkerAppearanceSelector;
+import de.uzk.image.ImageLayer;
 import de.uzk.markers.Marker;
 
 import javax.swing.*;
@@ -15,20 +16,23 @@ import java.util.function.Consumer;
 import static de.uzk.Main.imageHandler;
 import static de.uzk.Main.markerHandler;
 
-public class TabMarkers extends CustomTab implements  UpdateUIListener {
+public class TabMarkers extends CustomTab implements ActionTypeListener, UpdateImageListener {
 
-    private Marker currentMarker;
+
 
     public TabMarkers(Gui gui) {
         super(new JPanel(), gui);
-        gui.addUpdateUIListener(this);
+        gui.addUpdateImageListener(this);
+        gui.addActionTypeListener(this);
         this.rerender();
     }
 
     private void rerender() {
 
+        Marker currentMarker = markerHandler.getMarker(imageHandler.getTime());
 
         this.container.removeAll();
+
 
         if (currentMarker != null) {
             this.container.setLayout(new BorderLayout());
@@ -109,14 +113,16 @@ public class TabMarkers extends CustomTab implements  UpdateUIListener {
     }
 
 
-
+    @Override
+    public void handleAction(ActionType actionType) {
+        if(actionType == ActionType.ADD_MARKER  || actionType == ActionType.REMOVE_MARKER) {
+            this.rerender();
+        }
+    }
 
     @Override
-    public void updateUI() {
-
-        Marker current = markerHandler.getMarker(imageHandler.getTime());
-        if(current != this.currentMarker) {
-            this.currentMarker = current;
+    public void update(ImageLayer layer) {
+        if(layer == ImageLayer.TIME) {
             this.rerender();
         }
     }
