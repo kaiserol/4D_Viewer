@@ -43,6 +43,14 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
 
     public void rebuild() {
         this.container.getContentPane().removeAll();
+
+        // Verhindert dass alte UI objekte weiterleben und auf events reagieren
+        this.toggleListeners.clear();
+        this.updateImageListeners.clear();
+        this.updateUIListeners.clear();
+        this.actionTypeListeners.clear();
+        this.windowFocusListeners.clear();
+
         addContent();
     }
 
