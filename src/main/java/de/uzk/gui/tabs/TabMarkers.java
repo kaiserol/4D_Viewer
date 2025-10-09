@@ -5,13 +5,12 @@ import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.Gui;
 import de.uzk.gui.OGridBagConstraints;
 import de.uzk.gui.UpdateImageListener;
-import de.uzk.gui.others.MarkerAppearanceSelector;
+import de.uzk.gui.marker.MarkerEditor;
 import de.uzk.image.ImageLayer;
 import de.uzk.markers.Marker;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.function.Consumer;
 
 import static de.uzk.Main.imageHandler;
 import static de.uzk.Main.markerHandler;
@@ -38,9 +37,7 @@ public class TabMarkers extends CustomTab implements ActionTypeListener, UpdateI
             this.container.setLayout(new BorderLayout());
             this.container.add(new JLabel("Edit marker"), BorderLayout.NORTH);
 
-            JPanel valuesPanel = this.createValuesPanel(currentMarker);
 
-            this.container.add(valuesPanel, BorderLayout.CENTER);
 
             JButton remove = new JButton("Remove marker");
             this.container.add(remove, BorderLayout.SOUTH);
@@ -53,10 +50,10 @@ public class TabMarkers extends CustomTab implements ActionTypeListener, UpdateI
             gbc.anchor = OGridBagConstraints.FIRST_LINE_START;
             JButton add = new JButton("Add Marker to current image");
             add.addActionListener(e -> {
-                MarkerAppearanceSelector initial = new MarkerAppearanceSelector();
+                MarkerEditor initial = new MarkerEditor(imageHandler.getCurrentImage());
                 int option = JOptionPane.showConfirmDialog(null, initial, "New Marker", JOptionPane.OK_CANCEL_OPTION);
-                if(option != JOptionPane.CANCEL_OPTION) {
-                    markerHandler.addMarker(new Marker(10, 10, 100, 100, initial.getShape(), initial.getColor()));
+                if(option == JOptionPane.OK_OPTION) {
+                    markerHandler.addMarker(initial.getMarker());
                     gui.handleAction(ActionType.ADD_MARKER);
                     gui.updateUI();
                 }
@@ -69,48 +66,15 @@ public class TabMarkers extends CustomTab implements ActionTypeListener, UpdateI
             gbc.fill = GridBagConstraints.BOTH;
             gbc.setSizeAndWeight(0, 10, 0, 10);
             this.container.add(new JLabel("No markers on the current image"), gbc);
+
+
         }
 
     }
 
-    private JSpinner createNumberField(int initialValue, Consumer<Integer> setter) {
-        JSpinner spinner = new JSpinner(new SpinnerNumberModel(initialValue, 0, Integer.MAX_VALUE, 1));
 
-        spinner.addChangeListener(e -> {
-            setter.accept((Integer) spinner.getModel().getValue());
-            gui.updateUI();
-        });
-        return spinner;
-    }
 
-    private JPanel createValuesPanel(Marker marker) {
-        JPanel valuesPanel = new JPanel(new GridBagLayout());
 
-        OGridBagConstraints gbc = new OGridBagConstraints();
-        gbc.ipady = 10;
-
-        JLabel[] labels = {new JLabel("X: "), new JLabel("Y: "), new JLabel("Width: "), new JLabel("Height: "),};
-
-        JSpinner[] spinners = {createNumberField(marker.getX(), marker::setX), createNumberField(marker.getY(), marker::setY), createNumberField(marker.getWidth(), marker::setWidth), createNumberField(marker.getHeight(), marker::setHeight)};
-
-        gbc.fill = OGridBagConstraints.HORIZONTAL;
-        gbc.setSizeAndWeight(1, 1, 0.3, 0);
-
-        int y = 0;
-        for (; y < labels.length; y++) {
-            gbc.gridy = y;
-
-            gbc.gridx = 0;
-            gbc.weightx = 0.3;
-            valuesPanel.add(labels[y], gbc);
-
-            gbc.gridx = 1;
-            gbc.weightx = 0.7;
-            valuesPanel.add(spinners[y], gbc);
-        }
-
-        return valuesPanel;
-    }
 
 
     @Override

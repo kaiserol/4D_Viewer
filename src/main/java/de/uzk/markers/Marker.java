@@ -2,7 +2,6 @@ package de.uzk.markers;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
 
 public class Marker {
 
@@ -78,6 +77,8 @@ public class Marker {
             case RECTANGLE -> actualBounds;
             case CIRCLE -> new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
         };
+
+
 
         Color prev = to.getColor();
         to.setColor(this.color);
