@@ -3,9 +3,6 @@ package de.uzk.gui;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
-import com.formdev.flatlaf.ui.FlatSpinnerUI;
-import com.formdev.flatlaf.ui.FlatTabbedPaneUI;
-import com.formdev.flatlaf.ui.FlatTitlePane;
 import com.formdev.flatlaf.util.SystemInfo;
 import de.uzk.config.ConfigHandler;
 import de.uzk.image.ImageDetails;
@@ -16,7 +13,6 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 import static de.uzk.Main.config;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -161,27 +157,6 @@ public final class GuiUtils {
         component.setFont(font.deriveFont(newSize).deriveFont(style));
     }
 
-    public static boolean needToRevalidateSize(Container container) {
-        if (container == null) return false;
-
-        // banned classes list
-        Class<?>[] banned = {CellRendererPane.class, FlatTabbedPaneUI.class, FlatSpinnerUI.class, FlatTitlePane.class};
-
-        for (Component component : container.getComponents()) {
-            if (component == null) continue;
-
-            boolean correctContainer = !Arrays.asList(banned).contains(component.getClass()) && !Arrays.asList(banned).contains(component.getClass().getEnclosingClass());
-            if (correctContainer && (component.getWidth() < component.getPreferredSize().width || component.getHeight() < component.getPreferredSize().height)) {
-                return true;
-            }
-
-            if (component instanceof Container castContainer && (needToRevalidateSize(castContainer))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static BufferedImage getEditedImage(BufferedImage image, ImageDetails imageDetails, boolean jpgImage) {
         int imageType = jpgImage ? image.getType() : BufferedImage.TYPE_INT_ARGB;
         return getRotatedImage(getMirroredImage(image, imageDetails.isMirrorX(), imageDetails.isMirrorY(), imageType), imageDetails.getRotation(), imageType);
@@ -251,11 +226,11 @@ public final class GuiUtils {
     }
 
     public static boolean isEnabled(JComponent component) {
-        return component.getName() == null || !component.getName().equals(GuiUtils.COMP_DISABLED);
+        return component.getName() == null || !component.getName().equals(COMP_DISABLED);
     }
 
     public static void updateSecretly(JComponent component, Runnable runnable) {
-        component.setName(GuiUtils.COMP_DISABLED);
+        component.setName(COMP_DISABLED);
         runnable.run();
         component.setName(null);
     }

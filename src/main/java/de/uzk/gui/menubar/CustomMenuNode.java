@@ -13,7 +13,7 @@ public abstract sealed class CustomMenuNode permits CustomMenuBar, CustomMenu, C
     private final String text;
     private final boolean toggleable;
 
-    CustomMenuNode(JComponent component, String text, boolean toggleable) {
+    public CustomMenuNode(JComponent component, String text, boolean toggleable) {
         this.nodes = new ArrayList<>();
         this.component = this.getComponent(component);
         this.text = this.getText(text);

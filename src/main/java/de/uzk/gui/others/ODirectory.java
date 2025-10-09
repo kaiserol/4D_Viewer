@@ -166,12 +166,6 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
                 runIfPathRemained.run();
             }
             imageHandler.setImageFolder(oldFolder);
-            return;
-        }
-
-        if (frame.getExtendedState() == Frame.NORMAL && GuiUtils.needToRevalidateSize(frame)) {
-            frame.pack();
-            frame.setLocationRelativeTo(null);
         }
     }
 

@@ -130,7 +130,7 @@ public class AppMenuBar extends InteractiveContainer<JMenuBar> {
                 JOptionPane.YES_NO_OPTION);
 
         // set language and save config
-        logger.info("Changing language to '" + language + "'");
+        logger.info("Changing language from '" + oldLanguage + "' to '" + language + "'");
         config.setLanguage(language);
         config.saveConfig();
 
