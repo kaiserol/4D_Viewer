@@ -39,7 +39,7 @@ public final class CustomMenuItem extends CustomMenuNode {
 
     private void setIcon(Icon icon) {
         this.icon = icon;
-        if (icon != null && this.component instanceof JMenuItem menuItem) {
+        if (icon != null && this.getComponent() instanceof JMenuItem menuItem) {
             menuItem.setIcon(icon);
         }
     }
@@ -50,7 +50,7 @@ public final class CustomMenuItem extends CustomMenuNode {
             return;
         }
 
-        if (action != null && this.component instanceof JMenuItem menuItem) {
+        if (action != null && this.getComponent() instanceof JMenuItem menuItem) {
             this.hasListener = true;
             menuItem.addMouseListener(new MouseAdapter() {
                 @Override
@@ -72,7 +72,7 @@ public final class CustomMenuItem extends CustomMenuNode {
             return;
         }
 
-        if (action != null && this.component instanceof JMenuItem menuItem) {
+        if (action != null && this.getComponent() instanceof JMenuItem menuItem) {
             this.hasListener = true;
             menuItem.addActionListener(action);
             addAccelerators(action, menuItem, accelerators);

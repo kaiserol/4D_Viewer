@@ -2,16 +2,14 @@ package de.uzk.gui;
 
 import java.awt.*;
 
+// TODO: Brauche ich das wirklich, wenn ja, verwende es überall wo geht, Benenne die Klasse um
 public class OGridBagConstraints extends GridBagConstraints {
     public OGridBagConstraints() {
-        this(new Insets(0, 0, 0, 0),
-                CENTER,
-                NONE);
+        this(new Insets(0, 0, 0, 0), CENTER, NONE);
     }
+
     public OGridBagConstraints(Insets insets, int anchor, int fill) {
-        super(0, 0, 1, 1, 0, 0,
-                anchor, fill,
-                insets , 0, 0);
+        super(0, 0, 1, 1, 0, 0, anchor, fill, insets, 0, 0);
     }
 
     public void setPos(int gridx, int gridy) {
@@ -27,9 +25,7 @@ public class OGridBagConstraints extends GridBagConstraints {
         }
     }
 
-    public void setPosAndInsets(int gridx, int gridy,
-                                int topPadding, int leftPadding,
-                                int bottomPadding, int rightPadding) {
+    public void setPosAndInsets(int gridx, int gridy, int topPadding, int leftPadding, int bottomPadding, int rightPadding) {
         setPos(gridx, gridy);
         setInsets(topPadding, leftPadding, bottomPadding, rightPadding);
     }

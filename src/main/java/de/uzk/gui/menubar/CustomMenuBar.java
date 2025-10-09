@@ -17,8 +17,8 @@ public final class CustomMenuBar extends CustomMenuNode {
 
     public void add(CustomMenu menu) {
         if (menu == null) throw new NullPointerException();
-        this.nodes.add(menu);
-        this.component.add(menu.getComponent());
+        this.getNodes().add(menu);
+        this.getComponent().add(menu.getComponent());
     }
 
     public void add(CustomMenu... menus) {

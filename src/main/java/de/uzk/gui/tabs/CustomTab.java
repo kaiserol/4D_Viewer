@@ -6,8 +6,8 @@ import de.uzk.gui.InteractiveContainer;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-class TabContent extends InteractiveContainer<JPanel> {
-    public TabContent(JPanel container, Gui gui) {
+class CustomTab extends InteractiveContainer<JPanel> {
+    public CustomTab(JPanel container, Gui gui) {
         super(container, gui);
     }
 

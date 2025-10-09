@@ -1,13 +1,13 @@
 package de.uzk.gui;
 
+import de.uzk.actions.ActionHandler;
 import de.uzk.actions.ActionType;
 import de.uzk.actions.ActionTypeListener;
-import de.uzk.gui.others.OImprint;
 import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.gui.others.ODirectory;
-import de.uzk.gui.tabs.Tabs;
+import de.uzk.gui.others.OImprint;
+import de.uzk.gui.tabs.AreaTabs;
 import de.uzk.gui.viewer.OViewer;
-import de.uzk.actions.ActionHandler;
 import de.uzk.image.ImageLayer;
 
 import javax.swing.*;
@@ -55,7 +55,7 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
             this.container.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    closeApplication(getFrame(), container, config::saveConfig);
+                    closeApp(getFrame(), config::saveConfig);
                 }
             });
             this.container.setLayout(new BorderLayout());
@@ -104,9 +104,9 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setOneTouchExpandable(true);
 
-        // tabs
-        Tabs tabs = new Tabs(this, actionHandler);
-        splitPane.add(tabs.getContainer());
+        // areaTabs
+        AreaTabs areaTabs = new AreaTabs(this, actionHandler);
+        splitPane.add(areaTabs.getContainer());
 
         // viewer
         OViewer viewer = new OViewer(this, actionHandler);

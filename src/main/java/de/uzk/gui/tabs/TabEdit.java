@@ -1,28 +1,26 @@
 package de.uzk.gui.tabs;
 
+import de.uzk.actions.ActionHandler;
+import de.uzk.actions.ActionType;
+import de.uzk.actions.ActionTypeListener;
+import de.uzk.gui.*;
+import de.uzk.utils.NumberUtils;
+
+import javax.swing.*;
+import java.awt.*;
+
 import static de.uzk.Main.config;
 import static de.uzk.Main.imageHandler;
 import static de.uzk.actions.ActionUtils.ACTION_SCREENSHOT;
 import static de.uzk.config.LanguageHandler.getWord;
 
-import de.uzk.actions.ActionHandler;
-import de.uzk.actions.ActionType;
-import de.uzk.actions.ActionTypeListener;
-import de.uzk.gui.*;
-import de.uzk.gui.GuiUtils;
-import de.uzk.utils.NumberUtils;
-import java.awt.*;
-import javax.swing.*;
-
-public class EditTab
-    extends TabContent
-    implements ActionTypeListener, WindowFocusListener {
+public class TabEdit extends CustomTab implements ActionTypeListener, WindowFocusListener {
 
     private final ActionHandler actionHandler;
     private JSpinner degreeSpinner;
     private JLabel screenshots;
 
-    public EditTab(Gui gui, ActionHandler actionHandler) {
+    public TabEdit(Gui gui, ActionHandler actionHandler) {
         super(new JPanel(), gui);
         this.actionHandler = actionHandler;
         gui.addActionTypeListener(this);
@@ -34,11 +32,7 @@ public class EditTab
         this.container.setLayout(new GridBagLayout());
 
         // GridBagConstraints
-        OGridBagConstraints gbc = new OGridBagConstraints(
-            new Insets(0, 0, 5, 15),
-            GridBagConstraints.WEST,
-            GridBagConstraints.HORIZONTAL
-        );
+        OGridBagConstraints gbc = new OGridBagConstraints(new Insets(0, 0, 5, 15), GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);
         gbc.setHorizontal(2, 0);
 
         // mirrorXBox
@@ -58,12 +52,7 @@ public class EditTab
         gbc.setPosAndInsets(0, 2, 0, 0, 10, 15);
 
         // Create a SpinnerModel for numeric values
-        CyclingSpinnerNumberModel degreeSpinnerModel = new CyclingSpinnerNumberModel(
-            0,
-            0,
-            359,
-            1
-        );
+        CyclingSpinnerNumberModel degreeSpinnerModel = new CyclingSpinnerNumberModel(0, 0, 359, 1);
         this.degreeSpinner = getDegreeSpinner(degreeSpinnerModel);
         this.container.add(this.degreeSpinner, gbc);
 
@@ -81,9 +70,7 @@ public class EditTab
         gbc.anchor = GridBagConstraints.SOUTHWEST;
 
         // screenshotNumberLabel
-        JLabel screenshotNumberLabel = new JLabel(
-            getWord("items.edit.screenshotNumber") + ":"
-        );
+        JLabel screenshotNumberLabel = new JLabel(getWord("items.edit.screenshotNumber") + ":");
         this.container.add(screenshotNumberLabel, gbc);
 
         // gbc
@@ -99,28 +86,18 @@ public class EditTab
         gbc.setSizeAndWeight(3, 1, 1, 0);
 
         // screenshotButton
-        JButton screenshotButton = new JButton(
-            getWord("items.edit.screenshot")
-        );
-        screenshotButton.addActionListener(e ->
-            actionHandler.executeEdit(ACTION_SCREENSHOT)
-        );
+        JButton screenshotButton = new JButton(getWord("items.edit.screenshot"));
+        screenshotButton.addActionListener(e -> actionHandler.executeEdit(ACTION_SCREENSHOT));
         this.container.add(screenshotButton, gbc);
     }
 
     private void initCheckBox(JCheckBox checkBox, boolean isMirrorXBox) {
-        boolean startValue = isMirrorXBox
-            ? imageHandler.getImageDetails().isMirrorX()
-            : imageHandler.getImageDetails().isMirrorY();
+        boolean startValue = isMirrorXBox ? imageHandler.getImageDetails().isMirrorX() : imageHandler.getImageDetails().isMirrorY();
         checkBox.setSelected(startValue);
         checkBox.addItemListener(e -> {
             if (GuiUtils.isEnabled(checkBox)) {
-                if (isMirrorXBox) imageHandler
-                    .getImageDetails()
-                    .setMirrorX(checkBox.isSelected());
-                else imageHandler
-                    .getImageDetails()
-                    .setMirrorY(checkBox.isSelected());
+                if (isMirrorXBox) imageHandler.getImageDetails().setMirrorX(checkBox.isSelected());
+                else imageHandler.getImageDetails().setMirrorY(checkBox.isSelected());
                 gui.handleAction(ActionType.EDIT_IMAGE);
             }
         });
@@ -130,9 +107,7 @@ public class EditTab
         JSpinner spinner = new JSpinner(spinnerModel);
 
         Number rotation = imageHandler.getImageDetails().getRotation();
-        if (GuiUtils.valueFitsInRange(rotation, spinnerModel)) spinner.setValue(
-            rotation
-        );
+        if (GuiUtils.valueFitsInRange(rotation, spinnerModel)) spinner.setValue(rotation);
         else setRotationInImageHandler(spinner);
 
         spinner.addChangeListener(e -> {
@@ -162,17 +137,9 @@ public class EditTab
     @Override
     public void handleAction(ActionType actionType) {
         if (actionType == ActionType.TURN_IMAGE_90_LEFT) {
-            degreeSpinner.setValue(
-                NumberUtils.turn90Left(
-                    imageHandler.getImageDetails().getRotation()
-                )
-            );
+            degreeSpinner.setValue(NumberUtils.turn90Left(imageHandler.getImageDetails().getRotation()));
         } else if (actionType == ActionType.TURN_IMAGE_90_RIGHT) {
-            degreeSpinner.setValue(
-                NumberUtils.turn90Right(
-                    imageHandler.getImageDetails().getRotation()
-                )
-            );
+            degreeSpinner.setValue(NumberUtils.turn90Right(imageHandler.getImageDetails().getRotation()));
         } else if (actionType == ActionType.UPDATE_SCREENSHOT_COUNTER) {
             updateScreenshotCounter();
         }

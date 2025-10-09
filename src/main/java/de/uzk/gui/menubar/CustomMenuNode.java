@@ -8,16 +8,20 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract sealed class CustomMenuNode permits CustomMenuBar, CustomMenu, CustomMenuItem, CustomMenuSeparator {
-    protected final List<CustomMenuNode> nodes;
-    protected final JComponent component;
-    protected final String text;
-    protected final boolean toggleable;
+    private final List<CustomMenuNode> nodes;
+    private final JComponent component;
+    private final String text;
+    private final boolean toggleable;
 
-    protected CustomMenuNode(JComponent component, String text, boolean toggleable) {
+    CustomMenuNode(JComponent component, String text, boolean toggleable) {
         this.nodes = new ArrayList<>();
         this.component = this.getComponent(component);
         this.text = this.getText(text);
         this.toggleable = toggleable;
+    }
+
+    public final List<CustomMenuNode> getNodes() {
+        return nodes;
     }
 
     private JComponent getComponent(JComponent component) {
@@ -44,10 +48,6 @@ public abstract sealed class CustomMenuNode permits CustomMenuBar, CustomMenu, C
         return toggleable;
     }
 
-    public final List<CustomMenuNode> getNodes() {
-        return nodes;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -67,16 +67,22 @@ public abstract sealed class CustomMenuNode permits CustomMenuBar, CustomMenu, C
     }
 
     private String toString(CustomMenuNode node, int depth) {
-        StringBuilder result = new StringBuilder();
         final String tab = "  ";
         final String indent = tab.repeat(Math.max(0, depth));
+        final StringBuilder result = new StringBuilder();
 
-        // OTreeMenu -> getName
+        // return the separator
+        if (node instanceof CustomMenuSeparator) {
+            result.append("-".repeat(10)).append(StringUtils.NEXT_LINE);
+            return result.toString();
+        }
+
+        // return the menuBar
         result.append(node.getText()).append(StringUtils.NEXT_LINE);
-
         for (CustomMenuNode innerNode : node.getNodes()) {
             result.append(indent).append(tab);
-            if (innerNode instanceof CustomMenuItem) result.append("> ");
+            if (innerNode instanceof CustomMenu) result.append("# ");
+            else if (innerNode instanceof CustomMenuItem) result.append("> ");
 
             result.append(toString(innerNode, depth + 1));
         }

@@ -22,7 +22,6 @@ import static de.uzk.Main.config;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public final class GuiUtils {
-    public static final String ERROR_MSG = getWord("optionPane.titles.error");
     public static final Color FOCUS_COLOR = Color.decode("#007aff");
     public static final String COMP_DISABLED = "DISABLED";
     public static final String SLIDER_DRAGGED = "DRAGGING";

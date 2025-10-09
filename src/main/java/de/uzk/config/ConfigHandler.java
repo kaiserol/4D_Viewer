@@ -8,6 +8,7 @@ import de.uzk.image.ImageType;
 import de.uzk.utils.StringUtils;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +33,7 @@ public class ConfigHandler {
     public static final int MIN_FONT_SIZE = 12;
     public static final int DEFAULT_FONT_SIZE = 18;
     public static final int MAX_FONT_SIZE = 22;
-    public static final Language SYSTEM_LANGUAGE = Language.byLocale(Locale.getDefault());
+    public static final Language SYSTEM_LANGUAGE = Language.getSystemDefault();
     private static final File CONFIG_FILE = new File("config.cfg");
     private static final File SCREENSHOT_FOLDER = new File("screenshots");
 
@@ -93,6 +94,7 @@ public class ConfigHandler {
     public void setLanguage(Language language) {
         this.language = language;
         Locale.setDefault(language.getLocale());
+        JComponent.setDefaultLocale(language.getLocale());
         LanguageHandler.load(language);
     }
 

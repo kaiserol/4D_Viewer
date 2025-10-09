@@ -13,8 +13,8 @@ public final class CustomMenu extends CustomMenuNode {
 
     public void add(CustomMenuNode node) {
         if (node == null) throw new NullPointerException();
-        this.nodes.add(node);
-        this.component.add(node.getComponent());
+        this.getNodes().add(node);
+        this.getComponent().add(node.getComponent());
     }
 
     public void add(CustomMenuNode... nodes) {

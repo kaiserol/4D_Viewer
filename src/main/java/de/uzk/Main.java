@@ -1,13 +1,17 @@
 package de.uzk;
 
-import de.uzk.gui.Gui;
 import de.uzk.config.ConfigHandler;
+import de.uzk.gui.Gui;
 import de.uzk.image.ImageHandler;
 import de.uzk.logger.LogDataHandler;
 import de.uzk.markers.MarkerHandler;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.desktop.QuitEvent;
+import java.awt.desktop.QuitResponse;
+
+import static de.uzk.config.LanguageHandler.getWord;
 
 public class Main {
     public static final LogDataHandler logger;
@@ -24,28 +28,29 @@ public class Main {
 
     public static void main(String[] args) {
         config.loadConfig();
-        // create gui
-        new Gui();
+        Gui gui = new Gui();
+
+        // catch: macOS Cmd+Q
+        if (Desktop.isDesktopSupported()) {
+            // Option: Handle Quit-Request
+            Desktop desktop = Desktop.getDesktop();
+            desktop.setQuitHandler((QuitEvent e, QuitResponse response) -> {
+                response.cancelQuit();
+                SwingUtilities.invokeLater(() -> closeApp(gui.getFrame(), config::saveConfig));
+            });
+        }
     }
 
-    public static void closeApplication(Window parentWindow, Window currentWindow, Runnable runForClosing) {
-        if (config.isAskAgainClosingWindow() || currentWindow instanceof Dialog) {
-            Object[] options = {"Yes", "No"};
-            Object[] message;
-            JCheckBox checkBox = new JCheckBox("Don't ask me again");
-            if (currentWindow instanceof Frame) {
-                message = new Object[]{"Do you want to close the app?", checkBox};
-            } else {
-                message = new Object[]{"Do you want to close the app?"};
-            }
+    public static void closeApp(Window window, Runnable runForClosing) {
+        if (window instanceof JDialog || config.isAskAgainClosingWindow()) {
+            boolean checkBoxAllowed = config.isAskAgainClosingWindow();
+            JCheckBox checkBox = new JCheckBox(getWord("closeApp.dont_ask_again"));
+            Object[] message = new Object[]{getWord("closeApp.question"), checkBoxAllowed ? checkBox : null};
 
-            int choice = JOptionPane.showOptionDialog(parentWindow, message, "Confirm",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-            if (choice != JOptionPane.YES_OPTION) {
-                return;
-            } else if (currentWindow instanceof Frame && checkBox.isSelected()) {
-                config.setAskAgainClosingWindow(false);
-            }
+            int choice = JOptionPane.showConfirmDialog(window, message, getWord("optionPane.title.confirm"),
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null);
+            if (choice != JOptionPane.YES_OPTION) return;
+            else if (checkBox.isSelected()) config.setAskAgainClosingWindow(false);
         }
         if (runForClosing != null) runForClosing.run();
         System.exit(0);

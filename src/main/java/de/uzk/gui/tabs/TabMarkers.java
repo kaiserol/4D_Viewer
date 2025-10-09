@@ -2,7 +2,8 @@ package de.uzk.gui.tabs;
 
 import de.uzk.actions.ActionType;
 import de.uzk.actions.ActionTypeListener;
-import de.uzk.gui.*;
+import de.uzk.gui.Gui;
+import de.uzk.gui.OGridBagConstraints;
 import de.uzk.markers.Marker;
 import de.uzk.markers.RectMarker;
 
@@ -13,9 +14,9 @@ import java.util.function.Consumer;
 import static de.uzk.Main.imageHandler;
 import static de.uzk.Main.markerHandler;
 
-public class MarkersTab extends TabContent implements ActionTypeListener {
+public class TabMarkers extends CustomTab implements ActionTypeListener {
 
-    public MarkersTab( Gui gui) {
+    public TabMarkers(Gui gui) {
         super(new JPanel(), gui);
         gui.addActionTypeListener(this);
         this.render();
@@ -24,11 +25,8 @@ public class MarkersTab extends TabContent implements ActionTypeListener {
     private void render() {
         this.container.removeAll();
 
-
-
-
         Marker currentMarker = markerHandler.getMarker(imageHandler.getTime());
-        if(currentMarker != null) {
+        if (currentMarker != null) {
             this.container.setLayout(new BorderLayout());
             this.container.add(new JLabel("Edit marker"), BorderLayout.NORTH);
 
@@ -43,7 +41,7 @@ public class MarkersTab extends TabContent implements ActionTypeListener {
             OGridBagConstraints gbc = new OGridBagConstraints();
 
             gbc.setSizeAndWeight(1, 1, 10.0, 0.0);
-            gbc.setPosAndInsets(0,0,0,0,0,0);
+            gbc.setPosAndInsets(0, 0, 0, 0, 0, 0);
             gbc.anchor = OGridBagConstraints.FIRST_LINE_START;
             JButton add = new JButton("Add Marker to current image");
             add.addActionListener(e -> {
@@ -54,7 +52,7 @@ public class MarkersTab extends TabContent implements ActionTypeListener {
 
             this.container.add(add, gbc);
 
-            gbc.setPos(0,10);
+            gbc.setPos(0, 10);
             gbc.fill = GridBagConstraints.BOTH;
             gbc.setSizeAndWeight(0, 10, 0, 10);
             this.container.add(new JLabel("No markers on the current image"), gbc);
@@ -63,10 +61,10 @@ public class MarkersTab extends TabContent implements ActionTypeListener {
     }
 
     private JSpinner createNumberField(int initialValue, Consumer<Integer> setter) {
-        JSpinner spinner = new JSpinner(new SpinnerNumberModel(initialValue,0, Integer.MAX_VALUE, 1));
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel(initialValue, 0, Integer.MAX_VALUE, 1));
 
         spinner.addChangeListener(e -> {
-            setter.accept((Integer)spinner.getModel().getValue());
+            setter.accept((Integer) spinner.getModel().getValue());
             gui.updateUI();
         });
         return spinner;
@@ -78,25 +76,15 @@ public class MarkersTab extends TabContent implements ActionTypeListener {
         OGridBagConstraints gbc = new OGridBagConstraints();
         gbc.ipady = 10;
 
-        JLabel[] labels = {
-                new JLabel("X: "),
-                new JLabel("Y: "),
-                new JLabel("Width: "),
-                new JLabel("Height: "),
-        };
+        JLabel[] labels = {new JLabel("X: "), new JLabel("Y: "), new JLabel("Width: "), new JLabel("Height: "),};
 
-        JSpinner[] spinners = {
-                createNumberField(marker.getX(), marker::setX),
-                createNumberField(marker.getY(),marker::setY),
-                createNumberField(marker.getWidth(), marker::setWidth),
-                createNumberField(marker.getHeight(), marker::setHeight)
-        };
+        JSpinner[] spinners = {createNumberField(marker.getX(), marker::setX), createNumberField(marker.getY(), marker::setY), createNumberField(marker.getWidth(), marker::setWidth), createNumberField(marker.getHeight(), marker::setHeight)};
 
         gbc.fill = OGridBagConstraints.HORIZONTAL;
-        gbc.setSizeAndWeight(1,1,0.3,0);
+        gbc.setSizeAndWeight(1, 1, 0.3, 0);
 
         int y = 0;
-        for(;y < labels.length; y++) {
+        for (; y < labels.length; y++) {
             gbc.gridy = y;
 
             gbc.gridx = 0;

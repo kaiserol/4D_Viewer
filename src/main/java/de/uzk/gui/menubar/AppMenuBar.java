@@ -64,12 +64,12 @@ public class AppMenuBar extends InteractiveContainer<JMenuBar> {
     }
 
     private CustomMenu getMenuWindow() {
-        CustomMenu windowTreeMenu = new CustomMenu(getWord("items.window"));
+        CustomMenu menuWindow = new CustomMenu(getWord("items.window"));
 
         // add language, theme
-        windowTreeMenu.add(new CustomMenuItem(getWord("items.window.changeLanguage"), a -> changeLanguage(), ACTION_CHANGE_LANGUAGE));
-        windowTreeMenu.add(new CustomMenuItem(getWord("items.window.toggleTheme"), a -> GuiUtils.switchThemes(gui), ACTION_TOGGLE_THEME));
-        windowTreeMenu.addSeparator();
+        menuWindow.add(new CustomMenuItem(getWord("items.window.changeLanguage"), a -> changeLanguage(), ACTION_CHANGE_LANGUAGE));
+        menuWindow.add(new CustomMenuItem(getWord("items.window.toggleTheme"), a -> GuiUtils.switchThemes(gui), ACTION_TOGGLE_THEME));
+        menuWindow.addSeparator();
 
         // add font
         CustomMenuItem incrFontItem = new CustomMenuItem(getWord("items.window.fontSizeIncr"));
@@ -84,20 +84,20 @@ public class AppMenuBar extends InteractiveContainer<JMenuBar> {
         restoreFontItem.setAction(updateFontItems(GuiUtils::restoreFont,
                 incrFontItem.getComponent(), decrFontItem.getComponent(), restoreFontItem.getComponent()), ACTION_RESTORE_FONT);
 
-        windowTreeMenu.add(incrFontItem, decrFontItem, restoreFontItem);
+        menuWindow.add(incrFontItem, decrFontItem, restoreFontItem);
         updateFontItems(null,
                 incrFontItem.getComponent(),
                 decrFontItem.getComponent(),
                 restoreFontItem.getComponent()).actionPerformed(null);
 
-        return windowTreeMenu;
+        return menuWindow;
     }
 
     private CustomMenu getMenuDevTools() {
-        CustomMenu devToolsMenu = new CustomMenu(getWord("items.dev-tools"));
-        devToolsMenu.add(new CustomMenuItem(getWord("items.dev-tools.openLogWindow"), a -> new OInfo(gui)));
+        CustomMenu menuDevTools = new CustomMenu(getWord("items.dev-tools"));
+        menuDevTools.add(new CustomMenuItem(getWord("items.dev-tools.openLogWindow"), a -> new OInfo(gui)));
 
-        return devToolsMenu;
+        return menuDevTools;
     }
 
     private ActionListener updateFontItems(Runnable runnable, JComponent incrFontItem, JComponent decrFontItem, JComponent restoreFontItem) {
@@ -130,12 +130,12 @@ public class AppMenuBar extends InteractiveContainer<JMenuBar> {
                 JOptionPane.YES_NO_OPTION);
 
         // set language and save config
+        logger.info("Changing language to '" + language + "'");
         config.setLanguage(language);
         config.saveConfig();
-        if (option == JOptionPane.YES_OPTION) {
-            logger.info("Changing language to '" + language + "'");
 
-            // TODO: Warum wird beim bauen showLoadedImages() 2 mal hintereinander (siehe Logs) aufgerufen?
+        // TODO: Warum wird beim bauen showLoadedImages() 2 mal hintereinander (siehe Logs) aufgerufen?
+        if (option == JOptionPane.YES_OPTION) {
             gui.rebuild();
         }
     }

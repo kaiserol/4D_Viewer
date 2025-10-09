@@ -1,11 +1,13 @@
 package de.uzk.gui.tabs;
 
+import de.uzk.actions.ActionHandler;
 import de.uzk.actions.ActionType;
 import de.uzk.actions.ActionTypeListener;
-import de.uzk.gui.*;
-import de.uzk.actions.ActionHandler;
-import de.uzk.image.ImageLayer;
+import de.uzk.gui.CyclingSpinnerNumberModel;
+import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
+import de.uzk.gui.OGridBagConstraints;
+import de.uzk.image.ImageLayer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,15 +18,15 @@ import java.util.Hashtable;
 import java.util.List;
 
 import static de.uzk.Main.imageHandler;
-import static de.uzk.gui.GuiUtils.FOCUS_COLOR;
 import static de.uzk.config.LanguageHandler.getWord;
+import static de.uzk.gui.GuiUtils.FOCUS_COLOR;
 
-public class NavigationTab extends TabContent implements ActionTypeListener {
+public class TabNav extends CustomTab implements ActionTypeListener {
     private final ActionHandler actionHandler;
     private JSlider timeSlider;
     private JSlider levelSlider;
 
-    public NavigationTab(Gui gui, ActionHandler actionHandler) {
+    public TabNav(Gui gui, ActionHandler actionHandler) {
         super(new JPanel(), gui);
         this.actionHandler = actionHandler;
         gui.addActionTypeListener(this);
@@ -35,9 +37,7 @@ public class NavigationTab extends TabContent implements ActionTypeListener {
         this.container.setLayout(new GridBagLayout());
 
         // GridBagConstraints
-        OGridBagConstraints gbc = new OGridBagConstraints(
-                new Insets(0, 0, 5, 15),
-                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);
+        OGridBagConstraints gbc = new OGridBagConstraints(new Insets(0, 0, 5, 15), GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);
 
         // imageLabel
         JLabel imageLabel = new JLabel(getWord("items.nav.image.layer") + ":");
@@ -98,9 +98,6 @@ public class NavigationTab extends TabContent implements ActionTypeListener {
         // levelSlider
         this.levelSlider = getSlider(ImageLayer.LEVEL);
         this.container.add(this.levelSlider, gbc);
-
-
-
     }
 
     public JSpinner getUnitSpinner(CyclingSpinnerNumberModel spinnerModel, ImageLayer layer) {
@@ -174,7 +171,6 @@ public class NavigationTab extends TabContent implements ActionTypeListener {
     @Override
     public void toggleOn() {
         GuiUtils.setEnabled(this.container, true);
-
         updateSliderValuesSecretly(timeSlider, imageHandler.getTime(), imageHandler.getMaxTime());
         updateSliderValuesSecretly(levelSlider, imageHandler.getLevel(), imageHandler.getMaxLevel());
         updateSliderLabels(ImageLayer.TIME);
@@ -194,13 +190,11 @@ public class NavigationTab extends TabContent implements ActionTypeListener {
     public void update(ImageLayer layer) {
         if (layer == ImageLayer.TIME) {
             // sets only a new value to timeSlider if the slider is not moving
-            if (!timeSlider.getValueIsAdjusting())
-                updateSliderValueSecretly(timeSlider, imageHandler.getTime());
+            if (!timeSlider.getValueIsAdjusting()) updateSliderValueSecretly(timeSlider, imageHandler.getTime());
             updateSliderLabels(ImageLayer.LEVEL);
         } else {
             // sets only a new value to levelSlider if the slider is not moving
-            if (!levelSlider.getValueIsAdjusting())
-                updateSliderValueSecretly(levelSlider, imageHandler.getLevel());
+            if (!levelSlider.getValueIsAdjusting()) updateSliderValueSecretly(levelSlider, imageHandler.getLevel());
             updateSliderLabels(ImageLayer.TIME);
         }
     }
@@ -220,8 +214,6 @@ public class NavigationTab extends TabContent implements ActionTypeListener {
     private void updateSliderLabels(ImageLayer layer) {
         JSlider slider = (layer == ImageLayer.LEVEL) ? levelSlider : timeSlider;
         Dictionary<Integer, JLabel> dictionary = new Hashtable<>();
-
-
 
         // update slider labels
         if (!imageHandler.isEmpty() && layer != null) updateDictionary(layer, dictionary);

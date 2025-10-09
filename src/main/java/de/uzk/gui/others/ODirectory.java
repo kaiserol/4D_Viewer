@@ -3,10 +3,10 @@ package de.uzk.gui.others;
 import de.uzk.actions.ActionType;
 import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.Gui;
+import de.uzk.gui.GuiUtils;
 import de.uzk.gui.InteractiveContainer;
 import de.uzk.image.ImageType;
 import de.uzk.image.LoadingImageListener;
-import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,9 +18,8 @@ import java.io.File;
 import java.util.Objects;
 
 import static de.uzk.Main.*;
-import static de.uzk.image.ImageFileConstants.IMAGE_TYPES;
-import static de.uzk.gui.GuiUtils.ERROR_MSG;
 import static de.uzk.config.LanguageHandler.getWord;
+import static de.uzk.image.ImageFileConstants.IMAGE_TYPES;
 
 public class ODirectory extends InteractiveContainer<JPanel> implements LoadingImageListener, ActionTypeListener {
     private JTextField pathField;
@@ -119,7 +118,7 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
         if (state == JFileChooser.APPROVE_OPTION) {
             if (!fileChooser.getSelectedFile().exists()) {
                 JOptionPane.showMessageDialog(parent, getWord("file.chosenDirNotExisting"),
-                        ERROR_MSG, JOptionPane.ERROR_MESSAGE);
+                        getWord("optionPane.title.error"), JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -160,7 +159,7 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
             if (!startingGui && loadedImages == 0) {
                 JOptionPane.showMessageDialog(gui.getFrame(), getWord("file.chosenDirNoneFiles") + " " +
                                 imageHandler.getImageDetails().getImageType().getTypeDescription() + ".",
-                        ERROR_MSG, JOptionPane.ERROR_MESSAGE);
+                        getWord("optionPane.title.error"), JOptionPane.ERROR_MESSAGE);
             }
 
             if (runIfPathRemained != null) {
@@ -179,13 +178,13 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
     private int openLoadingDialog(JFrame frame, boolean startingGui) {
         this.loadingDialog = new JDialog(frame, true);
         this.loadingDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        loadingDialog.setResizable(false);
+        this.loadingDialog.setResizable(false);
         this.loadingDialog.setTitle(getWord("loading.readingIn"));
         this.loadingDialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (startingGui) {
-                    closeApplication(frame, loadingDialog, () -> finishLoading());
+                    closeApp(loadingDialog, () -> finishLoading());
                 } else if (ODirectory.this.allowInterruptingDownload) {
                     finishLoading();
                 }

@@ -24,16 +24,16 @@ public enum Language {
         return this.name;
     }
 
-    public static Language byLocale(Locale locale) {
-        return byName(locale.getLanguage());
-    }
-
     public static Language byName(String name) {
         for (Language language : Language.values()) {
             if (language.getName().equalsIgnoreCase(name)) return language;
         }
         // fallback to English if no language was found
         return Language.ENGLISH;
+    }
+
+    public static Language getSystemDefault() {
+        return byName(Locale.getDefault().getLanguage());
     }
 
     @Override

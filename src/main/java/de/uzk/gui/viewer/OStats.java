@@ -3,10 +3,10 @@ package de.uzk.gui.viewer;
 import de.uzk.actions.ActionType;
 import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.Gui;
+import de.uzk.gui.GuiUtils;
 import de.uzk.gui.InteractiveContainer;
 import de.uzk.image.ImageFile;
 import de.uzk.image.ImageLayer;
-import de.uzk.gui.GuiUtils;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;

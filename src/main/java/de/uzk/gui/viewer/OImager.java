@@ -4,8 +4,6 @@ import de.uzk.actions.ActionType;
 import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.*;
 import de.uzk.image.ImageLayer;
-import de.uzk.gui.GuiUtils;
-import de.uzk.gui.Icons;
 import de.uzk.markers.Marker;
 
 import javax.swing.*;
@@ -42,15 +40,15 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
         if (this.currentImage != null) {
             double scaleFactor = GuiUtils.getImageScaleFactor(this.container, this.currentImage);
 
-            int width = (int)(this.currentImage.getWidth() * scaleFactor);
-            int height = (int)(this.currentImage.getHeight() * scaleFactor);
+            int width = (int) (this.currentImage.getWidth() * scaleFactor);
+            int height = (int) (this.currentImage.getHeight() * scaleFactor);
             int x = (this.container.getWidth() - width) / 2;
             int y = (this.container.getHeight() - height) / 2;
 
             g2d.drawImage(currentImage, x, y, width, height, null);
 
             Marker marker = markerHandler.getMarker(imageHandler.getTime());
-            if(marker != null) {
+            if (marker != null) {
                 marker.draw(g2d, new Rectangle(x, y, width, height), scaleFactor);
             }
         } else {
@@ -63,7 +61,6 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
             g2d.drawString(noImagesText, x, y);
         }
     }
-
 
 
     @Override
@@ -112,8 +109,8 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
         if (savePath != null) {
             JOptionPane.showMessageDialog(null,
                     "<html>" + getWord("optionPane.screenshotTakenMsg") + "<br>" +
-                            getWord("file.path") + ": " + savePath+ "</html>",
-                    getWord("optionPane.titles.info"), JOptionPane.INFORMATION_MESSAGE);
+                            getWord("file.path") + ": " + savePath + "</html>",
+                    getWord("optionPane.title.info"), JOptionPane.INFORMATION_MESSAGE);
             gui.handleAction(ActionType.UPDATE_SCREENSHOT_COUNTER);
         }
     }
