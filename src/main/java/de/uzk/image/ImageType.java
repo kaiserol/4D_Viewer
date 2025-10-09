@@ -5,7 +5,6 @@ import de.uzk.utils.StringUtils;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class ImageType {
-    private static final String FILES = getWord("file.files");
     private String type;
     private String[] fileExtensions;
 
@@ -23,7 +22,7 @@ public class ImageType {
     }
 
     public String getTypeDescription() {
-        return type + " " + FILES;
+        return type + " " + getWord("file.files");
     }
 
     private void setFileExtensions(String[] types) {

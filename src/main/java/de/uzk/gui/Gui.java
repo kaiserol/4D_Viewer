@@ -80,6 +80,7 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
             addContent();
 
             // set visible
+            this.container.pack();
             this.container.setLocationRelativeTo(null);
             this.container.setVisible(true);
         });
@@ -92,8 +93,6 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
         handleAction(ActionType.LOAD_IMAGES);
         // updateUI
         updateUI();
-        // pack
-        this.container.pack();
     }
 
     private void initContent() {
