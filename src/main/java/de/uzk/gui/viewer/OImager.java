@@ -33,9 +33,7 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
     }
 
     private void paintImage(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        Graphics2D g2d = GuiUtils.createHighQualityGraphics2D(g);
 
         if (this.currentImage != null) {
             double scaleFactor = GuiUtils.getImageScaleFactor(this.container, this.currentImage);
@@ -106,13 +104,7 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
 
     private void takeScreenshot() {
         String savePath = config.saveScreenshot(this.originalImage);
-        if (savePath != null) {
-            JOptionPane.showMessageDialog(null,
-                    "<html>" + getWord("optionPane.screenshotTakenMsg") + "<br>" +
-                            getWord("file.path") + ": " + savePath + "</html>",
-                    getWord("optionPane.title.info"), JOptionPane.INFORMATION_MESSAGE);
-            gui.handleAction(ActionType.UPDATE_SCREENSHOT_COUNTER);
-        }
+        if (savePath != null) gui.handleAction(ActionType.UPDATE_SCREENSHOT_COUNTER);
     }
 
     @Override

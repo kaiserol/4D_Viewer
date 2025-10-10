@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 import static de.uzk.Main.imageHandler;
-import static de.uzk.actions.ActionUtils.*;
+import static de.uzk.actions.Actions.*;
 import static de.uzk.config.LanguageHandler.getWord;
 import static de.uzk.gui.Icons.*;
 

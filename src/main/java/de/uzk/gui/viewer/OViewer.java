@@ -111,11 +111,11 @@ public class OViewer extends InteractiveContainer<JPanel> implements ActionTypeL
     }
 
     private void clearImages() {
-        int choice = JOptionPane.showConfirmDialog(gui.getFrame(),
-                getWord("optionPane.clearAllImagesMsg"), getWord("optionPane.title.confirm"),
+        int option = JOptionPane.showConfirmDialog(gui.getFrame(),
+                getWord("optionPane.directory.clear"), getWord("optionPane.title.confirm"),
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
-        if (choice == JOptionPane.YES_OPTION) gui.toggleOff();
+        if (option == JOptionPane.YES_OPTION) gui.toggleOff();
         else this.container.requestFocusInWindow();
     }
 

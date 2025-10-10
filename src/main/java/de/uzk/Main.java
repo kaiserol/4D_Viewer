@@ -44,12 +44,13 @@ public class Main {
     public static void closeApp(Window window, Runnable runForClosing) {
         if (window instanceof JDialog || config.isAskAgainClosingWindow()) {
             boolean checkBoxAllowed = config.isAskAgainClosingWindow();
-            JCheckBox checkBox = new JCheckBox(getWord("closeApp.dont_ask_again"));
-            Object[] message = new Object[]{getWord("closeApp.question"), checkBoxAllowed ? checkBox : null};
+            JCheckBox checkBox = new JCheckBox(getWord("optionPane.closeApp.dont_ask_again"));
+            Object[] message = new Object[]{getWord("optionPane.closeApp.question"), checkBoxAllowed ? checkBox : null};
 
-            int choice = JOptionPane.showConfirmDialog(window, message, getWord("optionPane.title.confirm"),
+            int option = JOptionPane.showConfirmDialog(
+                    window, message, getWord("optionPane.title.confirm"),
                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null);
-            if (choice != JOptionPane.YES_OPTION) return;
+            if (option != JOptionPane.YES_OPTION) return;
             else if (checkBox.isSelected()) config.setAskAgainClosingWindow(false);
         }
         if (runForClosing != null) runForClosing.run();

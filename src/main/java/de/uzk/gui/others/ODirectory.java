@@ -72,7 +72,7 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
         gbc.insets = new Insets(0, 0, 0, 0);
 
         // dirButton
-        JButton pathButton = new JButton(getWord("file.chooseDirText"));
+        JButton pathButton = new JButton(getWord("button.chooseDirectory"));
         pathButton.addActionListener(a -> openDirectoryDialog(gui.getFrame()));
         container.add(pathButton, gbc);
     }
@@ -104,7 +104,7 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
 
         // Dialogtitel dynamisch setzen
         String dialogTitle = String.format("%s (%s)",
-                getWord("file.chooseDirTitle"),
+                getWord("button.chooseDirectory"),
                 imageHandler.getImageDetails().getImageType().getTypeDescription());
         fileChooser.setDialogTitle(dialogTitle);
 
@@ -137,7 +137,7 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
         int state = fileChooser.showOpenDialog(parent);
         if (state == JFileChooser.APPROVE_OPTION) {
             if (!fileChooser.getSelectedFile().exists()) {
-                JOptionPane.showMessageDialog(parent, getWord("file.chosenDirNotExisting"),
+                JOptionPane.showMessageDialog(parent, getWord("optionPane.directory.notExisting"),
                         getWord("optionPane.title.error"), JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -177,7 +177,7 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
             gui.toggleOn();
         } else {
             if (!startingGui && loadedImages == 0) {
-                JOptionPane.showMessageDialog(gui.getFrame(), getWord("file.chosenDirNoneFiles") + " " +
+                JOptionPane.showMessageDialog(gui.getFrame(), getWord("optionPane.directory.hasNoFiles") + " " +
                                 imageHandler.getImageDetails().getImageType().getTypeDescription() + ".",
                         getWord("optionPane.title.error"), JOptionPane.ERROR_MESSAGE);
             }
@@ -214,8 +214,8 @@ public class ODirectory extends InteractiveContainer<JPanel> implements LoadingI
 
         // titlesPanel
         JPanel labelPanelWest = new JPanel(new BorderLayout(0, 5));
-        labelPanelWest.add(new JLabel(htmlStartBold + getWord("file.dir") + ":" + htmlEndBold), BorderLayout.NORTH);
-        labelPanelWest.add(new JLabel(htmlStartBold + getWord("file") + ":" + htmlEndBold), BorderLayout.SOUTH);
+        labelPanelWest.add(new JLabel(htmlStartBold + getWord("file.type.directory") + ":" + htmlEndBold), BorderLayout.NORTH);
+        labelPanelWest.add(new JLabel(htmlStartBold + getWord("file.type.file") + ":" + htmlEndBold), BorderLayout.SOUTH);
 
         // labelPanelEast
         JPanel labelPanelEast = new JPanel(new BorderLayout(0, 5));

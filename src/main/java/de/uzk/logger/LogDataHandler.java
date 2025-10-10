@@ -10,12 +10,10 @@ import static de.uzk.logger.LogLevel.*;
 public class LogDataHandler {
     private final String name;
     private final List<LogData> logData;
-    private boolean open;
 
     public LogDataHandler(String name) {
         this.name = name;
         this.logData = new ArrayList<>();
-        this.open = true;
     }
 
     public String getName() {
@@ -52,20 +50,10 @@ public class LogDataHandler {
     }
 
     private void log(LogLevel level, String message) {
-        if (this.open) {
-            LogData logData = new LogData(level, message + StringUtils.NEXT_LINE);
-            if (level != null) {
-                this.logData.add(logData);
-                System.out.print(logData);
-            }
+        LogData logData = new LogData(level, message + StringUtils.NEXT_LINE);
+        if (level != null) {
+            this.logData.add(logData);
+            System.out.print(logData);
         }
-    }
-
-    public void close() {
-        this.open = false;
-    }
-
-    public void open() {
-        this.open = true;
     }
 }

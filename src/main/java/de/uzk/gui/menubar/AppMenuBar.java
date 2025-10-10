@@ -3,10 +3,7 @@ package de.uzk.gui.menubar;
 import de.uzk.actions.ActionHandler;
 import de.uzk.config.ConfigHandler;
 import de.uzk.config.Language;
-import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
-import de.uzk.gui.Icons;
-import de.uzk.gui.InteractiveContainer;
+import de.uzk.gui.*;
 import de.uzk.gui.viewer.OInfo;
 
 import javax.swing.*;
@@ -14,14 +11,16 @@ import java.awt.event.ActionListener;
 
 import static de.uzk.Main.config;
 import static de.uzk.Main.logger;
-import static de.uzk.actions.ActionUtils.*;
+import static de.uzk.actions.Actions.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AppMenuBar extends InteractiveContainer<JMenuBar> {
     private CustomMenuBar menuBar;
+    private final DialogDisclaimer dialogDisclaimer;
 
     public AppMenuBar(Gui gui, ActionHandler actionHandler) {
         super(new JMenuBar(), gui);
+        this.dialogDisclaimer = new DialogDisclaimer(gui.getFrame());
         init(actionHandler);
     }
 
@@ -67,76 +66,101 @@ public class AppMenuBar extends InteractiveContainer<JMenuBar> {
         CustomMenu menuWindow = new CustomMenu(getWord("items.window"));
 
         // add language, theme
-        menuWindow.add(new CustomMenuItem(getWord("items.window.changeLanguage"), a -> changeLanguage(), ACTION_CHANGE_LANGUAGE));
-        menuWindow.add(new CustomMenuItem(getWord("items.window.toggleTheme"), a -> GuiUtils.switchThemes(gui), ACTION_TOGGLE_THEME));
+        menuWindow.add(new CustomMenuItem(getWord("items.window.selectLanguage"), a -> selectLanguage()));
+        menuWindow.add(new CustomMenuItem(getWord("items.window.toggleTheme"), a -> GuiUtils.switchThemes(gui)));
         menuWindow.addSeparator();
 
         // add font
-        CustomMenuItem incrFontItem = new CustomMenuItem(getWord("items.window.fontSizeIncr"));
         CustomMenuItem decrFontItem = new CustomMenuItem(getWord("items.window.fontSizeDecr"));
         CustomMenuItem restoreFontItem = new CustomMenuItem(getWord("items.window.fontSizeRestore"));
+        CustomMenuItem incrFontItem = new CustomMenuItem(getWord("items.window.fontSizeIncr"));
 
         // set font Actions
-        incrFontItem.setAction(updateFontItems(GuiUtils::incrFont,
-                incrFontItem.getComponent(), decrFontItem.getComponent(), restoreFontItem.getComponent()), ACTION_INCREASE_FONT, ACTION_INCREASE_FONT_2);
         decrFontItem.setAction(updateFontItems(GuiUtils::decrFont,
-                incrFontItem.getComponent(), decrFontItem.getComponent(), restoreFontItem.getComponent()), ACTION_DECREASE_FONT, ACTION_DECREASE_FONT_2);
+                decrFontItem.getComponent(), restoreFontItem.getComponent(), incrFontItem.getComponent()), ACTION_DECREASE_FONT, ACTION_DECREASE_FONT_2);
         restoreFontItem.setAction(updateFontItems(GuiUtils::restoreFont,
-                incrFontItem.getComponent(), decrFontItem.getComponent(), restoreFontItem.getComponent()), ACTION_RESTORE_FONT);
+                decrFontItem.getComponent(), restoreFontItem.getComponent(), incrFontItem.getComponent()), ACTION_RESTORE_FONT);
+        incrFontItem.setAction(updateFontItems(GuiUtils::incrFont,
+                decrFontItem.getComponent(), restoreFontItem.getComponent(), incrFontItem.getComponent()), ACTION_INCREASE_FONT, ACTION_INCREASE_FONT_2);
 
-        menuWindow.add(incrFontItem, decrFontItem, restoreFontItem);
+        menuWindow.add(decrFontItem, restoreFontItem, incrFontItem);
         updateFontItems(null,
-                incrFontItem.getComponent(),
-                decrFontItem.getComponent(),
-                restoreFontItem.getComponent()).actionPerformed(null);
+                decrFontItem.getComponent(), restoreFontItem.getComponent(), incrFontItem.getComponent()).actionPerformed(null);
+        menuWindow.addSeparator();
+
+        // add disclaimer
+        menuWindow.add(new CustomMenuItem(getWord("items.window.showDisclaimer"), a -> dialogDisclaimer.show()));
 
         return menuWindow;
     }
 
     private CustomMenu getMenuDevTools() {
         CustomMenu menuDevTools = new CustomMenu(getWord("items.dev-tools"));
-        menuDevTools.add(new CustomMenuItem(getWord("items.dev-tools.openLogWindow"), a -> new OInfo(gui)));
+        menuDevTools.add(new CustomMenuItem(getWord("items.dev-tools.showLogWindow"), a -> new OInfo(gui)));
 
         return menuDevTools;
     }
 
-    private ActionListener updateFontItems(Runnable runnable, JComponent incrFontItem, JComponent decrFontItem, JComponent restoreFontItem) {
+    private ActionListener updateFontItems(Runnable runnable, JComponent decrFontItem, JComponent restoreFontItem, JComponent incrFontItem) {
         return a -> {
             if (runnable != null) runnable.run();
             int fontSize = config.getFontSize();
-            incrFontItem.setEnabled(fontSize != ConfigHandler.MAX_FONT_SIZE);
             decrFontItem.setEnabled(fontSize != ConfigHandler.MIN_FONT_SIZE);
             restoreFontItem.setEnabled(fontSize != ConfigHandler.DEFAULT_FONT_SIZE);
+            incrFontItem.setEnabled(fontSize != ConfigHandler.MAX_FONT_SIZE);
         };
     }
 
-    private void changeLanguage() {
+    private void selectLanguage() {
         Language oldLanguage = config.getLanguage();
         JComboBox<Language> selectBox = new JComboBox<>(Language.values());
         selectBox.setSelectedItem(oldLanguage);
 
-        // show dialog
-        int option = JOptionPane.showConfirmDialog(AppMenuBar.this.gui.getFrame(),
-                selectBox,
-                getWord("items.window.changeLanguage"),
-                JOptionPane.OK_CANCEL_OPTION);
-        Language language = (Language) selectBox.getSelectedItem();
-        if (language == null || oldLanguage == language || option != JOptionPane.OK_OPTION) return;
+        // Benutzerdefinierte Buttons
+        JButton okButton = new JButton(getWord("optionPane.button.ok"));
+        JButton cancelButton = new JButton(getWord("optionPane.button.cancel"));
+        okButton.setEnabled(false);
 
-        // show dialog
-        option = JOptionPane.showConfirmDialog(AppMenuBar.this.gui.getFrame(),
-                getWord("items.window.languageChanged.body"),
-                getWord("items.window.languageChanged.title"),
-                JOptionPane.YES_NO_OPTION);
+        // Wenn sich die Auswahl ändert → Button aktivieren/deaktivieren
+        selectBox.addActionListener(a -> {
+            Language selected = (Language) selectBox.getSelectedItem();
+            okButton.setEnabled(selected != null && selected != oldLanguage);
+        });
 
-        // set language and save config
-        logger.info("Changing language from '" + oldLanguage + "' to '" + language + "'");
-        config.setLanguage(language);
+        // Inhalte & Optionen des Dialogs
+        Object[] message = {selectBox};
+        Object[] options = {okButton, cancelButton};
+
+        // JOptionPane erstellen
+        JOptionPane pane = new JOptionPane(
+                message, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION,
+                null, options, okButton
+        );
+        JDialog dialog = pane.createDialog(gui.getFrame(), getWord("items.window.selectLanguage"));
+
+        // Aktionen der Buttons
+        okButton.addActionListener(a -> {
+            pane.setValue(okButton);
+            dialog.dispose();
+        });
+        cancelButton.addActionListener(a -> {
+            pane.setValue(cancelButton);
+            dialog.dispose();
+        });
+
+        // Dialog anzeigen
+        dialog.setVisible(true);
+
+        // Ergebnis auswerten
+        Object selectedValue = pane.getValue();
+        Language newLanguage = (Language) selectBox.getSelectedItem();
+        if (selectedValue != okButton || newLanguage == null || oldLanguage == newLanguage) return;
+
+        // Sprache setzen und speichern
+        logger.info("Changing language from '" + oldLanguage + "' to '" + newLanguage + "'");
+        config.setLanguage(newLanguage);
         config.saveConfig();
-
-        if (option == JOptionPane.YES_OPTION) {
-            gui.rebuild();
-        }
+        gui.rebuild();
     }
 
     @Override

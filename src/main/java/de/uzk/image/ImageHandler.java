@@ -167,8 +167,8 @@ public class ImageHandler {
     }
 
     public void loadImageFiles(LoadingImageListener progress) {
-        File[] files = imageFolder.listFiles();
         logger.info("Loading Image-Files from '" + getImageDir() + "'...");
+        File[] files = imageFolder.listFiles();
 
         // imageFiles
         int filesCount = files != null ? files.length : 0;

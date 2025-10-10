@@ -7,12 +7,10 @@ import com.formdev.flatlaf.util.SystemInfo;
 import de.uzk.config.ConfigHandler;
 import de.uzk.image.ImageDetails;
 import de.uzk.utils.NumberUtils;
-import org.intellij.lang.annotations.MagicConstant;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 import static de.uzk.Main.config;
@@ -42,7 +40,7 @@ public final class GuiUtils {
 
         if (SystemInfo.isMacOS) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("apple.awt.application.name", getWord("app.title"));
+            System.setProperty("apple.awt.application.name", getWord("app.name"));
             System.setProperty("apple.awt.application.appearance", "system");
         }
 
@@ -109,6 +107,13 @@ public final class GuiUtils {
         return borderColor;
     }
 
+    public static void decrFont() {
+        Font newFont = font.deriveFont((float) font.getSize() - 1);
+        if (newFont.getSize() >= ConfigHandler.MIN_FONT_SIZE) {
+            setFont(newFont);
+        }
+    }
+
     public static void restoreFont() {
         Font newFont = font.deriveFont((float) ConfigHandler.DEFAULT_FONT_SIZE);
         setFont(newFont);
@@ -117,13 +122,6 @@ public final class GuiUtils {
     public static void incrFont() {
         Font newFont = font.deriveFont((float) (font.getSize() + 1));
         if (newFont.getSize() <= ConfigHandler.MAX_FONT_SIZE) {
-            setFont(newFont);
-        }
-    }
-
-    public static void decrFont() {
-        Font newFont = font.deriveFont((float) font.getSize() - 1);
-        if (newFont.getSize() >= ConfigHandler.MIN_FONT_SIZE) {
             setFont(newFont);
         }
     }
@@ -153,52 +151,66 @@ public final class GuiUtils {
         FlatLaf.updateUI();
     }
 
-    public static void updateFontSize(JComponent component, int factor, @MagicConstant(flags = {Font.PLAIN, Font.BOLD, Font.ITALIC}) int style) {
+    public static void updateFontSize(JComponent component, int factor, int style) {
         float newSize = (float) font.getSize() + factor;
         component.setFont(font.deriveFont(newSize).deriveFont(style));
     }
 
+    public static Graphics2D createHighQualityGraphics2D(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        return g2d;
+    }
+
     public static BufferedImage getEditedImage(BufferedImage image, ImageDetails imageDetails, boolean jpgImage) {
-        int imageType = jpgImage ? image.getType() : BufferedImage.TYPE_INT_ARGB;
-        return getRotatedImage(getMirroredImage(image, imageDetails.isMirrorX(), imageDetails.isMirrorY(), imageType), imageDetails.getRotation(), imageType);
+        int imageType = jpgImage ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+
+        // Spiegelung & Rotation
+        BufferedImage mirrored = getMirroredImage(image, imageDetails.isMirrorX(), imageDetails.isMirrorY(), imageType);
+        return getRotatedImage(mirrored, imageDetails.getRotation(), imageType);
     }
 
     private static BufferedImage getMirroredImage(BufferedImage image, boolean mirrorX, boolean mirrorY, int imageType) {
         if (!mirrorX && !mirrorY) return image;
 
-        final int width = image.getWidth();
-        final int height = image.getHeight();
-
+        int width = image.getWidth();
+        int height = image.getHeight();
         BufferedImage mirroredImage = new BufferedImage(width, height, imageType);
-        if (mirrorX) {
-            if (mirrorY) mirroredImage.getGraphics().drawImage(image, 0, 0, width, height, width, height, 0, 0, null);
-            else mirroredImage.getGraphics().drawImage(image, 0, 0, width, height, width, 0, 0, height, null);
-        } else mirroredImage.getGraphics().drawImage(image, 0, 0, width, height, 0, height, width, 0, null);
+        Graphics2D g2d = createHighQualityGraphics2D(mirroredImage.getGraphics());
 
+        AffineTransform at = new AffineTransform();
+        at.scale(mirrorX ? -1 : 1, mirrorY ? -1 : 1);
+        at.translate(mirrorX ? -width : 0, mirrorY ? -height : 0);
+
+        g2d.drawImage(image, at, null);
+        g2d.dispose();
         return mirroredImage;
     }
 
     private static BufferedImage getRotatedImage(BufferedImage image, int rotation, int imageType) {
         if (rotation % 360 == 0) return image;
-        if (rotation < 0) rotation = 360 - (rotation % 360);
-        final int w = image.getWidth();
-        final int h = image.getHeight();
+
+        int width = image.getWidth();
+        int height = image.getHeight();
 
         double radians = Math.toRadians(rotation);
-
         double sin = Math.abs(Math.sin(radians));
         double cos = Math.abs(Math.cos(radians));
 
-        int newWidth = (int) Math.floor(w * cos + h * sin);
-        int newHeight = (int) Math.floor(h * cos + w * sin);
+        int newWidth = (int) Math.floor(width * cos + height * sin);
+        int newHeight = (int) Math.floor(height * cos + width * sin);
 
         BufferedImage rotatedImage = new BufferedImage(newWidth, newHeight, imageType);
-        AffineTransform at = new AffineTransform();
-        at.translate((newWidth - w) / 2.0, (newHeight - h) / 2.0);
-        at.rotate(radians, w / 2.0, h / 2.0);
+        Graphics2D g2d = createHighQualityGraphics2D(rotatedImage.getGraphics());
 
-        AffineTransformOp op = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
-        rotatedImage = op.filter(image, rotatedImage);
+        // Zentrieren & rotieren
+        AffineTransform at = new AffineTransform();
+        at.translate((newWidth - width) / 2.0, (newHeight - height) / 2.0);
+        at.rotate(radians, width / 2.0, height / 2.0);
+        g2d.drawRenderedImage(image, at);
+        g2d.dispose();
 
         return rotatedImage;
     }

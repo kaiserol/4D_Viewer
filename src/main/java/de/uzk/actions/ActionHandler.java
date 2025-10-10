@@ -9,9 +9,14 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import static de.uzk.Main.imageHandler;
-import static de.uzk.actions.ActionUtils.*;
+import static de.uzk.actions.Actions.*;
 
 public class ActionHandler extends KeyAdapter implements MouseWheelListener {
+    // delay in ms
+    private static final long MUCH_COMPUTING_TIME_DELAY = 80;
+    private static final long KEY_PRESS_DELAY = 50;
+    private static final long MOUSE_WHEEL_DELAY = 25;
+
     private final Gui gui;
     private long lastKeyPressTime = 0;
     private long lastMouseWheelTime = 0;

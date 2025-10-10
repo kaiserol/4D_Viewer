@@ -11,7 +11,7 @@ import java.awt.*;
 
 import static de.uzk.Main.config;
 import static de.uzk.Main.imageHandler;
-import static de.uzk.actions.ActionUtils.ACTION_SCREENSHOT;
+import static de.uzk.actions.Actions.ACTION_SCREENSHOT;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class TabEdit extends CustomTab implements ActionTypeListener, WindowFocusListener {

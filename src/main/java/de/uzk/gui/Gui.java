@@ -5,7 +5,6 @@ import de.uzk.actions.ActionType;
 import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.gui.others.ODirectory;
-import de.uzk.gui.others.OImprint;
 import de.uzk.gui.tabs.AreaTabs;
 import de.uzk.gui.viewer.OViewer;
 import de.uzk.image.ImageLayer;
@@ -30,7 +29,7 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
     private boolean windowInitialized;
 
     public Gui() {
-        super(new JFrame(getWord("app.title")), null);
+        super(new JFrame(getWord("app.name")), null);
         this.toggleListeners = new ArrayList<>();
         this.updateImageListeners = new ArrayList<>();
         this.updateUIListeners = new ArrayList<>();
@@ -44,7 +43,7 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
     public void rebuild() {
         this.container.getContentPane().removeAll();
 
-        // Verhindert dass alte UI objekte weiterleben und auf events reagieren
+        // Verhindert, dass alte UI Objekte weiterleben und auf Events reagieren
         this.toggleListeners.clear();
         this.updateImageListeners.clear();
         this.updateUIListeners.clear();
@@ -80,7 +79,6 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
             addContent();
 
             // set visible
-            this.container.pack();
             this.container.setLocationRelativeTo(null);
             this.container.setVisible(true);
         });
@@ -93,6 +91,7 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
         handleAction(ActionType.LOAD_IMAGES);
         // updateUI
         updateUI();
+        this.container.pack();
     }
 
     private void initContent() {
@@ -107,24 +106,19 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
         ODirectory path = new ODirectory(this);
         mainPanel.add(path.getContainer(), BorderLayout.NORTH);
 
-        // splitPane
+        // splitPane (areaTabs, viewer)
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setOneTouchExpandable(true);
 
-        // areaTabs
         AreaTabs areaTabs = new AreaTabs(this, actionHandler);
-        splitPane.add(areaTabs.getContainer());
-
-        // viewer
         OViewer viewer = new OViewer(this, actionHandler);
+        splitPane.add(areaTabs.getContainer());
         splitPane.add(viewer.getContainer());
-
-        // splitPane
         mainPanel.add(splitPane, BorderLayout.CENTER);
 
-        // imprint
-        OImprint imprint = new OImprint(this);
-        mainPanel.add(imprint.getContainer(), BorderLayout.SOUTH);
+        // disclaimer
+        AreaDisclaimerRightOfUse areaDisclaimer = new AreaDisclaimerRightOfUse(this);
+        mainPanel.add(areaDisclaimer.getContainer(), BorderLayout.SOUTH);
         this.container.add(mainPanel);
 
         // menuBar
