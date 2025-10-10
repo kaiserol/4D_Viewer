@@ -70,9 +70,9 @@ public class DialogLogViewer {
     }
 
     private void loadDialogTabs() {
-        tabs.add("Logs", getLogsPanel());
+        tabs.add(getWord("dialog.logViewer.logs"), getLogsPanel());
         if (imageHandler.getMissingImagesCount() > 0) {
-            tabs.add("Missing Images", getMissingImagesPanel());
+            tabs.add(getWord("dialog.logViewer.missingImages"), getMissingImagesPanel());
         }
     }
 

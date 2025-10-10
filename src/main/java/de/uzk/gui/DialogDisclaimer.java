@@ -15,6 +15,9 @@ public class DialogDisclaimer {
 
     public DialogDisclaimer(JFrame frame) {
         this.dialog = new JDialog(frame, getWord("dialog.disclaimer"), true);
+    }
+
+    public void show() {
         this.dialog.setLayout(new BorderLayout(0, 0));
         this.dialog.setResizable(false);
 
@@ -23,9 +26,6 @@ public class DialogDisclaimer {
 
         JPanel copyrightPanel = createCopyRightPanel();
         this.dialog.add(copyrightPanel, BorderLayout.SOUTH);
-    }
-
-    public void show() {
         this.dialog.pack();
         this.dialog.setLocationRelativeTo(this.dialog.getOwner());
         this.dialog.setVisible(true);
@@ -80,7 +80,7 @@ public class DialogDisclaimer {
     private JPanel createCopyRightPanel() {
         JPanel copyrightPanel = new JPanel();
         copyrightPanel.setBorder(new CompoundBorder(new EmptyBorder(0, 10, 0, 10),
-                new CompoundBorder(new MatteBorder(1, 0, 0, 0, Color.GRAY),
+                new CompoundBorder(new MatteBorder(1, 0, 0, 0, GuiUtils.getBorderColor()),
                         new EmptyBorder(10, 0, 10, 0))));
         copyrightPanel.setLayout(new BorderLayout());
 

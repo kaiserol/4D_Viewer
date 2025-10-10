@@ -1,6 +1,6 @@
 package de.uzk.utils;
 
-public class NumberUtils {
+public final class NumberUtils {
     private NumberUtils() {
     }
 

@@ -5,7 +5,7 @@ import org.intellij.lang.annotations.MagicConstant;
 import java.awt.*;
 import java.io.File;
 
-public class StringUtils {
+public final class StringUtils {
     public static final String FILE_SEP = File.separator;
     public static final String NEXT_LINE = System.lineSeparator();
 
