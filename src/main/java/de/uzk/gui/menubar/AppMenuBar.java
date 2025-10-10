@@ -4,7 +4,8 @@ import de.uzk.actions.ActionHandler;
 import de.uzk.config.ConfigHandler;
 import de.uzk.config.Language;
 import de.uzk.gui.*;
-import de.uzk.gui.viewer.OInfo;
+import de.uzk.gui.DialogLogViewer;
+import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -14,13 +15,15 @@ import static de.uzk.Main.logger;
 import static de.uzk.actions.Actions.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class AppMenuBar extends InteractiveContainer<JMenuBar> {
+public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     private CustomMenuBar menuBar;
     private final DialogDisclaimer dialogDisclaimer;
+    private final DialogLogViewer dialogLogViewer;
 
     public AppMenuBar(Gui gui, ActionHandler actionHandler) {
         super(new JMenuBar(), gui);
         this.dialogDisclaimer = new DialogDisclaimer(gui.getFrame());
+        this.dialogLogViewer = new DialogLogViewer(gui.getFrame());
         init(actionHandler);
     }
 
@@ -29,13 +32,11 @@ public class AppMenuBar extends InteractiveContainer<JMenuBar> {
         this.menuBar.add(getMenuEdit(actionHandler));
         this.menuBar.add(getMenuNavigate(actionHandler));
         this.menuBar.add(getMenuWindow());
-        this.menuBar.add(getMenuDevTools());
     }
 
     private CustomMenu getMenuEdit(ActionHandler actionHandler) {
         CustomMenu menuEdit = new CustomMenu(getWord("items.edit"), true);
 
-        // pin time, turn image left, right
         menuEdit.add(new CustomMenuItem(getWord("items.edit.pinTime"), Icons.ICON_PIN,
                 a -> actionHandler.executeEdit(ACTION_PIN_TIME), ACTION_PIN_TIME));
         menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageLeft"), Icons.ICON_TURN_LEFT,
@@ -65,17 +66,16 @@ public class AppMenuBar extends InteractiveContainer<JMenuBar> {
     private CustomMenu getMenuWindow() {
         CustomMenu menuWindow = new CustomMenu(getWord("items.window"));
 
-        // add language, theme
+        // language, theme
         menuWindow.add(new CustomMenuItem(getWord("items.window.selectLanguage"), a -> selectLanguage()));
         menuWindow.add(new CustomMenuItem(getWord("items.window.toggleTheme"), a -> GuiUtils.switchThemes(gui)));
         menuWindow.addSeparator();
 
-        // add font
+        // font: decrease, restore, increase
         CustomMenuItem decrFontItem = new CustomMenuItem(getWord("items.window.fontSizeDecr"));
         CustomMenuItem restoreFontItem = new CustomMenuItem(getWord("items.window.fontSizeRestore"));
         CustomMenuItem incrFontItem = new CustomMenuItem(getWord("items.window.fontSizeIncr"));
 
-        // set font Actions
         decrFontItem.setAction(updateFontItems(GuiUtils::decrFont,
                 decrFontItem.getComponent(), restoreFontItem.getComponent(), incrFontItem.getComponent()), ACTION_DECREASE_FONT, ACTION_DECREASE_FONT_2);
         restoreFontItem.setAction(updateFontItems(GuiUtils::restoreFont,
@@ -88,17 +88,11 @@ public class AppMenuBar extends InteractiveContainer<JMenuBar> {
                 decrFontItem.getComponent(), restoreFontItem.getComponent(), incrFontItem.getComponent()).actionPerformed(null);
         menuWindow.addSeparator();
 
-        // add disclaimer
-        menuWindow.add(new CustomMenuItem(getWord("items.window.showDisclaimer"), a -> dialogDisclaimer.show()));
+        // disclaimer, logViewer
+        menuWindow.add(new CustomMenuItem(getWord("items.window.showDisclaimer"), a -> dialogDisclaimer.show(), ACTION_SHOW_DISCLAIMER));
+        menuWindow.add(new CustomMenuItem(getWord("items.window.showLogViewer"), a -> dialogLogViewer.show(), ACTION_SHOW_LOG_VIEWER));
 
         return menuWindow;
-    }
-
-    private CustomMenu getMenuDevTools() {
-        CustomMenu menuDevTools = new CustomMenu(getWord("items.dev-tools"));
-        menuDevTools.add(new CustomMenuItem(getWord("items.dev-tools.showLogWindow"), a -> new OInfo(gui)));
-
-        return menuDevTools;
     }
 
     private ActionListener updateFontItems(Runnable runnable, JComponent decrFontItem, JComponent restoreFontItem, JComponent incrFontItem) {

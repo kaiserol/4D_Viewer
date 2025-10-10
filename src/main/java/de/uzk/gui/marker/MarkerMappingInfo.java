@@ -1,8 +1,8 @@
 package de.uzk.gui.marker;
 
 import de.uzk.actions.ActionType;
+import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
-import de.uzk.gui.InteractiveContainer;
 import de.uzk.gui.OGridBagConstraints;
 import de.uzk.image.ImageLayer;
 import de.uzk.markers.Marker;
@@ -14,7 +14,7 @@ import java.awt.*;
 import static de.uzk.Main.imageHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class MarkerMappingInfo extends InteractiveContainer<JPanel> {
+public class MarkerMappingInfo extends AreaContainerInteractive<JPanel> {
 
     private final MarkerMapping mapping;
 

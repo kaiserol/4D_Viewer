@@ -1,8 +1,10 @@
 package de.uzk.gui.viewer;
 
 import de.uzk.actions.ActionType;
-import de.uzk.actions.ActionTypeListener;
-import de.uzk.gui.*;
+import de.uzk.gui.AreaContainerInteractive;
+import de.uzk.gui.Gui;
+import de.uzk.gui.GuiUtils;
+import de.uzk.gui.Icons;
 import de.uzk.image.ImageLayer;
 import de.uzk.markers.MarkerMapping;
 
@@ -15,7 +17,7 @@ import java.util.List;
 import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class OImager extends InteractiveContainer<JPanel> implements ActionTypeListener, WindowFocusListener {
+public class OImager extends AreaContainerInteractive<JPanel> {
     private BufferedImage originalImage;
     private BufferedImage currentImage;
 
@@ -28,9 +30,6 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
                 paintImage(g);
             }
         });
-        gui.addActionTypeListener(this);
-        gui.addWindowFocusListener(this);
-
     }
 
     private void paintImage(Graphics g) {
@@ -61,6 +60,14 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
         }
     }
 
+    @Override
+    public void handleAction(ActionType actionType) {
+        if (actionType == ActionType.EDIT_IMAGE) {
+            editImage();
+        } else if (actionType == ActionType.TAKE_SCREENSHOT) {
+            takeScreenshot();
+        }
+    }
 
     @Override
     public void toggleOn() {
@@ -75,6 +82,11 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
     @Override
     public void update(ImageLayer layer) {
         updateCurrentImage();
+    }
+
+    @Override
+    public void appGainedFocus() {
+        checkImages();
     }
 
     private void updateCurrentImage() {
@@ -94,23 +106,9 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
         this.container.repaint();
     }
 
-    @Override
-    public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.EDIT_IMAGE) {
-            editImage();
-        } else if (actionType == ActionType.TAKE_SCREENSHOT) {
-            takeScreenshot();
-        }
-    }
-
     private void takeScreenshot() {
         String savePath = config.saveScreenshot(this.originalImage);
         if (savePath != null) gui.handleAction(ActionType.UPDATE_SCREENSHOT_COUNTER);
-    }
-
-    @Override
-    public void gainedWindowFocus() {
-        checkImages();
     }
 
     private void checkImages() {

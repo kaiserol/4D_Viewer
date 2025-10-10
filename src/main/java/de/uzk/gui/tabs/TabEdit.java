@@ -2,8 +2,8 @@ package de.uzk.gui.tabs;
 
 import de.uzk.actions.ActionHandler;
 import de.uzk.actions.ActionType;
-import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.*;
+import de.uzk.gui.GuiUtils;
 import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
@@ -14,7 +14,7 @@ import static de.uzk.Main.imageHandler;
 import static de.uzk.actions.Actions.ACTION_SCREENSHOT;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class TabEdit extends CustomTab implements ActionTypeListener, WindowFocusListener {
+public class TabEdit extends AreaContainerInteractive<JPanel> {
 
     private final ActionHandler actionHandler;
     private JSpinner degreeSpinner;
@@ -23,8 +23,6 @@ public class TabEdit extends CustomTab implements ActionTypeListener, WindowFocu
     public TabEdit(Gui gui, ActionHandler actionHandler) {
         super(new JPanel(), gui);
         this.actionHandler = actionHandler;
-        gui.addActionTypeListener(this);
-        gui.addWindowFocusListener(this);
         init();
     }
 
@@ -125,16 +123,6 @@ public class TabEdit extends CustomTab implements ActionTypeListener, WindowFocu
     }
 
     @Override
-    public void toggleOn() {
-        GuiUtils.setEnabled(this.container, true);
-    }
-
-    @Override
-    public void toggleOff() {
-        GuiUtils.setEnabled(this.container, false);
-    }
-
-    @Override
     public void handleAction(ActionType actionType) {
         if (actionType == ActionType.TURN_IMAGE_90_LEFT) {
             degreeSpinner.setValue(NumberUtils.turn90Left(imageHandler.getImageDetails().getRotation()));
@@ -145,12 +133,22 @@ public class TabEdit extends CustomTab implements ActionTypeListener, WindowFocu
         }
     }
 
-    private void updateScreenshotCounter() {
-        this.screenshots.setText(String.valueOf(config.getScreenshots()));
+    @Override
+    public void toggleOn() {
+        GuiUtils.setEnabled(this.container, true);
     }
 
     @Override
-    public void gainedWindowFocus() {
+    public void toggleOff() {
+        GuiUtils.setEnabled(this.container, false);
+    }
+
+    @Override
+    public void appGainedFocus() {
         updateScreenshotCounter();
+    }
+
+    private void updateScreenshotCounter() {
+        this.screenshots.setText(String.valueOf(config.getScreenshots()));
     }
 }

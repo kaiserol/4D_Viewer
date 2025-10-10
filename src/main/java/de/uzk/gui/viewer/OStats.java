@@ -1,10 +1,9 @@
 package de.uzk.gui.viewer;
 
 import de.uzk.actions.ActionType;
-import de.uzk.actions.ActionTypeListener;
+import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
-import de.uzk.gui.InteractiveContainer;
 import de.uzk.image.ImageFile;
 import de.uzk.image.ImageLayer;
 import de.uzk.utils.StringUtils;
@@ -18,7 +17,7 @@ import java.awt.*;
 import static de.uzk.Main.imageHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class OStats extends InteractiveContainer<JPanel> implements ActionTypeListener {
+public class OStats extends AreaContainerInteractive<JPanel> {
     private JLabel timeStateLabel;
     private JLabel levelStateLabel;
     private JLabel timeCountLabel;
@@ -27,7 +26,6 @@ public class OStats extends InteractiveContainer<JPanel> implements ActionTypeLi
 
     public OStats(Gui gui) {
         super(new JPanel(), gui);
-        gui.addActionTypeListener(this);
         init();
     }
 
@@ -105,6 +103,15 @@ public class OStats extends InteractiveContainer<JPanel> implements ActionTypeLi
     }
 
     @Override
+    public void handleAction(ActionType actionType) {
+        if (actionType == ActionType.UPDATE_TIME_UNIT) {
+            updateStats(ImageLayer.TIME);
+        } else if (actionType == ActionType.UPDATE_LEVEL_UNIT) {
+            updateStats(ImageLayer.LEVEL);
+        }
+    }
+
+    @Override
     public void toggleOn() {
         updateCountLabel(ImageLayer.TIME, imageHandler.getTime(), imageHandler.getMaxTime());
         updateStateLabel(ImageLayer.TIME, 0, 0);
@@ -134,19 +141,6 @@ public class OStats extends InteractiveContainer<JPanel> implements ActionTypeLi
     public void updateUI() {
         this.container.setBorder(new CompoundBorder(new MatteBorder(0, 0, 2, 0, GuiUtils.getBorderColor()),
                 new EmptyBorder(5, 5, 5, 5)));
-
-        GuiUtils.updateFontSize(this.timeStateLabel, 5, Font.BOLD);
-        GuiUtils.updateFontSize(this.levelStateLabel, 0, Font.BOLD);
-        GuiUtils.updateFontSize(this.currentImageTextLabel, -2, Font.ITALIC);
-    }
-
-    @Override
-    public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.UPDATE_TIME_UNIT) {
-            updateStats(ImageLayer.TIME);
-        } else if (actionType == ActionType.UPDATE_LEVEL_UNIT) {
-            updateStats(ImageLayer.LEVEL);
-        }
     }
 
     private void updateStats(ImageLayer layer) {
@@ -165,13 +159,18 @@ public class OStats extends InteractiveContainer<JPanel> implements ActionTypeLi
     }
 
     private void updateStateLabel(ImageLayer layer, int value, Number multiplier) {
-        if (layer == ImageLayer.TIME) timeStateLabel.setText(StringUtils.formatTime(value, multiplier.doubleValue()));
-        else levelStateLabel.setText(StringUtils.formatLevel(value, multiplier.doubleValue()));
+        if (layer == ImageLayer.TIME) {
+            timeStateLabel.setText(StringUtils.wrapHtml(
+                    "<h1 style='margin: 0; padding: 0;'>" + StringUtils.formatTime(value, multiplier.doubleValue()) + "</h1>"));
+        } else {
+            levelStateLabel.setText(StringUtils.wrapHtml(StringUtils.wrapBold(
+                    StringUtils.formatLevel(value, multiplier.doubleValue()))));
+        }
     }
 
     private void updateCurrentImageText() {
         ImageFile imageFile = imageHandler.getCurrentImage();
         if (imageFile == null) this.currentImageTextLabel.setText(null);
-        else this.currentImageTextLabel.setText('(' + imageFile.getFileName() + ')');
+        else this.currentImageTextLabel.setText(imageFile.getFileName());
     }
 }

@@ -1,6 +1,6 @@
 package de.uzk.utils;
 
-import de.uzk.logger.LogData;
+import org.intellij.lang.annotations.MagicConstant;
 
 import java.awt.*;
 import java.io.File;
@@ -43,23 +43,57 @@ public class StringUtils {
         return arrBuilder.append(rightBorder).toString();
     }
 
-    public static String javaToHTML(String javaString) {
-        return "<pre>" + javaString.replace(StringUtils.NEXT_LINE, "<br>").
-                replace("\t", "    ") + "</pre>";
+    public static String[] splitTextInWords(String text) {
+        return text == null ? new String[0] : text.split("\\s+");
     }
 
-    public static String toHTML(LogData logData) {
-        String color;
-        switch (logData.getLevel()) {
-            case DEBUG -> color = "blue";
-            case ERROR -> color = "red";
-            case INFO -> color = "green";
-            case WARNING -> color = "orange";
-            default -> color = "black";
-        }
-        return "<b>" + logData.getDateTime() + "</b> " + logData.getSource() + StringUtils.NEXT_LINE +
-                "<font color=" + color + ">[" + logData.getLevel() + "]:</font> " + logData.getMessage();
+    // ---------- HTML FORMAT ----------
+
+    public static String wrapColor(String text, Color color) {
+        return "<font color=\"" + colorToHex(color) + "\">" + text + "</font>";
     }
+
+    public static String wrapBold(String text) {
+        return "<b>" + text + "</b>";
+    }
+
+    public static String wrapItalic(String text) {
+        return "<i>" + text + "</i>";
+    }
+
+    public static String wrapCenter(String text) {
+        return "<center>" + text + "</center>";
+    }
+
+    public static String wrapP(String text) {
+        return "<p>" + text
+                .replace(NEXT_LINE, "<br>")
+                .replace("\t", "    ")
+                + "</p>";
+    }
+
+    public static String wrapHtmlDocument(String htmlContent) {
+        String fontFamilyText = "font-family: %s;".formatted("monospaced");
+        return wrapHtml("<head><style>body { %s } p {margin: 5px 0}</style></head><body>".formatted(fontFamilyText) +
+                htmlContent + "</body>");
+    }
+
+    public static String wrapHtml(String text) {
+        return "<html>" + text + "</html>";
+    }
+
+    // ---------- FONTSTYLE HANDLING ----------
+
+    public static String applyFontStyle(String text, @MagicConstant(flags = {Font.PLAIN, Font.BOLD, Font.ITALIC}) int fontStyle) {
+        return switch (fontStyle) {
+            case Font.BOLD -> wrapBold(text);
+            case Font.ITALIC -> wrapItalic(text);
+            case Font.BOLD | Font.ITALIC -> wrapBold(wrapItalic(text));
+            default -> text;
+        };
+    }
+
+    // ---------- COLOR HELPER ----------
 
     public static String colorToHex(Color color) {
         if (color == null) return "#000000";
@@ -69,9 +103,5 @@ public class StringUtils {
         int b = color.getBlue();
         int rgb = (r << 16) | (g << 8) | b;
         return String.format("#%06X", rgb);
-    }
-
-    public static String[] splitTextInWords(String text) {
-        return text == null ? new String[0] : text.split("\\s+");
     }
 }

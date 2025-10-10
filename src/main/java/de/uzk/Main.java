@@ -3,7 +3,7 @@ package de.uzk;
 import de.uzk.config.ConfigHandler;
 import de.uzk.gui.Gui;
 import de.uzk.image.ImageHandler;
-import de.uzk.logger.LogDataHandler;
+import de.uzk.logger.LogEntryHandler;
 import de.uzk.markers.MarkerHandler;
 
 import javax.swing.*;
@@ -14,13 +14,13 @@ import java.awt.desktop.QuitResponse;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class Main {
-    public static final LogDataHandler logger;
+    public static final LogEntryHandler logger;
     public static final ConfigHandler config;
     public static final ImageHandler imageHandler;
     public static final MarkerHandler markerHandler;
 
     static {
-        logger = new LogDataHandler(Main.class.getName());
+        logger = new LogEntryHandler(Main.class.getName());
         imageHandler = new ImageHandler();
         config = new ConfigHandler();
         markerHandler = new MarkerHandler();

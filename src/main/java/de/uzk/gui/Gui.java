@@ -4,8 +4,6 @@ import de.uzk.actions.ActionHandler;
 import de.uzk.actions.ActionType;
 import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.menubar.AppMenuBar;
-import de.uzk.gui.others.ODirectory;
-import de.uzk.gui.tabs.AreaTabs;
 import de.uzk.gui.viewer.OViewer;
 import de.uzk.image.ImageLayer;
 
@@ -20,41 +18,39 @@ import java.util.List;
 import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class Gui extends InteractiveContainer<JFrame> implements WindowFocusListener, ActionTypeListener {
+public class Gui extends AreaContainerInteractive<JFrame> {
+    private final List<ActionTypeListener> actionTypeListeners;
     private final List<ToggleListener> toggleListeners;
     private final List<UpdateImageListener> updateImageListeners;
     private final List<UpdateUIListener> updateUIListeners;
-    private final List<ActionTypeListener> actionTypeListeners;
-    private final List<WindowFocusListener> windowFocusListeners;
+    private final List<AppFocusListener> appFocusListeners;
     private boolean windowInitialized;
 
     public Gui() {
         super(new JFrame(getWord("app.name")), null);
+        this.actionTypeListeners = new ArrayList<>();
         this.toggleListeners = new ArrayList<>();
         this.updateImageListeners = new ArrayList<>();
         this.updateUIListeners = new ArrayList<>();
-        this.actionTypeListeners = new ArrayList<>();
-        this.windowFocusListeners = new ArrayList<>();
-
-        // create frame
-        create();
+        this.appFocusListeners = new ArrayList<>();
+        build();
     }
 
     public void rebuild() {
+        logger.info("Rebuilding UI...");
         this.container.getContentPane().removeAll();
 
-        // Verhindert, dass alte UI Objekte weiterleben und auf Events reagieren
+        // Prevents that old UI objects are continuing living (old event listeners have to be cleaned)
+        this.actionTypeListeners.clear();
         this.toggleListeners.clear();
         this.updateImageListeners.clear();
         this.updateUIListeners.clear();
-        this.actionTypeListeners.clear();
-        this.windowFocusListeners.clear();
-
-        addContent();
+        this.appFocusListeners.clear();
+        loadUI();
     }
 
-    private void create() {
-        logger.info("Creating UI...");
+    private void build() {
+        logger.info("Building UI...");
         GuiUtils.initFlatLaf();
 
         SwingUtilities.invokeLater(() -> {
@@ -70,43 +66,38 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
             this.container.addWindowFocusListener(new WindowAdapter() {
                 @Override
                 public void windowGainedFocus(WindowEvent e) {
-                    if (windowInitialized) gainedWindowFocus();
+                    if (windowInitialized) Gui.this.appGainedFocus();
                     windowInitialized = true;
                 }
+
+                @Override
+                public void windowLostFocus(WindowEvent e) {
+                    if (windowInitialized) Gui.this.appLostFocus();
+                }
             });
-
-            // add content
-            addContent();
-
-            // set visible
+            loadUI();
             this.container.setLocationRelativeTo(null);
             this.container.setVisible(true);
         });
     }
 
-    private void addContent() {
-        // init
+    private void loadUI() {
         initContent();
-        // load images -> if there is no path specified, the gui will be toggled off
         handleAction(ActionType.LOAD_IMAGES);
-        // updateUI
         updateUI();
         this.container.pack();
     }
 
     private void initContent() {
-        // mainPanel
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-        // actionHandler, imageDisplay
         ActionHandler actionHandler = new ActionHandler(this);
 
-        // path
-        ODirectory path = new ODirectory(this);
-        mainPanel.add(path.getContainer(), BorderLayout.NORTH);
+        // directory selection
+        AreaDirectorySelection directorySelection = new AreaDirectorySelection(this);
+        mainPanel.add(directorySelection.getContainer(), BorderLayout.NORTH);
 
-        // splitPane (areaTabs, viewer)
+        // splitPane (tabs, viewer)
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setOneTouchExpandable(true);
 
@@ -117,8 +108,8 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
         mainPanel.add(splitPane, BorderLayout.CENTER);
 
         // disclaimer
-        AreaDisclaimerRightOfUse areaDisclaimer = new AreaDisclaimerRightOfUse(this);
-        mainPanel.add(areaDisclaimer.getContainer(), BorderLayout.SOUTH);
+        AreaDisclaimerRightOfUse disclaimer = new AreaDisclaimerRightOfUse(this);
+        mainPanel.add(disclaimer.getContainer(), BorderLayout.SOUTH);
         this.container.add(mainPanel);
 
         // menuBar
@@ -128,6 +119,10 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
 
     public JFrame getFrame() {
         return this.container;
+    }
+
+    public void addActionTypeListener(ActionTypeListener listener) {
+        this.actionTypeListeners.add(listener);
     }
 
     public void addToggleListener(ToggleListener listener) {
@@ -143,12 +138,20 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
         this.updateUIListeners.add(listener);
     }
 
-    public void addActionTypeListener(ActionTypeListener listener) {
-        this.actionTypeListeners.add(listener);
+    public void addAppFocusListener(AppFocusListener listener) {
+        this.appFocusListeners.add(listener);
     }
 
-    public void addWindowFocusListener(WindowFocusListener listener) {
-        this.windowFocusListeners.add(listener);
+    @Override
+    public void handleAction(ActionType actionType) {
+        if (actionType == ActionType.TOGGLE_PIN_TIME) {
+            imageHandler.togglePinTime();
+            actionType = ActionType.UPDATE_PIN_TIME;
+        }
+
+        for (ActionTypeListener listener : actionTypeListeners) {
+            listener.handleAction(actionType);
+        }
     }
 
     @Override
@@ -194,21 +197,9 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
     }
 
     @Override
-    public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.TOGGLE_PIN_TIME) {
-            imageHandler.togglePinTime();
-            actionType = ActionType.UPDATE_PIN_TIME;
-        }
-
-        for (ActionTypeListener listener : actionTypeListeners) {
-            listener.handleAction(actionType);
-        }
-    }
-
-    @Override
-    public void gainedWindowFocus() {
-        for (WindowFocusListener listener : windowFocusListeners) {
-            listener.gainedWindowFocus();
+    public void appGainedFocus() {
+        for (AppFocusListener listener : appFocusListeners) {
+            listener.appGainedFocus();
         }
     }
 }

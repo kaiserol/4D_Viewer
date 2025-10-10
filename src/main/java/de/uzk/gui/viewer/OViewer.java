@@ -2,11 +2,10 @@ package de.uzk.gui.viewer;
 
 import de.uzk.actions.ActionHandler;
 import de.uzk.actions.ActionType;
-import de.uzk.actions.ActionTypeListener;
+import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.Icons;
-import de.uzk.gui.InteractiveContainer;
 import de.uzk.image.ImageLayer;
 import de.uzk.utils.StringUtils;
 
@@ -23,7 +22,7 @@ import static de.uzk.Main.imageHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 import static de.uzk.gui.GuiUtils.SLIDER_DRAGGED;
 
-public class OViewer extends InteractiveContainer<JPanel> implements ActionTypeListener {
+public class OViewer extends AreaContainerInteractive<JPanel> {
     private final ActionHandler actionHandler;
     private JScrollBar timeBar;
     private JScrollBar levelBar;
@@ -33,7 +32,6 @@ public class OViewer extends InteractiveContainer<JPanel> implements ActionTypeL
     public OViewer(Gui gui, ActionHandler actionHandler) {
         super(new JPanel(), gui);
         this.actionHandler = actionHandler;
-        gui.addActionTypeListener(this);
         init();
     }
 
@@ -106,7 +104,7 @@ public class OViewer extends InteractiveContainer<JPanel> implements ActionTypeL
     }
 
     private void focusOnImageView(boolean focus) {
-        Color color = focus ? GuiUtils.FOCUS_COLOR : GuiUtils.getBorderColor();
+        Color color = focus ? GuiUtils.COLOR_BLUE : GuiUtils.getBorderColor();
         this.container.setBorder(new MatteBorder(2, 2, 2, 2, color));
     }
 
@@ -161,6 +159,13 @@ public class OViewer extends InteractiveContainer<JPanel> implements ActionTypeL
     }
 
     @Override
+    public void handleAction(ActionType actionType) {
+        if (actionType == ActionType.UPDATE_PIN_TIME) {
+            updatePinTime();
+        }
+    }
+
+    @Override
     public void toggleOn() {
         updateScrollBars(imageHandler.getTime(), imageHandler.getMaxTime(), imageHandler.getLevel(), imageHandler.getMaxLevel());
         enableViewer(true);
@@ -170,6 +175,17 @@ public class OViewer extends InteractiveContainer<JPanel> implements ActionTypeL
     public void toggleOff() {
         updateScrollBars(0, 0, 0, 0);
         enableViewer(false);
+    }
+
+    @Override
+    public void update(ImageLayer layer) {
+        // updates the scrollBar if not moving anymore
+        if (layer == ImageLayer.TIME) {
+            if (!timeBar.getValueIsAdjusting()) updateScrollBar(timeBar, imageHandler.getTime());
+            gui.handleAction(ActionType.UPDATE_PIN_TIME);
+        } else {
+            if (!levelBar.getValueIsAdjusting()) updateScrollBar(levelBar, imageHandler.getLevel());
+        }
     }
 
     @Override
@@ -190,24 +206,6 @@ public class OViewer extends InteractiveContainer<JPanel> implements ActionTypeL
         this.timeBar.setEnabled(enabled);
         this.levelBar.setEnabled(enabled);
         this.clearImagesButton.setEnabled(enabled);
-    }
-
-    @Override
-    public void update(ImageLayer layer) {
-        // updates the scrollBar if not moving anymore
-        if (layer == ImageLayer.TIME) {
-            if (!timeBar.getValueIsAdjusting()) updateScrollBar(timeBar, imageHandler.getTime());
-            gui.handleAction(ActionType.UPDATE_PIN_TIME);
-        } else {
-            if (!levelBar.getValueIsAdjusting()) updateScrollBar(levelBar, imageHandler.getLevel());
-        }
-    }
-
-    @Override
-    public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.UPDATE_PIN_TIME) {
-            updatePinTime();
-        }
     }
 
     private void updatePinTime() {

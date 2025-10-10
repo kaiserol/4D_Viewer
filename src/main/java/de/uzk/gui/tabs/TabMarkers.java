@@ -1,9 +1,8 @@
 package de.uzk.gui.tabs;
 
 import de.uzk.actions.ActionType;
-import de.uzk.actions.ActionTypeListener;
+import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
-import de.uzk.gui.UpdateImageListener;
 import de.uzk.gui.marker.MarkerEditor;
 import de.uzk.gui.marker.MarkerMappingInfo;
 import de.uzk.image.ImageLayer;
@@ -16,14 +15,9 @@ import static de.uzk.Main.imageHandler;
 import static de.uzk.Main.markerHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class TabMarkers extends CustomTab implements ActionTypeListener, UpdateImageListener {
-
-
-
+public class TabMarkers extends AreaContainerInteractive<JPanel> {
     public TabMarkers(Gui gui) {
         super(new JPanel(), gui);
-        gui.addUpdateImageListener(this);
-        gui.addActionTypeListener(this);
         this.rerender();
     }
 
@@ -86,5 +80,4 @@ public class TabMarkers extends CustomTab implements ActionTypeListener, UpdateI
             this.rerender();
         }
     }
-
 }

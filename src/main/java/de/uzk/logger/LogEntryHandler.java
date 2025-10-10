@@ -7,21 +7,21 @@ import java.util.List;
 
 import static de.uzk.logger.LogLevel.*;
 
-public class LogDataHandler {
+public class LogEntryHandler {
     private final String name;
-    private final List<LogData> logData;
+    private final List<LogEntry> logEntry;
 
-    public LogDataHandler(String name) {
+    public LogEntryHandler(String name) {
         this.name = name;
-        this.logData = new ArrayList<>();
+        this.logEntry = new ArrayList<>();
     }
 
     public String getName() {
         return name;
     }
 
-    public List<LogData> getLogs() {
-        return logData;
+    public List<LogEntry> getLogs() {
+        return logEntry;
     }
 
     public void warning(String message) {
@@ -50,10 +50,10 @@ public class LogDataHandler {
     }
 
     private void log(LogLevel level, String message) {
-        LogData logData = new LogData(level, message + StringUtils.NEXT_LINE);
+        LogEntry logEntry = new LogEntry(level, message + StringUtils.NEXT_LINE);
         if (level != null) {
-            this.logData.add(logData);
-            System.out.print(logData);
+            this.logEntry.add(logEntry);
+            System.out.print(logEntry);
         }
     }
 }

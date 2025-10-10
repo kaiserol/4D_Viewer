@@ -17,7 +17,10 @@ import static de.uzk.Main.config;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public final class GuiUtils {
-    public static final Color FOCUS_COLOR = Color.decode("#007aff");
+    public static final Color COLOR_BLUE = new Color(0, 122, 255);
+    public static final Color COLOR_GREEN = new Color(8, 166, 52);
+    public static final Color COLOR_YELLOW = new Color(252, 204, 78);
+    public static final Color COLOR_RED = new Color(255, 86, 86);
     public static final String COMP_DISABLED = "DISABLED";
     public static final String SLIDER_DRAGGED = "DRAGGING";
     private static Color borderColor = null;
@@ -98,7 +101,6 @@ public final class GuiUtils {
         UIManager.put("OptionPane.showIcon", true);
 
         Icons.updateSVGIcons();
-
         font = getDefaultFont();
         setFont(font.deriveFont((float) config.getFontSize()));
     }
@@ -126,6 +128,10 @@ public final class GuiUtils {
         }
     }
 
+    public static int getFontSize() {
+        return font.getSize();
+    }
+
     private static void setFont(Font newFont) {
         if (newFont != null) {
             font = newFont;
@@ -149,11 +155,6 @@ public final class GuiUtils {
         initFlatLaf();
         gui.updateUI();
         FlatLaf.updateUI();
-    }
-
-    public static void updateFontSize(JComponent component, int factor, int style) {
-        float newSize = (float) font.getSize() + factor;
-        component.setFont(font.deriveFont(newSize).deriveFont(style));
     }
 
     public static Graphics2D createHighQualityGraphics2D(Graphics g) {

@@ -5,14 +5,14 @@ import de.uzk.utils.StringUtils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class LogData {
+public class LogEntry {
     private static final SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss");
     private final LogLevel level;
     private final String message;
     private final String source;
     private final String dateTime;
 
-    public LogData(LogLevel level, String message) {
+    public LogEntry(LogLevel level, String message) {
         this.level = level;
         this.message = message;
         this.source = initSource();

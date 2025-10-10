@@ -28,20 +28,22 @@ public final class Actions {
     public static final KeyEvent ACTION_LAST_LEVEL = getKeyEvent(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK + InputEvent.SHIFT_DOWN_MASK);
 
     // window actions
-    public static final KeyEvent ACTION_INCREASE_FONT = getKeyEvent(KeyEvent.VK_PLUS, InputEvent.CTRL_DOWN_MASK);
-    public static final KeyEvent ACTION_INCREASE_FONT_2 = getKeyEvent(KeyEvent.VK_ADD, InputEvent.CTRL_DOWN_MASK);
-    public static final KeyEvent ACTION_DECREASE_FONT = getKeyEvent(KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK);
-    public static final KeyEvent ACTION_DECREASE_FONT_2 = getKeyEvent(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_DOWN_MASK);
-    public static final KeyEvent ACTION_RESTORE_FONT = getKeyEvent(KeyEvent.VK_0, InputEvent.CTRL_DOWN_MASK);
+    public static final KeyEvent ACTION_INCREASE_FONT = getKeyEvent(KeyEvent.VK_PLUS, InputEvent.META_DOWN_MASK);
+    public static final KeyEvent ACTION_INCREASE_FONT_2 = getKeyEvent(KeyEvent.VK_ADD, InputEvent.META_DOWN_MASK);
+    public static final KeyEvent ACTION_DECREASE_FONT = getKeyEvent(KeyEvent.VK_MINUS, InputEvent.META_DOWN_MASK);
+    public static final KeyEvent ACTION_DECREASE_FONT_2 = getKeyEvent(KeyEvent.VK_SUBTRACT, InputEvent.META_DOWN_MASK);
+    public static final KeyEvent ACTION_RESTORE_FONT = getKeyEvent(KeyEvent.VK_0, InputEvent.META_DOWN_MASK);
+    public static final KeyEvent ACTION_SHOW_DISCLAIMER = getKeyEvent(KeyEvent.VK_F1, 0);
+    public static final KeyEvent ACTION_SHOW_LOG_VIEWER = getKeyEvent(KeyEvent.VK_F12, 0);
 
     // get key event
-    private static KeyEvent getKeyEvent(int keyCode, @MagicConstant(flags =
-            {InputEvent.BUTTON1_DOWN_MASK, InputEvent.BUTTON2_DOWN_MASK, InputEvent.BUTTON3_DOWN_MASK,
-                    InputEvent.META_DOWN_MASK, InputEvent.CTRL_DOWN_MASK, InputEvent.ALT_GRAPH_DOWN_MASK,
-                    InputEvent.ALT_DOWN_MASK, InputEvent.SHIFT_DOWN_MASK}) int modifiers) {
+    private static KeyEvent getKeyEvent(int keyCode, @MagicConstant(flags = {
+            InputEvent.BUTTON1_DOWN_MASK, InputEvent.BUTTON2_DOWN_MASK, InputEvent.BUTTON3_DOWN_MASK,
+            InputEvent.META_DOWN_MASK, InputEvent.CTRL_DOWN_MASK, InputEvent.ALT_GRAPH_DOWN_MASK,
+            InputEvent.ALT_DOWN_MASK, InputEvent.SHIFT_DOWN_MASK}) int modifiers) {
         char keyChar = KeyEvent.getKeyText(keyCode).charAt(0);
 
-        // Placeholder or Empty Component
+        // Placeholder
         JComponent source = new JComponent() {
         };
         return new KeyEvent(source, KeyEvent.KEY_PRESSED, System.currentTimeMillis(), modifiers, keyCode, keyChar);

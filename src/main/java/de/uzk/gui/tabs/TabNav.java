@@ -2,12 +2,9 @@ package de.uzk.gui.tabs;
 
 import de.uzk.actions.ActionHandler;
 import de.uzk.actions.ActionType;
-import de.uzk.actions.ActionTypeListener;
-import de.uzk.gui.CyclingSpinnerNumberModel;
-import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
-import de.uzk.gui.OGridBagConstraints;
+import de.uzk.gui.*;
 import de.uzk.image.ImageLayer;
+import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,9 +16,9 @@ import java.util.List;
 
 import static de.uzk.Main.imageHandler;
 import static de.uzk.config.LanguageHandler.getWord;
-import static de.uzk.gui.GuiUtils.FOCUS_COLOR;
+import static de.uzk.gui.GuiUtils.COLOR_BLUE;
 
-public class TabNav extends CustomTab implements ActionTypeListener {
+public class TabNav extends AreaContainerInteractive<JPanel> {
     private final ActionHandler actionHandler;
     private JSlider timeSlider;
     private JSlider levelSlider;
@@ -29,7 +26,6 @@ public class TabNav extends CustomTab implements ActionTypeListener {
     public TabNav(Gui gui, ActionHandler actionHandler) {
         super(new JPanel(), gui);
         this.actionHandler = actionHandler;
-        gui.addActionTypeListener(this);
         init();
     }
 
@@ -169,6 +165,13 @@ public class TabNav extends CustomTab implements ActionTypeListener {
     }
 
     @Override
+    public void handleAction(ActionType actionType) {
+        if (actionType == ActionType.UPDATE_PIN_TIME) {
+            updateSliderLabels(ImageLayer.TIME);
+        }
+    }
+
+    @Override
     public void toggleOn() {
         GuiUtils.setEnabled(this.container, true);
         updateSliderValuesSecretly(timeSlider, imageHandler.getTime(), imageHandler.getMaxTime());
@@ -233,7 +236,6 @@ public class TabNav extends CustomTab implements ActionTypeListener {
             JLabel missingNumLabel = new JLabel(String.valueOf(missingNum));
             missingNumLabel.setForeground(Color.RED);
             missingNumLabel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-            GuiUtils.updateFontSize(missingNumLabel, -3, Font.BOLD);
             dictionary.put(missingNum, missingNumLabel);
         }
 
@@ -241,19 +243,11 @@ public class TabNav extends CustomTab implements ActionTypeListener {
         final int pinTime = imageHandler.getPinTime();
         if (layer == ImageLayer.TIME && pinTime != -1) {
             JLabel missingNumLabel = new JLabel(String.valueOf(pinTime));
-            missingNumLabel.setForeground(FOCUS_COLOR);
+            missingNumLabel.setForeground(COLOR_BLUE);
             missingNumLabel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-            GuiUtils.updateFontSize(missingNumLabel, 0, Font.BOLD);
             dictionary.put(pinTime, missingNumLabel);
         }
         if (dictionary.get(0) == null) dictionary.put(0, new JLabel("0"));
         if (dictionary.get(max) == null) dictionary.put(max, new JLabel(String.valueOf(max)));
-    }
-
-    @Override
-    public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.UPDATE_PIN_TIME) {
-            updateSliderLabels(ImageLayer.TIME);
-        }
     }
 }

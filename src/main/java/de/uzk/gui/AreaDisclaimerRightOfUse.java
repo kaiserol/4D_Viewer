@@ -5,7 +5,7 @@ import java.awt.*;
 
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class AreaDisclaimerRightOfUse extends InteractiveContainer<JPanel> {
+public class AreaDisclaimerRightOfUse extends AreaContainerInteractive<JPanel> {
     public AreaDisclaimerRightOfUse(Gui gui) {
         super(new JPanel(), gui);
         init();
@@ -14,8 +14,7 @@ public class AreaDisclaimerRightOfUse extends InteractiveContainer<JPanel> {
     private void init() {
         this.container.setLayout(new BorderLayout());
 
-        // useRight
-        JLabel useRightLabel = new JLabel(getWord("disclaimer.rightOfUse"));
+        JLabel useRightLabel = new JLabel(getWord("dialog.disclaimer.rightOfUse"));
         useRightLabel.setHorizontalAlignment(SwingConstants.CENTER);
         this.container.add(useRightLabel);
     }
