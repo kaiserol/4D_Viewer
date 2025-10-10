@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
 public class MarkerPreview extends JPanel implements MouseListener, MouseMotionListener {
     private final BufferedImage background;
     private final Marker marker;
-    private Point start;
+    private Point dragStart;
     private final MarkerEditor editor;
 
     public MarkerPreview(BufferedImage background, Marker marker, MarkerEditor editor) {
@@ -54,23 +54,23 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
             Point pos = this.getPointRelativeToImage(e.getPoint());
             this.marker.setX(pos.x);
             this.marker.setY(pos.y);
-            this.start = pos;
+            this.dragStart = pos;
             this.update();
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        this.start = null;
+        this.dragStart = null;
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if(this.start != null) {
+        if(this.dragStart != null) {
             Point pos = this.getPointRelativeToImage(e.getPoint());
 
 
-            Rectangle rect = new Rectangle(this.start);
+            Rectangle rect = new Rectangle(this.dragStart);
             rect.add(pos);
 
             this.marker.setX(rect.x);

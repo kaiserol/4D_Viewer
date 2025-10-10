@@ -16,7 +16,21 @@ public class Marker {
     private Color color;
     private String name;
 
+    public Marker() {
+        this(0,0,0,0, MarkerShape.RECTANGLE, Color.RED, "Marker");
+    }
 
+    public Marker(Marker other) {
+        this(
+                other.x,
+                other.y,
+                other.width,
+                other.height,
+                other.shape,
+                other.color,
+                other.name
+        );
+    }
 
     public Marker(int x, int y, int width, int height, MarkerShape shape, Color color, String name) {
         this.x = x;

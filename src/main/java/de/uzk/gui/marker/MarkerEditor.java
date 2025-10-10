@@ -6,6 +6,8 @@ import de.uzk.markers.Marker;
 import de.uzk.markers.MarkerShape;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.function.IntConsumer;
@@ -16,9 +18,12 @@ public class MarkerEditor extends Container {
     private final MarkerPreview preview;
     private final java.util.List<Runnable> onUpdate = new ArrayList<>();
 
-    public MarkerEditor(ImageFile onto) {
-        this.marker = new Marker(0, 0, 100, 100, MarkerShape.RECTANGLE, Color.RED, "Marker");
+    public  MarkerEditor(ImageFile onto) {
+        this(onto, new Marker());
+    }
 
+    public MarkerEditor(ImageFile onto, Marker marker) {
+        this.marker = marker;
         this.preview = new MarkerPreview(Icons.loadImage(onto.getFile()), marker, this);
         init();
     }
@@ -70,14 +75,47 @@ public class MarkerEditor extends Container {
         this.add(color, gbc);
 
         gbc.setPos(1, 2);
+        gbc.setSizeAndWeight(1, 1, 0.1, 0);
+        gbc.weightx = 0.1;
+        this.add(new JLabel("Name: "), gbc);
+
+        gbc.gridx = 2;
+        gbc.weightx = 0.2;
+        JTextField nameInput = new JTextField(this.marker.getName());
+        nameInput.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateName();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateName();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateName();
+            }
+
+            private void updateName() {
+                marker.setName(nameInput.getText());
+                preview.repaint();
+            }
+        });
+        this.add(nameInput, gbc);
+
+        gbc.setPos(1, 3);
         gbc.setSizeAndWeight(2, 4, 0.3, 0);
         JPanel valuesPanel = this.createValuesPanel();
         this.add(valuesPanel, gbc);
 
+
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.setPos(0, 0);
 
-        gbc.setSizeAndWeight(1, 3, 0.7, 1.0);
+        gbc.setSizeAndWeight(1, 4, 0.7, 1.0);
         this.add(this.preview, gbc);
 
     }

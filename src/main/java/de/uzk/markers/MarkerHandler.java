@@ -1,32 +1,33 @@
 package de.uzk.markers;
 
 
-import static de.uzk.Main.imageHandler;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MarkerHandler {
-    private Marker[] markers;
+    private final List<MarkerMapping> markers;
 
     public MarkerHandler() {
-        this.markers = new Marker[0];
+        this.markers = new ArrayList<>();
     }
 
-    public boolean hasMarker(int time) {
-        return time < this.markers.length && this.markers[time] != null;
+
+    public List<MarkerMapping> getMarkers(int time) {
+        return this.markers.stream().filter(m -> m.shouldRender(time)).toList();
     }
 
-    public Marker getMarker(int time) {
-        if(!this.hasMarker(time)) {
-            return null;
-        }
-        return this.markers[time];
+    public List<MarkerMapping> getMarkers() {
+        return this.markers;
     }
 
-    public void addMarker(Marker marker) {
-        int currentTime = imageHandler.getTime();
-        this.markers[currentTime] = marker;
+
+    public void addMarker(Marker marker, int image) {
+        this.addMarker(marker, image, image);
     }
 
-    public void resetImageCount(int count) {
-        this.markers = new Marker[count];
+    public void addMarker(Marker marker, int from, int to) {
+
+        this.markers.add(new MarkerMapping(marker, from, to));
     }
+
 }
