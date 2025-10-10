@@ -14,6 +14,7 @@ import java.awt.*;
 
 import static de.uzk.Main.imageHandler;
 import static de.uzk.Main.markerHandler;
+import static de.uzk.config.LanguageHandler.getWord;
 
 public class TabMarkers extends CustomTab implements ActionTypeListener, UpdateImageListener {
 
@@ -46,15 +47,15 @@ public class TabMarkers extends CustomTab implements ActionTypeListener, UpdateI
 
             this.container.add(panel, BorderLayout.CENTER);
         } else {
-            JLabel noneLabel = new JLabel("No markers set.");
+            JLabel noneLabel = new JLabel(getWord("items.markers.noMarkersSet"));
             noneLabel.setHorizontalAlignment(SwingConstants.CENTER);
             this.container.add( noneLabel, BorderLayout.CENTER);
         }
 
-        JButton add = new JButton("Add Marker to current image");
+        JButton add = new JButton(getWord("items.markers.addMarker"));
         add.addActionListener(e -> {
             MarkerEditor initial = new MarkerEditor(imageHandler.getCurrentImage());
-            int option = JOptionPane.showConfirmDialog(null, initial, "New Marker", JOptionPane.OK_CANCEL_OPTION);
+            int option = JOptionPane.showConfirmDialog(null, initial, getWord("dialog.markers.newMarker"), JOptionPane.OK_CANCEL_OPTION);
             if(option == JOptionPane.OK_OPTION) {
                 markerHandler.addMarker(initial.getMarker(), imageHandler.getTime());
                 gui.handleAction(ActionType.ADD_MARKER);

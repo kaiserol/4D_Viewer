@@ -11,6 +11,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 
+import static de.uzk.config.LanguageHandler.getWord;
+
 public class GenericMarkerPreview extends JComponent implements MouseListener {
     private final MarkerShape markerShape;
     private final Color markerColor;
@@ -21,7 +23,7 @@ public class GenericMarkerPreview extends JComponent implements MouseListener {
         this.addMouseListener(this);
         this.markerShape = markerShape;
         this.markerColor = markerColor;
-        this.setToolTipText("Edit marker");
+        this.setToolTipText(getWord("items.markers.tooltipEditMarker"));
     }
 
     @Override

@@ -48,7 +48,7 @@ public class AreaTabs extends InteractiveContainer<JPanel> implements ActionType
         tabbedPane.add(getWord("items.nav"), tabNav.getContainer());
 
         TabMarkers tabMarkers = new TabMarkers(this.gui);
-        tabbedPane.add("Markers", tabMarkers.getContainer());
+        tabbedPane.add(getWord("items.markers"), tabMarkers.getContainer());
 
         this.container.add(tabbedPane, BorderLayout.CENTER);
     }

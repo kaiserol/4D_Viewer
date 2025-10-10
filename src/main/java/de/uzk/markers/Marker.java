@@ -14,7 +14,7 @@ public class Marker {
     private int height;
     private MarkerShape shape;
     private Color color;
-    private String name;
+    private String label;
 
     public Marker() {
         this(0,0,0,0, MarkerShape.RECTANGLE, Color.RED, "Marker");
@@ -28,18 +28,18 @@ public class Marker {
                 other.height,
                 other.shape,
                 other.color,
-                other.name
+                other.label
         );
     }
 
-    public Marker(int x, int y, int width, int height, MarkerShape shape, Color color, String name) {
+    public Marker(int x, int y, int width, int height, MarkerShape shape, Color color, String label) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.shape = shape;
         this.color = color;
-        this.name = name;
+        this.label = label;
     }
 
     public int getY() {
@@ -114,7 +114,7 @@ public class Marker {
 
     private void drawName(Graphics2D to, int x, int y) {
         FontMetrics metrics = to.getFontMetrics();
-        int width = metrics.stringWidth(this.name);
+        int width = metrics.stringWidth(this.label);
         int height = metrics.getHeight();
         to.fillRect(x,y - metrics.getAscent()  ,width,height);
 
@@ -125,7 +125,7 @@ public class Marker {
             to.setColor(Color.WHITE);
         }
 
-        to.drawString(this.name, x, y);
+        to.drawString(this.label, x, y);
     }
 
 
@@ -139,11 +139,11 @@ public class Marker {
         return new Rectangle(x, y, width,height);
     }
 
-    public String getName() {
-        return name;
+    public String getLabel() {
+        return label;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

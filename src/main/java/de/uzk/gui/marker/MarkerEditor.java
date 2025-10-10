@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
+import static de.uzk.config.LanguageHandler.getWord;
+
 public class MarkerEditor extends Container {
     private final Marker marker;
     private final MarkerPreview preview;
@@ -41,7 +43,7 @@ public class MarkerEditor extends Container {
         gbc.anchor = GridBagConstraints.FIRST_LINE_START;
         gbc.setPos(1, 0);
         gbc.weightx = 0.1;
-        this.add(new JLabel("Shape: "), gbc);
+        this.add(new JLabel(getWord("dialog.markers.shape")), gbc);
 
         gbc.setPos(2, 0);
         gbc.weightx = 0.2;
@@ -56,7 +58,7 @@ public class MarkerEditor extends Container {
 
         gbc.setPos(1, 1);
         gbc.weightx = 0.1;
-        this.add(new JLabel("Color: "), gbc);
+        this.add(new JLabel(getWord("dialog.markers.color")), gbc);
 
         gbc.setPos(2, 1);
         gbc.weightx = 0.2;
@@ -65,7 +67,7 @@ public class MarkerEditor extends Container {
         JButton color = new JButton("");
         color.setBackground(this.marker.getColor());
         color.addActionListener(a -> {
-            Color newColor = JColorChooser.showDialog(null, "Color", this.marker.getColor());
+            Color newColor = JColorChooser.showDialog(null, getWord("dialog.markers.color"), this.marker.getColor());
             if (newColor != null) {
                 color.setBackground(newColor);
                 this.marker.setColor(newColor);
@@ -77,11 +79,11 @@ public class MarkerEditor extends Container {
         gbc.setPos(1, 2);
         gbc.setSizeAndWeight(1, 1, 0.1, 0);
         gbc.weightx = 0.1;
-        this.add(new JLabel("Name: "), gbc);
+        this.add(new JLabel(getWord("dialog.markers.label")), gbc);
 
         gbc.gridx = 2;
         gbc.weightx = 0.2;
-        JTextField nameInput = new JTextField(this.marker.getName());
+        JTextField nameInput = new JTextField(this.marker.getLabel());
         nameInput.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
@@ -100,7 +102,7 @@ public class MarkerEditor extends Container {
             }
 
             private void updateName() {
-                marker.setName(nameInput.getText());
+                marker.setLabel(nameInput.getText());
                 preview.repaint();
             }
         });
@@ -130,7 +132,7 @@ public class MarkerEditor extends Container {
         OGridBagConstraints gbc = new OGridBagConstraints();
         gbc.ipady = 10;
 
-        JLabel[] labels = {new JLabel("X: "), new JLabel("Y: "), new JLabel("Width: "), new JLabel("Height: "),};
+        JLabel[] labels = {new JLabel("X: "), new JLabel("Y: "), new JLabel(getWord("dialog.markers.width")), new JLabel(getWord("dialog.markers.height")),};
 
         JSpinner[] spinners = {
                 createSpinner(this.marker::getX, this.marker::setX),

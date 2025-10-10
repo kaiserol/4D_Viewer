@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import static de.uzk.Main.imageHandler;
+import static de.uzk.config.LanguageHandler.getWord;
 
 public class MarkerMappingInfo extends InteractiveContainer<JPanel> {
 
@@ -36,7 +37,7 @@ public class MarkerMappingInfo extends InteractiveContainer<JPanel> {
         c.weightx = 0.7;
         c.setInsets(10, 10, 0, 0);
 
-        JLabel nameLabel=new JLabel(this.mapping.getMarker().getName());
+        JLabel nameLabel=new JLabel(this.mapping.getMarker().getLabel());
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
         this.container.add(nameLabel, c);
 
@@ -61,14 +62,14 @@ public class MarkerMappingInfo extends InteractiveContainer<JPanel> {
 
         c.gridy = 1;
         c.gridwidth = 1;
-        this.container.add(new JLabel("Visible from image: "), c);
+        this.container.add(new JLabel(getWord("items.markers.visibleFromImage")), c);
 
         c.gridx = 1;
         JSpinner minimum = new JSpinner(fromModel);
         this.container.add(minimum, c);
 
         c.setPos(0, 2);
-        this.container.add(new JLabel("Visible to image: "), c);
+        this.container.add(new JLabel(getWord("items.markers.visibleToImage")), c);
 
         c.gridx = 1;
         JSpinner maximum = new JSpinner(toModel);
@@ -88,7 +89,7 @@ public class MarkerMappingInfo extends InteractiveContainer<JPanel> {
         edit.setOnClick(() -> {
 
             MarkerEditor initial = new MarkerEditor(imageHandler.getCurrentImage(), new Marker(this.mapping.getMarker()));
-            int option = JOptionPane.showConfirmDialog(null, initial, "Edit Marker", JOptionPane.OK_CANCEL_OPTION);
+            int option = JOptionPane.showConfirmDialog(null, initial, getWord("dialog.markers.editMarker"), JOptionPane.OK_CANCEL_OPTION);
             if(option == JOptionPane.OK_OPTION) {
                 this.mapping.setMarker(initial.getMarker());
                 gui.handleAction(ActionType.ADD_MARKER);
