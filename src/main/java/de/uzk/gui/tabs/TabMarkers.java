@@ -3,11 +3,11 @@ package de.uzk.gui.tabs;
 import de.uzk.actions.ActionType;
 import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.Gui;
-import de.uzk.gui.OGridBagConstraints;
 import de.uzk.gui.UpdateImageListener;
 import de.uzk.gui.marker.MarkerEditor;
+import de.uzk.gui.marker.MarkerMappingInfo;
 import de.uzk.image.ImageLayer;
-import de.uzk.markers.Marker;
+import de.uzk.markers.MarkerMapping;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,44 +28,42 @@ public class TabMarkers extends CustomTab implements ActionTypeListener, UpdateI
 
     private void rerender() {
 
-        Marker currentMarker = markerHandler.getMarker(imageHandler.getTime());
+        java.util.List<MarkerMapping> currentMarkers = markerHandler.getMarkers();
 
         this.container.removeAll();
+        this.container.setLayout(new BorderLayout());
 
 
-        if (currentMarker != null) {
-            this.container.setLayout(new BorderLayout());
-            this.container.add(new JLabel("Edit marker"), BorderLayout.NORTH);
-            JButton remove = new JButton("Remove marker");
-            this.container.add(remove, BorderLayout.SOUTH);
+
+        if (!currentMarkers.isEmpty()) {
+            Box panel = new Box(BoxLayout.Y_AXIS);
+            for (MarkerMapping currentMarker : currentMarkers) {
+                JPanel next = new MarkerMappingInfo(currentMarker, this.gui).getContainer();
+                next.setBorder(BorderFactory.createEmptyBorder());
+                panel.add(next);
+            }
+
+
+            this.container.add(panel, BorderLayout.CENTER);
         } else {
-            this.container.setLayout(new GridBagLayout());
-            OGridBagConstraints gbc = new OGridBagConstraints();
-
-            gbc.setSizeAndWeight(1, 1, 10.0, 0.0);
-            gbc.setPosAndInsets(0, 0, 0, 0, 0, 0);
-            gbc.anchor = OGridBagConstraints.FIRST_LINE_START;
-            JButton add = new JButton("Add Marker to current image");
-            add.addActionListener(e -> {
-                MarkerEditor initial = new MarkerEditor(imageHandler.getCurrentImage());
-                int option = JOptionPane.showConfirmDialog(null, initial, "New Marker", JOptionPane.OK_CANCEL_OPTION);
-                if(option == JOptionPane.OK_OPTION) {
-                    markerHandler.addMarker(initial.getMarker());
-                    gui.handleAction(ActionType.ADD_MARKER);
-                    gui.updateUI();
-                }
-
-            });
-
-            this.container.add(add, gbc);
-
-            gbc.setPos(0, 10);
-            gbc.fill = GridBagConstraints.BOTH;
-            gbc.setSizeAndWeight(0, 10, 0, 10);
-            this.container.add(new JLabel("No markers on the current image"), gbc);
-
-
+            JLabel noneLabel = new JLabel("No markers set.");
+            noneLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            this.container.add( noneLabel, BorderLayout.CENTER);
         }
+
+        JButton add = new JButton("Add Marker to current image");
+        add.addActionListener(e -> {
+            MarkerEditor initial = new MarkerEditor(imageHandler.getCurrentImage());
+            int option = JOptionPane.showConfirmDialog(null, initial, "New Marker", JOptionPane.OK_CANCEL_OPTION);
+            if(option == JOptionPane.OK_OPTION) {
+                markerHandler.addMarker(initial.getMarker(), imageHandler.getTime());
+                gui.handleAction(ActionType.ADD_MARKER);
+                gui.updateUI();
+            }
+
+        });
+
+        this.container.add(add, BorderLayout.SOUTH);
 
     }
 
@@ -87,4 +85,5 @@ public class TabMarkers extends CustomTab implements ActionTypeListener, UpdateI
             this.rerender();
         }
     }
+
 }

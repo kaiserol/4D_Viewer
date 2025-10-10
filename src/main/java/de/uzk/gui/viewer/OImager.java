@@ -4,12 +4,13 @@ import de.uzk.actions.ActionType;
 import de.uzk.actions.ActionTypeListener;
 import de.uzk.gui.*;
 import de.uzk.image.ImageLayer;
-import de.uzk.markers.Marker;
+import de.uzk.markers.MarkerMapping;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.List;
 
 import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -45,9 +46,9 @@ public class OImager extends InteractiveContainer<JPanel> implements ActionTypeL
 
             g2d.drawImage(currentImage, x, y, width, height, null);
 
-            Marker marker = markerHandler.getMarker(imageHandler.getTime());
-            if (marker != null) {
-                marker.draw(g2d, new Rectangle(x, y, width, height), scaleFactor);
+            List<MarkerMapping> marker = markerHandler.getMarkers(imageHandler.getTime());
+            for(MarkerMapping m : marker) {
+                m.getMarker().draw(g2d, new Rectangle(x, y, width, height), scaleFactor);
             }
         } else {
             String noImagesText = imageHandler.isEmpty() ? getWord("viewer.labels.noImages") : getWord("viewer.labels.couldNotLoadImage");

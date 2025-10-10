@@ -135,7 +135,8 @@ public class Gui extends InteractiveContainer<JFrame> implements WindowFocusList
     }
 
     public void addUpdateImageListener(UpdateImageListener listener) {
-        this.updateImageListeners.add(listener);
+        // Weil sonst während eines update() calls ein weiterer listener hinzugefügt werden könnte
+        SwingUtilities.invokeLater(() -> this.updateImageListeners.add(listener));
     }
 
     public void addUpdateUIListener(UpdateUIListener listener) {
