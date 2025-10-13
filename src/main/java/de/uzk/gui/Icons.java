@@ -22,15 +22,15 @@ public final class Icons {
     public static final FlatSVGIcon ICON_SCREENSHOT = loadResourceSVG("images/icons_edit/screenshot.svg");
 
     // nav icons
-    public static final FlatSVGIcon ICON_PREV_IMAGE = loadResourceSVG("images/icons_nav/arrow_left.svg");
-    public static final FlatSVGIcon ICON_NEXT_IMAGE = loadResourceSVG("images/icons_nav/arrow_right.svg");
-    public static final FlatSVGIcon ICON_FIRST_IMAGE = loadResourceSVG("images/icons_nav/arrow_left_start.svg");
-    public static final FlatSVGIcon ICON_LAST_IMAGE = loadResourceSVG("images/icons_nav/arrow_right_end.svg");
+    public static final FlatSVGIcon ICON_ARROW_LEFT_START = loadResourceSVG("images/icons_nav/arrow_left_start.svg");
+    public static final FlatSVGIcon ICON_ARROW_LEFT = loadResourceSVG("images/icons_nav/arrow_left.svg");
+    public static final FlatSVGIcon ICON_ARROW_RIGHT = loadResourceSVG("images/icons_nav/arrow_right.svg");
+    public static final FlatSVGIcon ICON_ARROW_RIGHT_END = loadResourceSVG("images/icons_nav/arrow_right_end.svg");
 
-    public static final FlatSVGIcon ICON_FIRST_LEVEL = loadResourceSVG("images/icons_nav/arrow_up_start.svg");
-    public static final FlatSVGIcon ICON_PREV_LEVEL = loadResourceSVG("images/icons_nav/arrow_up.svg");
-    public static final FlatSVGIcon ICON_NEXT_LEVEL = loadResourceSVG("images/icons_nav/arrow_down.svg");
-    public static final FlatSVGIcon ICON_LAST_LEVEL = loadResourceSVG("images/icons_nav/arrow_down_end.svg");
+    public static final FlatSVGIcon ICON_ARROW_UP_START = loadResourceSVG("images/icons_nav/arrow_up_start.svg");
+    public static final FlatSVGIcon ICON_ARROW_UP = loadResourceSVG("images/icons_nav/arrow_up.svg");
+    public static final FlatSVGIcon ICON_ARROW_DOWN = loadResourceSVG("images/icons_nav/arrow_down.svg");
+    public static final FlatSVGIcon ICON_ARROW_DOWN_END = loadResourceSVG("images/icons_nav/arrow_down_end.svg");
 
     // icons
     public static final FlatSVGIcon ICON_DELETE = loadResourceSVG("images/icons/delete.svg");
@@ -43,92 +43,82 @@ public final class Icons {
     };
     private static final FlatSVGIcon[] ICONS_DIFFERENT_COLORS = {
             // nav icons
-            ICON_FIRST_IMAGE,
-            ICON_PREV_IMAGE,
-            ICON_NEXT_IMAGE,
-            ICON_LAST_IMAGE,
+            ICON_ARROW_LEFT_START,
+            ICON_ARROW_LEFT,
+            ICON_ARROW_RIGHT,
+            ICON_ARROW_RIGHT_END,
 
-            ICON_FIRST_LEVEL,
-            ICON_PREV_LEVEL,
-            ICON_NEXT_LEVEL,
-            ICON_LAST_LEVEL,
+            ICON_ARROW_UP_START,
+            ICON_ARROW_UP,
+            ICON_ARROW_DOWN,
+            ICON_ARROW_DOWN_END,
 
             // icons
             ICON_DELETE,
     };
 
-    public static final Image APP_IMAGE = readResourcesImage("images/4D.png");
+    public static final Image APP_IMAGE = loadResourceAppImage();
 
     private Icons() {
     }
 
-    private static BufferedImage loadImage(Object image, ImageExceptionListener onImageException) {
-        try {
-            if (image instanceof File file) {
-                return ImageIO.read(file);
-            } else if (image instanceof URL url) {
-                return ImageIO.read(url);
-            }
-        } catch (Exception e) {
-            if (onImageException != null) onImageException.onImageException(e);
-        }
-        return null;
-    }
-
-    private static BufferedImage readResourcesImage(String imageName) {
-        String imageNameCleanedFileSeps = imageName.replace("/", StringUtils.FILE_SEP);
-        URL url = Icons.class.getClassLoader().getResource(imageNameCleanedFileSeps);
-        ImageExceptionListener onImageException = e -> {
-            logger.error("The SVG image '" + imageName + "' could not be found.");
-            logger.logException(e);
-        };
-        return loadImage(url, onImageException);
-    }
-
     public static BufferedImage loadImage(File file) {
-        return loadImage(file, null);
+        try {
+            return ImageIO.read(file);
+        } catch (Exception e) {
+            logger.error("The image '" + file.getAbsolutePath() + "' could not be loaded.");
+            return null;
+        }
     }
 
-    private static FlatSVGIcon loadResourceSVG(String svgName) {
+    private static FlatSVGIcon loadResourceSVG(String svgFilePath) {
+        String svgNameCleanedFileSeps = svgFilePath.replace("/", StringUtils.FILE_SEP);
+        URL svgUrl = Icons.class.getClassLoader().getResource(svgNameCleanedFileSeps);
+
         try {
-            String svgNameCleanedFileSeps = svgName.replace("/", StringUtils.FILE_SEP);
-            URL svgUrl = Icons.class.getClassLoader().getResource(svgNameCleanedFileSeps);
-            if (svgUrl != null) {
-                InputStream svgStream = svgUrl.openStream();
-                return new FlatSVGIcon(svgStream);
-            } else {
-                // Die Datei wurde nicht gefunden
-                logger.error("The SVG image '" + svgNameCleanedFileSeps + "' could not be found.");
-            }
+            if (svgUrl == null) throw new IOException();
+            InputStream svgStream = svgUrl.openStream();
+            return new FlatSVGIcon(svgStream);
         } catch (IOException e) {
-            logger.logException(e);
+            logger.error("The SVG image '" + svgNameCleanedFileSeps + "' could not be loaded.");
+            return null;
         }
-        return null;
+    }
+
+    private static BufferedImage loadResourceAppImage() {
+        String imageNameCleanedFileSeps = "images/4D.png".replace("/", StringUtils.FILE_SEP);
+        URL imageUrl = Icons.class.getClassLoader().getResource(imageNameCleanedFileSeps);
+
+        try {
+            if (imageUrl == null) throw new IOException();
+            return ImageIO.read(imageUrl);
+        } catch (IOException e) {
+            logger.error("The image '" + imageNameCleanedFileSeps + "' could not be loaded.");
+            return null;
+        }
     }
 
     public static void updateSVGIcons() {
         for (FlatSVGIcon svgIcon : ICONS_ONLY_ONE_COLOR) {
-            FlatSVGIcon.ColorFilter colorFilter = new FlatSVGIcon.ColorFilter(color -> {
-                // Replace black color on the theme
-                if (color.equals(Color.BLACK)) return new Color(0, 122, 255);
+            // Tausche Farben aus
+            updateSVGIconsColor(svgIcon, new FlatSVGIcon.ColorFilter(color -> {
+                if (color.equals(Color.BLACK)) return GuiUtils.COLOR_BLUE;
                 else return color;
-            });
-            if (svgIcon != null) svgIcon.setColorFilter(colorFilter);
+            }));
         }
 
         for (FlatSVGIcon svgIcon : ICONS_DIFFERENT_COLORS) {
-            FlatSVGIcon.ColorFilter colorFilter = new FlatSVGIcon.ColorFilter(color -> {
-                // Replace black color on the theme
-                if (color.equals(Color.BLACK)) {
-                    return config.getTheme().isLight() ? Color.GRAY : Color.WHITE;
-                }
+            // Tausche Farben aus
+            updateSVGIconsColor(svgIcon, new FlatSVGIcon.ColorFilter(color -> {
+                if (color.equals(Color.BLACK)) return config.getTheme().isLight() ? Color.GRAY : Color.WHITE;
                 return color;
-            });
-            if (svgIcon != null) svgIcon.setColorFilter(colorFilter);
+            }));
         }
     }
 
-    private interface ImageExceptionListener {
-        void onImageException(Exception e);
+    // TODO: für menubar anpassen
+    public static void updateSVGIconsColor(FlatSVGIcon svgIcon, FlatSVGIcon.ColorFilter colorFilter) {
+        if (svgIcon == null) return;
+        svgIcon.setColorFilter(colorFilter);
     }
 }

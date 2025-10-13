@@ -1,6 +1,6 @@
 package de.uzk.gui.marker;
 
-import de.uzk.actions.ActionType;
+import de.uzk.action.ActionType;
 import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.OGridBagConstraints;
@@ -92,7 +92,7 @@ public class MarkerMappingInfo extends AreaContainerInteractive<JPanel> {
             int option = JOptionPane.showConfirmDialog(null, initial, getWord("dialog.markers.editMarker"), JOptionPane.OK_CANCEL_OPTION);
             if(option == JOptionPane.OK_OPTION) {
                 this.mapping.setMarker(initial.getMarker());
-                gui.handleAction(ActionType.ADD_MARKER);
+                gui.handleAction(ActionType.ACTION_ADD_MARKER);
 
                 gui.updateUI();
             }

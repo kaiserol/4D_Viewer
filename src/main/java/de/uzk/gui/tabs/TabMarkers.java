@@ -1,6 +1,6 @@
 package de.uzk.gui.tabs;
 
-import de.uzk.actions.ActionType;
+import de.uzk.action.ActionType;
 import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.marker.MarkerEditor;
@@ -52,7 +52,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
             int option = JOptionPane.showConfirmDialog(null, initial, getWord("dialog.markers.newMarker"), JOptionPane.OK_CANCEL_OPTION);
             if(option == JOptionPane.OK_OPTION) {
                 markerHandler.addMarker(initial.getMarker(), imageHandler.getTime());
-                gui.handleAction(ActionType.ADD_MARKER);
+                gui.handleAction(ActionType.ACTION_ADD_MARKER);
                 gui.updateUI();
             }
 
@@ -69,7 +69,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
 
     @Override
     public void handleAction(ActionType actionType) {
-        if(actionType == ActionType.ADD_MARKER  || actionType == ActionType.REMOVE_MARKER) {
+        if(actionType == ActionType.ACTION_ADD_MARKER || actionType == ActionType.ACTION_REMOVE_MARKER) {
             this.rerender();
         }
     }

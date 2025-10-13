@@ -1,9 +1,8 @@
 package de.uzk.gui.tabs;
 
-import de.uzk.actions.ActionHandler;
-import de.uzk.actions.ActionType;
+import de.uzk.action.ActionHandler;
+import de.uzk.action.ActionType;
 import de.uzk.gui.*;
-import de.uzk.gui.GuiUtils;
 import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
@@ -11,7 +10,6 @@ import java.awt.*;
 
 import static de.uzk.Main.config;
 import static de.uzk.Main.imageHandler;
-import static de.uzk.actions.Actions.ACTION_SCREENSHOT;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class TabEdit extends AreaContainerInteractive<JPanel> {
@@ -85,7 +83,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
         // screenshotButton
         JButton screenshotButton = new JButton(getWord("items.edit.screenshot"));
-        screenshotButton.addActionListener(e -> actionHandler.executeEdit(ACTION_SCREENSHOT));
+        screenshotButton.addActionListener(e -> actionHandler.executeAction(ActionType.SHORTCUT_TAKE_SCREENSHOT));
         this.container.add(screenshotButton, gbc);
     }
 
@@ -96,7 +94,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
             if (GuiUtils.isEnabled(checkBox)) {
                 if (isMirrorXBox) imageHandler.getImageDetails().setMirrorX(checkBox.isSelected());
                 else imageHandler.getImageDetails().setMirrorY(checkBox.isSelected());
-                gui.handleAction(ActionType.EDIT_IMAGE);
+                gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
             }
         });
     }
@@ -111,7 +109,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         spinner.addChangeListener(e -> {
             if (GuiUtils.isEnabled(spinner)) {
                 setRotationInImageHandler(spinner);
-                gui.handleAction(ActionType.EDIT_IMAGE);
+                gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
             }
         });
         return spinner;
@@ -124,11 +122,11 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
     @Override
     public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.TURN_IMAGE_90_LEFT) {
+        if (actionType == ActionType.SHORTCUT_TURN_IMAGE_90_LEFT) {
             degreeSpinner.setValue(NumberUtils.turn90Left(imageHandler.getImageDetails().getRotation()));
-        } else if (actionType == ActionType.TURN_IMAGE_90_RIGHT) {
+        } else if (actionType == ActionType.SHORTCUT_TURN_IMAGE_90_RIGHT) {
             degreeSpinner.setValue(NumberUtils.turn90Right(imageHandler.getImageDetails().getRotation()));
-        } else if (actionType == ActionType.UPDATE_SCREENSHOT_COUNTER) {
+        } else if (actionType == ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER) {
             updateScreenshotCounter();
         }
     }
@@ -149,6 +147,6 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     }
 
     private void updateScreenshotCounter() {
-        this.screenshots.setText(String.valueOf(config.getScreenshots()));
+        this.screenshots.setText(String.valueOf(config.getScreenshotCount()));
     }
 }

@@ -1,7 +1,7 @@
 package de.uzk.gui.viewer;
 
-import de.uzk.actions.ActionHandler;
-import de.uzk.actions.ActionType;
+import de.uzk.action.ActionHandler;
+import de.uzk.action.ActionType;
 import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
@@ -160,7 +160,7 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
 
     @Override
     public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.UPDATE_PIN_TIME) {
+        if (actionType == ActionType.ACTION_UPDATE_PIN_TIME) {
             updatePinTime();
         }
     }
@@ -182,7 +182,7 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
         // updates the scrollBar if not moving anymore
         if (layer == ImageLayer.TIME) {
             if (!timeBar.getValueIsAdjusting()) updateScrollBar(timeBar, imageHandler.getTime());
-            gui.handleAction(ActionType.UPDATE_PIN_TIME);
+            gui.handleAction(ActionType.ACTION_UPDATE_PIN_TIME);
         } else {
             if (!levelBar.getValueIsAdjusting()) updateScrollBar(levelBar, imageHandler.getLevel());
         }

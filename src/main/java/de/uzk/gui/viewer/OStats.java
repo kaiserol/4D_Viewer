@@ -1,6 +1,6 @@
 package de.uzk.gui.viewer;
 
-import de.uzk.actions.ActionType;
+import de.uzk.action.ActionType;
 import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
@@ -104,9 +104,9 @@ public class OStats extends AreaContainerInteractive<JPanel> {
 
     @Override
     public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.UPDATE_TIME_UNIT) {
+        if (actionType == ActionType.ACTION_UPDATE_TIME_UNIT) {
             updateStats(ImageLayer.TIME);
-        } else if (actionType == ActionType.UPDATE_LEVEL_UNIT) {
+        } else if (actionType == ActionType.ACTION_UPDATE_LEVEL_UNIT) {
             updateStats(ImageLayer.LEVEL);
         }
     }

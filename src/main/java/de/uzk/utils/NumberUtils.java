@@ -1,5 +1,7 @@
 package de.uzk.utils;
 
+import java.awt.*;
+
 public final class NumberUtils {
     private NumberUtils() {
     }
@@ -47,5 +49,13 @@ public final class NumberUtils {
 
     public static boolean isDouble(Number number) {
         return number != null && number.getClass() == Double.class;
+    }
+
+    public static double calculatePerceivedBrightness(Color color) {
+        int r = color.getRed();
+        int g = color.getGreen();
+        int b = color.getBlue();
+
+        return (0.299 * r) + (0.587 * g) + (0.114 * b);
     }
 }

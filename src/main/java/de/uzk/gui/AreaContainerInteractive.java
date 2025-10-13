@@ -1,12 +1,12 @@
 package de.uzk.gui;
 
-import de.uzk.actions.ActionType;
-import de.uzk.actions.ActionTypeListener;
+import de.uzk.action.ActionType;
+import de.uzk.action.HandleActionListener;
 import de.uzk.image.ImageLayer;
 
 import java.awt.*;
 
-public abstract class AreaContainerInteractive<T extends Container> implements ActionTypeListener, ToggleListener, UpdateImageListener, UpdateUIListener, AppFocusListener {
+public abstract class AreaContainerInteractive<T extends Container> implements HandleActionListener, ToggleListener, UpdateImageListener, UpdateUIListener, AppFocusListener {
     protected T container;
     protected final Gui gui;
 
@@ -23,7 +23,7 @@ public abstract class AreaContainerInteractive<T extends Container> implements A
     }
 
     public final void setContainer(T container) {
-        if (container == null) throw new NullPointerException();
+        if (container == null) throw new NullPointerException("Container is null.");
         this.container = container;
     }
 

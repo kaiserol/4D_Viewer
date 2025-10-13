@@ -1,6 +1,6 @@
 package de.uzk.gui;
 
-import de.uzk.actions.ActionType;
+import de.uzk.action.ActionType;
 import de.uzk.image.ImageType;
 import de.uzk.image.LoadingImageListener;
 
@@ -150,7 +150,7 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> imp
     @Override
     public void handleAction(ActionType actionType) {
         // load images: if there is no path specified, the gui will be toggled off
-        if (actionType == ActionType.LOAD_IMAGES) {
+        if (actionType == ActionType.ACTION_LOAD_IMAGES) {
             if (imageHandler.hasImageFolder()) {
                 changeImages(null, true, gui::toggleOff);
             } else gui.toggleOff();

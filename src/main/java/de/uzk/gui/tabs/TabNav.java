@@ -1,7 +1,7 @@
 package de.uzk.gui.tabs;
 
-import de.uzk.actions.ActionHandler;
-import de.uzk.actions.ActionType;
+import de.uzk.action.ActionHandler;
+import de.uzk.action.ActionType;
 import de.uzk.gui.*;
 import de.uzk.image.ImageLayer;
 import de.uzk.gui.GuiUtils;
@@ -110,8 +110,8 @@ public class TabNav extends AreaContainerInteractive<JPanel> {
         spinner.addChangeListener(e -> {
             if (GuiUtils.isEnabled(spinner)) {
                 updateUnitValue(spinner, isTime);
-                if (isTime) gui.handleAction(ActionType.UPDATE_TIME_UNIT);
-                else gui.handleAction(ActionType.UPDATE_LEVEL_UNIT);
+                if (isTime) gui.handleAction(ActionType.ACTION_UPDATE_TIME_UNIT);
+                else gui.handleAction(ActionType.ACTION_UPDATE_LEVEL_UNIT);
             }
         });
         return spinner;
@@ -134,12 +134,12 @@ public class TabNav extends AreaContainerInteractive<JPanel> {
                 update(slider, layer, value, isAdjusting);
             }
         });
-        slider.addMouseWheelListener(e -> actionHandler.mouseWheelMoved(isShift, e.getWheelRotation(), false));
+        slider.addMouseWheelListener(e -> actionHandler.mouseWheelMoved(isShift, e.getWheelRotation()));
         slider.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_RIGHT) actionHandler.mouseWheelMoved(isShift, 1, true);
-                else if (e.getKeyCode() == KeyEvent.VK_LEFT) actionHandler.mouseWheelMoved(isShift, -1, true);
+                if (e.getKeyCode() == KeyEvent.VK_RIGHT) actionHandler.mouseWheelMoved(isShift, 1);
+                else if (e.getKeyCode() == KeyEvent.VK_LEFT) actionHandler.mouseWheelMoved(isShift, -1);
             }
         });
         slider.setPaintLabels(true);
@@ -166,7 +166,7 @@ public class TabNav extends AreaContainerInteractive<JPanel> {
 
     @Override
     public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.UPDATE_PIN_TIME) {
+        if (actionType == ActionType.ACTION_UPDATE_PIN_TIME) {
             updateSliderLabels(ImageLayer.TIME);
         }
     }

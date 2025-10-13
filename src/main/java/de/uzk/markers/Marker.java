@@ -1,6 +1,6 @@
 package de.uzk.markers;
 
-import de.uzk.gui.GuiUtils;
+import de.uzk.utils.NumberUtils;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -118,7 +118,7 @@ public class Marker {
         int height = metrics.getHeight();
         to.fillRect(x,y - metrics.getAscent()  ,width,height);
 
-        double brightness = GuiUtils.calculatePerceivedBrightness(this.color);
+        double brightness = NumberUtils.calculatePerceivedBrightness(this.color);
         if (brightness > 186) {
            to.setColor(Color.BLACK);
         } else {

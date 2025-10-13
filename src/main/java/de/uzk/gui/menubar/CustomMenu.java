@@ -1,25 +1,30 @@
 package de.uzk.gui.menubar;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public final class CustomMenu extends CustomMenuNode {
-    public CustomMenu(String name, boolean toggleable) {
-        super(new JMenu(), name, toggleable);
-    }
+public final class CustomMenu extends CustomMenuBarNode {
+    private final List<CustomMenuBarNode> nodes;
 
     public CustomMenu(String name) {
-        this(name, false);
+        super(new JMenu(), name);
+        this.nodes = new ArrayList<>();
     }
 
-    public void add(CustomMenuNode node) {
-        if (node == null) throw new NullPointerException();
+    public List<CustomMenuBarNode> getNodes() {
+        return nodes;
+    }
+
+    public void add(CustomMenuBarNode node) {
+        if (node == null) throw new NullPointerException("Node is null.");
         this.getNodes().add(node);
         this.getComponent().add(node.getComponent());
     }
 
-    public void add(CustomMenuNode... nodes) {
-        if (null == nodes) throw new NullPointerException();
-        for (CustomMenuNode node : nodes) add(node);
+    public void add(CustomMenuBarNode... nodes) {
+        if (null == nodes) throw new NullPointerException("Nodes is null.");
+        for (CustomMenuBarNode node : nodes) add(node);
     }
 
     public void addSeparator() {

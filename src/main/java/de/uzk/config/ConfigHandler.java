@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -22,7 +21,7 @@ import java.util.Properties;
 
 import static de.uzk.Main.imageHandler;
 import static de.uzk.Main.logger;
-import static de.uzk.image.ImageFileConstants.*;
+import static de.uzk.image.ImageFileConstants.DEFAULT_IMAGE_TYPE;
 import static de.uzk.utils.NumberUtils.isDouble;
 import static de.uzk.utils.NumberUtils.isInteger;
 
@@ -83,8 +82,14 @@ public class ConfigHandler {
         return fontSize;
     }
 
-    public void setFontSize(int newFontSize) {
-        this.fontSize = newFontSize;
+    public boolean setFontSize(int fontSize) {
+        if (fontSize < MIN_FONT_SIZE || fontSize > MAX_FONT_SIZE) {
+            if (this.fontSize == 0) this.fontSize = DEFAULT_FONT_SIZE;
+            return false;
+        }
+
+        this.fontSize = fontSize;
+        return true;
     }
 
     public Language getLanguage() {
@@ -92,20 +97,67 @@ public class ConfigHandler {
     }
 
     public void setLanguage(Language language) {
+        if (language == null) return;
+
         this.language = language;
         Locale.setDefault(language.getLocale());
         JComponent.setDefaultLocale(language.getLocale());
         LanguageHandler.load(language);
     }
 
-    private void createConfigIfNeeded() {
+    public boolean saveScreenshot(BufferedImage originalImage) {
         try {
-            if (!CONFIG_FILE.exists() && !CONFIG_FILE.createNewFile()) {
-                logger.error("The config was already created.");
+            if (SCREENSHOT_FOLDER.isDirectory() || SCREENSHOT_FOLDER.mkdir()) {
+                String date = dateFormat.format(new Date());
+                int count = getNextScreenshotIndex(date);
+                String fileName = String.format("%s(%d)_%s", date, count, imageHandler.getCurrentImage().getFileName());
+                File saveFile = new File(SCREENSHOT_FOLDER.getAbsolutePath() + StringUtils.FILE_SEP + fileName);
+
+                BufferedImage edited = GuiUtils.getEditedImage(originalImage, imageHandler.getImageDetails(), true);
+                ImageIO.write(edited, imageHandler.getImageDetails().getImageType().getType(), saveFile);
+                logger.info("Saved screenshot: " + saveFile.getAbsolutePath());
+                return true;
             }
         } catch (IOException e) {
             logger.logException(e);
         }
+        return false;
+    }
+
+    private int getNextScreenshotIndex(String date) {
+        int index = 1;
+        if (SCREENSHOT_FOLDER.isDirectory()) {
+            File[] files = SCREENSHOT_FOLDER.listFiles();
+            if (files == null) return index;
+
+            String filePattern = date + "\\(\\d+\\)_" + ImageFile.getImageNamePattern(imageHandler.getImageDetails());
+            for (File file : files) {
+                String filename = file.getName();
+                if (filename.matches(filePattern)) {
+                    int indexStart = filename.indexOf("(") + 1;
+                    int indexEnd = filename.indexOf(")");
+
+                    int count = Integer.parseInt(filename.substring(indexStart, indexEnd)) + 1;
+                    if (count > index) index = count;
+                }
+            }
+        }
+        return index;
+    }
+
+    public int getScreenshotCount() {
+        int count = 0;
+        if (SCREENSHOT_FOLDER.isDirectory()) {
+            File[] files = SCREENSHOT_FOLDER.listFiles();
+            if (files == null) return count;
+
+            String filePattern = "\\d{4}-\\d{2}-\\d{2}\\(\\d+\\)_" + ImageFile.getImageNamePattern(imageHandler.getImageDetails());
+            for (File file : files) {
+                String filename = file.getName();
+                if (filename.matches(filePattern)) count++;
+            }
+        }
+        return count;
     }
 
     public void loadConfig() {
@@ -116,11 +168,30 @@ public class ConfigHandler {
             properties.load(fileInputStream);
             readProperties(properties);
         } catch (IOException ignored) {
-            setDefaultValues();
+            readDefaultProperties();
         }
     }
 
-    private void setDefaultValues() {
+    public void saveConfig() {
+        logger.info("Storing config...");
+        Properties properties = new Properties();
+        try {
+            if (!CONFIG_FILE.isDirectory() && !CONFIG_FILE.createNewFile()) {
+                logger.error("The config was already created.");
+            }
+        } catch (IOException e) {
+            logger.logException(e);
+        }
+
+        try (FileOutputStream outputStream = new FileOutputStream(CONFIG_FILE)) {
+            saveProperties(properties);
+            properties.store(outputStream, "Config");
+        } catch (IOException e) {
+            logger.logException(e);
+        }
+    }
+
+    private void readDefaultProperties() {
         // imageDetails
         imageHandler.setImageDetails(new ImageDetails(
                 DEFAULT_SEP_TIME,
@@ -138,11 +209,11 @@ public class ConfigHandler {
         this.askAgainClosingWindow = DEFAULT_ASK_AGAIN_CLOSING_WINDOW;
         this.theme = DEFAULT_THEME;
         this.fontSize = DEFAULT_FONT_SIZE;
-        setLanguage(SYSTEM_LANGUAGE);
+        this.setLanguage(SYSTEM_LANGUAGE);
     }
 
     private void readProperties(Properties properties) {
-        // folderDir
+        // imageFolder
         imageHandler.setImageFolder(loadImageFolder(properties));
 
         // imageDetails
@@ -158,52 +229,34 @@ public class ConfigHandler {
         imageHandler.setTimeUnit(loadNumber(properties, "TimeUnit", DEFAULT_TIME_UNIT).doubleValue());
         imageHandler.setLevelUnit(loadNumber(properties, "LevelUnit", DEFAULT_LEVEL_UNIT).doubleValue());
 
-        // askAgainClosingWindow
+        // askAgainClosingWindow, theme, font size, language
         this.askAgainClosingWindow = loadBoolean(properties, "AskAgainClosingWindow", DEFAULT_ASK_AGAIN_CLOSING_WINDOW);
-
-        // theme
-        setTheme(loadString(properties, "Theme", DEFAULT_THEME.name()));
-
-        // font size
-        int tempFontSize = loadNumber(properties, "FontSize", -1).intValue();
-        boolean legalFontSize = tempFontSize >= MIN_FONT_SIZE && tempFontSize <= MAX_FONT_SIZE;
-        setFontSize(legalFontSize ? tempFontSize : DEFAULT_FONT_SIZE);
-
-        // language
-        String languageName = loadString(properties, "Language", SYSTEM_LANGUAGE.getName());
-        Language language = Language.byName(languageName);
-        setLanguage(language);
+        this.setTheme(loadString(properties, "Theme", DEFAULT_THEME.name()));
+        this.setFontSize(loadNumber(properties, "FontSize", DEFAULT_FONT_SIZE).intValue());
+        this.setLanguage(Language.byName(loadString(properties, "Language", SYSTEM_LANGUAGE.getName())));
     }
 
-    public void saveConfig() {
-        createConfigIfNeeded();
-        final Properties cfg = new Properties();
+    private void saveProperties(Properties properties) {
+        // imageFolder
+        properties.setProperty("ImageFolder", imageHandler.getImageDir());
 
-        logger.info("Storing config...");
-        try (FileInputStream inputStream = new FileInputStream(CONFIG_FILE)) {
-            cfg.load(inputStream);
-            cfg.setProperty("ImageFolder", imageHandler.getImageDir());
-            cfg.setProperty("SepTime", imageHandler.getImageDetails().getSepTime());
-            cfg.setProperty("SepLevel", imageHandler.getImageDetails().getSepLevel());
-            cfg.setProperty("ImageType", imageHandler.getImageDetails().getImageType().getTypeDescription());
-            cfg.setProperty("MirrorX", String.valueOf(imageHandler.getImageDetails().isMirrorX()));
-            cfg.setProperty("MirrorY", String.valueOf(imageHandler.getImageDetails().isMirrorY()));
-            cfg.setProperty("Rotation", String.valueOf(imageHandler.getImageDetails().getRotation()));
-            cfg.setProperty("TimeUnit", String.valueOf(imageHandler.getTimeUnit()));
-            cfg.setProperty("LevelUnit", String.valueOf(imageHandler.getLevelUnit()));
-            cfg.setProperty("AskAgainClosingWindow", String.valueOf(isAskAgainClosingWindow()));
-            cfg.setProperty("Theme", String.valueOf(getTheme()));
-            cfg.setProperty("FontSize", String.valueOf(getFontSize()));
-            cfg.setProperty("Language", getLanguage().getName());
-        } catch (IOException e) {
-            logger.logException(e);
-        }
+        // imageDetails
+        properties.setProperty("SepTime", imageHandler.getImageDetails().getSepTime());
+        properties.setProperty("SepLevel", imageHandler.getImageDetails().getSepLevel());
+        properties.setProperty("ImageType", imageHandler.getImageDetails().getImageType().getTypeDescription());
+        properties.setProperty("MirrorX", String.valueOf(imageHandler.getImageDetails().isMirrorX()));
+        properties.setProperty("MirrorY", String.valueOf(imageHandler.getImageDetails().isMirrorY()));
+        properties.setProperty("Rotation", String.valueOf(imageHandler.getImageDetails().getRotation()));
 
-        try (FileOutputStream outputStream = new FileOutputStream(CONFIG_FILE)) {
-            cfg.store(outputStream, "Config");
-        } catch (IOException e) {
-            logger.logException(e);
-        }
+        // units
+        properties.setProperty("TimeUnit", String.valueOf(imageHandler.getTimeUnit()));
+        properties.setProperty("LevelUnit", String.valueOf(imageHandler.getLevelUnit()));
+
+        // askAgainClosingWindow, theme, font size, language
+        properties.setProperty("AskAgainClosingWindow", String.valueOf(isAskAgainClosingWindow()));
+        properties.setProperty("Theme", String.valueOf(getTheme()));
+        properties.setProperty("FontSize", String.valueOf(getFontSize()));
+        properties.setProperty("Language", getLanguage().getName());
     }
 
     private File loadImageFolder(Properties properties) {
@@ -220,9 +273,7 @@ public class ConfigHandler {
         if (result != null) {
             // compares descriptions of image types
             ImageType imageType = ImageFileConstants.getImageType(result);
-            if (imageType != null) {
-                return imageType;
-            }
+            if (imageType != null) return imageType;
         }
         return DEFAULT_IMAGE_TYPE;
     }
@@ -247,87 +298,6 @@ public class ConfigHandler {
             return defaultValue;
         }
         return defaultValue;
-    }
-
-    // screenshots
-    public String saveScreenshot(BufferedImage originalImage) {
-        if (originalImage != null) {
-            // Format the date using the SimpleDateFormat
-            String formattedDate = dateFormat.format(new Date());
-            int screenshotCount = getScreenshots(formattedDate) + 1;
-            String filename = getScreenshotName(formattedDate, screenshotCount, imageHandler.getCurrentImage());
-
-            File saveFile = new File(SCREENSHOT_FOLDER.getAbsolutePath() + StringUtils.FILE_SEP + filename);
-            boolean savedImage = saveScreenshot(saveFile, originalImage);
-            if (savedImage) return saveFile.getAbsolutePath();
-        }
-        return null;
-    }
-
-    private boolean saveScreenshot(File saveFile, BufferedImage originalImage) {
-        try {
-            if (!SCREENSHOT_FOLDER.exists() && !SCREENSHOT_FOLDER.mkdir()) {
-                logger.error("Could not create screenshot folder.");
-                return false;
-            }
-
-            if (saveFile.createNewFile()) {
-                BufferedImage editedImage = GuiUtils.getEditedImage(originalImage, imageHandler.getImageDetails(), true);
-                ImageIO.write(editedImage, imageHandler.getImageDetails().getImageType().getType(), saveFile);
-                return true;
-            }
-        } catch (IOException e) {
-            logger.logException(e);
-            try {
-                Files.delete(saveFile.toPath());
-            } catch (IOException ex) {
-                logger.logException(ex);
-            }
-        }
-        return false;
-    }
-
-    public int getScreenshots() {
-        return getScreenshots(dateFormat.format(new Date()));
-    }
-
-    private int getScreenshots(String formattedDate) {
-        int maxCount = 0;
-        if (SCREENSHOT_FOLDER.exists()) {
-            File[] files = SCREENSHOT_FOLDER.listFiles(File::isFile);
-            if (files != null) {
-                String pattern = getScreenshotPattern(formattedDate, imageHandler.getImageDetails());
-                for (File file : files) {
-                    int count = getScreenshotCount(file, pattern);
-                    if (count > maxCount) maxCount = count;
-                }
-            }
-        }
-        return maxCount;
-    }
-
-    private int getScreenshotCount(File file, String pattern) {
-        if (file != null && file.exists()) {
-            String filename = file.getName();
-
-            // compare pattern
-            if (filename.matches(pattern)) {
-                int indexStart = filename.indexOf("(") + 1;
-                int indexEnd = filename.indexOf(")");
-
-                return Integer.parseInt(filename.substring(indexStart, indexEnd));
-            }
-        }
-        return 0;
-    }
-
-    private String getScreenshotPattern(String date, ImageDetails imageDetails) {
-        String imageNamePattern = ImageFile.getImageNamePattern(imageDetails);
-        return date + "\\([0-9]+\\)_" + imageNamePattern;
-    }
-
-    private String getScreenshotName(String date, int screenshot, ImageFile imageFile) {
-        return date + "(" + screenshot + ")_" + imageFile.getFileName();
     }
 
     // theme settings

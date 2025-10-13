@@ -1,6 +1,6 @@
 package de.uzk.gui.viewer;
 
-import de.uzk.actions.ActionType;
+import de.uzk.action.ActionType;
 import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
@@ -62,9 +62,9 @@ public class OImager extends AreaContainerInteractive<JPanel> {
 
     @Override
     public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.EDIT_IMAGE) {
+        if (actionType == ActionType.ACTION_EDIT_IMAGE) {
             editImage();
-        } else if (actionType == ActionType.TAKE_SCREENSHOT) {
+        } else if (actionType == ActionType.SHORTCUT_TAKE_SCREENSHOT) {
             takeScreenshot();
         }
     }
@@ -107,8 +107,10 @@ public class OImager extends AreaContainerInteractive<JPanel> {
     }
 
     private void takeScreenshot() {
-        String savePath = config.saveScreenshot(this.originalImage);
-        if (savePath != null) gui.handleAction(ActionType.UPDATE_SCREENSHOT_COUNTER);
+        if (this.originalImage != null) {
+            boolean saved = config.saveScreenshot(this.originalImage);
+            if (saved) gui.handleAction(ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER);
+        }
     }
 
     private void checkImages() {

@@ -1,8 +1,8 @@
 package de.uzk.gui;
 
-import de.uzk.actions.ActionHandler;
-import de.uzk.actions.ActionType;
-import de.uzk.actions.ActionTypeListener;
+import de.uzk.action.ActionHandler;
+import de.uzk.action.ActionType;
+import de.uzk.action.HandleActionListener;
 import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.gui.viewer.OViewer;
 import de.uzk.image.ImageLayer;
@@ -19,7 +19,7 @@ import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class Gui extends AreaContainerInteractive<JFrame> {
-    private final List<ActionTypeListener> actionTypeListeners;
+    private final List<HandleActionListener> handleActionListeners;
     private final List<ToggleListener> toggleListeners;
     private final List<UpdateImageListener> updateImageListeners;
     private final List<UpdateUIListener> updateUIListeners;
@@ -27,8 +27,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     private boolean windowInitialized;
 
     public Gui() {
-        super(new JFrame(getWord("app.name")), null);
-        this.actionTypeListeners = new ArrayList<>();
+        super(new JFrame(), null);
+        this.handleActionListeners = new ArrayList<>();
         this.toggleListeners = new ArrayList<>();
         this.updateImageListeners = new ArrayList<>();
         this.updateUIListeners = new ArrayList<>();
@@ -41,7 +41,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.getContentPane().removeAll();
 
         // Prevents that old UI objects are continuing living (old event listeners have to be cleaned)
-        this.actionTypeListeners.clear();
+        this.handleActionListeners.clear();
         this.toggleListeners.clear();
         this.updateImageListeners.clear();
         this.updateUIListeners.clear();
@@ -55,14 +55,13 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
         SwingUtilities.invokeLater(() -> {
             this.container.setIconImage(Icons.APP_IMAGE);
+            this.container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
             this.container.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     closeApp(getFrame(), config::saveConfig);
                 }
             });
-            this.container.setLayout(new BorderLayout());
-            this.container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
             this.container.addWindowFocusListener(new WindowAdapter() {
                 @Override
                 public void windowGainedFocus(WindowEvent e) {
@@ -83,46 +82,50 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     private void loadUI() {
         initContent();
-        handleAction(ActionType.LOAD_IMAGES);
+        handleAction(ActionType.ACTION_LOAD_IMAGES);
         updateUI();
         this.container.pack();
     }
 
     private void initContent() {
+        this.container.setTitle(getWord("app.title"));
+        this.container.setLayout(new BorderLayout());
+        ActionHandler actionHandler = new ActionHandler(this);
+
+        // menuBar
+        AppMenuBar menuBar = new AppMenuBar(this, actionHandler);
+        this.container.setJMenuBar(menuBar.getContainer());
+
+        // mainPanel
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        ActionHandler actionHandler = new ActionHandler(this);
 
         // directory selection
         AreaDirectorySelection directorySelection = new AreaDirectorySelection(this);
         mainPanel.add(directorySelection.getContainer(), BorderLayout.NORTH);
 
-        // splitPane (tabs, viewer)
+        // splitPane (areaTabs, areaViewer)
+        AreaTabs areaTabs = new AreaTabs(this, actionHandler);
+        OViewer areaViewer = new OViewer(this, actionHandler);
+
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setOneTouchExpandable(true);
-
-        AreaTabs areaTabs = new AreaTabs(this, actionHandler);
-        OViewer viewer = new OViewer(this, actionHandler);
         splitPane.add(areaTabs.getContainer());
-        splitPane.add(viewer.getContainer());
+        splitPane.add(areaViewer.getContainer());
         mainPanel.add(splitPane, BorderLayout.CENTER);
 
         // disclaimer
         AreaDisclaimerRightOfUse disclaimer = new AreaDisclaimerRightOfUse(this);
         mainPanel.add(disclaimer.getContainer(), BorderLayout.SOUTH);
         this.container.add(mainPanel);
-
-        // menuBar
-        AppMenuBar menuBar = new AppMenuBar(this, actionHandler);
-        this.container.setJMenuBar(menuBar.getContainer());
     }
 
     public JFrame getFrame() {
         return this.container;
     }
 
-    public void addActionTypeListener(ActionTypeListener listener) {
-        this.actionTypeListeners.add(listener);
+    public void addActionTypeListener(HandleActionListener listener) {
+        this.handleActionListeners.add(listener);
     }
 
     public void addToggleListener(ToggleListener listener) {
@@ -144,12 +147,12 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     @Override
     public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.TOGGLE_PIN_TIME) {
+        if (actionType == ActionType.SHORTCUT_TOGGLE_PIN_TIME) {
             imageHandler.togglePinTime();
-            actionType = ActionType.UPDATE_PIN_TIME;
+            actionType = ActionType.ACTION_UPDATE_PIN_TIME;
         }
 
-        for (ActionTypeListener listener : actionTypeListeners) {
+        for (HandleActionListener listener : handleActionListeners) {
             listener.handleAction(actionType);
         }
     }
@@ -158,8 +161,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     public void toggleOn() {
         imageHandler.toFirst();
         imageHandler.setDefaultPinTime();
-        handleAction(ActionType.UPDATE_PIN_TIME);
-        handleAction(ActionType.UPDATE_IMAGE);
+        handleAction(ActionType.ACTION_UPDATE_PIN_TIME);
 
         for (ToggleListener listener : toggleListeners) {
             listener.toggleOn();
@@ -171,8 +173,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     public void toggleOff() {
         imageHandler.clear();
         imageHandler.setDefaultPinTime();
-        handleAction(ActionType.UPDATE_PIN_TIME);
-        handleAction(ActionType.UPDATE_IMAGE);
+        handleAction(ActionType.ACTION_UPDATE_PIN_TIME);
 
         for (ToggleListener listener : toggleListeners) {
             listener.toggleOff();

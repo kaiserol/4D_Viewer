@@ -1,178 +1,109 @@
 package de.uzk.gui.menubar;
 
-import de.uzk.actions.ActionHandler;
-import de.uzk.config.ConfigHandler;
-import de.uzk.config.Language;
-import de.uzk.gui.*;
-import de.uzk.gui.DialogLogViewer;
-import de.uzk.gui.GuiUtils;
+import de.uzk.action.ActionHandler;
+import de.uzk.gui.AreaContainerInteractive;
+import de.uzk.gui.Gui;
 
 import javax.swing.*;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
-import static de.uzk.Main.config;
-import static de.uzk.Main.logger;
-import static de.uzk.actions.Actions.*;
+import static de.uzk.action.ActionType.*;
 import static de.uzk.config.LanguageHandler.getWord;
+import static de.uzk.gui.Icons.*;
 
 public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
-    private CustomMenuBar menuBar;
-    private final DialogDisclaimer dialogDisclaimer;
-    private final DialogLogViewer dialogLogViewer;
+    private CustomMenu menuEdit;
+    private CustomMenu menuNavigate;
+
+    // TODO: Feature setEnabled hinzufügen -> Idee Action: UpdateMenuBar erstellen
+    // TODO: UpdateUI: löschen? kann durch ActionType übernommen werden?
+//    private CustomMenuItem itemFontDecrease;
+//    private CustomMenuItem itemFontRestore;
+//    private CustomMenuItem itemFontIncrease;
+//        int fontSize = config.getFontSize();
+//        decrFontItem.setEnabled(fontSize != ConfigHandler.MIN_FONT_SIZE);
+//        restoreFontItem.setEnabled(fontSize != ConfigHandler.DEFAULT_FONT_SIZE);
+//        incrFontItem.setEnabled(fontSize != ConfigHandler.MAX_FONT_SIZE);
 
     public AppMenuBar(Gui gui, ActionHandler actionHandler) {
         super(new JMenuBar(), gui);
-        this.dialogDisclaimer = new DialogDisclaimer(gui.getFrame());
-        this.dialogLogViewer = new DialogLogViewer(gui.getFrame());
         init(actionHandler);
     }
 
     private void init(ActionHandler actionHandler) {
-        this.menuBar = new CustomMenuBar(this.container);
-        this.menuBar.add(getMenuEdit(actionHandler));
-        this.menuBar.add(getMenuNavigate(actionHandler));
-        this.menuBar.add(getMenuWindow());
+        CustomMenuBar menuBar = new CustomMenuBar(this.container, "App MenuBar");
+        menuBar.add(menuEdit = getMenuEdit(actionHandler));
+        menuBar.add(menuNavigate = getMenuNavigate(actionHandler));
+        menuBar.add(getMenuWindow(actionHandler));
     }
 
     private CustomMenu getMenuEdit(ActionHandler actionHandler) {
-        CustomMenu menuEdit = new CustomMenu(getWord("items.edit"), true);
+        CustomMenu menuEdit = new CustomMenu(getWord("items.edit"));
 
-        menuEdit.add(new CustomMenuItem(getWord("items.edit.pinTime"), Icons.ICON_PIN,
-                a -> actionHandler.executeEdit(ACTION_PIN_TIME), ACTION_PIN_TIME));
-        menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageLeft"), Icons.ICON_TURN_LEFT,
-                a -> actionHandler.executeEdit(ACTION_TURN_IMAGE_LEFT), ACTION_TURN_IMAGE_LEFT));
-        menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageRight"), Icons.ICON_TURN_RIGHT,
-                a -> actionHandler.executeEdit(ACTION_TURN_IMAGE_RIGHT), ACTION_TURN_IMAGE_RIGHT));
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.pinTime"), ICON_PIN, actionHandler, SHORTCUT_TOGGLE_PIN_TIME));
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageLeft"), ICON_TURN_LEFT, actionHandler, SHORTCUT_TURN_IMAGE_90_LEFT));
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageRight"), ICON_TURN_RIGHT, actionHandler, SHORTCUT_TURN_IMAGE_90_RIGHT));
         menuEdit.addSeparator();
 
-        menuEdit.add(new CustomMenuItem(getWord("items.edit.screenshot"), Icons.ICON_SCREENSHOT, a -> actionHandler.executeEdit(ACTION_SCREENSHOT), ACTION_SCREENSHOT));
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.screenshot"), ICON_SCREENSHOT, actionHandler, SHORTCUT_TAKE_SCREENSHOT));
         return menuEdit;
     }
 
     private CustomMenu getMenuNavigate(ActionHandler actionHandler) {
-        CustomMenu menuNavigate = new CustomMenu(getWord("items.nav"), true);
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.first"), Icons.ICON_FIRST_IMAGE, actionHandler, ACTION_FIRST_IMAGE));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.prev"), Icons.ICON_PREV_IMAGE, actionHandler, ACTION_PREV_IMAGE));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.next"), Icons.ICON_NEXT_IMAGE, actionHandler, ACTION_NEXT_IMAGE));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.last"), Icons.ICON_LAST_IMAGE, actionHandler, ACTION_LAST_IMAGE));
+        CustomMenu menuNavigate = new CustomMenu(getWord("items.nav"));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.first"), ICON_ARROW_LEFT_START, actionHandler, SHORTCUT_GO_TO_FIRST_IMAGE));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.prev"), ICON_ARROW_LEFT, actionHandler, SHORTCUT__GO_TO_PREV_IMAGE));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.next"), ICON_ARROW_RIGHT, actionHandler, SHORTCUT_GO_TO_NEXT_IMAGE));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.last"), ICON_ARROW_RIGHT_END, actionHandler, SHORTCUT_GO_TO_LAST_IMAGE));
         menuNavigate.addSeparator();
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.first"), Icons.ICON_FIRST_LEVEL, actionHandler, ACTION_FIRST_LEVEL));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.prev"), Icons.ICON_PREV_LEVEL, actionHandler, ACTION_PREV_LEVEL));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.next"), Icons.ICON_NEXT_LEVEL, actionHandler, ACTION_NEXT_LEVEL));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.last"), Icons.ICON_LAST_LEVEL, actionHandler, ACTION_LAST_LEVEL));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.first"), ICON_ARROW_UP_START, actionHandler, SHORTCUT_GO_TO_FIRST_LEVEL));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.prev"), ICON_ARROW_UP, actionHandler, SHORTCUT_GO_TO_PREV_LEVEL));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.next"), ICON_ARROW_DOWN, actionHandler, SHORTCUT_GO_TO_NEXT_LEVEL));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.last"), ICON_ARROW_DOWN_END, actionHandler, SHORTCUT_GO_TO_LAST_LEVEL));
         return menuNavigate;
     }
 
-    private CustomMenu getMenuWindow() {
+    private CustomMenu getMenuWindow(ActionHandler actionHandler) {
         CustomMenu menuWindow = new CustomMenu(getWord("items.window"));
 
         // language, theme
-        menuWindow.add(new CustomMenuItem(getWord("items.window.selectLanguage"), a -> selectLanguage()));
-        menuWindow.add(new CustomMenuItem(getWord("items.window.toggleTheme"), a -> GuiUtils.switchThemes(gui)));
+        menuWindow.add(new CustomMenuItem(getWord("items.window.selectLanguage"), actionHandler, ACTION_SELECT_LANGUAGE));
+        menuWindow.add(new CustomMenuItem(getWord("items.window.toggleTheme"), actionHandler, ACTION_TOGGLE_THEME));
         menuWindow.addSeparator();
 
         // font: decrease, restore, increase
-        CustomMenuItem decrFontItem = new CustomMenuItem(getWord("items.window.fontSizeDecr"));
-        CustomMenuItem restoreFontItem = new CustomMenuItem(getWord("items.window.fontSizeRestore"));
-        CustomMenuItem incrFontItem = new CustomMenuItem(getWord("items.window.fontSizeIncr"));
-
-        decrFontItem.setAction(updateFontItems(GuiUtils::decrFont,
-                decrFontItem.getComponent(), restoreFontItem.getComponent(), incrFontItem.getComponent()), ACTION_DECREASE_FONT, ACTION_DECREASE_FONT_2);
-        restoreFontItem.setAction(updateFontItems(GuiUtils::restoreFont,
-                decrFontItem.getComponent(), restoreFontItem.getComponent(), incrFontItem.getComponent()), ACTION_RESTORE_FONT);
-        incrFontItem.setAction(updateFontItems(GuiUtils::incrFont,
-                decrFontItem.getComponent(), restoreFontItem.getComponent(), incrFontItem.getComponent()), ACTION_INCREASE_FONT, ACTION_INCREASE_FONT_2);
-
-        menuWindow.add(decrFontItem, restoreFontItem, incrFontItem);
-        updateFontItems(null,
-                decrFontItem.getComponent(), restoreFontItem.getComponent(), incrFontItem.getComponent()).actionPerformed(null);
+        menuWindow.add(new CustomMenuItem(getWord("items.window.fontSizeDecrease"), actionHandler, SHORTCUT_FONT_SIZE_DECREASE));
+        menuWindow.add(new CustomMenuItem(getWord("items.window.fontSizeRestore"), actionHandler, SHORTCUT_FONT_SIZE_RESTORE));
+        menuWindow.add(new CustomMenuItem(getWord("items.window.fontSizeIncrease"), actionHandler, SHORTCUT_FONT_SIZE_INCREASE));
         menuWindow.addSeparator();
 
         // disclaimer, logViewer
-        menuWindow.add(new CustomMenuItem(getWord("items.window.showDisclaimer"), a -> dialogDisclaimer.show(), ACTION_SHOW_DISCLAIMER));
-        menuWindow.add(new CustomMenuItem(getWord("items.window.showLogViewer"), a -> dialogLogViewer.show(), ACTION_SHOW_LOG_VIEWER));
+        menuWindow.add(new CustomMenuItem(getWord("items.window.showDisclaimer"), actionHandler, SHORTCUT_SHOW_DISCLAIMER));
+        menuWindow.add(new CustomMenuItem(getWord("items.window.showLogViewer"), actionHandler, SHORTCUT_SHOW_LOG_VIEWER));
 
         return menuWindow;
     }
 
-    private ActionListener updateFontItems(Runnable runnable, JComponent decrFontItem, JComponent restoreFontItem, JComponent incrFontItem) {
-        return a -> {
-            if (runnable != null) runnable.run();
-            int fontSize = config.getFontSize();
-            decrFontItem.setEnabled(fontSize != ConfigHandler.MIN_FONT_SIZE);
-            restoreFontItem.setEnabled(fontSize != ConfigHandler.DEFAULT_FONT_SIZE);
-            incrFontItem.setEnabled(fontSize != ConfigHandler.MAX_FONT_SIZE);
-        };
-    }
-
-    private void selectLanguage() {
-        Language oldLanguage = config.getLanguage();
-        JComboBox<Language> selectBox = new JComboBox<>(Language.values());
-        selectBox.setSelectedItem(oldLanguage);
-
-        // Benutzerdefinierte Buttons
-        JButton okButton = new JButton(getWord("optionPane.button.ok"));
-        JButton cancelButton = new JButton(getWord("optionPane.button.cancel"));
-        okButton.setEnabled(false);
-
-        // Wenn sich die Auswahl ändert → Button aktivieren/deaktivieren
-        selectBox.addActionListener(a -> {
-            Language selected = (Language) selectBox.getSelectedItem();
-            okButton.setEnabled(selected != null && selected != oldLanguage);
-        });
-
-        // Inhalte & Optionen des Dialogs
-        Object[] message = {selectBox};
-        Object[] options = {okButton, cancelButton};
-
-        // JOptionPane erstellen
-        JOptionPane pane = new JOptionPane(
-                message, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION,
-                null, options, okButton
-        );
-        JDialog dialog = pane.createDialog(gui.getFrame(), getWord("items.window.selectLanguage"));
-
-        // Aktionen der Buttons
-        okButton.addActionListener(a -> {
-            pane.setValue(okButton);
-            dialog.dispose();
-        });
-        cancelButton.addActionListener(a -> {
-            pane.setValue(cancelButton);
-            dialog.dispose();
-        });
-
-        // Dialog anzeigen
-        dialog.setVisible(true);
-
-        // Ergebnis auswerten
-        Object selectedValue = pane.getValue();
-        Language newLanguage = (Language) selectBox.getSelectedItem();
-        if (selectedValue != okButton || newLanguage == null || oldLanguage == newLanguage) return;
-
-        // Sprache setzen und speichern
-        logger.info("Changing language from '" + oldLanguage + "' to '" + newLanguage + "'");
-        config.setLanguage(newLanguage);
-        config.saveConfig();
-        gui.rebuild();
-    }
-
     @Override
     public void toggleOn() {
-        enableMenus(this.menuBar, true);
+        toggleMenus(true);
     }
 
     @Override
     public void toggleOff() {
-        enableMenus(this.menuBar, false);
+        toggleMenus(false);
     }
 
-    private void enableMenus(CustomMenuNode parent, boolean enabled) {
-        for (CustomMenuNode node : parent.getNodes()) {
-            if (parent.isToggleable()) {
-                node.getComponent().setEnabled(enabled);
-            }
-            enableMenus(node, enabled);
+    private void toggleMenus(boolean enabled) {
+        List<CustomMenuBarNode> nodes = new ArrayList<>();
+        nodes.add(this.menuEdit);
+        nodes.add(this.menuNavigate);
+
+        while (!nodes.isEmpty()) {
+            CustomMenuBarNode node = nodes.remove(0);
+            if (node instanceof CustomMenu menu) nodes.addAll(0, menu.getNodes());
+            else if (node instanceof CustomMenuItem item) item.getComponent().setEnabled(enabled);
         }
     }
 }

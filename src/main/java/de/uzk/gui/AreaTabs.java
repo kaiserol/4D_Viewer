@@ -1,6 +1,6 @@
 package de.uzk.gui;
 
-import de.uzk.actions.ActionHandler;
+import de.uzk.action.ActionHandler;
 import de.uzk.gui.tabs.TabEdit;
 import de.uzk.gui.tabs.TabMarkers;
 import de.uzk.gui.tabs.TabNav;

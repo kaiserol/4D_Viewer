@@ -23,8 +23,8 @@ public final class GuiUtils {
     public static final Color COLOR_RED = new Color(255, 86, 86);
     public static final String COMP_DISABLED = "DISABLED";
     public static final String SLIDER_DRAGGED = "DRAGGING";
-    private static Color borderColor = null;
-    private static Font font = null;
+    private static Color borderColor;
+    private static Font font;
 
     private GuiUtils() {
     }
@@ -101,54 +101,41 @@ public final class GuiUtils {
         UIManager.put("OptionPane.showIcon", true);
 
         Icons.updateSVGIcons();
-        font = getDefaultFont();
-        setFont(font.deriveFont((float) config.getFontSize()));
+        font = UIManager.getFont("defaultFont");
+        updateFontSize(config.getFontSize());
     }
 
     public static Color getBorderColor() {
         return borderColor;
     }
 
-    public static void decrFont() {
-        Font newFont = font.deriveFont((float) font.getSize() - 1);
-        if (newFont.getSize() >= ConfigHandler.MIN_FONT_SIZE) {
-            setFont(newFont);
+    public static void decreaseFont() {
+        int newFontSize = font.getSize() - 1;
+        if (newFontSize >= ConfigHandler.MIN_FONT_SIZE) {
+            updateFontSize(newFontSize);
         }
     }
 
     public static void restoreFont() {
-        Font newFont = font.deriveFont((float) ConfigHandler.DEFAULT_FONT_SIZE);
-        setFont(newFont);
+        updateFontSize(ConfigHandler.DEFAULT_FONT_SIZE);
     }
 
-    public static void incrFont() {
-        Font newFont = font.deriveFont((float) (font.getSize() + 1));
-        if (newFont.getSize() <= ConfigHandler.MAX_FONT_SIZE) {
-            setFont(newFont);
+    public static void increaseFont() {
+        int newFontSize = font.getSize() + 1;
+        if (newFontSize <= ConfigHandler.MAX_FONT_SIZE) {
+            updateFontSize(newFontSize);
         }
     }
 
-    public static int getFontSize() {
-        return font.getSize();
-    }
-
-    private static void setFont(Font newFont) {
-        if (newFont != null) {
-            font = newFont;
-            config.setFontSize(font.getSize());
-
+    private static void updateFontSize(float fontSize) {
+        font = font.deriveFont(fontSize);
+        if (config.setFontSize(font.getSize())) {
             UIManager.put("defaultFont", font);
             FlatLaf.updateUI();
         }
     }
 
-    private static Font getDefaultFont() {
-        Font font = UIManager.getFont("defaultFont");
-        if (font != null) return font;
-        return UIManager.getFont("Label.font");
-    }
-
-    public static void switchThemes(Gui gui) {
+    public static void toggleTheme(Gui gui) {
         UIManager.getDefaults().clear();
         config.toggleTheme();
 
@@ -258,13 +245,5 @@ public final class GuiUtils {
                 setEnabled(container, enabled);
             }
         }
-    }
-
-    public static double calculatePerceivedBrightness(Color color) {
-        int r = color.getRed();
-        int g = color.getGreen();
-        int b = color.getBlue();
-
-        return (0.299 * r) + (0.587 * g) + (0.114 * b);
     }
 }
