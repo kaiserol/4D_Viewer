@@ -6,10 +6,10 @@ import java.util.List;
 
 public enum ActionType {
     // edit shortcuts
-    SHORTCUT_TOGGLE_PIN_TIME(new Shortcut(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK)),
-    SHORTCUT_TURN_IMAGE_90_LEFT(new Shortcut(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK)),
-    SHORTCUT_TURN_IMAGE_90_RIGHT(new Shortcut(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK)),
-    SHORTCUT_TAKE_SCREENSHOT(new Shortcut(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK)),
+    SHORTCUT_TOGGLE_PIN_TIME(new Shortcut(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
+    SHORTCUT_TURN_IMAGE_90_LEFT(new Shortcut(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
+    SHORTCUT_TURN_IMAGE_90_RIGHT(new Shortcut(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
+    SHORTCUT_TAKE_SCREENSHOT(new Shortcut(KeyEvent.VK_S, InputEvent.META_DOWN_MASK)),
 
     // nav shortcuts
     SHORTCUT_GO_TO_FIRST_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),

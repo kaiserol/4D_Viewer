@@ -29,6 +29,7 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
     private JLabel pinTimeLabel;
     private JButton clearImagesButton;
 
+    // TODO: Überarbeite ActionHandler Integration, Pfeiltasten funktionieren nicht für die Bewegung des Bildes
     public OViewer(Gui gui, ActionHandler actionHandler) {
         super(new JPanel(), gui);
         this.actionHandler = actionHandler;
@@ -56,8 +57,8 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
                 }
             }
         });
-        this.container.addMouseWheelListener(this.actionHandler);
-        this.container.addKeyListener(this.actionHandler);
+//        this.container.addMouseWheelListener(this.actionHandler);
+//        this.container.addKeyListener(this.actionHandler);
         this.container.setFocusable(true);
 
         // statsPanel

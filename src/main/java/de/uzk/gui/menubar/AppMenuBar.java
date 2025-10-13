@@ -43,15 +43,15 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
 
     private CustomMenu getMenuNavigate(ActionHandler actionHandler) {
         CustomMenu menuNavigate = new CustomMenu(getWord("items.nav"));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.first"), ICON_ARROW_LEFT_START, actionHandler, SHORTCUT_GO_TO_FIRST_IMAGE));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.prev"), ICON_ARROW_LEFT, actionHandler, SHORTCUT__GO_TO_PREV_IMAGE));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.next"), ICON_ARROW_RIGHT, actionHandler, SHORTCUT_GO_TO_NEXT_IMAGE));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.last"), ICON_ARROW_RIGHT_END, actionHandler, SHORTCUT_GO_TO_LAST_IMAGE));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.first"), ICON_ARROW_LEFT_START, actionHandler, SHORTCUT_GO_TO_FIRST_IMAGE, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.prev"), ICON_ARROW_LEFT, actionHandler, SHORTCUT__GO_TO_PREV_IMAGE, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.next"), ICON_ARROW_RIGHT, actionHandler, SHORTCUT_GO_TO_NEXT_IMAGE, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.last"), ICON_ARROW_RIGHT_END, actionHandler, SHORTCUT_GO_TO_LAST_IMAGE, true));
         menuNavigate.addSeparator();
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.first"), ICON_ARROW_UP_START, actionHandler, SHORTCUT_GO_TO_FIRST_LEVEL));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.prev"), ICON_ARROW_UP, actionHandler, SHORTCUT_GO_TO_PREV_LEVEL));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.next"), ICON_ARROW_DOWN, actionHandler, SHORTCUT_GO_TO_NEXT_LEVEL));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.last"), ICON_ARROW_DOWN_END, actionHandler, SHORTCUT_GO_TO_LAST_LEVEL));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.first"), ICON_ARROW_UP_START, actionHandler, SHORTCUT_GO_TO_FIRST_LEVEL, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.prev"), ICON_ARROW_UP, actionHandler, SHORTCUT_GO_TO_PREV_LEVEL, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.next"), ICON_ARROW_DOWN, actionHandler, SHORTCUT_GO_TO_NEXT_LEVEL, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.last"), ICON_ARROW_DOWN_END, actionHandler, SHORTCUT_GO_TO_LAST_LEVEL, true));
         return menuNavigate;
     }
 
