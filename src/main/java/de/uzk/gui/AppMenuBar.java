@@ -1,14 +1,13 @@
-package de.uzk.gui.menubar;
+package de.uzk.gui;
 
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
 import de.uzk.config.ConfigHandler;
-import de.uzk.gui.AreaContainerInteractive;
-import de.uzk.gui.Gui;
+import de.uzk.gui.menubar.CustomMenu;
+import de.uzk.gui.menubar.CustomMenuBar;
+import de.uzk.gui.menubar.CustomMenuItem;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import static de.uzk.Main.config;
 import static de.uzk.action.ActionType.*;
@@ -101,15 +100,9 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     }
 
     private void toggleMenus(boolean enabled) {
-        List<CustomMenuBarNode> nodes = new ArrayList<>();
         for (int i = 0; i < Math.min(2, menuBar.getMenus().size()); i++) {
-            nodes.add(menuBar.getMenus().get(i));
-        }
-
-        while (!nodes.isEmpty()) {
-            CustomMenuBarNode node = nodes.remove(0);
-            if (node instanceof CustomMenu menu) nodes.addAll(0, menu.getNodes());
-            else if (node instanceof CustomMenuItem item) item.getComponent().setEnabled(enabled);
+            JComponent component = menuBar.getMenus().get(i).getComponent();
+            GuiUtils.setEnabled(component, enabled);
         }
     }
 }

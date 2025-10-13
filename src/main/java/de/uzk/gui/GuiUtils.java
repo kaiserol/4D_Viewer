@@ -10,6 +10,7 @@ import de.uzk.image.ImageDetails;
 import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -231,14 +232,24 @@ public final class GuiUtils {
         component.setName(null);
     }
 
-    public static void setEnabled(Container comp, boolean enabled) {
-        if (comp == null) return;
+    public static void setEnabled(Container container, boolean enabled) {
+        if (container == null) return;
 
-        for (Component child : comp.getComponents()) {
-            child.setEnabled(enabled);
-            if (child instanceof Container container) {
-                setEnabled(container, enabled);
+        for (Component component : getComponents(container)) {
+            component.setEnabled(enabled);
+            if (component instanceof Container newContainer) {
+                setEnabled(newContainer, enabled);
             }
         }
+    }
+
+    private static Component[] getComponents(Container container) {
+        if (container == null) return new Component[0];
+        else if (container instanceof JWindow window) return window.getOwnedWindows();
+        else if (container instanceof JFrame frame) return frame.getContentPane().getComponents();
+        else if (container instanceof JDialog dialog) return dialog.getContentPane().getComponents();
+        else if (container instanceof JMenu menu) return menu.getMenuComponents();
+        else if (container instanceof JScrollPane scrollPane) return scrollPane.getViewport().getComponents();
+        else return container.getComponents();
     }
 }

@@ -3,7 +3,6 @@ package de.uzk.gui;
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
 import de.uzk.action.HandleActionListener;
-import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.gui.viewer.OViewer;
 import de.uzk.image.ImageLayer;
 
