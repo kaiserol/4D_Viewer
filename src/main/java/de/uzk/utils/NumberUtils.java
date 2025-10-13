@@ -2,55 +2,121 @@ package de.uzk.utils;
 
 import java.awt.*;
 
+/**
+ * Die Hilfsklasse für numerische Operationen und Berechnungen.
+ * Diese Klasse bietet Methoden für:
+ * <ul>
+ *   <li>Bereichsprüfungen mit Schrittweiten</li>
+ *   <li>Winkelberechnungen (90° Drehungen)</li>
+ *   <li>Typprüfungen für Number-Objekte</li>
+ *   <li>Helligkeitsberechnungen für Farben</li>
+ * </ul>
+ *
+ * <p>
+ * Die Klasse ist als "final" deklariert und der Konstruktor ist privat,
+ * um die Instanziierung zu verhindern, da alle Methoden statisch sind.
+ */
 public final class NumberUtils {
+    // Toleranzwert für Rundungsfehler
+    private static final double EPSILON = 1e-10;
+
     private NumberUtils() {
+        // Verhindert die Instanziierung dieser Hilfsklasse
     }
 
+    /**
+     * Prüft, ob ein Wert innerhalb eines bestimmten Bereichs liegt
+     * und in die Schrittweite (stepSize) passt.
+     *
+     * @param value    zu prüfender Wert
+     * @param minValue untere Grenze (einschließlich)
+     * @param maxValue obere Grenze (einschließlich)
+     * @param stepSize Schrittweite, in der der Wert liegen muss
+     * @return true, wenn der Wert im Bereich liegt und exakt auf die Schrittweite passt
+     */
     public static boolean valueFitsInRange(double value, double minValue, double maxValue, double stepSize) {
-        // Check if the value is within the specified range
-        if (value < minValue || value > maxValue) {
+        // Prüfen, ob der Wert innerhalb des Bereichs liegt
+        if (value < minValue - EPSILON || value > maxValue + EPSILON) {
             return false;
         }
 
-        // Calculate the remainder when dividing (value - minValue) by stepSize
-        double epsilonRemainder = 1e-10;
-        double remainder = (value - minValue + epsilonRemainder) % stepSize;
+        // Berechne den Rest bei der Division (value - minValue) durch stepSize
+        double remainder = (value - minValue) % stepSize;
 
-        double epsilon = 1e-9; // Adjust the epsilon as needed for your precision
-        // Check if the remainder is close to zero within a small epsilon
-        return Math.abs(remainder) < epsilon;
+        // Aufgrund von Rundungsfehlern kann der Rest leicht negativ sein – korrigieren
+        if (remainder < 0) {
+            remainder += stepSize;
+        }
+
+        // Prüfen, ob der Rest nahe bei 0 oder bei stepSize liegt
+        return remainder < EPSILON || Math.abs(remainder - stepSize) < EPSILON;
     }
 
+    /**
+     * Dreht einen gegebenen Winkel um 90° nach links.
+     *
+     * @param oldAngle alter Winkel in Grad
+     * @return neuer Winkel in Grad
+     */
     public static int turn90Left(int oldAngle) {
         int angle = oldAngle % 360;
         if (angle == 0) return 270;
 
         int remainder = angle % 90;
+        // Wenn der Winkel ein Vielfaches von 90° ist → einfach um 90° verringern
         if (remainder == 0) {
             return (360 + angle - 90) % 360;
         }
+        // Sonst bis zum nächsten „linken“ Vielfachen von 90° drehen
         return (360 + angle - remainder) % 360;
     }
 
+    /**
+     * Dreht einen gegebenen Winkel um 90° nach rechts.
+     *
+     * @param oldAngle alter Winkel in Grad
+     * @return neuer Winkel in Grad
+     */
     public static int turn90Right(int oldAngle) {
         int angle = oldAngle % 360;
         if (angle == 270) return 0;
 
         int remainder = angle % 90;
+        // Wenn der Winkel ein Vielfaches von 90° ist → einfach um 90° erhöhen
         if (remainder == 0) {
             return (360 + angle + 90) % 360;
         }
+        // Sonst bis zum nächsten „rechten“ Vielfachen von 90° drehen
         return (360 + angle - remainder + 90) % 360;
     }
 
+    /**
+     * Prüft, ob ein Number-Objekt tatsächlich vom Typ Integer ist.
+     *
+     * @param number zu prüfendes Number-Objekt
+     * @return true, wenn das Objekt vom Typ Integer ist, sonst false
+     */
     public static boolean isInteger(Number number) {
         return number != null && number.getClass() == Integer.class;
     }
 
+    /**
+     * Prüft, ob ein Number-Objekt tatsächlich vom Typ Double ist.
+     *
+     * @param number zu prüfendes Number-Objekt
+     * @return true, wenn das Objekt vom Typ Double ist, sonst false
+     */
     public static boolean isDouble(Number number) {
         return number != null && number.getClass() == Double.class;
     }
 
+    /**
+     * Berechnet die wahrgenommene Helligkeit einer Farbe nach der NTSC-Formel.
+     * (Berücksichtigt die Empfindlichkeit des menschlichen Auges für R, G und B unterschiedlich.)
+     *
+     * @param color zu analysierende Farbe
+     * @return wahrgenommene Helligkeit (0 = dunkel, 255 = hell)
+     */
     public static double calculatePerceivedBrightness(Color color) {
         int r = color.getRed();
         int g = color.getGreen();

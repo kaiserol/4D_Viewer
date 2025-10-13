@@ -22,7 +22,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     private final List<HandleActionListener> handleActionListeners;
     private final List<ToggleListener> toggleListeners;
     private final List<UpdateImageListener> updateImageListeners;
-    private final List<UpdateUIListener> updateUIListeners;
+    private final List<UpdateThemeListener> updateThemeListeners;
     private final List<AppFocusListener> appFocusListeners;
     private boolean windowInitialized;
 
@@ -31,7 +31,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.handleActionListeners = new ArrayList<>();
         this.toggleListeners = new ArrayList<>();
         this.updateImageListeners = new ArrayList<>();
-        this.updateUIListeners = new ArrayList<>();
+        this.updateThemeListeners = new ArrayList<>();
         this.appFocusListeners = new ArrayList<>();
         build();
     }
@@ -40,11 +40,11 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         logger.info("Rebuilding UI...");
         this.container.getContentPane().removeAll();
 
-        // Prevents that old UI objects are continuing living (old event listeners have to be cleaned)
+        // Verhindert, dass alte UI-Objekte weiter existieren (alte Ereignis-Listener müssen bereinigt werden)
         this.handleActionListeners.clear();
         this.toggleListeners.clear();
         this.updateImageListeners.clear();
-        this.updateUIListeners.clear();
+        this.updateThemeListeners.clear();
         this.appFocusListeners.clear();
         loadUI();
     }
@@ -53,42 +53,41 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         logger.info("Building UI...");
         GuiUtils.initFlatLaf();
 
-        SwingUtilities.invokeLater(() -> {
-            this.container.setIconImage(Icons.APP_IMAGE);
-            this.container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-            this.container.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    closeApp(getFrame(), config::saveConfig);
-                }
-            });
-            this.container.addWindowFocusListener(new WindowAdapter() {
-                @Override
-                public void windowGainedFocus(WindowEvent e) {
-                    if (windowInitialized) Gui.this.appGainedFocus();
-                    windowInitialized = true;
-                }
-
-                @Override
-                public void windowLostFocus(WindowEvent e) {
-                    if (windowInitialized) Gui.this.appLostFocus();
-                }
-            });
-            loadUI();
-            this.container.setLocationRelativeTo(null);
-            this.container.setVisible(true);
+        this.container.setIconImage(Icons.APP_IMAGE);
+        this.container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.container.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                closeApp(getFrame(), config::saveConfig);
+            }
         });
+        this.container.addWindowFocusListener(new WindowAdapter() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                if (windowInitialized) Gui.this.appGainedFocus();
+                windowInitialized = true;
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                if (windowInitialized) Gui.this.appLostFocus();
+            }
+        });
+
+        loadUI();
+        this.container.setLocationRelativeTo(null);
+        this.container.setVisible(true);
     }
 
     private void loadUI() {
         initContent();
         handleAction(ActionType.ACTION_LOAD_IMAGES);
-        updateUI();
+        updateTheme();
         this.container.pack();
     }
 
     private void initContent() {
-        this.container.setTitle(getWord("app.title"));
+        this.container.setTitle(getWord("app.name"));
         this.container.setLayout(new BorderLayout());
         ActionHandler actionHandler = new ActionHandler(this);
 
@@ -124,25 +123,24 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         return this.container;
     }
 
-    public void addActionTypeListener(HandleActionListener listener) {
-        this.handleActionListeners.add(listener);
+    public void addHandleActionListener(HandleActionListener handleActionListener) {
+        this.handleActionListeners.add(handleActionListener);
     }
 
-    public void addToggleListener(ToggleListener listener) {
-        this.toggleListeners.add(listener);
+    public void addToggleListener(ToggleListener toggleListener) {
+        this.toggleListeners.add(toggleListener);
     }
 
-    public void addUpdateImageListener(UpdateImageListener listener) {
-        // Weil sonst während eines update() calls ein weiterer listener hinzugefügt werden könnte
-        SwingUtilities.invokeLater(() -> this.updateImageListeners.add(listener));
+    public void addUpdateImageListener(UpdateImageListener updateImageListener) {
+        this.updateImageListeners.add(updateImageListener);
     }
 
-    public void addUpdateUIListener(UpdateUIListener listener) {
-        this.updateUIListeners.add(listener);
+    public void addUpdateThemeListener(UpdateThemeListener updateThemeListener) {
+        this.updateThemeListeners.add(updateThemeListener);
     }
 
-    public void addAppFocusListener(AppFocusListener listener) {
-        this.appFocusListeners.add(listener);
+    public void addAppFocusListener(AppFocusListener appFocusListener) {
+        this.appFocusListeners.add(appFocusListener);
     }
 
     @Override
@@ -159,14 +157,15 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     @Override
     public void toggleOn() {
-        imageHandler.toFirst();
+        imageHandler.toFirst(ImageLayer.TIME);
+        imageHandler.toFirst(ImageLayer.LEVEL);
         imageHandler.setDefaultPinTime();
         handleAction(ActionType.ACTION_UPDATE_PIN_TIME);
 
         for (ToggleListener listener : toggleListeners) {
             listener.toggleOn();
         }
-        this.container.revalidate();
+        updateUI();
     }
 
     @Override
@@ -178,7 +177,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         for (ToggleListener listener : toggleListeners) {
             listener.toggleOff();
         }
-        this.container.revalidate();
+        updateUI();
     }
 
     @Override
@@ -187,13 +186,13 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         for (UpdateImageListener listener : updateImageListeners) {
             listener.update(layer);
         }
-        this.container.revalidate();
+        updateUI();
     }
 
     @Override
-    public void updateUI() {
-        for (UpdateUIListener listener : updateUIListeners) {
-            listener.updateUI();
+    public void updateTheme() {
+        for (UpdateThemeListener listener : updateThemeListeners) {
+            listener.updateTheme();
         }
     }
 
@@ -202,5 +201,10 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         for (AppFocusListener listener : appFocusListeners) {
             listener.appGainedFocus();
         }
+    }
+
+    public void updateUI() {
+        this.container.revalidate();
+        this.container.repaint();
     }
 }

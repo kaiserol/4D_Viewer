@@ -5,6 +5,3 @@ Implementation-Version: 2.1
 Implementation-Vendor: Universität zu Köln
 Implementation-URL: https://gitlab.git.nrw/okaiser1/4d_viewer
 Created-By: Oliver Kaiser & Lion Rexhepi
-Specification-Title: UzK Software Framework
-Specification-Version: 1.0
-Specification-Vendor: HPC Development Team

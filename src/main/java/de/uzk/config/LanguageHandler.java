@@ -2,27 +2,28 @@ package de.uzk.config;
 
 import java.util.ResourceBundle;
 
+import static de.uzk.Main.logger;
+
 public final class LanguageHandler {
     private static ResourceBundle resources;
 
     private LanguageHandler() {
     }
 
-    // Load a different .properties file into memory.
-    // This will NOT affect existing UI elements!
+    // Lädt eine properties-Datei in den Speicher.
+    // Dies wirkt sich NICHT auf bereits existierende UI-Elemente aus!
     public static void load(Language language) {
-        // After this, resources won't be null anymore, so getWord won't reset it
         resources = ResourceBundle.getBundle("language", language.getLocale());
     }
 
-    public static String getWord(String attribute) {
+    public static String getWord(String word) {
         try {
-            // We should initialize this from config before anything else
-            // Otherwise we might get mixed languages in the UI
-            if (resources == null) throw new RuntimeException("Tried to use LanguageHandler before initialisation.");
-            return resources.getString(attribute);
+            if (resources == null) {
+                logger.error("LanguageHandler was not initialized before using the @getWord method. Searched for word: " + word);
+            } else return resources.getString(word);
         } catch (Exception e) {
-            return "";
+            logger.error("Could not find word '" + word + "' in language file.");
         }
+        return "???";
     }
 }

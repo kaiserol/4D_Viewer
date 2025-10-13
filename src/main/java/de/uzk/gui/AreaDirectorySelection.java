@@ -296,6 +296,11 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> imp
     }
 
     @Override
+    public void onLoadingStart() {
+        logger.info("Loading Image-Files from '" + imageHandler.getImageDir() + "'...");
+    }
+
+    @Override
     public void onScanningStart(int maxScans) {
         SwingUtilities.invokeLater(() -> {
             this.progressBar.setStringPainted(true);

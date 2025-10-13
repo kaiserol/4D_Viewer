@@ -189,7 +189,7 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
     }
 
     @Override
-    public void updateUI() {
+    public void updateTheme() {
         focusOnImageView(this.container.isFocusOwner());
     }
 

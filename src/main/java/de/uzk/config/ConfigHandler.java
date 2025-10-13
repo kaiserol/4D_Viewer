@@ -83,7 +83,7 @@ public class ConfigHandler {
     }
 
     public boolean setFontSize(int fontSize) {
-        if (fontSize < MIN_FONT_SIZE || fontSize > MAX_FONT_SIZE) {
+        if (fontSize < MIN_FONT_SIZE || fontSize > MAX_FONT_SIZE || this.fontSize == fontSize) {
             if (this.fontSize == 0) this.fontSize = DEFAULT_FONT_SIZE;
             return false;
         }
@@ -115,7 +115,7 @@ public class ConfigHandler {
 
                 BufferedImage edited = GuiUtils.getEditedImage(originalImage, imageHandler.getImageDetails(), true);
                 ImageIO.write(edited, imageHandler.getImageDetails().getImageType().getType(), saveFile);
-                logger.info("Saved screenshot: " + saveFile.getAbsolutePath());
+                logger.info("Saved screenshot: '" + saveFile.getAbsolutePath() + "'." );
                 return true;
             }
         } catch (IOException e) {
@@ -192,6 +192,9 @@ public class ConfigHandler {
     }
 
     private void readDefaultProperties() {
+        // language (Muss als erstes initialisiert werden)
+        this.setLanguage(SYSTEM_LANGUAGE);
+
         // imageDetails
         imageHandler.setImageDetails(new ImageDetails(
                 DEFAULT_SEP_TIME,
@@ -205,14 +208,16 @@ public class ConfigHandler {
         imageHandler.setTimeUnit(DEFAULT_TIME_UNIT);
         imageHandler.setLevelUnit(DEFAULT_LEVEL_UNIT);
 
-        // askAgainClosingWindow, theme, font size, language
+        // askAgainClosingWindow, theme, font size
         this.askAgainClosingWindow = DEFAULT_ASK_AGAIN_CLOSING_WINDOW;
         this.theme = DEFAULT_THEME;
         this.fontSize = DEFAULT_FONT_SIZE;
-        this.setLanguage(SYSTEM_LANGUAGE);
     }
 
     private void readProperties(Properties properties) {
+        // language (Muss als erstes initialisiert werden)
+        this.setLanguage(Language.byName(loadString(properties, "Language", SYSTEM_LANGUAGE.getName())));
+
         // imageFolder
         imageHandler.setImageFolder(loadImageFolder(properties));
 
@@ -229,11 +234,10 @@ public class ConfigHandler {
         imageHandler.setTimeUnit(loadNumber(properties, "TimeUnit", DEFAULT_TIME_UNIT).doubleValue());
         imageHandler.setLevelUnit(loadNumber(properties, "LevelUnit", DEFAULT_LEVEL_UNIT).doubleValue());
 
-        // askAgainClosingWindow, theme, font size, language
+        // askAgainClosingWindow, theme, font size
         this.askAgainClosingWindow = loadBoolean(properties, "AskAgainClosingWindow", DEFAULT_ASK_AGAIN_CLOSING_WINDOW);
         this.setTheme(loadString(properties, "Theme", DEFAULT_THEME.name()));
         this.setFontSize(loadNumber(properties, "FontSize", DEFAULT_FONT_SIZE).intValue());
-        this.setLanguage(Language.byName(loadString(properties, "Language", SYSTEM_LANGUAGE.getName())));
     }
 
     private void saveProperties(Properties properties) {

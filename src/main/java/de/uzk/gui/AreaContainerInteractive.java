@@ -6,7 +6,7 @@ import de.uzk.image.ImageLayer;
 
 import java.awt.*;
 
-public abstract class AreaContainerInteractive<T extends Container> implements HandleActionListener, ToggleListener, UpdateImageListener, UpdateUIListener, AppFocusListener {
+public abstract class AreaContainerInteractive<T extends Container> implements HandleActionListener, ToggleListener, UpdateImageListener, UpdateThemeListener, AppFocusListener {
     protected T container;
     protected final Gui gui;
 
@@ -14,10 +14,10 @@ public abstract class AreaContainerInteractive<T extends Container> implements H
         this.container = container;
         this.gui = gui;
         if (gui != null) {
-            this.gui.addActionTypeListener(this);
+            this.gui.addHandleActionListener(this);
             this.gui.addToggleListener(this);
             this.gui.addUpdateImageListener(this);
-            this.gui.addUpdateUIListener(this);
+            this.gui.addUpdateThemeListener(this);
             this.gui.addAppFocusListener(this);
         }
     }
@@ -48,7 +48,7 @@ public abstract class AreaContainerInteractive<T extends Container> implements H
     }
 
     @Override
-    public void updateUI() {
+    public void updateTheme() {
     }
 
     @Override

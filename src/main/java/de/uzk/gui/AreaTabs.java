@@ -3,7 +3,7 @@ package de.uzk.gui;
 import de.uzk.action.ActionHandler;
 import de.uzk.gui.tabs.TabEdit;
 import de.uzk.gui.tabs.TabMarkers;
-import de.uzk.gui.tabs.TabNav;
+import de.uzk.gui.tabs.TabNavigate;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -26,27 +26,27 @@ public class AreaTabs extends AreaContainerInteractive<JPanel>  {
         this.container.setLayout(new BorderLayout());
         this.container.setMinimumSize(new Dimension(0, 0));
 
+        // Tabs hinzufügen
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         Border border = new EmptyBorder(10, 10, 10, 10);
 
-        // tabs
         TabEdit tabEdit = new TabEdit(this.gui, this.actionHandler);
         tabEdit.getContainer().setBorder(border);
         tabbedPane.add(getWord("items.edit"), tabEdit.getContainer());
 
-        TabNav tabNav = new TabNav(this.gui, this.actionHandler);
-        tabNav.getContainer().setBorder(border);
-        tabbedPane.add(getWord("items.nav"), tabNav.getContainer());
+        TabNavigate tabNavigate = new TabNavigate(this.gui, this.actionHandler);
+        tabNavigate.getContainer().setBorder(border);
+        tabbedPane.add(getWord("items.nav"), tabNavigate.getContainer());
 
         TabMarkers tabMarkers = new TabMarkers(this.gui);
-        tabNav.getContainer().setBorder(border);
+        tabNavigate.getContainer().setBorder(border);
         tabbedPane.add(getWord("items.markers"), tabMarkers.getContainer());
 
         this.container.add(tabbedPane, BorderLayout.CENTER);
     }
 
     @Override
-    public void updateUI() {
+    public void updateTheme() {
         this.container.setBorder(new MatteBorder(2, 2, 2, 2, GuiUtils.getBorderColor()));
     }
 }

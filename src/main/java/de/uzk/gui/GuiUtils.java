@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.formdev.flatlaf.util.SystemInfo;
+import de.uzk.action.ActionType;
 import de.uzk.config.ConfigHandler;
 import de.uzk.image.ImageDetails;
 import de.uzk.utils.NumberUtils;
@@ -41,66 +42,62 @@ public final class GuiUtils {
         FlatLaf.setup(config.getTheme().isLight() ? getLightMode() : getDarkMode());
         borderColor = config.getTheme().isLight() ? Color.LIGHT_GRAY : Color.DARK_GRAY;
 
+        // MacOS Eigenschaften
         if (SystemInfo.isMacOS) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
             System.setProperty("apple.awt.application.name", getWord("app.name"));
             System.setProperty("apple.awt.application.appearance", "system");
         }
 
+        // Linux Eigenschaften
         if (SystemInfo.isLinux) {
             JFrame.setDefaultLookAndFeelDecorated(true);
             JDialog.setDefaultLookAndFeelDecorated(true);
         }
 
-        boolean screenshotsMode = Boolean.parseBoolean(System.getProperty("flatlaf.demo.screenshotsMode"));
-        if (screenshotsMode && !SystemInfo.isJava_9_orLater && System.getProperty("flatlaf.uiScale") == null) {
-            System.setProperty("flatlaf.uiScale", "2x");
-        }
-
-        // focus
+        // Focus Eigenschaften
         UIManager.put("Component.focusWidth", 0);
         UIManager.put("Component.innerFocusWidth", 0);
 
-        // rounded elements
+        // Rounded Elemente Eigenschaften
         UIManager.put("Button.arc", 5);
         UIManager.put("Component.arc", 5);
         UIManager.put("TextComponent.arc", 5);
         UIManager.put("ProgressBar.arc", 5);
 
-        // TabbedPane
+        // TabbedPane Eigenschaften
         UIManager.put("TabbedPane.contentSeparatorHeight", 2);
         UIManager.put("TabbedPane.showTabSeparators", true);
         UIManager.put("TabbedPane.contentAreaColor", borderColor);
         UIManager.put("TabbedPane.selectedBackground", UIManager.getColor("TabbedPane.buttonHoverBackground").brighter());
 
-        // ScrollBar
+        // ScrollBar Eigenschaften
         UIManager.put("Component.arrowType", "chevron");
         UIManager.put("ScrollBar.showButtons", true);
         UIManager.put("ScrollBar.trackArc", 999);
         UIManager.put("ScrollBar.thumbArc", 999);
         UIManager.put("ScrollBar.width", 15);
 
-        // track and thumb
         UIManager.put("ScrollBar.trackInsets", new Insets(0, 0, 0, 0));
         UIManager.put("ScrollBar.thumbInsets", new Insets(2, 2, 2, 2));
 
-        // scrollbar color
         Color bgBrighter = UIManager.getColor("ScrollBar.background").brighter();
         UIManager.put("ScrollBar.track", bgBrighter);
         UIManager.put("ScrollBar.hoverTrackColor", bgBrighter);
 
-        // SplitPane
+        // SplitPane Eigenschaften
         UIManager.put("SplitPaneDivider.gripDotCount", 3);
         UIManager.put("SplitPaneDivider.gripDotSize", 3);
         UIManager.put("SplitPaneDivider.gripGap", 3);
         UIManager.put("SplitPane.dividerSize", 10);
         UIManager.put("SplitPane.supportsOneTouchButtons", false);
 
-        // show shortcuts in the 'menubar'
+        // Mnemonics/Icons Eigenschaften
         UIManager.put("Component.hideMnemonics", false);
         UIManager.put("OptionPane.showIcon", true);
-
         Icons.updateSVGIcons();
+
+        // Font Eigenschaften
         font = UIManager.getFont("defaultFont");
         updateFontSize(config.getFontSize());
     }
@@ -109,30 +106,29 @@ public final class GuiUtils {
         return borderColor;
     }
 
-    public static void decreaseFont() {
-        int newFontSize = font.getSize() - 1;
-        if (newFontSize >= ConfigHandler.MIN_FONT_SIZE) {
-            updateFontSize(newFontSize);
-        }
+    public static void decreaseFont(Gui gui) {
+        int newFontSize = config.getFontSize() - 1;
+        if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
     }
 
-    public static void restoreFont() {
-        updateFontSize(ConfigHandler.DEFAULT_FONT_SIZE);
+    public static void restoreFont(Gui gui) {
+        int newFontSize = ConfigHandler.DEFAULT_FONT_SIZE;
+        if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
     }
 
-    public static void increaseFont() {
-        int newFontSize = font.getSize() + 1;
-        if (newFontSize <= ConfigHandler.MAX_FONT_SIZE) {
-            updateFontSize(newFontSize);
-        }
+    public static void increaseFont(Gui gui) {
+        int newFontSize = config.getFontSize() + 1;
+        if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
     }
 
-    private static void updateFontSize(float fontSize) {
-        font = font.deriveFont(fontSize);
-        if (config.setFontSize(font.getSize())) {
+    private static boolean updateFontSize(float fontSize) {
+        if (config.setFontSize((int) fontSize)) {
+            font = font.deriveFont(fontSize);
             UIManager.put("defaultFont", font);
             FlatLaf.updateUI();
+            return true;
         }
+        return false;
     }
 
     public static void toggleTheme(Gui gui) {
@@ -140,8 +136,8 @@ public final class GuiUtils {
         config.toggleTheme();
 
         initFlatLaf();
-        gui.updateUI();
         FlatLaf.updateUI();
+        gui.updateTheme();
     }
 
     public static Graphics2D createHighQualityGraphics2D(Graphics g) {
@@ -213,7 +209,6 @@ public final class GuiUtils {
         double scaleWidth = (double) width / imgWidth;
         double scaleHeight = (double) height / imgHeight;
 
-        // get the minimum scale factor
         return Math.min(scaleWidth, scaleHeight);
     }
 

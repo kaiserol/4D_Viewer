@@ -40,30 +40,36 @@ public class DialogLogViewer {
     private void resizeWindow() {
         this.dialog.pack();
 
-        // Scrollbar width
+        // Breite der Scrollbar
         int scrollBarWidth = UIManager.getInt("ScrollBar.width");
         if (scrollBarWidth <= 0) scrollBarWidth = 20;
 
-        // Minimum sizes
+        // Minimale Fenstergrößen
         final int MIN_WIDTH = 300;
         final int MIN_HEIGHT = 200;
 
-        // Maximum “target size” of the window (not mandatory)
+        // Maximale „Zielgröße“ des Fensters (nicht zwingend)
         final int DEFAULT_MAX_WIDTH = 800;
         final int DEFAULT_MAX_HEIGHT = 600;
 
-        // Screen Size
+        // Bildschirmgröße
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = screen.width;
         int screenHeight = screen.height;
 
-        // Current Size of the window
+        // Aktuelle Fenstergröße
         int currentWidth = dialog.getWidth();
         int currentHeight = dialog.getHeight();
 
-        // Calculate new dimensions
-        int newWidth = Math.min(Math.max(currentWidth + scrollBarWidth, MIN_WIDTH), Math.min(DEFAULT_MAX_WIDTH, screenWidth - 100));
-        int newHeight = Math.min(Math.max(currentHeight, MIN_HEIGHT), Math.min(DEFAULT_MAX_HEIGHT, screenHeight - 100));
+        // Berechnung der neuen Abmessungen
+        int newWidth = Math.min(
+                Math.max(currentWidth + scrollBarWidth, MIN_WIDTH),
+                Math.min(DEFAULT_MAX_WIDTH, screenWidth - 100)
+        );
+        int newHeight = Math.min(
+                Math.max(currentHeight, MIN_HEIGHT),
+                Math.min(DEFAULT_MAX_HEIGHT, screenHeight - 100)
+        );
 
         dialog.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         dialog.setSize(new Dimension(newWidth, newHeight));

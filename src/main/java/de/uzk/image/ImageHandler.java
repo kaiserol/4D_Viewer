@@ -167,7 +167,7 @@ public class ImageHandler {
     }
 
     public void loadImageFiles(LoadingImageListener progress) {
-        logger.info("Loading Image-Files from '" + getImageDir() + "'...");
+        progress.onLoadingStart();
         File[] files = imageFolder.listFiles();
 
         // imageFiles
@@ -329,32 +329,6 @@ public class ImageHandler {
 
     public boolean isEmpty() {
         return this.imageFilesMatrix == null;
-    }
-
-    // sets the current imageFile to the first in the list
-    public void toFirst() {
-        if (!isEmpty()) {
-            for (int t = 0; t <= this.maxTime; t++) {
-                searchNextLevel(0, t);
-                if (this.currentImage != null) {
-                    updateTime();
-                    return;
-                }
-            }
-        }
-    }
-
-    // sets the current imageFile to the last in the list
-    public void toLast() {
-        if (!isEmpty()) {
-            for (int t = this.maxTime; t >= 0; t--) {
-                searchPrevLevel(this.maxLevel, t);
-                if (this.currentImage != null) {
-                    updateTime();
-                    return;
-                }
-            }
-        }
     }
 
     // sets the current imageFile to the first imageFile in the current level/time (can be chosen by layer)

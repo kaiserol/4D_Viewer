@@ -28,17 +28,20 @@ public class Main {
 
     public static void main(String[] args) {
         config.loadConfig();
-        Gui gui = new Gui();
 
-        // catch: macOS Cmd+Q
-        if (Desktop.isDesktopSupported()) {
-            // Option: Handle Quit-Request
-            Desktop desktop = Desktop.getDesktop();
-            desktop.setQuitHandler((QuitEvent e, QuitResponse response) -> {
-                response.cancelQuit();
-                SwingUtilities.invokeLater(() -> closeApp(gui.getFrame(), config::saveConfig));
-            });
-        }
+        SwingUtilities.invokeLater(() -> {
+            Gui gui = new Gui();
+
+            // catch: macOS Cmd+Q
+            if (Desktop.isDesktopSupported()) {
+                // Option: Handle Quit-Request
+                Desktop desktop = Desktop.getDesktop();
+                desktop.setQuitHandler((QuitEvent e, QuitResponse response) -> {
+                    response.cancelQuit();
+                    closeApp(gui.getFrame(), config::saveConfig);
+                });
+            }
+        });
     }
 
     public static void closeApp(Window window, Runnable runForClosing) {

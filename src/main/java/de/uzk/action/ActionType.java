@@ -5,20 +5,13 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 
 public enum ActionType {
-    // edit actions
+    // edit shortcuts
     SHORTCUT_TOGGLE_PIN_TIME(new Shortcut(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK)),
     SHORTCUT_TURN_IMAGE_90_LEFT(new Shortcut(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK)),
     SHORTCUT_TURN_IMAGE_90_RIGHT(new Shortcut(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK)),
     SHORTCUT_TAKE_SCREENSHOT(new Shortcut(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK)),
 
-    ACTION_LOAD_IMAGES,
-    ACTION_EDIT_IMAGE,
-    ACTION_UPDATE_PIN_TIME,
-    ACTION_UPDATE_SCREENSHOT_COUNTER,
-    ACTION_ADD_MARKER,
-    ACTION_REMOVE_MARKER,
-
-    // nav actions
+    // nav shortcuts
     SHORTCUT_GO_TO_FIRST_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
     SHORTCUT__GO_TO_PREV_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT, 0)),
     SHORTCUT_GO_TO_NEXT_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_RIGHT, 0)),
@@ -29,10 +22,7 @@ public enum ActionType {
     SHORTCUT_GO_TO_NEXT_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_DOWN, 0)),
     SHORTCUT_GO_TO_LAST_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
 
-    ACTION_UPDATE_TIME_UNIT,
-    ACTION_UPDATE_LEVEL_UNIT,
-
-    // window actions
+    // window shortcuts
     SHORTCUT_FONT_SIZE_DECREASE(new Shortcut(KeyEvent.VK_MINUS, InputEvent.META_DOWN_MASK),
             new Shortcut(KeyEvent.VK_SUBTRACT, InputEvent.META_DOWN_MASK)),
     SHORTCUT_FONT_SIZE_RESTORE(new Shortcut(KeyEvent.VK_0, InputEvent.META_DOWN_MASK)),
@@ -42,8 +32,21 @@ public enum ActionType {
     SHORTCUT_SHOW_DISCLAIMER(new Shortcut(KeyEvent.VK_F1, 0)),
     SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F12, 0)),
 
+    // actions
+    ACTION_LOAD_IMAGES,
+    ACTION_EDIT_IMAGE,
+
+    ACTION_ADD_MARKER,
+    ACTION_REMOVE_MARKER,
+
     ACTION_SELECT_LANGUAGE,
-    ACTION_TOGGLE_THEME;
+    ACTION_TOGGLE_THEME,
+
+    ACTION_UPDATE_PIN_TIME,
+    ACTION_UPDATE_TIME_UNIT,
+    ACTION_UPDATE_LEVEL_UNIT,
+    ACTION_UPDATE_SCREENSHOT_COUNTER,
+    ACTION_UPDATE_FONT;
 
     // -------------------- enum declaration --------------------
 

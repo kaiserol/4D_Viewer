@@ -18,12 +18,12 @@ import static de.uzk.Main.imageHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 import static de.uzk.gui.GuiUtils.COLOR_BLUE;
 
-public class TabNav extends AreaContainerInteractive<JPanel> {
+public class TabNavigate extends AreaContainerInteractive<JPanel> {
     private final ActionHandler actionHandler;
     private JSlider timeSlider;
     private JSlider levelSlider;
 
-    public TabNav(Gui gui, ActionHandler actionHandler) {
+    public TabNavigate(Gui gui, ActionHandler actionHandler) {
         super(new JPanel(), gui);
         this.actionHandler = actionHandler;
         init();

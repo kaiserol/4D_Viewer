@@ -138,7 +138,7 @@ public class OStats extends AreaContainerInteractive<JPanel> {
     }
 
     @Override
-    public void updateUI() {
+    public void updateTheme() {
         this.container.setBorder(new CompoundBorder(new MatteBorder(0, 0, 2, 0, GuiUtils.getBorderColor()),
                 new EmptyBorder(5, 5, 5, 5)));
     }

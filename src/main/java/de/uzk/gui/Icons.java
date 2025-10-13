@@ -36,6 +36,7 @@ public final class Icons {
     public static final FlatSVGIcon ICON_DELETE = loadResourceSVG("images/icons/delete.svg");
 
     private static final FlatSVGIcon[] ICONS_ONLY_ONE_COLOR = {
+            // edit icons
             ICON_PIN,
             ICON_TURN_RIGHT,
             ICON_TURN_LEFT,
@@ -116,7 +117,6 @@ public final class Icons {
         }
     }
 
-    // TODO: für menubar anpassen
     public static void updateSVGIconsColor(FlatSVGIcon svgIcon, FlatSVGIcon.ColorFilter colorFilter) {
         if (svgIcon == null) return;
         svgIcon.setColorFilter(colorFilter);

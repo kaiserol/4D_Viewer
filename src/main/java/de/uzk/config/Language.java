@@ -28,7 +28,7 @@ public enum Language {
         for (Language language : Language.values()) {
             if (language.getName().equalsIgnoreCase(name)) return language;
         }
-        // fallback to English if no language was found
+        // Fallback
         return Language.ENGLISH;
     }
 

@@ -1,6 +1,8 @@
 package de.uzk.gui.menubar;
 
 import de.uzk.action.ActionHandler;
+import de.uzk.action.ActionType;
+import de.uzk.config.ConfigHandler;
 import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 
@@ -8,34 +10,23 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.uzk.Main.config;
 import static de.uzk.action.ActionType.*;
 import static de.uzk.config.LanguageHandler.getWord;
 import static de.uzk.gui.Icons.*;
 
 public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
-    private CustomMenu menuEdit;
-    private CustomMenu menuNavigate;
-
-    // TODO: Feature setEnabled hinzufügen -> Idee Action: UpdateMenuBar erstellen
-    // TODO: UpdateUI: löschen? kann durch ActionType übernommen werden?
-//    private CustomMenuItem itemFontDecrease;
-//    private CustomMenuItem itemFontRestore;
-//    private CustomMenuItem itemFontIncrease;
-//        int fontSize = config.getFontSize();
-//        decrFontItem.setEnabled(fontSize != ConfigHandler.MIN_FONT_SIZE);
-//        restoreFontItem.setEnabled(fontSize != ConfigHandler.DEFAULT_FONT_SIZE);
-//        incrFontItem.setEnabled(fontSize != ConfigHandler.MAX_FONT_SIZE);
+    private final CustomMenuBar menuBar;
+    private CustomMenuItem itemFontDecrease;
+    private CustomMenuItem itemFontRestore;
+    private CustomMenuItem itemFontIncrease;
 
     public AppMenuBar(Gui gui, ActionHandler actionHandler) {
         super(new JMenuBar(), gui);
-        init(actionHandler);
-    }
-
-    private void init(ActionHandler actionHandler) {
-        CustomMenuBar menuBar = new CustomMenuBar(this.container, "App MenuBar");
-        menuBar.add(menuEdit = getMenuEdit(actionHandler));
-        menuBar.add(menuNavigate = getMenuNavigate(actionHandler));
-        menuBar.add(getMenuWindow(actionHandler));
+        this.menuBar = new CustomMenuBar(this.container, "App MenuBar");
+        this.menuBar.add(getMenuEdit(actionHandler));
+        this.menuBar.add(getMenuNavigate(actionHandler));
+        this.menuBar.add(getMenuWindow(actionHandler));
     }
 
     private CustomMenu getMenuEdit(ActionHandler actionHandler) {
@@ -73,10 +64,11 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         menuWindow.addSeparator();
 
         // font: decrease, restore, increase
-        menuWindow.add(new CustomMenuItem(getWord("items.window.fontSizeDecrease"), actionHandler, SHORTCUT_FONT_SIZE_DECREASE));
-        menuWindow.add(new CustomMenuItem(getWord("items.window.fontSizeRestore"), actionHandler, SHORTCUT_FONT_SIZE_RESTORE));
-        menuWindow.add(new CustomMenuItem(getWord("items.window.fontSizeIncrease"), actionHandler, SHORTCUT_FONT_SIZE_INCREASE));
+        menuWindow.add(itemFontDecrease = new CustomMenuItem(getWord("items.window.fontSizeDecrease"), actionHandler, SHORTCUT_FONT_SIZE_DECREASE));
+        menuWindow.add(itemFontRestore = new CustomMenuItem(getWord("items.window.fontSizeRestore"), actionHandler, SHORTCUT_FONT_SIZE_RESTORE));
+        menuWindow.add(itemFontIncrease = new CustomMenuItem(getWord("items.window.fontSizeIncrease"), actionHandler, SHORTCUT_FONT_SIZE_INCREASE));
         menuWindow.addSeparator();
+        updateFontItems();
 
         // disclaimer, logViewer
         menuWindow.add(new CustomMenuItem(getWord("items.window.showDisclaimer"), actionHandler, SHORTCUT_SHOW_DISCLAIMER));
@@ -95,10 +87,24 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         toggleMenus(false);
     }
 
+    @Override
+    public void handleAction(ActionType actionType) {
+        if (actionType == ACTION_UPDATE_FONT) updateFontItems();
+    }
+
+    private void updateFontItems() {
+        int fontSize = config.getFontSize();
+        itemFontDecrease.getComponent().setEnabled(fontSize != ConfigHandler.MIN_FONT_SIZE);
+        itemFontRestore.getComponent().setEnabled(fontSize != ConfigHandler.DEFAULT_FONT_SIZE);
+        itemFontIncrease.getComponent().setEnabled(fontSize != ConfigHandler.MAX_FONT_SIZE);
+        gui.updateUI();
+    }
+
     private void toggleMenus(boolean enabled) {
         List<CustomMenuBarNode> nodes = new ArrayList<>();
-        nodes.add(this.menuEdit);
-        nodes.add(this.menuNavigate);
+        for (int i = 0; i < Math.min(2, menuBar.getMenus().size()); i++) {
+            nodes.add(menuBar.getMenus().get(i));
+        }
 
         while (!nodes.isEmpty()) {
             CustomMenuBarNode node = nodes.remove(0);
