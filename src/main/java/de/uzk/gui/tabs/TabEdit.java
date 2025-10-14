@@ -82,7 +82,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         gbc.setSizeAndWeight(3, 1, 1, 0);
 
         // screenshotButton
-        JButton screenshotButton = new JButton(getWord("items.edit.screenshot"));
+        JButton screenshotButton = new JButton(getWord("items.edit.takeScreenshot"));
         screenshotButton.addActionListener(e -> actionHandler.executeAction(ActionType.SHORTCUT_TAKE_SCREENSHOT));
         this.container.add(screenshotButton, gbc);
     }

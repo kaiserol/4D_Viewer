@@ -14,7 +14,8 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Objects;
 
-import static de.uzk.Main.*;
+import static de.uzk.Main.imageHandler;
+import static de.uzk.Main.logger;
 import static de.uzk.config.LanguageHandler.getWord;
 import static de.uzk.image.ImageFileConstants.IMAGE_TYPES;
 
@@ -131,8 +132,12 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> imp
         int state = fileChooser.showOpenDialog(parent);
         if (state == JFileChooser.APPROVE_OPTION) {
             if (!fileChooser.getSelectedFile().exists()) {
-                JOptionPane.showMessageDialog(parent, getWord("optionPane.directory.notExisting"),
-                        getWord("optionPane.title.error"), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        parent,
+                        getWord("optionPane.directory.notExisting"),
+                        getWord("optionPane.title.error"),
+                        JOptionPane.ERROR_MESSAGE
+                );
                 return;
             }
 
@@ -181,9 +186,15 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> imp
             gui.toggleOn();
         } else {
             if (!startingGui && loadedImages == 0) {
-                JOptionPane.showMessageDialog(gui.getFrame(), getWord("optionPane.directory.hasNoFiles") + " " +
-                                imageHandler.getImageDetails().getImageType().getTypeDescription() + ".",
-                        getWord("optionPane.title.error"), JOptionPane.ERROR_MESSAGE);
+                String message = getWord("optionPane.directory.hasNoFiles") + " " +
+                        imageHandler.getImageDetails().getImageType().getTypeDescription() + ".";
+
+                JOptionPane.showMessageDialog(
+                        gui.getFrame(),
+                        message,
+                        getWord("optionPane.title.error"),
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
 
             if (runIfPathRemained != null) {
@@ -202,7 +213,7 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> imp
             @Override
             public void windowClosing(WindowEvent e) {
                 if (startingGui) {
-                    closeApp(loadingDialog, () -> finishLoading());
+                    Gui.exitApp(loadingDialog, () -> finishLoading());
                 } else if (AreaDirectorySelection.this.allowInterruptingDownload) {
                     finishLoading();
                 }

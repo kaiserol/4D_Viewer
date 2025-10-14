@@ -1,34 +1,35 @@
 package de.uzk.action;
 
-import de.uzk.config.Language;
-import de.uzk.gui.DialogDisclaimer;
-import de.uzk.gui.DialogLogViewer;
-import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
+import de.uzk.gui.*;
+import de.uzk.gui.dialogs.DialogDisclaimer;
+import de.uzk.gui.dialogs.DialogSettings;
+import de.uzk.gui.dialogs.DialogLanguageSelection;
+import de.uzk.gui.dialogs.DialogLogViewer;
 import de.uzk.image.ImageLayer;
 
-import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-import static de.uzk.Main.*;
-import static de.uzk.Main.config;
+import static de.uzk.Main.imageHandler;
 import static de.uzk.action.ActionType.*;
-import static de.uzk.config.LanguageHandler.getWord;
 
 public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     private static final long HIGH_LOAD_DELAY = 40;
     private static final long LOAD_DELAY = 25;
 
     private final Gui gui;
+    private final DialogSettings dialogSettings;
+    private final DialogLanguageSelection dialogLanguageSelection;
     private final DialogDisclaimer dialogDisclaimer;
     private final DialogLogViewer dialogLogViewer;
     private long lastImageChangedTime = 0;
 
     public ActionHandler(Gui gui) {
         this.gui = gui;
+        this.dialogSettings = new DialogSettings();
+        this.dialogLanguageSelection = new DialogLanguageSelection();
         this.dialogDisclaimer = new DialogDisclaimer(gui.getFrame());
         this.dialogLogViewer = new DialogLogViewer(gui.getFrame());
     }
@@ -74,8 +75,9 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_GO_TO_LAST_LEVEL -> scrollToNextImage(ImageLayer.LEVEL, 1, true);
 
             // window actions
-            case ACTION_SELECT_LANGUAGE -> selectLanguage();
-            case ACTION_TOGGLE_THEME -> GuiUtils.toggleTheme(gui);
+            case SHORTCUT_SELECT_LANGUAGE -> dialogLanguageSelection.show(gui);
+            case SHORTCUT_TOGGLE_THEME -> GuiUtils.toggleTheme(gui);
+            case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show(gui);
 
             case SHORTCUT_FONT_SIZE_DECREASE -> GuiUtils.decreaseFont(gui);
             case SHORTCUT_FONT_SIZE_RESTORE -> GuiUtils.restoreFont(gui);
@@ -107,57 +109,5 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         if (now - lastImageChangedTime < delay) return false;
         lastImageChangedTime = now;
         return true;
-    }
-
-    private void selectLanguage() {
-        Language oldLanguage = config.getLanguage();
-        JComboBox<Language> selectBox = new JComboBox<>(Language.values());
-        selectBox.setSelectedItem(oldLanguage);
-
-        // Benutzerdefinierte Buttons
-        JButton okButton = new JButton(getWord("optionPane.button.ok"));
-        JButton cancelButton = new JButton(getWord("optionPane.button.cancel"));
-        okButton.setEnabled(false);
-
-        // Wenn sich die Auswahl ändert → Button aktivieren/deaktivieren
-        selectBox.addActionListener(a -> {
-            Language selected = (Language) selectBox.getSelectedItem();
-            okButton.setEnabled(selected != null && selected != oldLanguage);
-        });
-
-        // Inhalte & Optionen des Dialogs
-        Object[] message = {selectBox};
-        Object[] options = {okButton, cancelButton};
-
-        // JOptionPane erstellen
-        JOptionPane pane = new JOptionPane(
-                message, JOptionPane.QUESTION_MESSAGE, JOptionPane.DEFAULT_OPTION,
-                null, options, okButton
-        );
-        JDialog dialog = pane.createDialog(gui.getFrame(), getWord("items.window.selectLanguage"));
-
-        // Aktionen der Buttons
-        okButton.addActionListener(a -> {
-            pane.setValue(okButton);
-            dialog.dispose();
-        });
-        cancelButton.addActionListener(a -> {
-            pane.setValue(cancelButton);
-            dialog.dispose();
-        });
-
-        // Dialog anzeigen
-        dialog.setVisible(true);
-
-        // Ergebnis auswerten
-        Object selectedValue = pane.getValue();
-        Language newLanguage = (Language) selectBox.getSelectedItem();
-        if (selectedValue != okButton || newLanguage == null || oldLanguage == newLanguage) return;
-
-        // Sprache setzen und speichern
-        logger.info("Changing language from '" + oldLanguage + "' to '" + newLanguage + "'");
-        config.setLanguage(newLanguage);
-        config.saveConfig();
-        gui.rebuild();
     }
 }

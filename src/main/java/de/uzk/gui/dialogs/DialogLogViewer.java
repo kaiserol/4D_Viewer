@@ -1,4 +1,4 @@
-package de.uzk.gui;
+package de.uzk.gui.dialogs;
 
 import de.uzk.logger.LogEntry;
 import de.uzk.utils.StringUtils;
@@ -6,6 +6,7 @@ import de.uzk.utils.StringUtils;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 import static de.uzk.Main.imageHandler;
 import static de.uzk.Main.logger;
@@ -13,33 +14,37 @@ import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogLogViewer {
     private final JDialog dialog;
-    private final JTabbedPane tabs;
 
     public DialogLogViewer(JFrame frame) {
-        this.dialog = new JDialog(frame, getWord("dialog.logViewer"), true);
+        this.dialog = new JDialog(frame, getWord("dialog.logViewer.title"), true);
+        this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.dialog.setLayout(new BorderLayout(0, 0));
 
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-        this.tabs = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-        loadDialogTabs();
-        panel.add(tabs);
-        this.dialog.add(panel);
+        // ESC schließt Dialog
+        this.dialog.getRootPane().registerKeyboardAction(e -> dialog.dispose(),
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
+        );
     }
 
     public void show() {
-        tabs.removeAll();
-        loadDialogTabs();
+        this.dialog.getContentPane().removeAll();
 
-        resizeWindow();
+        // Panel mit Tabs hinzufügen
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panel.add(getTabs(), BorderLayout.CENTER);
+        this.dialog.add(panel);
+
+        // Fenstergröße anpassen
+        this.dialog.pack();
+        this.resizeWindow();
+
+        // Fenster anzeigen
         this.dialog.setLocationRelativeTo(this.dialog.getOwner());
         this.dialog.setVisible(true);
     }
 
     private void resizeWindow() {
-        this.dialog.pack();
-
         // Breite der Scrollbar
         int scrollBarWidth = UIManager.getInt("ScrollBar.width");
         if (scrollBarWidth <= 0) scrollBarWidth = 20;
@@ -71,15 +76,17 @@ public class DialogLogViewer {
                 Math.min(DEFAULT_MAX_HEIGHT, screenHeight - 100)
         );
 
-        dialog.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
-        dialog.setSize(new Dimension(newWidth, newHeight));
+        this.dialog.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        this.dialog.setSize(new Dimension(newWidth, newHeight));
     }
 
-    private void loadDialogTabs() {
+    private JTabbedPane getTabs() {
+        JTabbedPane tabs = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         tabs.add(getWord("dialog.logViewer.logs"), getLogsPanel());
         if (imageHandler.getMissingImagesCount() > 0) {
             tabs.add(getWord("dialog.logViewer.missingImages"), getMissingImagesPanel());
         }
+        return tabs;
     }
 
     private JComponent getLogsPanel() {

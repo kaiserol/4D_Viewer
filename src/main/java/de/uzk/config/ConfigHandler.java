@@ -26,8 +26,7 @@ import static de.uzk.utils.NumberUtils.isDouble;
 import static de.uzk.utils.NumberUtils.isInteger;
 
 public class ConfigHandler {
-    // TODO: DEFAULT_ASK_AGAIN_CLOSING_WINDOW muss über die Einstellugen aktivierbar und wieder nicht sein
-    public static final boolean DEFAULT_ASK_AGAIN_CLOSING_WINDOW = true;
+    public static final boolean DEFAULT_CONFIRM_EXIT = true;
     public static final Theme DEFAULT_THEME = Theme.LIGHT_MODE;
     public static final int MIN_FONT_SIZE = 12;
     public static final int DEFAULT_FONT_SIZE = 18;
@@ -45,21 +44,23 @@ public class ConfigHandler {
     private static final double DEFAULT_LEVEL_UNIT = 1;
 
     private final SimpleDateFormat dateFormat;
-    private boolean askAgainClosingWindow;
+    private final String dateFormatPattern;
+    private boolean confirmExit;
     private Theme theme;
     private int fontSize;
     private Language language;
 
     public ConfigHandler() {
         this.dateFormat = new SimpleDateFormat("yyyy-dd-MM");
+        this.dateFormatPattern = "\\d{4}-\\d{2}-\\d{2}";
     }
 
-    public boolean isAskAgainClosingWindow() {
-        return askAgainClosingWindow;
+    public boolean isConfirmExit() {
+        return confirmExit;
     }
 
-    public void setAskAgainClosingWindow(boolean askAgainClosingWindow) {
-        this.askAgainClosingWindow = askAgainClosingWindow;
+    public void setConfirmExit(boolean confirmExit) {
+        this.confirmExit = confirmExit;
     }
 
     public Theme getTheme() {
@@ -97,7 +98,7 @@ public class ConfigHandler {
     }
 
     public void setLanguage(Language language) {
-        if (language == null) return;
+        if (language == null || this.language == language) return;
 
         this.language = language;
         Locale.setDefault(language.getLocale());
@@ -108,14 +109,14 @@ public class ConfigHandler {
     public boolean saveScreenshot(BufferedImage originalImage) {
         try {
             if (SCREENSHOT_FOLDER.isDirectory() || SCREENSHOT_FOLDER.mkdir()) {
-                String date = dateFormat.format(new Date());
+                String date = this.dateFormat.format(new Date());
                 int count = getNextScreenshotIndex(date);
                 String fileName = String.format("%s(%d)_%s", date, count, imageHandler.getCurrentImage().getFileName());
                 File saveFile = new File(SCREENSHOT_FOLDER.getAbsolutePath() + StringUtils.FILE_SEP + fileName);
 
                 BufferedImage edited = GuiUtils.getEditedImage(originalImage, imageHandler.getImageDetails(), true);
                 ImageIO.write(edited, imageHandler.getImageDetails().getImageType().getType(), saveFile);
-                logger.info("Saved screenshot: '" + saveFile.getAbsolutePath() + "'." );
+                logger.info("Saved screenshot: '" + saveFile.getAbsolutePath() + "'.");
                 return true;
             }
         } catch (IOException e) {
@@ -151,7 +152,7 @@ public class ConfigHandler {
             File[] files = SCREENSHOT_FOLDER.listFiles();
             if (files == null) return count;
 
-            String filePattern = "\\d{4}-\\d{2}-\\d{2}\\(\\d+\\)_" + ImageFile.getImageNamePattern(imageHandler.getImageDetails());
+            String filePattern = this.dateFormatPattern + "\\(\\d+\\)_" + ImageFile.getImageNamePattern(imageHandler.getImageDetails());
             for (File file : files) {
                 String filename = file.getName();
                 if (filename.matches(filePattern)) count++;
@@ -176,7 +177,7 @@ public class ConfigHandler {
         logger.info("Storing config...");
         Properties properties = new Properties();
         try {
-            if (!CONFIG_FILE.isDirectory() && !CONFIG_FILE.createNewFile()) {
+            if (!CONFIG_FILE.exists() && !CONFIG_FILE.createNewFile()) {
                 logger.error("The config was already created.");
             }
         } catch (IOException e) {
@@ -208,8 +209,8 @@ public class ConfigHandler {
         imageHandler.setTimeUnit(DEFAULT_TIME_UNIT);
         imageHandler.setLevelUnit(DEFAULT_LEVEL_UNIT);
 
-        // askAgainClosingWindow, theme, font size
-        this.askAgainClosingWindow = DEFAULT_ASK_AGAIN_CLOSING_WINDOW;
+        // confirmExit, theme, font size
+        this.confirmExit = DEFAULT_CONFIRM_EXIT;
         this.theme = DEFAULT_THEME;
         this.fontSize = DEFAULT_FONT_SIZE;
     }
@@ -234,8 +235,8 @@ public class ConfigHandler {
         imageHandler.setTimeUnit(loadNumber(properties, "TimeUnit", DEFAULT_TIME_UNIT).doubleValue());
         imageHandler.setLevelUnit(loadNumber(properties, "LevelUnit", DEFAULT_LEVEL_UNIT).doubleValue());
 
-        // askAgainClosingWindow, theme, font size
-        this.askAgainClosingWindow = loadBoolean(properties, "AskAgainClosingWindow", DEFAULT_ASK_AGAIN_CLOSING_WINDOW);
+        // confirmExit, theme, font size
+        this.confirmExit = loadBoolean(properties, "ConfirmExit", DEFAULT_CONFIRM_EXIT);
         this.setTheme(loadString(properties, "Theme", DEFAULT_THEME.name()));
         this.setFontSize(loadNumber(properties, "FontSize", DEFAULT_FONT_SIZE).intValue());
     }
@@ -256,8 +257,8 @@ public class ConfigHandler {
         properties.setProperty("TimeUnit", String.valueOf(imageHandler.getTimeUnit()));
         properties.setProperty("LevelUnit", String.valueOf(imageHandler.getLevelUnit()));
 
-        // askAgainClosingWindow, theme, font size, language
-        properties.setProperty("AskAgainClosingWindow", String.valueOf(isAskAgainClosingWindow()));
+        // confirmExit, theme, font size, language
+        properties.setProperty("ConfirmExit", String.valueOf(isConfirmExit()));
         properties.setProperty("Theme", String.valueOf(getTheme()));
         properties.setProperty("FontSize", String.valueOf(getFontSize()));
         properties.setProperty("Language", getLanguage().getName());

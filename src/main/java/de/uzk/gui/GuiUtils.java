@@ -16,6 +16,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 import static de.uzk.Main.config;
+import static de.uzk.Main.logger;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public final class GuiUtils {
@@ -136,6 +137,7 @@ public final class GuiUtils {
         UIManager.getDefaults().clear();
         config.toggleTheme();
 
+        logger.info("Changing theme from '" + config.getTheme().opposite() + "' to '" + config.getTheme() + "'");
         initFlatLaf();
         FlatLaf.updateUI();
         gui.updateTheme();

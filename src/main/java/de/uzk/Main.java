@@ -11,8 +11,6 @@ import java.awt.*;
 import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
 
-import static de.uzk.config.LanguageHandler.getWord;
-
 public class Main {
     public static final LogEntryHandler logger;
     public static final ConfigHandler config;
@@ -32,31 +30,14 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             Gui gui = new Gui();
 
-            // catch: macOS Cmd+Q
+            // Behandle den Shortcut: Cmd+Q (unter macOS)
             if (Desktop.isDesktopSupported()) {
-                // Option: Handle Quit-Request
                 Desktop desktop = Desktop.getDesktop();
                 desktop.setQuitHandler((QuitEvent e, QuitResponse response) -> {
                     response.cancelQuit();
-                    closeApp(gui.getFrame(), config::saveConfig);
+                    gui.confirmExitApp();
                 });
             }
         });
-    }
-
-    public static void closeApp(Window window, Runnable runForClosing) {
-        if (window instanceof JDialog || config.isAskAgainClosingWindow()) {
-            boolean checkBoxAllowed = config.isAskAgainClosingWindow();
-            JCheckBox checkBox = new JCheckBox(getWord("optionPane.closeApp.dont_ask_again"));
-            Object[] message = new Object[]{getWord("optionPane.closeApp.question"), checkBoxAllowed ? checkBox : null};
-
-            int option = JOptionPane.showConfirmDialog(
-                    window, message, getWord("optionPane.title.confirm"),
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null);
-            if (option != JOptionPane.YES_OPTION) return;
-            else if (checkBox.isSelected()) config.setAskAgainClosingWindow(false);
-        }
-        if (runForClosing != null) runForClosing.run();
-        System.exit(0);
     }
 }

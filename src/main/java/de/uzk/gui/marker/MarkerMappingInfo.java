@@ -89,8 +89,14 @@ public class MarkerMappingInfo extends AreaContainerInteractive<JPanel> {
         edit.setOnClick(() -> {
 
             MarkerEditor initial = new MarkerEditor(imageHandler.getCurrentImage(), new Marker(this.mapping.getMarker()));
-            int option = JOptionPane.showConfirmDialog(null, initial, getWord("dialog.markers.editMarker"), JOptionPane.OK_CANCEL_OPTION);
-            if(option == JOptionPane.OK_OPTION) {
+            int option = JOptionPane.showConfirmDialog(
+                    null,
+                    initial,
+                    getWord("dialog.markers.editMarker"),
+                    JOptionPane.OK_CANCEL_OPTION
+            );
+
+            if (option == JOptionPane.OK_OPTION) {
                 this.mapping.setMarker(initial.getMarker());
                 gui.handleAction(ActionType.ACTION_ADD_MARKER);
 

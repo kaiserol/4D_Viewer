@@ -3,6 +3,7 @@ package de.uzk.gui;
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
 import de.uzk.action.HandleActionListener;
+import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.gui.viewer.OViewer;
 import de.uzk.image.ImageLayer;
 
@@ -57,7 +58,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                closeApp(getFrame(), config::saveConfig);
+                confirmExitApp();
             }
         });
         this.container.addWindowFocusListener(new WindowAdapter() {
@@ -205,5 +206,55 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     public void updateUI() {
         this.container.revalidate();
         this.container.repaint();
+    }
+
+    public void confirmExitApp() {
+        if (config.isConfirmExit()) {
+            JCheckBox checkBox = new JCheckBox(getWord("optionPane.closeApp.dont_ask_again"));
+            Object[] message = new Object[]{getWord("optionPane.closeApp.question"), checkBox};
+
+            int option = JOptionPane.showConfirmDialog(
+                    this.container,
+                    message,
+                    getWord("optionPane.title.confirm"),
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            // Wenn der Benutzer "Nein" klickt → Abbrechen
+            if (option != JOptionPane.YES_OPTION) return;
+
+            // Wenn Checkbox aktiv → Einstellung merken
+            if (checkBox.isSelected()) config.setConfirmExit(false);
+        }
+
+        // Config abspeichern
+        config.saveConfig();
+
+        // Anwendung beenden
+        exit();
+    }
+
+    public static void exitApp(Window window, Runnable exitAction) {
+        if (config.isConfirmExit()) {
+            int option = JOptionPane.showConfirmDialog(
+                    window,
+                    getWord("optionPane.insurance.question"),
+                    getWord("optionPane.insurance.title"),
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            // Wenn der Benutzer "Nein" klickt → Abbrechen
+            if (option != JOptionPane.YES_OPTION) return;
+        }
+
+        // Anwendung beenden
+        if (exitAction != null) exitAction.run();
+        exit();
+    }
+
+    private static void exit() {
+        System.exit(0);
     }
 }

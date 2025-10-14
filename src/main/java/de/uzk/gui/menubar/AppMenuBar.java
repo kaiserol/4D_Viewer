@@ -1,11 +1,11 @@
-package de.uzk.gui;
+package de.uzk.gui.menubar;
 
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
 import de.uzk.config.ConfigHandler;
-import de.uzk.gui.menubar.CustomMenu;
-import de.uzk.gui.menubar.CustomMenuBar;
-import de.uzk.gui.menubar.CustomMenuItem;
+import de.uzk.gui.AreaContainerInteractive;
+import de.uzk.gui.Gui;
+import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
 
@@ -26,17 +26,20 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         this.menuBar.add(getMenuEdit(actionHandler));
         this.menuBar.add(getMenuNavigate(actionHandler));
         this.menuBar.add(getMenuWindow(actionHandler));
+        this.menuBar.add(getMenuSettings(actionHandler));
     }
 
     private CustomMenu getMenuEdit(ActionHandler actionHandler) {
         CustomMenu menuEdit = new CustomMenu(getWord("items.edit"));
 
+        // pinTime, turnImageLeft, turnImageRight
         menuEdit.add(new CustomMenuItem(getWord("items.edit.pinTime"), ICON_PIN, actionHandler, SHORTCUT_TOGGLE_PIN_TIME));
         menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageLeft"), ICON_TURN_LEFT, actionHandler, SHORTCUT_TURN_IMAGE_90_LEFT));
         menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageRight"), ICON_TURN_RIGHT, actionHandler, SHORTCUT_TURN_IMAGE_90_RIGHT));
         menuEdit.addSeparator();
 
-        menuEdit.add(new CustomMenuItem(getWord("items.edit.screenshot"), ICON_SCREENSHOT, actionHandler, SHORTCUT_TAKE_SCREENSHOT));
+        // takeScreenshot
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.takeScreenshot"), ICON_SCREENSHOT, actionHandler, SHORTCUT_TAKE_SCREENSHOT));
         return menuEdit;
     }
 
@@ -57,11 +60,6 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     private CustomMenu getMenuWindow(ActionHandler actionHandler) {
         CustomMenu menuWindow = new CustomMenu(getWord("items.window"));
 
-        // language, theme
-        menuWindow.add(new CustomMenuItem(getWord("items.window.selectLanguage"), actionHandler, ACTION_SELECT_LANGUAGE));
-        menuWindow.add(new CustomMenuItem(getWord("items.window.toggleTheme"), actionHandler, ACTION_TOGGLE_THEME));
-        menuWindow.addSeparator();
-
         // font: decrease, restore, increase
         menuWindow.add(itemFontDecrease = new CustomMenuItem(getWord("items.window.fontSizeDecrease"), actionHandler, SHORTCUT_FONT_SIZE_DECREASE));
         menuWindow.add(itemFontRestore = new CustomMenuItem(getWord("items.window.fontSizeRestore"), actionHandler, SHORTCUT_FONT_SIZE_RESTORE));
@@ -72,8 +70,17 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         // disclaimer, logViewer
         menuWindow.add(new CustomMenuItem(getWord("items.window.showDisclaimer"), actionHandler, SHORTCUT_SHOW_DISCLAIMER));
         menuWindow.add(new CustomMenuItem(getWord("items.window.showLogViewer"), actionHandler, SHORTCUT_SHOW_LOG_VIEWER));
-
         return menuWindow;
+    }
+
+    private CustomMenu getMenuSettings(ActionHandler actionHandler) {
+        CustomMenu menuSettings = new CustomMenu(getWord("items.settings"));
+
+        // confirmExit, language, theme
+        menuSettings.add(new CustomMenuItem(getWord("items.settings.selectLanguage"), actionHandler, SHORTCUT_SELECT_LANGUAGE));
+        menuSettings.add(new CustomMenuItem(getWord("items.settings.toggleTheme"), actionHandler, SHORTCUT_TOGGLE_THEME));
+        menuSettings.add(new CustomMenuItem(getWord("items.settings.openSettings"), actionHandler, SHORTCUT_OPEN_SETTINGS));
+        return menuSettings;
     }
 
     @Override

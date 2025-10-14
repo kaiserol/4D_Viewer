@@ -7,9 +7,9 @@ import java.util.List;
 public enum ActionType {
     // edit shortcuts
     SHORTCUT_TOGGLE_PIN_TIME(new Shortcut(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
-    SHORTCUT_TURN_IMAGE_90_LEFT(new Shortcut(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
-    SHORTCUT_TURN_IMAGE_90_RIGHT(new Shortcut(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
-    SHORTCUT_TAKE_SCREENSHOT(new Shortcut(KeyEvent.VK_S, InputEvent.META_DOWN_MASK)),
+    SHORTCUT_TURN_IMAGE_90_LEFT(new Shortcut(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
+    SHORTCUT_TURN_IMAGE_90_RIGHT(new Shortcut(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
+    SHORTCUT_TAKE_SCREENSHOT(new Shortcut(KeyEvent.VK_S, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
 
     // nav shortcuts
     SHORTCUT_GO_TO_FIRST_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
@@ -30,7 +30,12 @@ public enum ActionType {
             new Shortcut(KeyEvent.VK_ADD, InputEvent.META_DOWN_MASK)),
 
     SHORTCUT_SHOW_DISCLAIMER(new Shortcut(KeyEvent.VK_F1, 0)),
-    SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F12, 0)),
+    SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F2, 0)),
+
+    // settings shortcuts
+    SHORTCUT_SELECT_LANGUAGE(new Shortcut(KeyEvent.VK_L, InputEvent.META_DOWN_MASK | InputEvent.CTRL_DOWN_MASK)),
+    SHORTCUT_TOGGLE_THEME(new Shortcut(KeyEvent.VK_T, InputEvent.META_DOWN_MASK | InputEvent.CTRL_DOWN_MASK)),
+    SHORTCUT_OPEN_SETTINGS(new Shortcut(KeyEvent.VK_S, InputEvent.META_DOWN_MASK)),
 
     // actions
     ACTION_LOAD_IMAGES,
@@ -38,9 +43,6 @@ public enum ActionType {
 
     ACTION_ADD_MARKER,
     ACTION_REMOVE_MARKER,
-
-    ACTION_SELECT_LANGUAGE,
-    ACTION_TOGGLE_THEME,
 
     ACTION_UPDATE_PIN_TIME,
     ACTION_UPDATE_TIME_UNIT,

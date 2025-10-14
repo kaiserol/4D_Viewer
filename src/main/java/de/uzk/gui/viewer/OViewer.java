@@ -111,8 +111,11 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
 
     private void clearImages() {
         int option = JOptionPane.showConfirmDialog(gui.getFrame(),
-                getWord("optionPane.directory.clear"), getWord("optionPane.title.confirm"),
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                getWord("optionPane.directory.clear"),
+                getWord("optionPane.title.confirm"),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
 
         if (option == JOptionPane.YES_OPTION) gui.toggleOff();
         else this.container.requestFocusInWindow();
