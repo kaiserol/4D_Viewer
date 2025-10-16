@@ -8,12 +8,21 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-import static de.uzk.Main.imageHandler;
+import static de.uzk.Main.imageFileHandler;
 import static de.uzk.Main.logger;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogLogViewer {
+    // Minimale Fenstergrößen
+    private static final int MIN_WIDTH = 400;
+    private static final int MIN_HEIGHT = 250;
+
+    // Maximale „Zielgröße“ des Fensters (nicht zwingend)
+    private static final int DEFAULT_MAX_WIDTH = 600;
+    private static final int DEFAULT_MAX_HEIGHT = 400;
+
     private final JDialog dialog;
+    private JTabbedPane tabs;
 
     public DialogLogViewer(JFrame frame) {
         this.dialog = new JDialog(frame, getWord("dialog.logViewer.title"), true);
@@ -32,7 +41,7 @@ public class DialogLogViewer {
         // Panel mit Tabs hinzufügen
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        panel.add(getTabs(), BorderLayout.CENTER);
+        panel.add(this.tabs = getTabs(), BorderLayout.CENTER);
         this.dialog.add(panel);
 
         // Fenstergröße anpassen
@@ -49,14 +58,6 @@ public class DialogLogViewer {
         int scrollBarWidth = UIManager.getInt("ScrollBar.width");
         if (scrollBarWidth <= 0) scrollBarWidth = 20;
 
-        // Minimale Fenstergrößen
-        final int MIN_WIDTH = 300;
-        final int MIN_HEIGHT = 200;
-
-        // Maximale „Zielgröße“ des Fensters (nicht zwingend)
-        final int DEFAULT_MAX_WIDTH = 800;
-        final int DEFAULT_MAX_HEIGHT = 600;
-
         // Bildschirmgröße
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = screen.width;
@@ -65,6 +66,12 @@ public class DialogLogViewer {
         // Aktuelle Fenstergröße
         int currentWidth = dialog.getWidth();
         int currentHeight = dialog.getHeight();
+
+        JScrollPane scrollPane = getScrollPane(this.tabs, this.tabs.getSelectedIndex());
+        if (scrollPane != null) {
+            currentWidth = currentWidth + scrollPane.getWidth() - scrollPane.getViewport().getView().getWidth();
+            currentHeight = currentHeight + scrollPane.getHeight() - scrollPane.getViewport().getView().getHeight();
+        }
 
         // Berechnung der neuen Abmessungen
         int newWidth = Math.min(
@@ -83,7 +90,7 @@ public class DialogLogViewer {
     private JTabbedPane getTabs() {
         JTabbedPane tabs = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         tabs.add(getWord("dialog.logViewer.logs"), getLogsPanel());
-        if (imageHandler.getMissingImagesCount() > 0) {
+        if (imageFileHandler.getMissingImagesCount() > 0) {
             tabs.add(getWord("dialog.logViewer.missingImages"), getMissingImagesPanel());
         }
         return tabs;
@@ -98,16 +105,12 @@ public class DialogLogViewer {
     }
 
     private JComponent getMissingImagesPanel() {
-        String missingImages = StringUtils.wrapP(imageHandler.getAllMissingImages());
+        String missingImages = StringUtils.wrapPre(imageFileHandler.getMissingImages());
         return getEditorPane(StringUtils.wrapHtmlDocument(missingImages));
     }
 
     private String formatLogEntry(LogEntry logEntry) {
-        String header = StringUtils.wrapBold(logEntry.getDateTime()) + " " + logEntry.getSource() + StringUtils.NEXT_LINE;
-        String level = StringUtils.wrapBold(StringUtils.wrapColor("[" + logEntry.getLevel() + "]: ", logEntry.getLevel().getColor()));
-        String message = logEntry.getMessage();
-
-        return StringUtils.wrapP(header + level + " " + message);
+        return logEntry.getFormattedText(true);
     }
 
     private JComponent getEditorPane(String htmlContent) {
@@ -123,5 +126,18 @@ public class DialogLogViewer {
         JScrollPane scrollPane = new JScrollPane(editorPane);
         panel.add(scrollPane);
         return panel;
+    }
+
+    private JScrollPane getScrollPane(JTabbedPane tabbedPane, int tabIndex) {
+        if (tabIndex < 0 || tabIndex >= tabbedPane.getTabCount()) return null;
+
+        JComponent component = (JComponent) tabbedPane.getComponentAt(tabIndex);
+        if (component instanceof JPanel panel) {
+            Component[] panelComponents = panel.getComponents();
+            if (panelComponents.length == 1 && panelComponents[0] instanceof JScrollPane scrollPane) {
+                return scrollPane;
+            }
+        }
+        return null;
     }
 }

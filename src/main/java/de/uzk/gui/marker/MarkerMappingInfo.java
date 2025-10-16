@@ -4,14 +4,14 @@ import de.uzk.action.ActionType;
 import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.OGridBagConstraints;
-import de.uzk.image.ImageLayer;
+import de.uzk.image.Axis;
 import de.uzk.markers.Marker;
 import de.uzk.markers.MarkerMapping;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static de.uzk.Main.imageHandler;
+import static de.uzk.Main.imageFileHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class MarkerMappingInfo extends AreaContainerInteractive<JPanel> {
@@ -41,14 +41,14 @@ public class MarkerMappingInfo extends AreaContainerInteractive<JPanel> {
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
         this.container.add(nameLabel, c);
 
-        SpinnerNumberModel fromModel = new SpinnerNumberModel(this.mapping.getFrom(), 0, imageHandler.getMaxTime(), 1);
-        SpinnerNumberModel toModel = new SpinnerNumberModel(this.mapping.getTo(), this.mapping.getFrom(), imageHandler.getMaxTime(), 1);
+        SpinnerNumberModel fromModel = new SpinnerNumberModel(this.mapping.getFrom(), 0, imageFileHandler.getMaxTime(), 1);
+        SpinnerNumberModel toModel = new SpinnerNumberModel(this.mapping.getTo(), this.mapping.getFrom(), imageFileHandler.getMaxTime(), 1);
 
         fromModel.addChangeListener(e -> {
             int newValue = fromModel.getNumber().intValue();
             this.mapping.setFrom(newValue);
             toModel.setMinimum(newValue);
-            gui.update(ImageLayer.TIME);
+            gui.update(Axis.TIME);
             if(toModel.getNumber().intValue() < newValue) {
                 toModel.setValue(newValue);
             }
@@ -88,7 +88,7 @@ public class MarkerMappingInfo extends AreaContainerInteractive<JPanel> {
         GenericMarkerPreview edit = new GenericMarkerPreview(this.mapping.getMarker().getShape(), this.mapping.getMarker().getColor());
         edit.setOnClick(() -> {
 
-            MarkerEditor initial = new MarkerEditor(imageHandler.getCurrentImage(), new Marker(this.mapping.getMarker()));
+            MarkerEditor initial = new MarkerEditor(imageFileHandler.getImageFile(), new Marker(this.mapping.getMarker()));
             int option = JOptionPane.showConfirmDialog(
                     null,
                     initial,

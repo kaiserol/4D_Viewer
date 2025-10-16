@@ -2,7 +2,7 @@ package de.uzk.gui;
 
 import de.uzk.action.ActionType;
 import de.uzk.action.HandleActionListener;
-import de.uzk.image.ImageLayer;
+import de.uzk.image.Axis;
 
 import java.awt.*;
 
@@ -44,7 +44,7 @@ public abstract class AreaContainerInteractive<T extends Container> implements H
     }
 
     @Override
-    public void update(ImageLayer layer) {
+    public void update(Axis axis) {
     }
 
     @Override

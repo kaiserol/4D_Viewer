@@ -5,18 +5,25 @@ import de.uzk.utils.StringUtils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static de.uzk.logger.LogLevel.EXCEPTION;
+
 public class LogEntry {
-    private static final SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss");
+    private final SimpleDateFormat dateFormat;
+    private final String dateTime;
+    private final String source;
     private final LogLevel level;
     private final String message;
-    private final String source;
-    private final String dateTime;
 
     public LogEntry(LogLevel level, String message) {
+        this.dateFormat = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss");
+        this.dateTime = initDateTime();
+        this.source = initSource();
         this.level = level;
         this.message = message;
-        this.source = initSource();
-        this.dateTime = initDateTime();
+    }
+
+    private String initDateTime() {
+        return this.dateFormat.format(new Date());
     }
 
     private String initSource() {
@@ -37,29 +44,44 @@ public class LogEntry {
         return null;
     }
 
-    private String initDateTime() {
-        return format.format(new Date());
-    }
-
-    public LogLevel getLevel() {
-        return level;
-    }
-
-    public String getMessage() {
-        return message;
+    public String getDateTime() {
+        return this.dateTime;
     }
 
     public String getSource() {
-        return source;
+        return this.source;
     }
 
-    public String getDateTime() {
-        return dateTime;
+    public LogLevel getLevel() {
+        return this.level;
+    }
+
+    public String getMessage() {
+        if (this.message == null) return "";
+        return this.message;
+    }
+
+    public String getFormattedText(boolean includeHTML) {
+        String headerText = this.getDateTime() + " " + this.getSource() + StringUtils.NEXT_LINE;
+        String levelText = "[" + this.getLevel() + "]: ";
+        String[] content = this.getMessage().split(StringUtils.NEXT_LINE);
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < content.length; i++) {
+            if (i > 0 && level != EXCEPTION) sb.append(" ".repeat(levelText.length()));
+            sb.append(content[i]).append(StringUtils.NEXT_LINE);
+        }
+
+        if (includeHTML) {
+            String headerTextHTML = StringUtils.wrapBold(headerText);
+            String levelTextHTML = StringUtils.wrapColor(StringUtils.wrapBold(levelText), this.getLevel().getColor());
+            return StringUtils.wrapPre(headerTextHTML + levelTextHTML + sb);
+        }
+        return headerText + levelText + sb;
     }
 
     @Override
     public String toString() {
-        return this.getDateTime() + " " + this.getSource() + StringUtils.NEXT_LINE +
-                "[" + this.getLevel() + "]: " + this.getMessage();
+        return this.message;
     }
 }

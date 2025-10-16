@@ -8,7 +8,6 @@ import java.awt.*;
  * <ul>
  *   <li>Bereichsprüfungen mit Schrittweiten</li>
  *   <li>Winkelberechnungen (90° Drehungen)</li>
- *   <li>Typprüfungen für Number-Objekte</li>
  *   <li>Helligkeitsberechnungen für Farben</li>
  * </ul>
  *
@@ -88,26 +87,6 @@ public final class NumberUtils {
         }
         // Sonst bis zum nächsten „rechten“ Vielfachen von 90° drehen
         return (360 + angle - remainder + 90) % 360;
-    }
-
-    /**
-     * Prüft, ob ein Number-Objekt tatsächlich vom Typ Integer ist.
-     *
-     * @param number zu prüfendes Number-Objekt
-     * @return true, wenn das Objekt vom Typ Integer ist, sonst false
-     */
-    public static boolean isInteger(Number number) {
-        return number != null && number.getClass() == Integer.class;
-    }
-
-    /**
-     * Prüft, ob ein Number-Objekt tatsächlich vom Typ Double ist.
-     *
-     * @param number zu prüfendes Number-Objekt
-     * @return true, wenn das Objekt vom Typ Double ist, sonst false
-     */
-    public static boolean isDouble(Number number) {
-        return number != null && number.getClass() == Double.class;
     }
 
     /**

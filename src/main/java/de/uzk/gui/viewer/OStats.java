@@ -5,7 +5,7 @@ import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.image.ImageFile;
-import de.uzk.image.ImageLayer;
+import de.uzk.image.Axis;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
@@ -14,9 +14,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 
-import static de.uzk.Main.imageHandler;
+import static de.uzk.Main.imageFileHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 
+// TODO: Überarbeite Klasse
 public class OStats extends AreaContainerInteractive<JPanel> {
     private JLabel timeStateLabel;
     private JLabel levelStateLabel;
@@ -105,36 +106,36 @@ public class OStats extends AreaContainerInteractive<JPanel> {
     @Override
     public void handleAction(ActionType actionType) {
         if (actionType == ActionType.ACTION_UPDATE_TIME_UNIT) {
-            updateStats(ImageLayer.TIME);
+            updateStats(Axis.TIME);
         } else if (actionType == ActionType.ACTION_UPDATE_LEVEL_UNIT) {
-            updateStats(ImageLayer.LEVEL);
+            updateStats(Axis.LEVEL);
         }
     }
 
     @Override
     public void toggleOn() {
-        updateCountLabel(ImageLayer.TIME, imageHandler.getTime(), imageHandler.getMaxTime());
-        updateStateLabel(ImageLayer.TIME, 0, 0);
+        updateCountLabel(Axis.TIME, imageFileHandler.getTime(), imageFileHandler.getMaxTime());
+        updateStateLabel(Axis.TIME, 0, 0);
 
-        updateCountLabel(ImageLayer.LEVEL, imageHandler.getLevel(), imageHandler.getMaxLevel());
-        updateStateLabel(ImageLayer.LEVEL, 0, 0);
+        updateCountLabel(Axis.LEVEL, imageFileHandler.getLevel(), imageFileHandler.getMaxLevel());
+        updateStateLabel(Axis.LEVEL, 0, 0);
         updateCurrentImageText();
     }
 
     @Override
     public void toggleOff() {
-        updateCountLabel(ImageLayer.TIME, 0, 0);
-        updateStateLabel(ImageLayer.TIME, 0, 0);
+        updateCountLabel(Axis.TIME, 0, 0);
+        updateStateLabel(Axis.TIME, 0, 0);
 
-        updateCountLabel(ImageLayer.LEVEL, 0, 0);
-        updateStateLabel(ImageLayer.LEVEL, 0, 0);
+        updateCountLabel(Axis.LEVEL, 0, 0);
+        updateStateLabel(Axis.LEVEL, 0, 0);
         updateCurrentImageText();
     }
 
     @Override
-    public void update(ImageLayer layer) {
+    public void update(Axis axis) {
         updateCurrentImageText();
-        updateStats(layer);
+        updateStats(axis);
     }
 
     @Override
@@ -143,23 +144,23 @@ public class OStats extends AreaContainerInteractive<JPanel> {
                 new EmptyBorder(5, 5, 5, 5)));
     }
 
-    private void updateStats(ImageLayer layer) {
-        if (layer == ImageLayer.TIME) {
-            updateCountLabel(ImageLayer.TIME, imageHandler.getTime(), imageHandler.getMaxTime());
-            updateStateLabel(ImageLayer.TIME, imageHandler.getTime(), imageHandler.getTimeUnit());
+    private void updateStats(Axis axis) {
+        if (axis == Axis.TIME) {
+            updateCountLabel(Axis.TIME, imageFileHandler.getTime(), imageFileHandler.getMaxTime());
+            updateStateLabel(Axis.TIME, imageFileHandler.getTime(), imageFileHandler.getShiftTimeUnit());
         } else {
-            updateCountLabel(ImageLayer.LEVEL, imageHandler.getLevel(), imageHandler.getMaxLevel());
-            updateStateLabel(ImageLayer.LEVEL, imageHandler.getLevel(), imageHandler.getLevelUnit());
+            updateCountLabel(Axis.LEVEL, imageFileHandler.getLevel(), imageFileHandler.getMaxLevel());
+            updateStateLabel(Axis.LEVEL, imageFileHandler.getLevel(), imageFileHandler.getShiftLevelUnit());
         }
     }
 
-    private void updateCountLabel(ImageLayer layer, int value, int maxValue) {
-        if (layer == ImageLayer.TIME) timeCountLabel.setText(value + " / " + maxValue);
+    private void updateCountLabel(Axis axis, int value, int maxValue) {
+        if (axis == Axis.TIME) timeCountLabel.setText(value + " / " + maxValue);
         else levelCountLabel.setText(value + " / " + maxValue);
     }
 
-    private void updateStateLabel(ImageLayer layer, int value, Number multiplier) {
-        if (layer == ImageLayer.TIME) {
+    private void updateStateLabel(Axis axis, int value, Number multiplier) {
+        if (axis == Axis.TIME) {
             timeStateLabel.setText(StringUtils.wrapHtml(
                     "<h1 style='margin: 0; padding: 0;'>" + StringUtils.formatTime(value, multiplier.doubleValue()) + "</h1>"));
         } else {
@@ -169,8 +170,8 @@ public class OStats extends AreaContainerInteractive<JPanel> {
     }
 
     private void updateCurrentImageText() {
-        ImageFile imageFile = imageHandler.getCurrentImage();
+        ImageFile imageFile = imageFileHandler.getImageFile();
         if (imageFile == null) this.currentImageTextLabel.setText(null);
-        else this.currentImageTextLabel.setText(imageFile.getFileName());
+        else this.currentImageTextLabel.setText(imageFile.getName());
     }
 }

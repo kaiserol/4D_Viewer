@@ -2,7 +2,7 @@ package de.uzk.gui;
 
 import java.awt.*;
 
-// TODO: Brauche ich das wirklich, wenn ja, verwende es überall wo geht, Benenne die Klasse um
+// TODO: Klasse löschen?
 public class OGridBagConstraints extends GridBagConstraints {
     public OGridBagConstraints() {
         this(new Insets(0, 0, 0, 0), CENTER, NONE);

@@ -5,14 +5,14 @@ import de.uzk.gui.dialogs.DialogDisclaimer;
 import de.uzk.gui.dialogs.DialogSettings;
 import de.uzk.gui.dialogs.DialogLanguageSelection;
 import de.uzk.gui.dialogs.DialogLogViewer;
-import de.uzk.image.ImageLayer;
+import de.uzk.image.Axis;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-import static de.uzk.Main.imageHandler;
+import static de.uzk.Main.imageFileHandler;
 import static de.uzk.action.ActionType.*;
 
 public class ActionHandler extends KeyAdapter implements MouseWheelListener {
@@ -30,8 +30,8 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         this.gui = gui;
         this.dialogSettings = new DialogSettings();
         this.dialogLanguageSelection = new DialogLanguageSelection();
-        this.dialogDisclaimer = new DialogDisclaimer(gui.getFrame());
-        this.dialogLogViewer = new DialogLogViewer(gui.getFrame());
+        this.dialogDisclaimer = new DialogDisclaimer(gui.getContainer());
+        this.dialogLogViewer = new DialogLogViewer(gui.getContainer());
     }
 
     @Override
@@ -50,8 +50,8 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     }
 
     public void mouseWheelMoved(boolean shift, int rotation) {
-        ImageLayer layer = shift ? ImageLayer.TIME : ImageLayer.LEVEL;
-        scrollToNextImage(layer, rotation, false);
+        Axis axis = shift ? Axis.TIME : Axis.LEVEL;
+        scrollToNextImage(axis, rotation, false);
     }
 
     public void executeAction(ActionType actionType) {
@@ -63,48 +63,49 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_TURN_IMAGE_90_RIGHT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_RIGHT);
             case SHORTCUT_TAKE_SCREENSHOT -> gui.handleAction(SHORTCUT_TAKE_SCREENSHOT);
 
-            // nav actions
-            case SHORTCUT_GO_TO_FIRST_IMAGE -> scrollToNextImage(ImageLayer.TIME, -1, true);
-            case SHORTCUT__GO_TO_PREV_IMAGE -> scrollToNextImage(ImageLayer.TIME, -1, false);
-            case SHORTCUT_GO_TO_NEXT_IMAGE -> scrollToNextImage(ImageLayer.TIME, 1, false);
-            case SHORTCUT_GO_TO_LAST_IMAGE -> scrollToNextImage(ImageLayer.TIME, 1, true);
+            // navigate actions
+            case SHORTCUT_GO_TO_FIRST_IMAGE -> scrollToNextImage(Axis.TIME, -1, true);
+            case SHORTCUT__GO_TO_PREV_IMAGE -> scrollToNextImage(Axis.TIME, -1, false);
+            case SHORTCUT_GO_TO_NEXT_IMAGE -> scrollToNextImage(Axis.TIME, 1, false);
+            case SHORTCUT_GO_TO_LAST_IMAGE -> scrollToNextImage(Axis.TIME, 1, true);
 
-            case SHORTCUT_GO_TO_FIRST_LEVEL -> scrollToNextImage(ImageLayer.LEVEL, -1, true);
-            case SHORTCUT_GO_TO_PREV_LEVEL -> scrollToNextImage(ImageLayer.LEVEL, -1, false);
-            case SHORTCUT_GO_TO_NEXT_LEVEL -> scrollToNextImage(ImageLayer.LEVEL, 1, false);
-            case SHORTCUT_GO_TO_LAST_LEVEL -> scrollToNextImage(ImageLayer.LEVEL, 1, true);
+            case SHORTCUT_GO_TO_FIRST_LEVEL -> scrollToNextImage(Axis.LEVEL, -1, true);
+            case SHORTCUT_GO_TO_PREV_LEVEL -> scrollToNextImage(Axis.LEVEL, -1, false);
+            case SHORTCUT_GO_TO_NEXT_LEVEL -> scrollToNextImage(Axis.LEVEL, 1, false);
+            case SHORTCUT_GO_TO_LAST_LEVEL -> scrollToNextImage(Axis.LEVEL, 1, true);
 
             // window actions
-            case SHORTCUT_SELECT_LANGUAGE -> dialogLanguageSelection.show(gui);
-            case SHORTCUT_TOGGLE_THEME -> GuiUtils.toggleTheme(gui);
-            case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show(gui);
-
             case SHORTCUT_FONT_SIZE_DECREASE -> GuiUtils.decreaseFont(gui);
             case SHORTCUT_FONT_SIZE_RESTORE -> GuiUtils.restoreFont(gui);
             case SHORTCUT_FONT_SIZE_INCREASE -> GuiUtils.increaseFont(gui);
 
             case SHORTCUT_SHOW_DISCLAIMER -> dialogDisclaimer.show();
             case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();
+
+            // settings actions
+            case SHORTCUT_SELECT_LANGUAGE -> dialogLanguageSelection.show(gui);
+            case SHORTCUT_TOGGLE_THEME -> GuiUtils.toggleTheme(gui);
+            case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show(gui);
             default -> {
             }
         }
     }
 
-    private void scrollToNextImage(ImageLayer layer, int rotation, boolean goToFirstOrLast) {
+    private void scrollToNextImage(Axis axis, int rotation, boolean goToFirstOrLast) {
         if (rotation == 0 || !allowNextImageChange()) return;
 
         if (rotation < 0) {
-            if (goToFirstOrLast) imageHandler.toFirst(layer);
-            else imageHandler.prev(layer);
+            if (goToFirstOrLast) imageFileHandler.toFirst(axis);
+            else imageFileHandler.prev(axis);
         } else {
-            if (goToFirstOrLast) imageHandler.toLast(layer);
-            else imageHandler.next(layer);
+            if (goToFirstOrLast) imageFileHandler.toLast(axis);
+            else imageFileHandler.next(axis);
         }
-        gui.update(layer);
+        gui.update(axis);
     }
 
     private boolean allowNextImageChange() {
-        long delay = imageHandler.getImageDetails().getRotation() != 0 ? HIGH_LOAD_DELAY : LOAD_DELAY;
+        long delay = imageFileHandler.getImageRotation() != 0 ? HIGH_LOAD_DELAY : LOAD_DELAY;
         long now = System.currentTimeMillis();
         if (now - lastImageChangedTime < delay) return false;
         lastImageChangedTime = now;

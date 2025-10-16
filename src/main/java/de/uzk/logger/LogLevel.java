@@ -7,6 +7,7 @@ import java.awt.*;
 public enum LogLevel {
     DEBUG(GuiUtils.COLOR_BLUE),
     ERROR(GuiUtils.COLOR_RED),
+    EXCEPTION(GuiUtils.COLOR_DARK_RED),
     INFO(GuiUtils.COLOR_GREEN),
     WARNING(GuiUtils.COLOR_YELLOW);
 

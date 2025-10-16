@@ -5,7 +5,7 @@ import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.Icons;
-import de.uzk.image.ImageLayer;
+import de.uzk.image.Axis;
 import de.uzk.markers.MarkerMapping;
 
 import javax.swing.*;
@@ -17,6 +17,7 @@ import java.util.List;
 import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
+// TODO: Überarbeite Klasse
 public class OImager extends AreaContainerInteractive<JPanel> {
     private BufferedImage originalImage;
     private BufferedImage currentImage;
@@ -45,12 +46,12 @@ public class OImager extends AreaContainerInteractive<JPanel> {
 
             g2d.drawImage(currentImage, x, y, width, height, null);
 
-            List<MarkerMapping> marker = markerHandler.getMarkers(imageHandler.getTime());
+            List<MarkerMapping> marker = markerHandler.getMarkers(imageFileHandler.getTime());
             for(MarkerMapping m : marker) {
                 m.getMarker().draw(g2d, new Rectangle(x, y, width, height), scaleFactor);
             }
         } else {
-            String noImagesText = imageHandler.isEmpty() ? getWord("viewer.labels.noImages") : getWord("viewer.labels.couldNotLoadImage");
+            String noImagesText = imageFileHandler.isEmpty() ? getWord("viewer.labels.noImages") : getWord("viewer.labels.couldNotLoadImage");
             FontMetrics metrics = g2d.getFontMetrics(g.getFont());
             int textWidth = metrics.stringWidth(noImagesText);
             int textHeight = metrics.getHeight();
@@ -80,7 +81,7 @@ public class OImager extends AreaContainerInteractive<JPanel> {
     }
 
     @Override
-    public void update(ImageLayer layer) {
+    public void update(Axis axis) {
         updateCurrentImage();
     }
 
@@ -91,9 +92,9 @@ public class OImager extends AreaContainerInteractive<JPanel> {
 
     private void updateCurrentImage() {
         BufferedImage tempImage = null;
-        if (imageHandler.getCurrentImage() != null) {
-            File imageFile = imageHandler.getCurrentImage().getFile();
-            tempImage = Icons.loadImage(imageFile);
+        if (imageFileHandler.getImageFile() != null) {
+            File imageFile = imageFileHandler.getImageFile().getFile();
+            tempImage = Icons.loadImage(imageFile, false);
         }
         this.currentImage = this.originalImage = tempImage;
         editImage();
@@ -101,24 +102,24 @@ public class OImager extends AreaContainerInteractive<JPanel> {
 
     private void editImage() {
         if (this.originalImage != null) {
-            this.currentImage = GuiUtils.getEditedImage(this.originalImage, imageHandler.getImageDetails(), false);
+            this.currentImage = GuiUtils.getEditedImage(this.originalImage, false);
         }
         this.container.repaint();
     }
 
     private void takeScreenshot() {
         if (this.originalImage != null) {
-            boolean saved = config.saveScreenshot(this.originalImage);
+            boolean saved = configHandler.saveScreenshot(this.originalImage);
             if (saved) gui.handleAction(ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER);
         }
     }
 
     private void checkImages() {
-        if (imageHandler.isEmpty()) return;
-        if (imageHandler.getCurrentImage() != null) {
+        if (imageFileHandler.isEmpty()) return;
+        if (imageFileHandler.getImageFile() != null) {
             // reopen image to look if image was deleted
             updateCurrentImage();
         }
-        imageHandler.checkLostImages();
+        imageFileHandler.checkMissingFiles();
     }
 }

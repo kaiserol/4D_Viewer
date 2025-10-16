@@ -11,7 +11,7 @@ public enum ActionType {
     SHORTCUT_TURN_IMAGE_90_RIGHT(new Shortcut(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
     SHORTCUT_TAKE_SCREENSHOT(new Shortcut(KeyEvent.VK_S, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
 
-    // nav shortcuts
+    // navigate shortcuts
     SHORTCUT_GO_TO_FIRST_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
     SHORTCUT__GO_TO_PREV_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT, 0)),
     SHORTCUT_GO_TO_NEXT_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_RIGHT, 0)),
@@ -38,9 +38,7 @@ public enum ActionType {
     SHORTCUT_OPEN_SETTINGS(new Shortcut(KeyEvent.VK_S, InputEvent.META_DOWN_MASK)),
 
     // actions
-    ACTION_LOAD_IMAGES,
     ACTION_EDIT_IMAGE,
-
     ACTION_ADD_MARKER,
     ACTION_REMOVE_MARKER,
 

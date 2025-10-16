@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import static de.uzk.Main.config;
+import static de.uzk.Main.configHandler;
 import static de.uzk.Main.logger;
 
 public final class Icons {
@@ -21,7 +21,7 @@ public final class Icons {
     public static final FlatSVGIcon ICON_TURN_LEFT = loadResourceSVG("images/icons_edit/turn_left.svg");
     public static final FlatSVGIcon ICON_SCREENSHOT = loadResourceSVG("images/icons_edit/screenshot.svg");
 
-    // nav icons
+    // navigate icons
     public static final FlatSVGIcon ICON_ARROW_LEFT_START = loadResourceSVG("images/icons_nav/arrow_left_start.svg");
     public static final FlatSVGIcon ICON_ARROW_LEFT = loadResourceSVG("images/icons_nav/arrow_left.svg");
     public static final FlatSVGIcon ICON_ARROW_RIGHT = loadResourceSVG("images/icons_nav/arrow_right.svg");
@@ -43,7 +43,7 @@ public final class Icons {
             ICON_SCREENSHOT,
     };
     private static final FlatSVGIcon[] ICONS_DIFFERENT_COLORS = {
-            // nav icons
+            // navigate icons
             ICON_ARROW_LEFT_START,
             ICON_ARROW_LEFT,
             ICON_ARROW_RIGHT,
@@ -63,11 +63,11 @@ public final class Icons {
     private Icons() {
     }
 
-    public static BufferedImage loadImage(File file) {
+    public static BufferedImage loadImage(File file, boolean showErrorIfNotFound) {
         try {
             return ImageIO.read(file);
         } catch (Exception e) {
-            logger.error("The image '" + file.getAbsolutePath() + "' could not be loaded.");
+            if (showErrorIfNotFound) logger.error("The image '" + file.getAbsolutePath() + "' could not be loaded.");
             return null;
         }
     }
@@ -111,7 +111,7 @@ public final class Icons {
         for (FlatSVGIcon svgIcon : ICONS_DIFFERENT_COLORS) {
             // Tausche Farben aus
             updateSVGIconsColor(svgIcon, new FlatSVGIcon.ColorFilter(color -> {
-                if (color.equals(Color.BLACK)) return config.getTheme().isLight() ? Color.GRAY : Color.WHITE;
+                if (color.equals(Color.BLACK)) return configHandler.getTheme().isLight() ? Color.GRAY : Color.WHITE;
                 return color;
             }));
         }

@@ -1,7 +1,7 @@
 package de.uzk.gui;
 
-import de.uzk.image.ImageLayer;
+import de.uzk.image.Axis;
 
 public interface UpdateImageListener {
-    void update(ImageLayer layer);
+    void update(Axis axis);
 }

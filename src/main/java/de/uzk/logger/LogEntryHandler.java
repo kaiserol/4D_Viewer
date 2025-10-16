@@ -46,14 +46,16 @@ public class LogEntryHandler {
             msg.append("\tat ").append(stackTrace[i]);
             if (i < stackTrace.length - 1) msg.append(StringUtils.NEXT_LINE);
         }
-        error(msg.toString());
+        log(EXCEPTION, msg.toString());
     }
 
     private void log(LogLevel level, String message) {
-        LogEntry logEntry = new LogEntry(level, message + StringUtils.NEXT_LINE);
+        String msgText = message == null ? "" : message;
+        LogEntry logEntry = new LogEntry(level, msgText + StringUtils.NEXT_LINE);
+
         if (level != null) {
             this.logEntry.add(logEntry);
-            System.out.print(logEntry);
+            System.out.print(logEntry.getFormattedText(false));
         }
     }
 }

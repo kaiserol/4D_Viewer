@@ -5,13 +5,13 @@ import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.marker.MarkerEditor;
 import de.uzk.gui.marker.MarkerMappingInfo;
-import de.uzk.image.ImageLayer;
+import de.uzk.image.Axis;
 import de.uzk.markers.MarkerMapping;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static de.uzk.Main.imageHandler;
+import static de.uzk.Main.imageFileHandler;
 import static de.uzk.Main.markerHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 
@@ -48,7 +48,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
 
         JButton add = new JButton(getWord("items.markers.addMarker"));
         add.addActionListener(e -> {
-            MarkerEditor initial = new MarkerEditor(imageHandler.getCurrentImage());
+            MarkerEditor initial = new MarkerEditor(imageFileHandler.getImageFile());
             int option = JOptionPane.showConfirmDialog(
                     null,
                     initial,
@@ -57,7 +57,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
             );
 
             if (option == JOptionPane.OK_OPTION) {
-                markerHandler.addMarker(initial.getMarker(), imageHandler.getTime());
+                markerHandler.addMarker(initial.getMarker(), imageFileHandler.getTime());
                 gui.handleAction(ActionType.ACTION_ADD_MARKER);
                 gui.updateUI();
             }
@@ -81,8 +81,8 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
     }
 
     @Override
-    public void update(ImageLayer layer) {
-        if(layer == ImageLayer.TIME) {
+    public void update(Axis axis) {
+        if(axis == Axis.TIME) {
             this.rerender();
         }
     }

@@ -44,9 +44,10 @@ class CustomMenuBarTest {
     @Test
     void testToStringWithMultipleMenus() {
         CustomMenu fileMenu = new CustomMenu("File");
+        fileMenu.add(new CustomMenuItem("New File"));
+        fileMenu.addSeparator();
         fileMenu.add(new CustomMenuItem("Open"));
         fileMenu.add(new CustomMenuItem("Save"));
-        fileMenu.addSeparator();
 
         CustomMenu editMenu = new CustomMenu("Edit");
         editMenu.add(new CustomMenuItem("Cut"));
@@ -55,11 +56,13 @@ class CustomMenuBarTest {
         CustomMenuBar menuBar = new CustomMenuBar();
         menuBar.add(fileMenu, editMenu);
 
+        System.out.println(menuBar);
         String expectedOutput = "Root:" + StringUtils.NEXT_LINE +
                 "File" + StringUtils.NEXT_LINE +
+                "  > New File" + StringUtils.NEXT_LINE +
+                "  ----------" + StringUtils.NEXT_LINE +
                 "  > Open" + StringUtils.NEXT_LINE +
                 "  > Save" + StringUtils.NEXT_LINE +
-                "  SEP" + StringUtils.NEXT_LINE +
                 "Edit" + StringUtils.NEXT_LINE +
                 "  > Cut" + StringUtils.NEXT_LINE +
                 "  > Copy" + StringUtils.NEXT_LINE;

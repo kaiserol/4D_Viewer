@@ -6,7 +6,7 @@ import de.uzk.utils.StringUtils;
 import javax.swing.*;
 import java.awt.*;
 
-import static de.uzk.Main.config;
+import static de.uzk.Main.configHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogSettings {
@@ -17,10 +17,10 @@ public class DialogSettings {
     }
 
     public void show(Gui gui) {
-        this.oldConfirmExit = config.isConfirmExit();
+        this.oldConfirmExit = configHandler.isConfirmExit();
 
         int option = JOptionPane.showConfirmDialog(
-                gui.getFrame(),
+                gui.getContainer(),
                 createSettingsPanel(),
                 getWord("dialog.settings.title"),
                 JOptionPane.OK_CANCEL_OPTION,
@@ -29,7 +29,7 @@ public class DialogSettings {
         if (option != JOptionPane.OK_OPTION) return;
 
         // Einstellungen aktualisieren
-        config.setConfirmExit(checkBox.isSelected());
+        configHandler.setConfirmExit(checkBox.isSelected());
     }
 
     private JPanel createSettingsPanel() {
@@ -43,7 +43,8 @@ public class DialogSettings {
 
         gbc.gridx = 0;
         gbc.gridy++;
-        // Abschnittstitel
+
+        // Abschnitt: Fenster-Verhalten
         panel.add(new JLabel(StringUtils.wrapHtml(StringUtils.applyFontStyle(
                 getWord("dialog.settings.section.windowBehavior"), Font.BOLD))), gbc);
 

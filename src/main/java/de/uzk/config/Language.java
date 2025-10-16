@@ -24,7 +24,7 @@ public enum Language {
         return this.name;
     }
 
-    public static Language byName(String name) {
+    public static Language fromName(String name) {
         for (Language language : Language.values()) {
             if (language.getName().equalsIgnoreCase(name)) return language;
         }
@@ -33,7 +33,7 @@ public enum Language {
     }
 
     public static Language getSystemDefault() {
-        return byName(Locale.getDefault().getLanguage());
+        return fromName(Locale.getDefault().getLanguage());
     }
 
     @Override

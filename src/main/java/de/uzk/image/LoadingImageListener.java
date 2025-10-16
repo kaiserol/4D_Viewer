@@ -1,13 +1,15 @@
 package de.uzk.image;
 
+import java.io.File;
+
 public interface LoadingImageListener {
     void onLoadingStart();
 
-    void onScanningStart(int maxScans);
+    void onScanningStart(int files);
 
-    void onScanningUpdate(String fileName, int currentScan, int downloadedImages, int maxScans);
+    void onScanningUpdate(File file, int currentFile, int imageFiles, int files);
 
     void onScanningComplete();
 
-    void onLoadingComplete();
+    void onLoadingComplete(int imageFiles);
 }

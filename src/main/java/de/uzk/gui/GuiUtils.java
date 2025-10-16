@@ -6,26 +6,29 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.formdev.flatlaf.util.SystemInfo;
 import de.uzk.action.ActionType;
 import de.uzk.config.ConfigHandler;
-import de.uzk.image.ImageDetails;
 import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
-import static de.uzk.Main.config;
-import static de.uzk.Main.logger;
+import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public final class GuiUtils {
+    // Farben Attribute
     public static final Color COLOR_BLUE = new Color(0, 122, 255);
     public static final Color COLOR_GREEN = new Color(8, 166, 52);
     public static final Color COLOR_YELLOW = new Color(252, 204, 78);
     public static final Color COLOR_RED = new Color(255, 86, 86);
+    public static final Color COLOR_DARK_RED = new Color(148, 0, 0);
+
+    // Text Konstanten
     public static final String COMP_DISABLED = "DISABLED";
     public static final String SLIDER_DRAGGED = "DRAGGING";
+
+    // UI Eigenschaften
     private static Color borderColor;
     private static Font font;
 
@@ -41,8 +44,8 @@ public final class GuiUtils {
     }
 
     public static void initFlatLaf() {
-        FlatLaf.setup(config.getTheme().isLight() ? getLightMode() : getDarkMode());
-        borderColor = config.getTheme().isLight() ? Color.LIGHT_GRAY : Color.DARK_GRAY;
+        FlatLaf.setup(configHandler.getTheme().isLight() ? getLightMode() : getDarkMode());
+        borderColor = configHandler.getTheme().isLight() ? Color.LIGHT_GRAY : Color.DARK_GRAY;
 
         // MacOS Eigenschaften
         if (SystemInfo.isMacOS) {
@@ -101,7 +104,7 @@ public final class GuiUtils {
 
         // Font Eigenschaften
         font = UIManager.getFont("defaultFont");
-        updateFontSize(config.getFontSize());
+        updateFontSize(configHandler.getFontSize());
     }
 
     public static Color getBorderColor() {
@@ -109,7 +112,7 @@ public final class GuiUtils {
     }
 
     public static void decreaseFont(Gui gui) {
-        int newFontSize = config.getFontSize() - 1;
+        int newFontSize = configHandler.getFontSize() - 1;
         if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
     }
 
@@ -119,12 +122,12 @@ public final class GuiUtils {
     }
 
     public static void increaseFont(Gui gui) {
-        int newFontSize = config.getFontSize() + 1;
+        int newFontSize = configHandler.getFontSize() + 1;
         if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
     }
 
     private static boolean updateFontSize(float fontSize) {
-        if (config.setFontSize((int) fontSize)) {
+        if (configHandler.setFontSize((int) fontSize)) {
             font = font.deriveFont(fontSize);
             UIManager.put("defaultFont", font);
             FlatLaf.updateUI();
@@ -135,9 +138,9 @@ public final class GuiUtils {
 
     public static void toggleTheme(Gui gui) {
         UIManager.getDefaults().clear();
-        config.toggleTheme();
+        configHandler.toggleTheme();
 
-        logger.info("Changing theme from '" + config.getTheme().opposite() + "' to '" + config.getTheme() + "'");
+        logger.info("Changing theme from '" + configHandler.getTheme().opposite() + "' to '" + configHandler.getTheme() + "'");
         initFlatLaf();
         FlatLaf.updateUI();
         gui.updateTheme();
@@ -151,12 +154,12 @@ public final class GuiUtils {
         return g2d;
     }
 
-    public static BufferedImage getEditedImage(BufferedImage image, ImageDetails imageDetails, boolean jpgImage) {
+    public static BufferedImage getEditedImage(BufferedImage image, boolean jpgImage) {
         int imageType = jpgImage ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
 
         // Spiegelung & Rotation
-        BufferedImage mirrored = getMirroredImage(image, imageDetails.isMirrorX(), imageDetails.isMirrorY(), imageType);
-        return getRotatedImage(mirrored, imageDetails.getRotation(), imageType);
+        BufferedImage mirrored = getMirroredImage(image, imageFileHandler.isImageMirrorX(), imageFileHandler.isImageMirrorY(), imageType);
+        return getRotatedImage(mirrored, imageFileHandler.getImageRotation(), imageType);
     }
 
     private static BufferedImage getMirroredImage(BufferedImage image, boolean mirrorX, boolean mirrorY, int imageType) {
@@ -224,6 +227,7 @@ public final class GuiUtils {
         return NumberUtils.valueFitsInRange(value, minValue, maxValue, stepSize);
     }
 
+    // TODO: @isEnabled() und @updateSecretly() durch rubustures Verfahren ersetzen
     public static boolean isEnabled(JComponent component) {
         return component.getName() == null || !component.getName().equals(COMP_DISABLED);
     }

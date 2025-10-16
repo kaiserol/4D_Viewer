@@ -9,7 +9,7 @@ import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
 
-import static de.uzk.Main.config;
+import static de.uzk.Main.configHandler;
 import static de.uzk.action.ActionType.*;
 import static de.uzk.config.LanguageHandler.getWord;
 import static de.uzk.gui.Icons.*;
@@ -45,15 +45,15 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
 
     private CustomMenu getMenuNavigate(ActionHandler actionHandler) {
         CustomMenu menuNavigate = new CustomMenu(getWord("items.nav"));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.first"), ICON_ARROW_LEFT_START, actionHandler, SHORTCUT_GO_TO_FIRST_IMAGE, true));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.prev"), ICON_ARROW_LEFT, actionHandler, SHORTCUT__GO_TO_PREV_IMAGE, true));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.next"), ICON_ARROW_RIGHT, actionHandler, SHORTCUT_GO_TO_NEXT_IMAGE, true));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.image.last"), ICON_ARROW_RIGHT_END, actionHandler, SHORTCUT_GO_TO_LAST_IMAGE, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.time.first"), ICON_ARROW_LEFT_START, actionHandler, SHORTCUT_GO_TO_FIRST_IMAGE, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.time.prev"), ICON_ARROW_LEFT, actionHandler, SHORTCUT__GO_TO_PREV_IMAGE, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.time.next"), ICON_ARROW_RIGHT, actionHandler, SHORTCUT_GO_TO_NEXT_IMAGE, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.time.last"), ICON_ARROW_RIGHT_END, actionHandler, SHORTCUT_GO_TO_LAST_IMAGE, true));
         menuNavigate.addSeparator();
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.first"), ICON_ARROW_UP_START, actionHandler, SHORTCUT_GO_TO_FIRST_LEVEL, true));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.prev"), ICON_ARROW_UP, actionHandler, SHORTCUT_GO_TO_PREV_LEVEL, true));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.next"), ICON_ARROW_DOWN, actionHandler, SHORTCUT_GO_TO_NEXT_LEVEL, true));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.level.last"), ICON_ARROW_DOWN_END, actionHandler, SHORTCUT_GO_TO_LAST_LEVEL, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.level.first"), ICON_ARROW_UP_START, actionHandler, SHORTCUT_GO_TO_FIRST_LEVEL, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.level.prev"), ICON_ARROW_UP, actionHandler, SHORTCUT_GO_TO_PREV_LEVEL, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.level.next"), ICON_ARROW_DOWN, actionHandler, SHORTCUT_GO_TO_NEXT_LEVEL, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.level.last"), ICON_ARROW_DOWN_END, actionHandler, SHORTCUT_GO_TO_LAST_LEVEL, true));
         return menuNavigate;
     }
 
@@ -76,7 +76,7 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     private CustomMenu getMenuSettings(ActionHandler actionHandler) {
         CustomMenu menuSettings = new CustomMenu(getWord("items.settings"));
 
-        // confirmExit, language, theme
+        // language, theme, settings
         menuSettings.add(new CustomMenuItem(getWord("items.settings.selectLanguage"), actionHandler, SHORTCUT_SELECT_LANGUAGE));
         menuSettings.add(new CustomMenuItem(getWord("items.settings.toggleTheme"), actionHandler, SHORTCUT_TOGGLE_THEME));
         menuSettings.add(new CustomMenuItem(getWord("items.settings.openSettings"), actionHandler, SHORTCUT_OPEN_SETTINGS));
@@ -99,7 +99,7 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     }
 
     private void updateFontItems() {
-        int fontSize = config.getFontSize();
+        int fontSize = configHandler.getFontSize();
         itemFontDecrease.getComponent().setEnabled(fontSize != ConfigHandler.MIN_FONT_SIZE);
         itemFontRestore.getComponent().setEnabled(fontSize != ConfigHandler.DEFAULT_FONT_SIZE);
         itemFontIncrease.getComponent().setEnabled(fontSize != ConfigHandler.MAX_FONT_SIZE);

@@ -9,9 +9,8 @@ import java.io.File;
  * Die Hilfsklasse für String-Operationen und Formatierungen.
  * Diese Klasse bietet Methoden für:
  * <ul>
- *   <li>Formatierung von Ebenen und Zeitangaben</li>
+ *   <li>Formatierung von Zeit- und Ebenenangaben</li>
  *   <li>Array-zu-String Konvertierungen</li>
- *   <li>Text-Parsing und Wort-Extraktion</li>
  *   <li>HTML-Formatierung und Styling</li>
  *   <li>Farb-zu-Hex Konvertierung</li>
  * </ul>
@@ -32,17 +31,6 @@ public final class StringUtils {
     }
 
     /**
-     * Formatiert eine numerische Ebene (z. B. Höhenwert) in Mikrometer.
-     *
-     * @param level      numerischer Wert (z. B. Ebenennummer)
-     * @param multiplier Umrechnungsfaktor zu μm
-     * @return formatierte Zeichenkette (z. B. „12.3 μm“)
-     */
-    public static String formatLevel(int level, double multiplier) {
-        return String.format("%.01f μm", level * multiplier);
-    }
-
-    /**
      * Formatiert eine Zeitangabe (z. B. Sekunden) im Format hh:mm:ss.
      *
      * @param time       Zeitwert (z. B. Sekunden)
@@ -57,6 +45,17 @@ public final class StringUtils {
         int hour = time / 60 / 60;
 
         return String.format("%02d:%02d:%02d", hour, minute, seconds);
+    }
+
+    /**
+     * Formatiert eine numerische Ebene (z. B. Höhenwert) in Mikrometer.
+     *
+     * @param level      numerischer Wert (z. B. Ebenennummer)
+     * @param multiplier Umrechnungsfaktor zu μm
+     * @return formatierte Zeichenkette (z. B. „12.3 μm“)
+     */
+    public static String formatLevel(int level, double multiplier) {
+        return String.format("%.01f μm", level * multiplier);
     }
 
     /**
@@ -85,20 +84,10 @@ public final class StringUtils {
         return arrBuilder.append(rightBorder).toString();
     }
 
-    /**
-     * Teilt einen Text anhand von Leerzeichen in einzelne Wörter.
-     *
-     * @param text Eingabetext
-     * @return Array aus Wörtern (leer, wenn text == null)
-     */
-    public static String[] splitTextInWords(String text) {
-        return text == null ? new String[0] : text.split("\\s+");
-    }
-
     // ---------- HTML FORMAT ----------
 
     /**
-     * Umgibt Text mit einem HTML-Font-Tag, das die Farbe setzt.
+     * Umgibt Text mit einem HTML-Font-Tag, der die Farbe setzt.
      *
      * @param text  der anzuzeigende Text
      * @param color gewünschte Schriftfarbe
@@ -130,14 +119,14 @@ public final class StringUtils {
     }
 
     /**
-     * Umgibt den Text mit einem HTML-Absatz (<p>),
+     * Umgibt den Text mit einem HTML <pre>-Tag und
      * ersetzt Zeilenumbrüche durch <br> und Tabs durch Leerzeichen.
      */
-    public static String wrapP(String text) {
-        return "<p>" + text
+    public static String wrapPre(String text) {
+        return "<pre>" + text
                 .replace(NEXT_LINE, "<br>")
                 .replace("\t", "    ")
-                + "</p>";
+                + "</pre>";
     }
 
     /**

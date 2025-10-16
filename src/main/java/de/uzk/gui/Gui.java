@@ -3,15 +3,17 @@ package de.uzk.gui;
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
 import de.uzk.action.HandleActionListener;
+import de.uzk.gui.dialogs.DialogImageLoad;
 import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.gui.viewer.OViewer;
-import de.uzk.image.ImageLayer;
+import de.uzk.image.Axis;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +39,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     public void rebuild() {
-        logger.info("Rebuilding UI...");
+        logger.info("Rebuilding UI ...");
         this.container.getContentPane().removeAll();
 
         // Verhindert, dass alte UI-Objekte weiter existieren (alte Ereignis-Listener müssen bereinigt werden)
@@ -46,11 +48,21 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.updateImageListeners.clear();
         this.updateThemeListeners.clear();
         this.appFocusListeners.clear();
-        loadUI();
+
+        // Inhalt initialisieren
+        initContent();
+        updateTheme();
+
+        // Prüfe, ob Bilder geladen sind
+        if (imageFileHandler.hasImageFilesDirectory()) toggleOn();
+        else toggleOff();
+
+        // Fenster packen
+        this.container.pack();
     }
 
     private void build() {
-        logger.info("Building UI...");
+        logger.info("Building UI ...");
         GuiUtils.initFlatLaf();
 
         this.container.setIconImage(Icons.APP_IMAGE);
@@ -74,16 +86,19 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             }
         });
 
-        loadUI();
+        // Inhalt initialisieren
+        initContent();
+        updateTheme();
+
+        // Lade Image-Files
+        String tempImageFilesDirectory = configHandler.getTempImageFilesDirectory();
+        if (tempImageFilesDirectory != null) loadImageFiles(tempImageFilesDirectory, true);
+        else toggleOff();
+
+        // Fenster sichtbar machen
+        this.container.pack();
         this.container.setLocationRelativeTo(null);
         this.container.setVisible(true);
-    }
-
-    private void loadUI() {
-        initContent();
-        handleAction(ActionType.ACTION_LOAD_IMAGES);
-        updateTheme();
-        this.container.pack();
     }
 
     private void initContent() {
@@ -119,8 +134,41 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.add(mainPanel);
     }
 
-    public JFrame getFrame() {
-        return this.container;
+    public void loadImageFiles(String directoryPath, boolean isGuiBeingBuilt) {
+        File file = new File(directoryPath);
+        if (!file.exists()) {
+            if (isGuiBeingBuilt) return;
+            String message = getWord("optionPane.directory.theDirectory") + ": '" + directoryPath + "' " +
+                    getWord("optionPane.directory.doesNotExisting") + ".";
+            JOptionPane.showMessageDialog(
+                    this.container,
+                    message,
+                    getWord("optionPane.title.error"),
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        // Nur laden, wenn Verzeichnis nicht bereits geladen ist
+        File directory = file.isDirectory() ? file : file.getParentFile();
+        File imageFilesDirectory = imageFileHandler.getImageFilesDirectory();
+        if (directory.equals(imageFilesDirectory)) return;
+
+        // Prüfe, ob das Verzeichnis passende Bilder-Dateien hat
+        boolean opened = new DialogImageLoad().openImageFilesDirectory(this.container, directoryPath);
+        if (opened) {
+            toggleOn();
+        } else {
+            if (isGuiBeingBuilt) return;
+            String message = getWord("optionPane.directory.theDirectory") + ": '" + directoryPath + "' " +
+                    getWord("optionPane.directory.hasNo") + " " + imageFileHandler.getImageFileNameExtension().getDescription() + ".";
+            JOptionPane.showMessageDialog(
+                    this.container,
+                    message,
+                    getWord("optionPane.title.error"),
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
     }
 
     public void addHandleActionListener(HandleActionListener handleActionListener) {
@@ -146,7 +194,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     @Override
     public void handleAction(ActionType actionType) {
         if (actionType == ActionType.SHORTCUT_TOGGLE_PIN_TIME) {
-            imageHandler.togglePinTime();
+            imageFileHandler.togglePinTime();
             actionType = ActionType.ACTION_UPDATE_PIN_TIME;
         }
 
@@ -157,11 +205,6 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     @Override
     public void toggleOn() {
-        imageHandler.toFirst(ImageLayer.TIME);
-        imageHandler.toFirst(ImageLayer.LEVEL);
-        imageHandler.setDefaultPinTime();
-        handleAction(ActionType.ACTION_UPDATE_PIN_TIME);
-
         for (ToggleListener listener : toggleListeners) {
             listener.toggleOn();
         }
@@ -170,9 +213,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     @Override
     public void toggleOff() {
-        imageHandler.clear();
-        imageHandler.setDefaultPinTime();
-        handleAction(ActionType.ACTION_UPDATE_PIN_TIME);
+        imageFileHandler.removeImageFilesDirectory();
+        imageFileHandler.clear();
 
         for (ToggleListener listener : toggleListeners) {
             listener.toggleOff();
@@ -181,10 +223,10 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     @Override
-    public void update(ImageLayer layer) {
-        if (layer == null) return;
+    public void update(Axis axis) {
+        if (axis == null) return;
         for (UpdateImageListener listener : updateImageListeners) {
-            listener.update(layer);
+            listener.update(axis);
         }
         updateUI();
     }
@@ -209,7 +251,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     public void confirmExitApp() {
-        if (config.isConfirmExit()) {
+        if (configHandler.isConfirmExit()) {
             JCheckBox checkBox = new JCheckBox(getWord("optionPane.closeApp.dont_ask_again"));
             Object[] message = new Object[]{getWord("optionPane.closeApp.question"), checkBox};
 
@@ -225,18 +267,18 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             if (option != JOptionPane.YES_OPTION) return;
 
             // Wenn Checkbox aktiv → Einstellung merken
-            if (checkBox.isSelected()) config.setConfirmExit(false);
+            if (checkBox.isSelected()) configHandler.setConfirmExit(false);
         }
 
         // Config abspeichern
-        config.saveConfig();
+        configHandler.saveConfig();
 
         // Anwendung beenden
         exit();
     }
 
     public static void exitApp(Window window, Runnable exitAction) {
-        if (config.isConfirmExit()) {
+        if (configHandler.isConfirmExit()) {
             int option = JOptionPane.showConfirmDialog(
                     window,
                     getWord("optionPane.insurance.question"),

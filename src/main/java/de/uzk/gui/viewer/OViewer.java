@@ -6,7 +6,7 @@ import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.Icons;
-import de.uzk.image.ImageLayer;
+import de.uzk.image.Axis;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
@@ -18,10 +18,11 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import static de.uzk.Main.imageHandler;
+import static de.uzk.Main.imageFileHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 import static de.uzk.gui.GuiUtils.SLIDER_DRAGGED;
 
+// TODO: Überarbeite Klasse (ActionHandler Integration!!!, Pfeiltasten funktionieren nicht für die Bewegung des Bildes)
 public class OViewer extends AreaContainerInteractive<JPanel> {
     private final ActionHandler actionHandler;
     private JScrollBar timeBar;
@@ -29,7 +30,6 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
     private JLabel pinTimeLabel;
     private JButton clearImagesButton;
 
-    // TODO: Überarbeite ActionHandler Integration, Pfeiltasten funktionieren nicht für die Bewegung des Bildes
     public OViewer(Gui gui, ActionHandler actionHandler) {
         super(new JPanel(), gui);
         this.actionHandler = actionHandler;
@@ -69,12 +69,12 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
 
         // timeBar
         timeBar = new JScrollBar(Adjustable.HORIZONTAL);
-        initScrollBar(timeBar, ImageLayer.TIME, 10);
+        initScrollBar(timeBar, Axis.TIME, 10);
         imagePanel.add(timeBar, BorderLayout.NORTH);
 
         // levelBar
         levelBar = new JScrollBar(Adjustable.VERTICAL);
-        initScrollBar(levelBar, ImageLayer.LEVEL, 5);
+        initScrollBar(levelBar, Axis.LEVEL, 5);
         imagePanel.add(levelBar, BorderLayout.EAST);
 
         // imageDisplay
@@ -110,7 +110,7 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
     }
 
     private void clearImages() {
-        int option = JOptionPane.showConfirmDialog(gui.getFrame(),
+        int option = JOptionPane.showConfirmDialog(gui.getContainer(),
                 getWord("optionPane.directory.clear"),
                 getWord("optionPane.title.confirm"),
                 JOptionPane.YES_NO_OPTION,
@@ -121,8 +121,8 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
         else this.container.requestFocusInWindow();
     }
 
-    private void initScrollBar(JScrollBar scrollBar, ImageLayer layer, int blockIncrement) {
-        if (layer == null) return;
+    private void initScrollBar(JScrollBar scrollBar, Axis axis, int blockIncrement) {
+        if (axis == null) return;
         scrollBar.addAdjustmentListener(e -> {
             if (GuiUtils.isEnabled(scrollBar)) {
                 int value = scrollBar.getValue();
@@ -130,7 +130,7 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
                 boolean isAdjusting = scrollBar.getValueIsAdjusting();
 
                 // can be invoked by dragging the scrollbar or pressing the buttons
-                update(scrollBar, layer, value, isDragging, isAdjusting);
+                update(scrollBar, axis, value, isDragging, isAdjusting);
             }
         });
         scrollBar.addMouseListener(new MouseAdapter() {
@@ -147,18 +147,18 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
         scrollBar.setBlockIncrement(blockIncrement);
     }
 
-    private void update(JScrollBar scrollBar, ImageLayer layer, int newValue, boolean isDragged, boolean isAdjusting) {
-        if (imageHandler.isEmpty()) return;
+    private void update(JScrollBar scrollBar, Axis axis, int newValue, boolean isDragged, boolean isAdjusting) {
+        if (imageFileHandler.isEmpty()) return;
 
-        int oldValue = layer == ImageLayer.TIME ? imageHandler.getTime() : imageHandler.getLevel();
+        int oldValue = axis == Axis.TIME ? imageFileHandler.getTime() : imageFileHandler.getLevel();
         if (oldValue == newValue) return;
 
         boolean mouseReleased = isDragged && !isAdjusting;
         if (mouseReleased) updateScrollBar(scrollBar, oldValue);
         else {
-            if (layer == ImageLayer.TIME) imageHandler.setTime(newValue, !isDragged);
-            else imageHandler.setLevel(newValue, !isDragged);
-            gui.update(layer);
+            if (axis == Axis.TIME) imageFileHandler.setTime(newValue);
+            else imageFileHandler.setLevel(newValue);
+            gui.update(axis);
         }
     }
 
@@ -171,24 +171,25 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
 
     @Override
     public void toggleOn() {
-        updateScrollBars(imageHandler.getTime(), imageHandler.getMaxTime(), imageHandler.getLevel(), imageHandler.getMaxLevel());
+        updateScrollBars(imageFileHandler.getTime(), imageFileHandler.getMaxTime(), imageFileHandler.getLevel(), imageFileHandler.getMaxLevel());
         enableViewer(true);
+        updatePinTime();
     }
 
     @Override
     public void toggleOff() {
         updateScrollBars(0, 0, 0, 0);
         enableViewer(false);
+        updatePinTime();
     }
 
     @Override
-    public void update(ImageLayer layer) {
+    public void update(Axis axis) {
         // updates the scrollBar if not moving anymore
-        if (layer == ImageLayer.TIME) {
-            if (!timeBar.getValueIsAdjusting()) updateScrollBar(timeBar, imageHandler.getTime());
-            gui.handleAction(ActionType.ACTION_UPDATE_PIN_TIME);
+        if (axis == Axis.TIME) {
+            if (!timeBar.getValueIsAdjusting()) updateScrollBar(timeBar, imageFileHandler.getTime());
         } else {
-            if (!levelBar.getValueIsAdjusting()) updateScrollBar(levelBar, imageHandler.getLevel());
+            if (!levelBar.getValueIsAdjusting()) updateScrollBar(levelBar, imageFileHandler.getLevel());
         }
     }
 
@@ -213,16 +214,16 @@ public class OViewer extends AreaContainerInteractive<JPanel> {
     }
 
     private void updatePinTime() {
-        if (imageHandler.hasPinTime()) {
-            double multiplier = imageHandler.getTimeUnit();
-            int duration = imageHandler.getPinTime() - imageHandler.getTime();
+        if (imageFileHandler.hasPinTime()) {
+            double multiplier = imageFileHandler.getShiftTimeUnit();
+            int duration = imageFileHandler.getPinTime() - imageFileHandler.getTime();
 
             String factorString;
             if (duration == 0) factorString = "";
             else factorString = duration > 0 ? "+" : "-";
 
             this.pinTimeLabel.setText(getWord("items.edit.pinTime") + ": " +
-                    StringUtils.formatTime(imageHandler.getPinTime(), multiplier) +
+                    StringUtils.formatTime(imageFileHandler.getPinTime(), multiplier) +
                     " (" + factorString + StringUtils.formatTime(Math.abs(duration), multiplier) + ")");
         } else {
             this.pinTimeLabel.setText(null);

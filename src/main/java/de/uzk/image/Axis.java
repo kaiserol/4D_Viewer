@@ -1,5 +1,5 @@
 package de.uzk.image;
 
-public enum ImageLayer {
+public enum Axis {
     TIME, LEVEL
 }

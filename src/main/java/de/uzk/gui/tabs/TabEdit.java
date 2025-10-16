@@ -8,12 +8,12 @@ import de.uzk.utils.NumberUtils;
 import javax.swing.*;
 import java.awt.*;
 
-import static de.uzk.Main.config;
-import static de.uzk.Main.imageHandler;
+import static de.uzk.Main.configHandler;
+import static de.uzk.Main.imageFileHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 
+// TODO: Überarbeite Klasse
 public class TabEdit extends AreaContainerInteractive<JPanel> {
-
     private final ActionHandler actionHandler;
     private JSpinner degreeSpinner;
     private JLabel screenshots;
@@ -88,21 +88,21 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     }
 
     private void initCheckBox(JCheckBox checkBox, boolean isMirrorXBox) {
-        boolean startValue = isMirrorXBox ? imageHandler.getImageDetails().isMirrorX() : imageHandler.getImageDetails().isMirrorY();
+        boolean startValue = isMirrorXBox ? imageFileHandler.isImageMirrorX() : imageFileHandler.isImageMirrorY();
         checkBox.setSelected(startValue);
         checkBox.addItemListener(e -> {
             if (GuiUtils.isEnabled(checkBox)) {
-                if (isMirrorXBox) imageHandler.getImageDetails().setMirrorX(checkBox.isSelected());
-                else imageHandler.getImageDetails().setMirrorY(checkBox.isSelected());
+                if (isMirrorXBox) imageFileHandler.setImageMirrorX(checkBox.isSelected());
+                else imageFileHandler.setImageMirrorY(checkBox.isSelected());
                 gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
             }
         });
     }
 
-    public JSpinner getDegreeSpinner(CyclingSpinnerNumberModel spinnerModel) {
+    public JSpinner getDegreeSpinner(SpinnerNumberModel spinnerModel) {
         JSpinner spinner = new JSpinner(spinnerModel);
 
-        Number rotation = imageHandler.getImageDetails().getRotation();
+        Number rotation = imageFileHandler.getImageRotation();
         if (GuiUtils.valueFitsInRange(rotation, spinnerModel)) spinner.setValue(rotation);
         else setRotationInImageHandler(spinner);
 
@@ -117,15 +117,15 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
     private void setRotationInImageHandler(JSpinner spinner) {
         Number value = (Number) spinner.getValue();
-        imageHandler.getImageDetails().setRotation(value.intValue());
+        imageFileHandler.setImageRotation(value.intValue());
     }
 
     @Override
     public void handleAction(ActionType actionType) {
         if (actionType == ActionType.SHORTCUT_TURN_IMAGE_90_LEFT) {
-            degreeSpinner.setValue(NumberUtils.turn90Left(imageHandler.getImageDetails().getRotation()));
+            degreeSpinner.setValue(NumberUtils.turn90Left(imageFileHandler.getImageRotation()));
         } else if (actionType == ActionType.SHORTCUT_TURN_IMAGE_90_RIGHT) {
-            degreeSpinner.setValue(NumberUtils.turn90Right(imageHandler.getImageDetails().getRotation()));
+            degreeSpinner.setValue(NumberUtils.turn90Right(imageFileHandler.getImageRotation()));
         } else if (actionType == ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER) {
             updateScreenshotCounter();
         }
@@ -147,6 +147,6 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     }
 
     private void updateScreenshotCounter() {
-        this.screenshots.setText(String.valueOf(config.getScreenshotCount()));
+        this.screenshots.setText(String.valueOf(configHandler.getScreenshotCount()));
     }
 }
