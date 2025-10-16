@@ -53,7 +53,8 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
             if (selectedFile == null) return;
 
             // Lade Image-Files
-            gui.loadImageFiles(selectedFile.getAbsolutePath(), false);
+            ImageFileNameExtension extension = getSelectedExtension((FileNameExtensionFilter) fileChooser.getFileFilter());
+            gui.loadImageFiles(selectedFile.getAbsolutePath(), extension, false);
         }
     }
 
@@ -93,17 +94,25 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         // Dialogtitel dynamisch setzen, wenn der Filter geändert wird
         fileChooser.addPropertyChangeListener(evt -> {
             if (evt.getNewValue() instanceof FileNameExtensionFilter filter) {
-                for (ImageFileNameExtension ext : ImageFileNameExtension.values()) {
-                    if (ext.getFullDescription().equals(filter.getDescription())) {
-                        String newTitle = String.format("%s (%s)",
-                                getWord("button.chooseDirectory"),
-                                ext.getDescription());
-                        fileChooser.setDialogTitle(newTitle);
-                        break;
-                    }
-                }
+                ImageFileNameExtension extension = getSelectedExtension(filter);
+                if (extension == null) return;
+                String newTitle = String.format("%s (%s)",
+                        getWord("button.chooseDirectory"),
+                        extension.getDescription());
+                fileChooser.setDialogTitle(newTitle);
             }
         });
+    }
+
+    private ImageFileNameExtension getSelectedExtension(FileNameExtensionFilter filter) {
+        if (filter == null) return null;
+
+        for (ImageFileNameExtension ext : ImageFileNameExtension.values()) {
+            if (ext.getFullDescription().equals(filter.getDescription())) {
+                return ext;
+            }
+        }
+        return null;
     }
 
     @Override

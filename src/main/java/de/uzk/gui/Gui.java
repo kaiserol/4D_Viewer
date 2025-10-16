@@ -7,6 +7,8 @@ import de.uzk.gui.dialogs.DialogImageLoad;
 import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.gui.viewer.OViewer;
 import de.uzk.image.Axis;
+import de.uzk.image.ImageFileNameExtension;
+import de.uzk.image.LoadingResult;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -16,6 +18,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -28,40 +31,17 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     private final List<AppFocusListener> appFocusListeners;
     private boolean windowInitialized;
 
-    public Gui() {
+    public Gui(String imageFilesDirectory) {
         super(new JFrame(), null);
         this.handleActionListeners = new ArrayList<>();
         this.toggleListeners = new ArrayList<>();
         this.updateImageListeners = new ArrayList<>();
         this.updateThemeListeners = new ArrayList<>();
         this.appFocusListeners = new ArrayList<>();
-        build();
+        build(imageFilesDirectory);
     }
 
-    public void rebuild() {
-        logger.info("Rebuilding UI ...");
-        this.container.getContentPane().removeAll();
-
-        // Verhindert, dass alte UI-Objekte weiter existieren (alte Ereignis-Listener müssen bereinigt werden)
-        this.handleActionListeners.clear();
-        this.toggleListeners.clear();
-        this.updateImageListeners.clear();
-        this.updateThemeListeners.clear();
-        this.appFocusListeners.clear();
-
-        // Inhalt initialisieren
-        initContent();
-        updateTheme();
-
-        // Prüfe, ob Bilder geladen sind
-        if (imageFileHandler.hasImageFilesDirectory()) toggleOn();
-        else toggleOff();
-
-        // Fenster packen
-        this.container.pack();
-    }
-
-    private void build() {
+    private void build(String imageFilesDirectory) {
         logger.info("Building UI ...");
         GuiUtils.initFlatLaf();
 
@@ -91,14 +71,37 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         updateTheme();
 
         // Lade Image-Files
-        String tempImageFilesDirectory = configHandler.getTempImageFilesDirectory();
-        if (tempImageFilesDirectory != null) loadImageFiles(tempImageFilesDirectory, true);
-        else toggleOff();
+        if (!loadImageFiles(imageFilesDirectory, imageFileHandler.getImageFileNameExtension(), true)) {
+            toggleOff();
+        }
 
         // Fenster sichtbar machen
         this.container.pack();
         this.container.setLocationRelativeTo(null);
         this.container.setVisible(true);
+    }
+
+    public void rebuild() {
+        logger.info("Rebuilding UI ...");
+        this.container.getContentPane().removeAll();
+
+        // Verhindert, dass alte UI-Objekte weiter existieren (alte Ereignis-Listener müssen bereinigt werden)
+        this.handleActionListeners.clear();
+        this.toggleListeners.clear();
+        this.updateImageListeners.clear();
+        this.updateThemeListeners.clear();
+        this.appFocusListeners.clear();
+
+        // Inhalt initialisieren
+        initContent();
+        updateTheme();
+
+        // Prüfe, ob Bilder geladen sind
+        if (imageFileHandler.hasImageFilesDirectory()) toggleOn();
+        else toggleOff();
+
+        // Fenster packen
+        this.container.pack();
     }
 
     private void initContent() {
@@ -134,41 +137,45 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.add(mainPanel);
     }
 
-    public void loadImageFiles(String directoryPath, boolean isGuiBeingBuilt) {
+    public boolean loadImageFiles(String directoryPath, ImageFileNameExtension extension, boolean isGuiBeingBuilt) {
+        // Prüfe, ob das Verzeichnis bereits geladen worden ist
         File file = new File(directoryPath);
-        if (!file.exists()) {
-            if (isGuiBeingBuilt) return;
-            String message = getWord("optionPane.directory.theDirectory") + ": '" + directoryPath + "' " +
-                    getWord("optionPane.directory.doesNotExisting") + ".";
-            JOptionPane.showMessageDialog(
-                    this.container,
-                    message,
-                    getWord("optionPane.title.error"),
-                    JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        // Nur laden, wenn Verzeichnis nicht bereits geladen ist
         File directory = file.isDirectory() ? file : file.getParentFile();
-        File imageFilesDirectory = imageFileHandler.getImageFilesDirectory();
-        if (directory.equals(imageFilesDirectory)) return;
+        boolean sameDirectory = Objects.equals(imageFileHandler.getImageFilesDirectory(), directory);
+        boolean sameExtension = imageFileHandler.getImageFileNameExtension() == extension;
+        if (sameDirectory && sameExtension) return false;
 
-        // Prüfe, ob das Verzeichnis passende Bilder-Dateien hat
-        boolean opened = new DialogImageLoad().openImageFilesDirectory(this.container, directoryPath);
-        if (opened) {
-            toggleOn();
-        } else {
-            if (isGuiBeingBuilt) return;
-            String message = getWord("optionPane.directory.theDirectory") + ": '" + directoryPath + "' " +
-                    getWord("optionPane.directory.hasNo") + " " + imageFileHandler.getImageFileNameExtension().getDescription() + ".";
-            JOptionPane.showMessageDialog(
-                    this.container,
-                    message,
-                    getWord("optionPane.title.error"),
-                    JOptionPane.ERROR_MESSAGE
-            );
+        // Prüfe, ob das Verzeichnis passende Bilder hat
+        LoadingResult result = new DialogImageLoad(this.container).loadImages(directoryPath, extension);
+        switch (result) {
+            case LOADED -> {
+                toggleOn();
+                return true;
+            }
+            case DIRECTORY_NOT_FOUND -> {
+                if (isGuiBeingBuilt) return false;
+                String message = getWord("optionPane.directory.theDirectory") + ": '" + directoryPath + "' " +
+                        getWord("optionPane.directory.doesNotExisting") + ".";
+                JOptionPane.showMessageDialog(
+                        this.container,
+                        message,
+                        getWord("optionPane.title.error"),
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+            case DIRECTORY_HAS_NO_IMAGES -> {
+                if (isGuiBeingBuilt) return false;
+                String message = getWord("optionPane.directory.theDirectory") + ": '" + directoryPath + "' " +
+                        getWord("optionPane.directory.hasNo") + " " + extension.getDescription() + ".";
+                JOptionPane.showMessageDialog(
+                        this.container,
+                        message,
+                        getWord("optionPane.title.error"),
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
         }
+        return false;
     }
 
     public void addHandleActionListener(HandleActionListener handleActionListener) {
@@ -213,8 +220,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     @Override
     public void toggleOff() {
-        imageFileHandler.removeImageFilesDirectory();
-        imageFileHandler.clear();
+        imageFileHandler.reset();
 
         for (ToggleListener listener : toggleListeners) {
             listener.toggleOff();
@@ -270,33 +276,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             if (checkBox.isSelected()) configHandler.setConfirmExit(false);
         }
 
-        // Config abspeichern
+        // Config abspeichern &  Anwendung beenden
         configHandler.saveConfig();
-
-        // Anwendung beenden
-        exit();
-    }
-
-    public static void exitApp(Window window, Runnable exitAction) {
-        if (configHandler.isConfirmExit()) {
-            int option = JOptionPane.showConfirmDialog(
-                    window,
-                    getWord("optionPane.insurance.question"),
-                    getWord("optionPane.insurance.title"),
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE
-            );
-
-            // Wenn der Benutzer "Nein" klickt → Abbrechen
-            if (option != JOptionPane.YES_OPTION) return;
-        }
-
-        // Anwendung beenden
-        if (exitAction != null) exitAction.run();
-        exit();
-    }
-
-    private static void exit() {
         System.exit(0);
     }
 }

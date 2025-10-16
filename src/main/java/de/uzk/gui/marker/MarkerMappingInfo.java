@@ -62,14 +62,14 @@ public class MarkerMappingInfo extends AreaContainerInteractive<JPanel> {
 
         c.gridy = 1;
         c.gridwidth = 1;
-        this.container.add(new JLabel(getWord("items.markers.visibleFromImage")), c);
+        this.container.add(new JLabel(getWord("items.markers.visibleFromImage") + ":"), c);
 
         c.gridx = 1;
         JSpinner minimum = new JSpinner(fromModel);
         this.container.add(minimum, c);
 
         c.setPos(0, 2);
-        this.container.add(new JLabel(getWord("items.markers.visibleToImage")), c);
+        this.container.add(new JLabel(getWord("items.markers.visibleToImage") + ":"), c);
 
         c.gridx = 1;
         JSpinner maximum = new JSpinner(toModel);

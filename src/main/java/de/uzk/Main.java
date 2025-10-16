@@ -25,10 +25,10 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        configHandler.loadConfig();
+        String imageFilesDirectory = configHandler.loadConfig();
 
         SwingUtilities.invokeLater(() -> {
-            Gui gui = new Gui();
+            Gui gui = new Gui(imageFilesDirectory);
 
             // Behandle den Shortcut: Cmd+Q (unter macOS)
             if (Desktop.isDesktopSupported()) {

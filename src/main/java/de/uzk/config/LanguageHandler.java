@@ -19,7 +19,7 @@ public final class LanguageHandler {
     public static String getWord(String word) {
         try {
             if (resources == null) {
-                logger.error("LanguageHandler was not initialized before using the @getWord method. Searched for word: " + word);
+                logger.error("LanguageHandler is not initialized. Searched for word: " + word);
             } else return resources.getString(word);
         } catch (Exception e) {
             logger.error("Could not find word '" + word + "' in language file.");

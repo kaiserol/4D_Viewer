@@ -3,10 +3,7 @@ package de.uzk.image;
 import de.uzk.utils.StringUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import static de.uzk.Main.logger;
 import static de.uzk.gui.GuiUtils.COLOR_RED;
@@ -40,23 +37,43 @@ public class ImageFileHandler {
         return this.imageFilesDirectory;
     }
 
-    public void setImageFilesDirectory(String directoryPath, LoadingImageListener progress) {
+    public LoadingResult setImageFilesDirectory(String directoryPath, ImageFileNameExtension extension, LoadingImageListener progress) {
         if (directoryPath != null && !directoryPath.isBlank()) {
-            File file = new File(directoryPath);
-            if (file.isDirectory()) {
+            File newFile = new File(directoryPath);
+            File directory = newFile.isDirectory() ? newFile : newFile.getParentFile();
+
+            // Prüfe, ob das Verzeichnis bereits geladen worden ist
+            boolean sameDirectory = Objects.equals(this.imageFilesDirectory, directory);
+            boolean sameExtension = this.imageFileNameExtension == extension;
+            if (sameDirectory && sameExtension ) return LoadingResult.ALREADY_LOADED;
+
+            if (directory.isDirectory()) {
                 File oldDirectory = this.imageFilesDirectory;
-                this.imageFilesDirectory = file;
+                ImageFileNameExtension oldExtension = this.imageFileNameExtension;
+
+                // Verzeichnis & Datei-Typ aktualisieren
+                this.imageFilesDirectory = directory;
+                this.imageFileNameExtension = extension;
 
                 // Setze das Verzeichnis zurück, wenn das übergebene Verzeichnis keine Image-Files hat
-                if (!loadImageFiles(progress)) {
+                try {
+                    if (loadImageFiles(progress)) return LoadingResult.LOADED;
+
+                    // Zurücksetzen der Variablen
                     this.imageFilesDirectory = oldDirectory;
+                    this.imageFileNameExtension = oldExtension;
+                    return LoadingResult.DIRECTORY_HAS_NO_IMAGES;
+                } catch (InterruptedException e) {
+                    logger.warning("Loading images was interrupted.");
+
+                    // Zurücksetzen der Variablen
+                    this.imageFilesDirectory = oldDirectory;
+                    this.imageFileNameExtension = oldExtension;
+                    return LoadingResult.INTERRUPTED;
                 }
             }
         }
-    }
-
-    public void removeImageFilesDirectory() {
-        this.imageFilesDirectory = null;
+        return LoadingResult.DIRECTORY_NOT_FOUND;
     }
 
     public String getImageFilesDirectoryPath() {
@@ -153,7 +170,7 @@ public class ImageFileHandler {
     }
 
     public int getTime() {
-        return isEmpty() ? -1 : this.imageFile.getTime();
+        return isEmpty() ? 0 : this.imageFile.getTime();
     }
 
     public void setTime(int time) {
@@ -164,7 +181,7 @@ public class ImageFileHandler {
     }
 
     public int getLevel() {
-        return isEmpty() ? -1 : this.imageFile.getLevel();
+        return isEmpty() ? 0 : this.imageFile.getLevel();
     }
 
     public void setLevel(int level) {
@@ -249,7 +266,7 @@ public class ImageFileHandler {
         }
     }
 
-    public void clear() {
+    public void reset() {
         this.matrix = null;
         this.imageFile = null;
         this.missingImagesCount = 0;
@@ -258,44 +275,44 @@ public class ImageFileHandler {
         this.pinTime = -1;
     }
 
-    private boolean loadImageFiles(LoadingImageListener progress) {
+    private boolean loadImageFiles(LoadingImageListener progress) throws InterruptedException {
         progress.onLoadingStart();
-        File[] files = imageFilesDirectory == null ? new File[0] : imageFilesDirectory.listFiles();
 
-        int count = files == null ? 0 : files.length;
-        progress.onScanningStart(count);
+        // Dateien Liste erzeugen
+        File[] filesArray = imageFilesDirectory == null ? new File[0] : imageFilesDirectory.listFiles();
+        List<File> files = new ArrayList<>(List.of(filesArray == null ? new File[0] : filesArray));
+        files.sort((f1, f2) -> f1.getName().compareToIgnoreCase(f2.getName()));
+
+        progress.onScanningStart(files.size(), 0, 0);
 
         int tempMaxTime = 0;
         int tempMaxLevel = 0;
         Set<ImageFile> imageFiles = new TreeSet<>(ImageFile::compareTo);
 
         // Dateien im Verzeichnis durchlaufen
-        for (int scan = 0; scan < count; scan++) {
-            if (Thread.currentThread().isInterrupted()) {
-                logger.info("Loading process was interrupted.");
-                return false;
-            }
+        for (int number = 1; number <= files.size(); number++) {
+            if (Thread.currentThread().isInterrupted()) throw new InterruptedException();
 
-            File file = files[scan];
+            File currentFile = files.get(number - 1);
             String fileNamePattern = getFileNamePattern();
 
             // Prüfen, ob reguläre Datei und Name auf Muster passt
-            if (file.isFile() && file.getName().matches(fileNamePattern)) {
-                int time = Integer.parseInt(getTimeStr(file.getName()));
-                int level = Integer.parseInt(getLevelStr(file.getName()));
+            if (currentFile.isFile() && currentFile.getName().matches(fileNamePattern)) {
+                int time = Integer.parseInt(getTimeStr(currentFile.getName()));
+                int level = Integer.parseInt(getLevelStr(currentFile.getName()));
 
                 // Maximalwerte bestimmen (Matrixgröße)
                 tempMaxTime = Math.max(tempMaxTime, time);
                 tempMaxLevel = Math.max(tempMaxLevel, level);
 
-                imageFiles.add(new ImageFile(file, time, level));
+                imageFiles.add(new ImageFile(currentFile, time, level));
             }
 
             // Fortschritt aktualisieren
-            progress.onScanningUpdate(file, scan + 1, imageFiles.size(), files.length);
+            progress.onScanningUpdate(files.size(), number, currentFile, imageFiles.size());
         }
 
-        progress.onScanningComplete();
+        progress.onScanningComplete(files.size(), files.size(), imageFiles.size());
 
         // Wenn keine Bilder gefunden wurden → Abbruch
         if (imageFiles.isEmpty()) {
@@ -304,7 +321,7 @@ public class ImageFileHandler {
         }
 
         // Matrix vorbereiten
-        clear();
+        reset();
         this.maxTime = tempMaxTime;
         this.maxLevel = tempMaxLevel;
 
@@ -346,7 +363,6 @@ public class ImageFileHandler {
         int lSize = this.maxLevel + 1;
         this.matrix = new ImageFile[tSize][lSize];
 
-        // StringBuilder für kompakte Gesamtausgabe
         StringBuilder duplicatedImagesReport = new StringBuilder();
         int imagesCount = 0;
         int duplicatedImagesCount = 0;
@@ -380,7 +396,6 @@ public class ImageFileHandler {
     }
 
     public void checkMissingFiles() {
-        // StringBuilder für kompakte Gesamtausgabe
         StringBuilder missingImagesReport = new StringBuilder();
         int missingImagesCount = 0;
 
@@ -447,7 +462,7 @@ public class ImageFileHandler {
 
             for (int level = 0; level <= this.maxLevel; level++) {
                 ImageFile imageFile = getImageFile(time, level);
-                if (!imageFile.exists()) {
+                if (imageFile == null || !imageFile.exists()) {
                     missingLevels.add(level);
                     totalMissing++;
                 }
@@ -460,7 +475,9 @@ public class ImageFileHandler {
 
                 sb.append("Expected images:").append(StringUtils.NEXT_LINE);
                 for (int level : missingLevels) {
-                    sb.append(" - '").append(getImageFile(time, level).getName()).append("' (time=")
+                    ImageFile imageFile = getImageFile(time, level);
+                    String name = imageFile == null ? "???" : imageFile.getName();
+                    sb.append(" - '").append(name).append("' (time=")
                             .append(time).append(", level=").append(level).append(")").append(StringUtils.NEXT_LINE);
                 }
                 sb.append(StringUtils.NEXT_LINE);
@@ -468,7 +485,7 @@ public class ImageFileHandler {
         }
 
         if (totalMissing == 0) {
-            sb.append("No missing Images.").append(StringUtils.NEXT_LINE);
+            sb.append("No missing images.").append(StringUtils.NEXT_LINE);
         } else {
             String tempText = (totalMissing > 1 ? "images are" : "image is");
             String headerText = StringUtils.wrapBold(StringUtils.wrapColor(totalMissing + " " + tempText + " missing:", COLOR_RED));

@@ -42,14 +42,14 @@ public class OStats extends AreaContainerInteractive<JPanel> {
         gbc.insets = new Insets(0, 0, 0, 5);
 
         // timeLabel
-        JLabel timeLabel = new JLabel(getWord("viewer.labels.image"));
+        JLabel timeLabel = new JLabel(getWord("viewer.labels.image") + ":");
         this.container.add(timeLabel, gbc);
 
         // gbc
         gbc.gridy++;
 
         // timeLabel
-        JLabel levelLabel = new JLabel(getWord("viewer.labels.level"));
+        JLabel levelLabel = new JLabel(getWord("viewer.labels.level") + ":");
         this.container.add(levelLabel, gbc);
 
         // gbc

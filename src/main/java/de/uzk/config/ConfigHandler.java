@@ -50,7 +50,6 @@ public class ConfigHandler {
     // Eigenschaften
     private final SimpleDateFormat dateFormat;
     private final String dateFormatPattern;
-    private String tempImageFilesDirectory;
 
     public ConfigHandler() {
         this.dateFormat = new SimpleDateFormat("yyyy-dd-MM");
@@ -108,20 +107,17 @@ public class ConfigHandler {
         this.confirmExit = confirmExit;
     }
 
-    public String getTempImageFilesDirectory() {
-        return tempImageFilesDirectory;
-    }
-
-    public void loadConfig() {
+    public String loadConfig() {
         logger.info("Reading config ...");
         Properties properties = new Properties();
 
         try (FileInputStream fileInputStream = new FileInputStream(CONFIG_FILE)) {
             properties.load(fileInputStream);
-            readProperties(properties);
+            return readProperties(properties);
         } catch (IOException ignored) {
             readDefaultProperties();
         }
+        return null;
     }
 
     public void saveConfig() {
@@ -168,7 +164,6 @@ public class ConfigHandler {
         this.setConfirmExit(DEFAULT_CONFIRM_EXIT);
 
         // Bild Eigenschaften
-        this.tempImageFilesDirectory = null;
         imageFileHandler.setImageFileNameExtension(DEFAULT_IMAGE_FILE_NAME_EXTENSION.name());
         imageFileHandler.setImageFileNameTimeSep(DEFAULT_IMAGE_FILE_NAME_TIME_SEP);
         imageFileHandler.setImageFileNameLevelSep(DEFAULT_IMAGE_FILE_NAME_LEVEL_SEP);
@@ -181,7 +176,7 @@ public class ConfigHandler {
         imageFileHandler.setShiftLevelUnit(DEFAULT_SHIFT_LEVEL_UNIT);
     }
 
-    private void readProperties(Properties properties) {
+    private String readProperties(Properties properties) {
         // Einstellungen Eigenschaften: Sprache muss sofort initialisiert werden
         this.setLanguage(Language.fromName(loadString(properties, "Settings.Language", DEFAULT_LANGUAGE.getName())));
         this.setTheme(loadString(properties, "Settings.Theme", DEFAULT_THEME.name()));
@@ -189,7 +184,6 @@ public class ConfigHandler {
         this.setConfirmExit(loadBoolean(properties, "Settings.ConfirmExit", DEFAULT_CONFIRM_EXIT));
 
         // Bild Eigenschaften
-        this.tempImageFilesDirectory = loadString(properties, "ImageFilesDirectory", null);
         imageFileHandler.setImageFileNameExtension(loadString(properties, "ImageFileNameExtension", DEFAULT_IMAGE_FILE_NAME_EXTENSION.name()));
         imageFileHandler.setImageFileNameTimeSep(loadString(properties, "ImageFileNameTimeSep", DEFAULT_IMAGE_FILE_NAME_TIME_SEP));
         imageFileHandler.setImageFileNameLevelSep(loadString(properties, "ImageFileNameLevelSep", DEFAULT_IMAGE_FILE_NAME_LEVEL_SEP));
@@ -200,6 +194,9 @@ public class ConfigHandler {
         // Bild Bewegungen Eigenschaften
         imageFileHandler.setShiftTimeUnit(loadDouble(properties, "ShiftTimeUnit", DEFAULT_SHIFT_TIME_UNIT));
         imageFileHandler.setShiftLevelUnit(loadDouble(properties, "ShiftLevelUnit", DEFAULT_SHIFT_LEVEL_UNIT));
+
+        // Bilderverzeichnis zurückgeben
+        return loadString(properties, "ImageFilesDirectory", null);
     }
 
     private void saveProperties(Properties properties) {

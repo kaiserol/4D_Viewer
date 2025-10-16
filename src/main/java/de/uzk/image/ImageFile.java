@@ -9,7 +9,7 @@ public class ImageFile implements Comparable<ImageFile> {
     private final int time;
     private final int level;
 
-    ImageFile(File file, int time, int level) {
+    public ImageFile(File file, int time, int level) {
         if (file == null) throw new NullPointerException("File is null.");
         this.file = file;
         this.name = file.getName();

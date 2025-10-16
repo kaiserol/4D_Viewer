@@ -50,7 +50,6 @@ public class DialogDisclaimer {
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(0, 0, 0, 0);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1;
         int row = 0;
