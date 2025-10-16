@@ -31,6 +31,7 @@ public class ImageFileHandler {
     private int pinTime;
 
     public ImageFileHandler() {
+        clear(true);
     }
 
     public File getImageFilesDirectory() {
@@ -40,12 +41,12 @@ public class ImageFileHandler {
     public LoadingResult setImageFilesDirectory(String directoryPath, ImageFileNameExtension extension, LoadingImageListener progress) {
         if (directoryPath != null && !directoryPath.isBlank()) {
             File newFile = new File(directoryPath);
-            File directory = newFile.isDirectory() ? newFile : newFile.getParentFile();
+            File directory = newFile.isFile() ? newFile.getParentFile() : newFile;
 
             // Prüfe, ob das Verzeichnis bereits geladen worden ist
             boolean sameDirectory = Objects.equals(this.imageFilesDirectory, directory);
             boolean sameExtension = this.imageFileNameExtension == extension;
-            if (sameDirectory && sameExtension ) return LoadingResult.ALREADY_LOADED;
+            if (sameDirectory && sameExtension) return LoadingResult.ALREADY_LOADED;
 
             if (directory.isDirectory()) {
                 File oldDirectory = this.imageFilesDirectory;
@@ -64,7 +65,7 @@ public class ImageFileHandler {
                     this.imageFileNameExtension = oldExtension;
                     return LoadingResult.DIRECTORY_HAS_NO_IMAGES;
                 } catch (InterruptedException e) {
-                    logger.warning("Loading images was interrupted.");
+                    logger.warning("Loading Images was interrupted.");
 
                     // Zurücksetzen der Variablen
                     this.imageFilesDirectory = oldDirectory;
@@ -73,7 +74,7 @@ public class ImageFileHandler {
                 }
             }
         }
-        return LoadingResult.DIRECTORY_NOT_FOUND;
+        return LoadingResult.DIRECTORY_NOT_EXISTING;
     }
 
     public String getImageFilesDirectoryPath() {
@@ -193,13 +194,13 @@ public class ImageFileHandler {
 
     private boolean checkTime(int time) {
         if (time >= 0 && time <= this.maxTime) return true;
-        logger.error("Invalid time: " + time);
+        logger.error("Invalid Time: " + time);
         return false;
     }
 
     private boolean checkLevel(int level) {
         if (level >= 0 && level <= this.maxLevel) return true;
-        logger.error("Invalid level: " + level);
+        logger.error("Invalid Level: " + level);
         return false;
     }
 
@@ -266,7 +267,8 @@ public class ImageFileHandler {
         }
     }
 
-    public void reset() {
+    public void clear(boolean removeImageFilesDirectory) {
+        if (removeImageFilesDirectory) this.imageFilesDirectory = null;
         this.matrix = null;
         this.imageFile = null;
         this.missingImagesCount = 0;
@@ -321,7 +323,7 @@ public class ImageFileHandler {
         }
 
         // Matrix vorbereiten
-        reset();
+        clear(false);
         this.maxTime = tempMaxTime;
         this.maxLevel = tempMaxLevel;
 
@@ -384,7 +386,8 @@ public class ImageFileHandler {
         }
 
         if (duplicatedImagesCount > 0) {
-            String headerText = duplicatedImagesCount + " " + (duplicatedImagesCount > 1 ? "images are" : "image is") + " duplicated:" + StringUtils.NEXT_LINE;
+            String tempText = (duplicatedImagesCount > 1 ? "Images are" : "Image is");
+            String headerText = duplicatedImagesCount + " " + tempText + " duplicated:" + StringUtils.NEXT_LINE;
             logger.warning(headerText + duplicatedImagesReport);
         }
 
@@ -419,13 +422,13 @@ public class ImageFileHandler {
         }
 
         if (missingImagesCount > this.missingImagesCount) {
-            String tempText = (missingImagesCount > 1 ? "images are" : "image is");
+            String tempText = (missingImagesCount > 1 ? "Images are" : "Image is");
             String headerText = missingImagesCount + " " + tempText + " missing:" + StringUtils.NEXT_LINE;
             logger.warning(headerText + missingImagesReport);
         } else if (missingImagesCount < this.missingImagesCount) {
             // Es wurden einige Bilder wieder hergestellt
             int imageFiles = (this.maxTime + 1) * (this.maxLevel + 1) - missingImagesCount;
-            logger.info("Some missing images were restored." + StringUtils.NEXT_LINE + "Loaded images: " + imageFiles);
+            logger.info("Some Missing Images were restored." + StringUtils.NEXT_LINE + "Loaded Images: " + imageFiles);
         }
         this.missingImagesCount = missingImagesCount;
     }

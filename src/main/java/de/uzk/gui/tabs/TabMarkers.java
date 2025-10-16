@@ -3,6 +3,7 @@ package de.uzk.gui.tabs;
 import de.uzk.action.ActionType;
 import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
+import de.uzk.gui.GuiUtils;
 import de.uzk.gui.marker.MarkerEditor;
 import de.uzk.gui.marker.MarkerMappingInfo;
 import de.uzk.image.Axis;
@@ -29,7 +30,6 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
         this.container.setLayout(new BorderLayout());
 
 
-
         if (!currentMarkers.isEmpty()) {
             Box panel = new Box(BoxLayout.Y_AXIS);
             for (MarkerMapping currentMarker : currentMarkers) {
@@ -43,7 +43,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
         } else {
             JLabel noneLabel = new JLabel(getWord("items.markers.noMarkersSet"));
             noneLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            this.container.add( noneLabel, BorderLayout.CENTER);
+            this.container.add(noneLabel, BorderLayout.CENTER);
         }
 
         JButton add = new JButton(getWord("items.markers.addMarker"));
@@ -68,21 +68,26 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
 
     }
 
-
-
-
-
-
     @Override
     public void handleAction(ActionType actionType) {
-        if(actionType == ActionType.ACTION_ADD_MARKER || actionType == ActionType.ACTION_REMOVE_MARKER) {
+        if (actionType == ActionType.ACTION_ADD_MARKER || actionType == ActionType.ACTION_REMOVE_MARKER) {
             this.rerender();
         }
     }
 
     @Override
+    public void toggleOn() {
+        GuiUtils.setEnabled(this.container, true);
+    }
+
+    @Override
+    public void toggleOff() {
+        GuiUtils.setEnabled(this.container, false);
+    }
+
+    @Override
     public void update(Axis axis) {
-        if(axis == Axis.TIME) {
+        if (axis == Axis.TIME) {
             this.rerender();
         }
     }

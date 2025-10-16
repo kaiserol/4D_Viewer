@@ -67,7 +67,7 @@ public final class Icons {
         try {
             return ImageIO.read(file);
         } catch (Exception e) {
-            if (showErrorIfNotFound) logger.error("The image '" + file.getAbsolutePath() + "' could not be loaded.");
+            if (showErrorIfNotFound) logger.error("The Image '" + file.getAbsolutePath() + "' could not be loaded.");
             return null;
         }
     }
@@ -81,7 +81,7 @@ public final class Icons {
             InputStream svgStream = svgUrl.openStream();
             return new FlatSVGIcon(svgStream);
         } catch (IOException e) {
-            logger.error("The SVG image '" + svgNameCleanedFileSeps + "' could not be loaded.");
+            logger.error("The Image '" + svgNameCleanedFileSeps + "' could not be loaded.");
             return null;
         }
     }
@@ -94,7 +94,7 @@ public final class Icons {
             if (imageUrl == null) throw new IOException();
             return ImageIO.read(imageUrl);
         } catch (IOException e) {
-            logger.error("The image '" + imageNameCleanedFileSeps + "' could not be loaded.");
+            logger.error("The Image '" + imageNameCleanedFileSeps + "' could not be loaded.");
             return null;
         }
     }

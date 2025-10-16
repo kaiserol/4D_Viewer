@@ -7,6 +7,7 @@ import de.uzk.image.LoadingResult;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -16,7 +17,9 @@ import static de.uzk.Main.logger;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogImageLoad implements LoadingImageListener {
-    private static final int THREAD_SLEEP_TIME_NS = 1_000; // (1 Millisekunde = 1_000_000 NS)
+    // Für einen schönen Ladeeffekt SLEEP_TIME_NANOS > 0 setzen
+    // (1 Millisekunde = 1_000_000 Nanos)
+    private static final int SLEEP_TIME_NANOS = 1;
     private final JDialog dialog;
     private JTextField textFieldFileName;
     private JTextField textFieldDirectoryName;
@@ -35,10 +38,14 @@ public class DialogImageLoad implements LoadingImageListener {
             @Override
             public void windowClosing(WindowEvent e) {
                 closeThread();
-                dialog.dispose();
             }
         });
         init();
+
+        // ESC schließt Dialog
+        this.dialog.getRootPane().registerKeyboardAction(e -> closeThread(),
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
+        );
     }
 
     private void init() {
@@ -148,6 +155,7 @@ public class DialogImageLoad implements LoadingImageListener {
                 logger.logException(e);
             }
         }
+        dialog.dispose();
     }
 
     // ------------------------- LoadingImageListener Funktionen -------------------------
@@ -160,7 +168,7 @@ public class DialogImageLoad implements LoadingImageListener {
 
     @Override
     public void onLoadingStart() {
-        logger.info("Loading images from '" + imageFileHandler.getImageFilesDirectoryPath() + "' ...");
+        logger.info("Loading Images from '" + imageFileHandler.getImageFilesDirectoryPath() + "' ...");
     }
 
     @Override
@@ -175,7 +183,7 @@ public class DialogImageLoad implements LoadingImageListener {
     @Override
     public void onScanningUpdate(int filesCount, int currentFileNumber, File currentFile, int imagesCount) throws InterruptedException {
         // Thread anhalten
-        Thread.sleep(0, THREAD_SLEEP_TIME_NS);
+        Thread.sleep(0, SLEEP_TIME_NANOS);
 
         SwingUtilities.invokeLater(() -> {
             updateProgress(filesCount, currentFileNumber, imagesCount);
@@ -195,7 +203,6 @@ public class DialogImageLoad implements LoadingImageListener {
 
     @Override
     public void onLoadingComplete(int imageFiles) {
-        if (imageFiles <= 0) logger.info("No images found.");
-        else logger.info("Loaded images: " + imageFiles);
+        logger.info("Loaded Images: " + imageFiles);
     }
 }

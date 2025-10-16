@@ -51,7 +51,7 @@ public class OImager extends AreaContainerInteractive<JPanel> {
                 m.getMarker().draw(g2d, new Rectangle(x, y, width, height), scaleFactor);
             }
         } else {
-            String noImagesText = imageFileHandler.isEmpty() ? getWord("viewer.labels.noImages") : getWord("viewer.labels.couldNotLoadImage");
+            String noImagesText = imageFileHandler.isEmpty() ? "" : getWord("viewer.labels.couldNotLoadImage");
             FontMetrics metrics = g2d.getFontMetrics(g.getFont());
             int textWidth = metrics.stringWidth(noImagesText);
             int textHeight = metrics.getHeight();

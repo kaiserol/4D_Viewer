@@ -32,7 +32,7 @@ public class DialogLanguageSelection {
         if (newLanguage == null || this.oldLanguage == newLanguage) return;
 
         // Sprache setzen
-        logger.info("Changing language from '" + this.oldLanguage + "' to '" + newLanguage + "'");
+        logger.info("Changing Language from '" + this.oldLanguage + "' to '" + newLanguage + "'");
         configHandler.setLanguage(newLanguage);
 
         // UI aktualisieren

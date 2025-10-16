@@ -5,8 +5,9 @@ import java.util.Locale;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public enum Language {
-    ENGLISH(Locale.ENGLISH),
-    GERMAN(Locale.GERMAN);
+    ENGLISH(Locale.UK),
+    FRENCH(Locale.FRENCH),
+    GERMAN(Locale.GERMANY);
 
     private final Locale locale;
     private final String name;
@@ -40,6 +41,7 @@ public enum Language {
     public String toString() {
         return switch (this) {
             case ENGLISH -> getWord("languages.english");
+            case FRENCH -> getWord("languages.french");
             case GERMAN -> getWord("languages.german");
         };
     }

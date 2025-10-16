@@ -12,7 +12,6 @@ import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
     private JTextField txtFieldDirectory;
-    private JFileChooser fileChooser;
 
     public AreaDirectorySelection(Gui gui) {
         super(new JPanel(), gui);
@@ -31,13 +30,12 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         // btnChooseDirectory
         JButton btnChooseDirectory = new JButton(getWord("button.chooseDirectory"));
         btnChooseDirectory.addActionListener(a -> openFileChooser());
-
-        // fileChooser
-        this.fileChooser = getFileChooser();
         this.container.add(btnChooseDirectory, BorderLayout.EAST);
     }
 
     private void openFileChooser() {
+        JFileChooser fileChooser = getFileChooser();
+
         // Startverzeichnis
         if (imageFileHandler.hasImageFilesDirectory()) {
             fileChooser.setSelectedFile(imageFileHandler.getImageFilesDirectory());
@@ -47,7 +45,7 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         }
 
         // Öffne Dialog
-        int option = this.fileChooser.showOpenDialog(gui.getContainer());
+        int option = fileChooser.showOpenDialog(gui.getContainer());
         if (option == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             if (selectedFile == null) return;
@@ -86,19 +84,14 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
     }
 
     private void setFileChooserTitel(JFileChooser fileChooser) {
-        String dialogTitle = String.format("%s (%s)",
-                getWord("button.chooseDirectory"),
-                imageFileHandler.getImageFileNameExtension().getDescription());
+        String dialogTitle = String.format("%s", getWord("button.chooseDirectory"));
         fileChooser.setDialogTitle(dialogTitle);
 
         // Dialogtitel dynamisch setzen, wenn der Filter geändert wird
         fileChooser.addPropertyChangeListener(evt -> {
             if (evt.getNewValue() instanceof FileNameExtensionFilter filter) {
                 ImageFileNameExtension extension = getSelectedExtension(filter);
-                if (extension == null) return;
-                String newTitle = String.format("%s (%s)",
-                        getWord("button.chooseDirectory"),
-                        extension.getDescription());
+                String newTitle = String.format("%s (%s)", getWord("button.chooseDirectory"), extension.getDescription());
                 fileChooser.setDialogTitle(newTitle);
             }
         });

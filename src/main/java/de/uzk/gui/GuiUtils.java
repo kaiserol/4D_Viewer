@@ -140,7 +140,7 @@ public final class GuiUtils {
         UIManager.getDefaults().clear();
         configHandler.toggleTheme();
 
-        logger.info("Changing theme from '" + configHandler.getTheme().opposite() + "' to '" + configHandler.getTheme() + "'");
+        logger.info("Changing Theme from '" + configHandler.getTheme().opposite() + "' to '" + configHandler.getTheme() + "'");
         initFlatLaf();
         FlatLaf.updateUI();
         gui.updateTheme();

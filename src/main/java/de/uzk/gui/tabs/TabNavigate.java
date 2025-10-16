@@ -99,7 +99,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
     public JSpinner getUnitSpinner(SpinnerNumberModel spinnerModel, Axis axis) {
         JSpinner spinner = new JSpinner(spinnerModel);
 
-        JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "0.00");
+        JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "0.0");
         spinner.setEditor(editor);
 
         boolean isTime = axis == Axis.TIME;

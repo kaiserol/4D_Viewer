@@ -20,8 +20,8 @@ public class ConfigHandler {
     // Einstellungen Konstanten
     public static final Language DEFAULT_LANGUAGE = Language.getSystemDefault();
     public static final Theme DEFAULT_THEME = Theme.LIGHT_MODE;
-    public static final int MIN_FONT_SIZE = 12;
-    public static final int DEFAULT_FONT_SIZE = 18;
+    public static final int MIN_FONT_SIZE = 10;
+    public static final int DEFAULT_FONT_SIZE = 16;
     public static final int MAX_FONT_SIZE = 22;
     public static final boolean DEFAULT_CONFIRM_EXIT = true;
 
@@ -108,7 +108,7 @@ public class ConfigHandler {
     }
 
     public String loadConfig() {
-        logger.info("Reading config ...");
+        logger.info("Reading Config File ...");
         Properties properties = new Properties();
 
         try (FileInputStream fileInputStream = new FileInputStream(CONFIG_FILE)) {
@@ -121,11 +121,11 @@ public class ConfigHandler {
     }
 
     public void saveConfig() {
-        logger.info("Storing config ...");
+        logger.info("Storing Config File ...");
         Properties properties = new Properties();
         try {
             if (!CONFIG_FILE.exists() && !CONFIG_FILE.createNewFile()) {
-                logger.error("The config was already created.");
+                logger.error("The Config File was already created.");
             }
         } catch (IOException e) {
             logger.logException(e);
@@ -135,8 +135,8 @@ public class ConfigHandler {
         // Kommentare hinzufügen
         boolean isGerman = language == Language.GERMAN;
         SimpleDateFormat dateTimeFormat = language == Language.GERMAN ?
-                new SimpleDateFormat("EEEE, dd. MMMM yyyy HH:mm:ss 'Uhr'", Locale.GERMAN) :
-                new SimpleDateFormat("EEEE, MMMM d, yyyy, h:mm:ss a", Locale.ENGLISH);
+                new SimpleDateFormat("EEEE, dd. MMMM yyyy HH:mm:ss 'Uhr'", Locale.GERMANY) :
+                new SimpleDateFormat("EEEE, MMMM d, yyyy, h:mm:ss a", Locale.UK);
 
         String description = isGerman ? "#Konfiguration der 4D-Viewer App" : "#Configuration of the 4D-Viewer App";
         String dateTime = (isGerman ? "#Stand" : "#As of") + ": " + dateTimeFormat.format(new Date());
@@ -260,7 +260,7 @@ public class ConfigHandler {
 
                 BufferedImage edited = GuiUtils.getEditedImage(originalImage, true);
                 ImageIO.write(edited, imageFileHandler.getImageFileNameExtension().getType(), saveFile);
-                logger.info("Saved screenshot: '" + saveFile.getAbsolutePath() + "'.");
+                logger.info("Saved Screenshot under: '" + saveFile.getAbsolutePath() + "'.");
                 return true;
             }
         } catch (IOException e) {
