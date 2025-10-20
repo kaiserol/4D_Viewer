@@ -399,6 +399,7 @@ public class ImageFileHandler {
     }
 
     public void checkMissingFiles() {
+        if (isEmpty()) return;
         StringBuilder missingImagesReport = new StringBuilder();
         int missingImagesCount = 0;
 

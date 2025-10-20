@@ -1,5 +1,6 @@
 package de.uzk;
 
+import com.formdev.flatlaf.util.SystemInfo;
 import de.uzk.config.ConfigHandler;
 import de.uzk.gui.Gui;
 import de.uzk.image.ImageFileHandler;
@@ -31,7 +32,7 @@ public class Main {
             Gui gui = new Gui(imageFilesDirectory);
 
             // Behandle den Shortcut: Cmd+Q (unter macOS)
-            if (Desktop.isDesktopSupported()) {
+            if (SystemInfo.isMacOS && Desktop.isDesktopSupported()) {
                 Desktop desktop = Desktop.getDesktop();
                 desktop.setQuitHandler((QuitEvent e, QuitResponse response) -> {
                     response.cancelQuit();

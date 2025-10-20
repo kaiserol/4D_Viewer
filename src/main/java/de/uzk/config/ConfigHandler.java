@@ -26,7 +26,7 @@ public class ConfigHandler {
     public static final boolean DEFAULT_CONFIRM_EXIT = true;
 
     // Dateien / Verzeichnisse
-    private static final File CONFIG_FILE = new File("config.properties");
+    private static final File CONFIG_FILE = new File("config.cfg");
     private static final File SCREENSHOT_DIRECTORY = new File("screenshots");
 
     // Bild Konstanten
@@ -303,29 +303,5 @@ public class ConfigHandler {
             }
         }
         return count;
-    }
-
-    // theme settings
-    public enum Theme {
-        DARK_MODE, LIGHT_MODE;
-
-        public boolean isLight() {
-            return this == LIGHT_MODE;
-        }
-
-        public Theme opposite() {
-            return isLight() ? DARK_MODE : LIGHT_MODE;
-        }
-
-        public static Theme fromName(String name) {
-            if (name == null) return null;
-            try {
-                for (Theme theme : Theme.values()) {
-                    if (theme.name().equalsIgnoreCase(name)) return theme;
-                }
-            } catch (Exception ignore) {
-            }
-            return null;
-        }
     }
 }
