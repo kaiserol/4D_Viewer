@@ -19,7 +19,7 @@ import static de.uzk.config.LanguageHandler.getWord;
 public class DialogImageLoad implements LoadingImageListener {
     // Für einen schönen Ladeeffekt SLEEP_TIME_NANOS > 0 setzen
     // (1 Millisekunde = 1_000_000 Nanos)
-    private static final int SLEEP_TIME_NANOS = 1;
+    private static final int SLEEP_TIME_NANOS = 0;
     private final JDialog dialog;
     private JTextField textFieldFileName;
     private JTextField textFieldDirectoryName;

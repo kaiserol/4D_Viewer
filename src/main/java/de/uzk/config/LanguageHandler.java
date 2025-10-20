@@ -13,10 +13,12 @@ public final class LanguageHandler {
     // Lädt eine properties-Datei in den Speicher.
     // Dies wirkt sich NICHT auf bereits existierende UI-Elemente aus!
     public static void load(Language language) {
+        if (language == null) throw new NullPointerException("Language is null.");
         resources = ResourceBundle.getBundle("language", language.getLocale());
     }
 
     public static String getWord(String word) {
+        if (word == null) throw new NullPointerException("Word is null.");
         try {
             if (resources == null) {
                 logger.error("LanguageHandler is not initialized. Searched for word: '" + word + "'");

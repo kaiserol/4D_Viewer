@@ -1,14 +1,11 @@
 package de.uzk.gui.marker;
 
-import de.uzk.markers.Marker;
 import de.uzk.markers.MarkerShape;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 
 import static de.uzk.config.LanguageHandler.getWord;

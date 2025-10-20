@@ -178,7 +178,7 @@ public class ConfigHandler {
 
     private String readProperties(Properties properties) {
         // Einstellungen Eigenschaften: Sprache muss sofort initialisiert werden
-        this.setLanguage(Language.fromName(loadString(properties, "Settings.Language", DEFAULT_LANGUAGE.getName())));
+        this.setLanguage(Language.fromLanguage(loadString(properties, "Settings.Language", DEFAULT_LANGUAGE.getLanguage())));
         this.setTheme(loadString(properties, "Settings.Theme", DEFAULT_THEME.name()));
         this.setFontSize(loadInteger(properties, "Settings.FontSize", DEFAULT_FONT_SIZE));
         this.setConfirmExit(loadBoolean(properties, "Settings.ConfirmExit", DEFAULT_CONFIRM_EXIT));
@@ -201,7 +201,7 @@ public class ConfigHandler {
 
     private void saveProperties(Properties properties) {
         // Einstellungen Eigenschaften
-        properties.setProperty("Settings.Language", getLanguage().getName());
+        properties.setProperty("Settings.Language", getLanguage().getLanguage());
         properties.setProperty("Settings.Theme", String.valueOf(getTheme()));
         properties.setProperty("Settings.FontSize", String.valueOf(getFontSize()));
         properties.setProperty("Settings.ConfirmExit", String.valueOf(isConfirmExit()));

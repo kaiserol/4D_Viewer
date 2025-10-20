@@ -6,36 +6,40 @@ import java.util.Locale;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public enum Language {
-    ENGLISH(Locale.UK),
-    FRENCH(Locale.FRENCH),
-    GERMAN(Locale.GERMANY);
+    ENGLISH("en", "UK"),
+    GERMAN("de", "DE");
 
+    private final String language;
     private final Locale locale;
-    private final String name;
 
-    Language(Locale locale) {
-        this.locale = locale;
-        this.name = this.getLocale().getLanguage();
+    Language(String language, String country) {
+        if (language == null) throw new NullPointerException("Language is null.");
+        if (country == null) throw new NullPointerException("Country is null.");
+        this.language = language;
+        this.locale = new Locale.Builder()
+                .setLanguage(language)
+                .setRegion(country)
+                .build();
+    }
+
+    public String getLanguage() {
+        return this.language;
     }
 
     public Locale getLocale() {
         return this.locale;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public static Language fromName(String name) {
+    public static Language fromLanguage(String lang) {
         for (Language language : Language.values()) {
-            if (language.getName().equalsIgnoreCase(name)) return language;
+            if (language.getLanguage().equalsIgnoreCase(lang)) return language;
         }
         // Fallback
         return Language.ENGLISH;
     }
 
     public static Language getSystemDefault() {
-        return fromName(Locale.getDefault().getLanguage());
+        return fromLanguage(Locale.getDefault().getLanguage());
     }
 
     public static Language[] sortedValues() {
@@ -48,7 +52,6 @@ public enum Language {
     public String toString() {
         return switch (this) {
             case ENGLISH -> getWord("languages.english");
-            case FRENCH -> getWord("languages.french");
             case GERMAN -> getWord("languages.german");
         };
     }
