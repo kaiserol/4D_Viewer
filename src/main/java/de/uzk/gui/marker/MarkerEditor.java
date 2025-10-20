@@ -1,6 +1,7 @@
 package de.uzk.gui.marker;
 
-import de.uzk.gui.*;
+import de.uzk.gui.Icons;
+import de.uzk.gui.OGridBagConstraints;
 import de.uzk.image.ImageFile;
 import de.uzk.markers.Marker;
 import de.uzk.markers.MarkerShape;
@@ -47,7 +48,7 @@ public class MarkerEditor extends Container {
 
         gbc.setPos(2, 0);
         gbc.weightx = 0.2;
-        JComboBox<MarkerShape> selectShape = new JComboBox<>(MarkerShape.values());
+        JComboBox<MarkerShape> selectShape = new JComboBox<>(MarkerShape.sortedValues());
         selectShape.setSelectedItem(this.marker.getShape());
         selectShape.addActionListener(l -> {
             this.marker.setShape((MarkerShape) selectShape.getSelectedItem());

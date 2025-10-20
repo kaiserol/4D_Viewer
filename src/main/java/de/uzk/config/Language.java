@@ -1,5 +1,6 @@
 package de.uzk.config;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import static de.uzk.config.LanguageHandler.getWord;
@@ -35,6 +36,12 @@ public enum Language {
 
     public static Language getSystemDefault() {
         return fromName(Locale.getDefault().getLanguage());
+    }
+
+    public static Language[] sortedValues() {
+        Language[] values = values();
+        Arrays.sort(values, (lang1, lang2) -> lang1.toString().compareToIgnoreCase(lang2.toString()));
+        return values;
     }
 
     @Override

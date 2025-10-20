@@ -65,7 +65,7 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         setFileChooserTitel(fileChooser);
 
         // FileNameExtensionFilter hinzufügen
-        for (ImageFileNameExtension ext : ImageFileNameExtension.values()) {
+        for (ImageFileNameExtension ext : ImageFileNameExtension.sortedValues()) {
             FileNameExtensionFilter filter = new FileNameExtensionFilter(
                     ext.getFullDescription(),
                     ext.getExtensions()

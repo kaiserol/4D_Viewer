@@ -63,6 +63,12 @@ public enum ImageFileNameExtension {
         return JPEG;
     }
 
+    public static ImageFileNameExtension[] sortedValues() {
+        ImageFileNameExtension[] values = values();
+        Arrays.sort(values, (ext1, ext2) -> ext1.toString().compareToIgnoreCase(ext2.toString()));
+        return values;
+    }
+
     @Override
     public String toString() {
         return getDescription();

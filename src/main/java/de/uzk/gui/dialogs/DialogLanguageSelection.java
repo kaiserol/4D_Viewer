@@ -40,7 +40,7 @@ public class DialogLanguageSelection {
     }
 
     private void initDialogPane(JFrame frame) {
-        this.selectBox = new JComboBox<>(Language.values());
+        this.selectBox = new JComboBox<>(Language.sortedValues());
         this.selectBox.setSelectedItem(this.oldLanguage);
 
         // Benutzerdefinierte Buttons

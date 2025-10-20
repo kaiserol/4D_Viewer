@@ -120,7 +120,8 @@ public class DialogImageLoad implements LoadingImageListener {
 
     public LoadingResult loadImages(String directoryPath, ImageFileNameExtension extension) {
         this.dialog.setTitle(getWord("dialog.imageLoading.title") + " (" + extension.getDescription() + ")");
-        this.textFieldDirectoryName.setText(directoryPath);
+        File directory = new File(directoryPath).isFile() ? new File(directoryPath).getParentFile() : new File(directoryPath);
+        this.textFieldDirectoryName.setText(directory.getAbsolutePath());
 
         // Fenster packen
         this.dialog.pack();
