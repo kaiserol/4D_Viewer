@@ -12,7 +12,7 @@ public enum ActionType {
 
     // navigate shortcuts
     SHORTCUT_GO_TO_FIRST_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
-    SHORTCUT__GO_TO_PREV_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT)),
+    SHORTCUT_GO_TO_PREV_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT)),
     SHORTCUT_GO_TO_NEXT_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_RIGHT)),
     SHORTCUT_GO_TO_LAST_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_RIGHT, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
 

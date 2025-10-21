@@ -21,7 +21,7 @@ public final class LanguageHandler {
         if (word == null) throw new NullPointerException("Word is null.");
         try {
             if (resources == null) {
-                logger.error("LanguageHandler is not initialized. Searched for word: '" + word + "'");
+                logger.error("LanguageHandler is not initialized. Searched for the word: '" + word + "'.");
             } else return resources.getString(word);
         } catch (Exception e) {
             logger.error("The word '" + word + "' is not available in the language file.");

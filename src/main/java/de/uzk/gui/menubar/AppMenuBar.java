@@ -46,7 +46,7 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     private CustomMenu getMenuNavigate(ActionHandler actionHandler) {
         CustomMenu menuNavigate = new CustomMenu(getWord("items.nav"));
         menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.time.first"), ICON_ARROW_LEFT_START, actionHandler, SHORTCUT_GO_TO_FIRST_IMAGE, true));
-        menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.time.prev"), ICON_ARROW_LEFT, actionHandler, SHORTCUT__GO_TO_PREV_IMAGE, true));
+        menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.time.prev"), ICON_ARROW_LEFT, actionHandler, SHORTCUT_GO_TO_PREV_IMAGE, true));
         menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.time.next"), ICON_ARROW_RIGHT, actionHandler, SHORTCUT_GO_TO_NEXT_IMAGE, true));
         menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.time.last"), ICON_ARROW_RIGHT_END, actionHandler, SHORTCUT_GO_TO_LAST_IMAGE, true));
         menuNavigate.addSeparator();

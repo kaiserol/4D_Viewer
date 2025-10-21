@@ -17,7 +17,7 @@ import static de.uzk.Main.imageFileHandler;
 import static de.uzk.action.ActionType.*;
 
 public class ActionHandler extends KeyAdapter implements MouseWheelListener {
-    // ca. 20 FPS, gleicht Slider & Keys Geschwindigkeit an
+    // ca. 20/13 FPS, gleicht Slider & Keys Geschwindigkeit an
     private static final long UPDATE_INTERVAL_MS = 50;
     private static final long LONG_UPLOAD_INTERVAL_MS = 75;
 
@@ -110,7 +110,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
 
             // navigate actions
             case SHORTCUT_GO_TO_FIRST_IMAGE -> scrollToBoundary(Axis.TIME, true);
-            case SHORTCUT__GO_TO_PREV_IMAGE -> scroll(Axis.TIME, -1, false);
+            case SHORTCUT_GO_TO_PREV_IMAGE -> scroll(Axis.TIME, -1, false);
             case SHORTCUT_GO_TO_NEXT_IMAGE -> scroll(Axis.TIME, 1, false);
             case SHORTCUT_GO_TO_LAST_IMAGE -> scrollToBoundary(Axis.TIME, false);
 
