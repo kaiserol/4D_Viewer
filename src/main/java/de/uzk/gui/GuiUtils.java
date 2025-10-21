@@ -3,7 +3,6 @@ package de.uzk.gui;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
-import com.formdev.flatlaf.util.SystemInfo;
 import de.uzk.action.ActionType;
 import de.uzk.config.ConfigHandler;
 import de.uzk.utils.NumberUtils;
@@ -48,14 +47,14 @@ public final class GuiUtils {
         borderColor = configHandler.getTheme().isLight() ? Color.LIGHT_GRAY : Color.DARK_GRAY;
 
         // MacOS Eigenschaften
-        if (SystemInfo.isMacOS) {
+        if (operationSystem.isMacOS()) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
             System.setProperty("apple.awt.application.name", getWord("app.name"));
             System.setProperty("apple.awt.application.appearance", "system");
         }
 
         // Linux Eigenschaften
-        if (SystemInfo.isLinux) {
+        if (operationSystem.isLinux()) {
             JFrame.setDefaultLookAndFeelDecorated(true);
             JDialog.setDefaultLookAndFeelDecorated(true);
         }

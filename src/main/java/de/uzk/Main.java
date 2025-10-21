@@ -1,11 +1,11 @@
 package de.uzk;
 
-import com.formdev.flatlaf.util.SystemInfo;
 import de.uzk.config.ConfigHandler;
 import de.uzk.gui.Gui;
 import de.uzk.image.ImageFileHandler;
 import de.uzk.logger.LogEntryHandler;
 import de.uzk.markers.MarkerHandler;
+import de.uzk.utils.OperatingSystem;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,12 +14,14 @@ import java.awt.desktop.QuitResponse;
 
 public class Main {
     public static final LogEntryHandler logger;
+    public static final OperatingSystem operationSystem;
     public static final ConfigHandler configHandler;
     public static final ImageFileHandler imageFileHandler;
     public static final MarkerHandler markerHandler;
 
     static {
         logger = new LogEntryHandler(Main.class.getName());
+        operationSystem = OperatingSystem.getOP();
         imageFileHandler = new ImageFileHandler();
         configHandler = new ConfigHandler();
         markerHandler = new MarkerHandler();
@@ -32,7 +34,7 @@ public class Main {
             Gui gui = new Gui(imageFilesDirectory);
 
             // Behandle den Shortcut: Cmd+Q (unter macOS)
-            if (SystemInfo.isMacOS && Desktop.isDesktopSupported()) {
+            if (operationSystem.isMacOS() && Desktop.isDesktopSupported()) {
                 Desktop desktop = Desktop.getDesktop();
                 desktop.setQuitHandler((QuitEvent e, QuitResponse response) -> {
                     response.cancelQuit();

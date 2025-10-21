@@ -1,41 +1,41 @@
 package de.uzk.action;
 
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
 public enum ActionType {
     // edit shortcuts
-    SHORTCUT_TOGGLE_PIN_TIME(new Shortcut(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
-    SHORTCUT_TURN_IMAGE_90_LEFT(new Shortcut(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
-    SHORTCUT_TURN_IMAGE_90_RIGHT(new Shortcut(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
-    SHORTCUT_TAKE_SCREENSHOT(new Shortcut(KeyEvent.VK_S, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
+    SHORTCUT_TOGGLE_PIN_TIME(new Shortcut(KeyEvent.VK_P, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
+    SHORTCUT_TURN_IMAGE_90_LEFT(new Shortcut(KeyEvent.VK_L, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
+    SHORTCUT_TURN_IMAGE_90_RIGHT(new Shortcut(KeyEvent.VK_R, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
+    SHORTCUT_TAKE_SCREENSHOT(new Shortcut(KeyEvent.VK_S, Shortcut.CTRL_DOWN)),
 
     // navigate shortcuts
-    SHORTCUT_GO_TO_FIRST_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
-    SHORTCUT__GO_TO_PREV_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT, 0)),
-    SHORTCUT_GO_TO_NEXT_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_RIGHT, 0)),
-    SHORTCUT_GO_TO_LAST_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
+    SHORTCUT_GO_TO_FIRST_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
+    SHORTCUT__GO_TO_PREV_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT)),
+    SHORTCUT_GO_TO_NEXT_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_RIGHT)),
+    SHORTCUT_GO_TO_LAST_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_RIGHT, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
 
-    SHORTCUT_GO_TO_FIRST_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
-    SHORTCUT_GO_TO_PREV_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_UP, 0)),
-    SHORTCUT_GO_TO_NEXT_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_DOWN, 0)),
-    SHORTCUT_GO_TO_LAST_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)),
+    SHORTCUT_GO_TO_FIRST_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_UP, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
+    SHORTCUT_GO_TO_PREV_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_UP)),
+    SHORTCUT_GO_TO_NEXT_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_DOWN)),
+    SHORTCUT_GO_TO_LAST_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_DOWN, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
 
     // window shortcuts
-    SHORTCUT_FONT_SIZE_DECREASE(new Shortcut(KeyEvent.VK_MINUS, InputEvent.META_DOWN_MASK),
-            new Shortcut(KeyEvent.VK_SUBTRACT, InputEvent.META_DOWN_MASK)),
-    SHORTCUT_FONT_SIZE_RESTORE(new Shortcut(KeyEvent.VK_0, InputEvent.META_DOWN_MASK)),
-    SHORTCUT_FONT_SIZE_INCREASE(new Shortcut(KeyEvent.VK_PLUS, InputEvent.META_DOWN_MASK),
-            new Shortcut(KeyEvent.VK_ADD, InputEvent.META_DOWN_MASK)),
+    SHORTCUT_FONT_SIZE_DECREASE(new Shortcut(KeyEvent.VK_MINUS, Shortcut.CTRL_DOWN),
+            new Shortcut(KeyEvent.VK_SUBTRACT, Shortcut.CTRL_DOWN)),
+    SHORTCUT_FONT_SIZE_RESTORE(new Shortcut(KeyEvent.VK_0, Shortcut.CTRL_DOWN),
+            new Shortcut(KeyEvent.VK_EQUALS, Shortcut.CTRL_DOWN)),
+    SHORTCUT_FONT_SIZE_INCREASE(new Shortcut(KeyEvent.VK_PLUS, Shortcut.CTRL_DOWN),
+            new Shortcut(KeyEvent.VK_ADD, Shortcut.CTRL_DOWN)),
 
-    SHORTCUT_SHOW_DISCLAIMER(new Shortcut(KeyEvent.VK_F1, 0)),
-    SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F2, 0)),
+    SHORTCUT_SHOW_DISCLAIMER(new Shortcut(KeyEvent.VK_F1)),
+    SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F2)),
 
     // settings shortcuts
-    SHORTCUT_SELECT_LANGUAGE(new Shortcut(KeyEvent.VK_L, InputEvent.META_DOWN_MASK | InputEvent.CTRL_DOWN_MASK)),
-    SHORTCUT_TOGGLE_THEME(new Shortcut(KeyEvent.VK_T, InputEvent.META_DOWN_MASK | InputEvent.CTRL_DOWN_MASK)),
-    SHORTCUT_OPEN_SETTINGS(new Shortcut(KeyEvent.VK_S, InputEvent.META_DOWN_MASK)),
+    SHORTCUT_SELECT_LANGUAGE(new Shortcut(KeyEvent.VK_L, Shortcut.CTRL_DOWN)),
+    SHORTCUT_TOGGLE_THEME(new Shortcut(KeyEvent.VK_T, Shortcut.CTRL_DOWN)),
+    SHORTCUT_OPEN_SETTINGS(new Shortcut(KeyEvent.VK_COMMA, Shortcut.CTRL_DOWN)),
 
     // actions
     ACTION_EDIT_IMAGE,

@@ -7,13 +7,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static de.uzk.Main.operationSystem;
+
 public class Shortcut {
+    public static final int UNDEFINED = 0;
+    public static final int CTRL_DOWN = operationSystem.isMacOS() ? InputEvent.META_DOWN_MASK: InputEvent.CTRL_DOWN_MASK;
+    public static final int ALT_DOWN = InputEvent.ALT_DOWN_MASK;
+    public static final int SHIFT_DOWN = InputEvent.SHIFT_DOWN_MASK;
+    public static final int ALT_GRAPH_DOWN = InputEvent.ALT_GRAPH_DOWN_MASK;
+    public static final int BUTTON1_DOWN = InputEvent.BUTTON1_DOWN_MASK;
+    public static final int BUTTON2_DOWN = InputEvent.BUTTON2_DOWN_MASK;
+    public static final int BUTTON3_DOWN = InputEvent.BUTTON3_DOWN_MASK;
+
     private int extendedKeyCode;
     private int modifiers;
 
     public Shortcut(int extendedKeyCode, int modifiersEx) {
         setExtendedKeyCode(extendedKeyCode);
         setModifiers(modifiersEx);
+    }
+
+    public Shortcut(int extendedKeyCode) {
+        this(extendedKeyCode, UNDEFINED);
     }
 
     public Shortcut(KeyEvent keyEvent) {
@@ -44,17 +59,17 @@ public class Shortcut {
             keyCharList.add(Toolkit.getProperty("AWT.meta", "Meta"));
         if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0)
             keyCharList.add(Toolkit.getProperty("AWT.control", "Ctrl"));
-        if ((modifiers & InputEvent.ALT_DOWN_MASK) != 0)
+        if ((modifiers & ALT_DOWN) != 0)
             keyCharList.add(Toolkit.getProperty("AWT.alt", "Alt"));
-        if ((modifiers & InputEvent.SHIFT_DOWN_MASK) != 0)
-            keyCharList.add(Toolkit.getProperty("AWT.shift", "Shift"));
-        if ((modifiers & InputEvent.ALT_GRAPH_DOWN_MASK) != 0)
+        if ((modifiers & ALT_GRAPH_DOWN) != 0)
             keyCharList.add(Toolkit.getProperty("AWT.altGraph", "Alt Graph"));
-        if ((modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0)
+        if ((modifiers & SHIFT_DOWN) != 0)
+            keyCharList.add(Toolkit.getProperty("AWT.shift", "Shift"));
+        if ((modifiers & BUTTON1_DOWN) != 0)
             keyCharList.add(Toolkit.getProperty("AWT.button1", "Button 1"));
-        if ((modifiers & InputEvent.BUTTON2_DOWN_MASK) != 0)
+        if ((modifiers & BUTTON2_DOWN) != 0)
             keyCharList.add(Toolkit.getProperty("AWT.button2", "Button 2"));
-        if ((modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0)
+        if ((modifiers & BUTTON3_DOWN) != 0)
             keyCharList.add(Toolkit.getProperty("AWT.button3", "Button 3"));
 
         // 2. Add Keycode (if not modifier)
