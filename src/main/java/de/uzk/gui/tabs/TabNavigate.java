@@ -1,21 +1,17 @@
 package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionHandler;
-import de.uzk.action.ActionType;
-import de.uzk.gui.*;
-import de.uzk.image.Axis;
+import de.uzk.gui.AreaContainerInteractive;
+import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
+import de.uzk.gui.OGridBagConstraints;
+import de.uzk.image.Axis;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.util.Dictionary;
-import java.util.Hashtable;
 
 import static de.uzk.Main.imageFileHandler;
 import static de.uzk.config.LanguageHandler.getWord;
-import static de.uzk.gui.GuiUtils.COLOR_BLUE;
 
 // TODO: Überarbeite Klasse
 public class TabNavigate extends AreaContainerInteractive<JPanel> {
@@ -108,11 +104,9 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         else updateUnitValue(spinner, isTime);
 
         spinner.addChangeListener(e -> {
-            if (GuiUtils.isEnabled(spinner)) {
-                updateUnitValue(spinner, isTime);
-                if (isTime) gui.handleAction(ActionType.ACTION_UPDATE_TIME_UNIT);
-                else gui.handleAction(ActionType.ACTION_UPDATE_LEVEL_UNIT);
-            }
+//            if (GuiUtils.isEnabled(spinner)) {
+//                updateUnitValue(spinner, isTime);
+//            }
         });
         return spinner;
     }
@@ -128,19 +122,11 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
 
         boolean isShift = axis == Axis.TIME;
         slider.addChangeListener(e -> {
-            if (GuiUtils.isEnabled(slider)) {
-                int value = slider.getValue();
-                boolean isAdjusting = slider.getValueIsAdjusting();
-                update(slider, axis, value, isAdjusting);
-            }
-        });
-        slider.addMouseWheelListener(e -> actionHandler.mouseWheelMoved(isShift, e.getWheelRotation()));
-        slider.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_RIGHT) actionHandler.mouseWheelMoved(isShift, 1);
-                else if (e.getKeyCode() == KeyEvent.VK_LEFT) actionHandler.mouseWheelMoved(isShift, -1);
-            }
+//            if (GuiUtils.isEnabled(slider)) {
+//                int value = slider.getValue();
+//                boolean isAdjusting = slider.getValueIsAdjusting();
+//                update(slider, axis, value, isAdjusting);
+//            }
         });
         slider.setPaintLabels(true);
         slider.setSnapToTicks(true);
@@ -159,16 +145,9 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
             return;
         }
 
-        if (axis == Axis.TIME) imageFileHandler.setTime(newValue);
-        else imageFileHandler.setLevel(newValue);
+//        if (axis == Axis.TIME) imageFileHandler.setTime(newValue);
+//        else imageFileHandler.setLevel(newValue);
         gui.update(axis);
-    }
-
-    @Override
-    public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.ACTION_UPDATE_PIN_TIME) {
-            updateSliderLabels(Axis.TIME);
-        }
     }
 
     @Override
@@ -176,8 +155,6 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         GuiUtils.setEnabled(this.container, true);
         updateSliderValuesSecretly(timeSlider, imageFileHandler.getTime(), imageFileHandler.getMaxTime());
         updateSliderValuesSecretly(levelSlider, imageFileHandler.getLevel(), imageFileHandler.getMaxLevel());
-        updateSliderLabels(Axis.TIME);
-        updateSliderLabels(Axis.LEVEL);
     }
 
     @Override
@@ -185,8 +162,6 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         GuiUtils.setEnabled(this.container, false);
         updateSliderValuesSecretly(timeSlider, 0, 0);
         updateSliderValuesSecretly(levelSlider, 0, 0);
-        updateSliderLabels(Axis.TIME);
-        updateSliderLabels(Axis.LEVEL);
     }
 
     @Override
@@ -194,60 +169,23 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         if (axis == Axis.TIME) {
             // sets only a new value to timeSlider if the slider is not moving
             if (!timeSlider.getValueIsAdjusting()) updateSliderValueSecretly(timeSlider, imageFileHandler.getTime());
-            updateSliderLabels(Axis.LEVEL);
         } else {
             // sets only a new value to levelSlider if the slider is not moving
             if (!levelSlider.getValueIsAdjusting()) updateSliderValueSecretly(levelSlider, imageFileHandler.getLevel());
-            updateSliderLabels(Axis.TIME);
         }
     }
 
     private void updateSliderValueSecretly(JSlider slider, int value) {
-        GuiUtils.updateSecretly(slider, () -> slider.setValue(value));
+//        GuiUtils.updateSecretly(slider, () -> slider.setValue(value));
     }
 
     private void updateSliderValuesSecretly(JSlider slider, int value, int max) {
-        GuiUtils.updateSecretly(slider, () -> {
-            slider.setMaximum(max);
-            slider.setMinimum(0);
-            slider.setValue(value);
-        });
-    }
-
-    private void updateSliderLabels(Axis axis) {
-        JSlider slider = (axis == Axis.LEVEL) ? levelSlider : timeSlider;
-        Dictionary<Integer, JLabel> dictionary = new Hashtable<>();
-
-        // update slider labels
-        if (!imageFileHandler.isEmpty() && axis != null) updateDictionary(axis, dictionary);
-        else dictionary.put(0, new JLabel("0"));
-
-        slider.setLabelTable(dictionary);
-    }
-
-    private void updateDictionary(Axis axis, Dictionary<Integer, JLabel> dictionary) {
-        int searchValue = (axis == Axis.LEVEL) ? imageFileHandler.getTime() : imageFileHandler.getLevel();
-        int max = (axis == Axis.LEVEL) ? imageFileHandler.getMaxLevel() : imageFileHandler.getMaxTime();
-
-        // Create a dictionary of labels and positions to mark specific values
-//        List<Integer> missingNumbers = (axis == Axis.TIME) ? imageHandler.getMissingTimes(searchValue) : imageHandler.getMissingLevels(searchValue);
-
-//        for (int missingNum : missingNumbers) {
-//            JLabel missingNumLabel = new JLabel(String.valueOf(missingNum));
-//            missingNumLabel.setForeground(Color.RED);
-//            missingNumLabel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-//            dictionary.put(missingNum, missingNumLabel);
-//        }
-
-        // sets labels for the beginning and ending
-        final int pinTime = imageFileHandler.getPinTime();
-        if (axis == Axis.TIME && pinTime != -1) {
-            JLabel missingNumLabel = new JLabel(String.valueOf(pinTime));
-            missingNumLabel.setForeground(COLOR_BLUE);
-            missingNumLabel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-            dictionary.put(pinTime, missingNumLabel);
-        }
-        if (dictionary.get(0) == null) dictionary.put(0, new JLabel("0"));
-        if (dictionary.get(max) == null) dictionary.put(max, new JLabel(String.valueOf(max)));
+//        GuiUtils.updateSecretly(slider, () -> {
+//            slider.setMaximum(max);
+//            slider.setMinimum(0);
+//            slider.setValue(value);
+//            slider.setMinorTickSpacing(1);
+//            slider.setMajorTickSpacing(max);
+//        });
     }
 }

@@ -1,10 +1,11 @@
 package de.uzk.action;
 
-import de.uzk.gui.*;
+import de.uzk.gui.Gui;
+import de.uzk.gui.GuiUtils;
 import de.uzk.gui.dialogs.DialogDisclaimer;
-import de.uzk.gui.dialogs.DialogSettings;
 import de.uzk.gui.dialogs.DialogLanguageSelection;
 import de.uzk.gui.dialogs.DialogLogViewer;
+import de.uzk.gui.dialogs.DialogSettings;
 import de.uzk.image.Axis;
 
 import java.awt.event.KeyAdapter;
@@ -16,15 +17,19 @@ import static de.uzk.Main.imageFileHandler;
 import static de.uzk.action.ActionType.*;
 
 public class ActionHandler extends KeyAdapter implements MouseWheelListener {
-    private static final long HIGH_LOAD_DELAY = 40;
-    private static final long LOAD_DELAY = 25;
+    // ca. 20 FPS, gleicht Slider & Keys Geschwindigkeit an
+    private static final long UPDATE_INTERVAL_MS = 50;
+    private static final long LONG_UPLOAD_INTERVAL_MS = 75;
 
+    // GUI-Elemente
     private final Gui gui;
     private final DialogSettings dialogSettings;
     private final DialogLanguageSelection dialogLanguageSelection;
     private final DialogDisclaimer dialogDisclaimer;
     private final DialogLogViewer dialogLogViewer;
-    private long lastImageChangedTime = 0;
+
+    // Zeitmessung, um Bildwechsel zu takten
+    private long lastUpdateTime = 0;
 
     public ActionHandler(Gui gui) {
         this.gui = gui;
@@ -34,6 +39,9 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         this.dialogLogViewer = new DialogLogViewer(gui.getContainer());
     }
 
+    // ======================================
+    // Key Events
+    // ======================================
     @Override
     public void keyPressed(KeyEvent e) {
         executeAction(ActionType.getAction(e));
@@ -44,16 +52,53 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         executeAction(ActionType.getAction(e));
     }
 
+    // ======================================
+    // MouseWheel Events
+    // ======================================
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        mouseWheelMoved(e.isShiftDown(), e.getWheelRotation());
-    }
-
-    public void mouseWheelMoved(boolean shift, int rotation) {
+        boolean shift = e.isShiftDown();
+        int rotation = e.getWheelRotation();
         Axis axis = shift ? Axis.TIME : Axis.LEVEL;
-        scrollToNextImage(axis, rotation, false);
+        scroll(axis, rotation, false);
     }
 
+    public void scroll(Axis axis, int rotation, boolean isAdjusting) {
+        // Gleiche Logik für Tastatur, Maus und ScrollBar
+        if (axis == null || rotation == 0) return;
+        if (!isAdjusting && preventNextUpdate()) return;
+
+        int abs = Math.abs(rotation);
+        if (abs > 1) {
+            if (axis == Axis.TIME) {
+                int newTime = (rotation < 0) ?
+                        Math.max(0, imageFileHandler.getTime() - abs) :
+                        Math.min(imageFileHandler.getMaxTime(), imageFileHandler.getTime() + rotation);
+                imageFileHandler.setTime(newTime);
+            } else {
+                int newLevel = (rotation < 0) ?
+                        Math.max(0, imageFileHandler.getLevel() - abs) :
+                        Math.min(imageFileHandler.getMaxLevel(), imageFileHandler.getLevel() + rotation);
+                imageFileHandler.setLevel(newLevel);
+            }
+        } else {
+            if (rotation < 0) imageFileHandler.prev(axis);
+            else imageFileHandler.next(axis);
+        }
+        gui.update(axis);
+    }
+
+    private void scrollToBoundary(Axis axis, boolean toFirst) {
+        if (preventNextUpdate()) return;
+
+        if (toFirst) imageFileHandler.toFirst(axis);
+        else imageFileHandler.toLast(axis);
+        gui.update(axis);
+    }
+
+    // ======================================
+    // Aktionen aus Tastaturkürzeln
+    // ======================================
     public void executeAction(ActionType actionType) {
         if (actionType == null) return; // Der Fall sollte eigentlich nie eintreten
         switch (actionType) {
@@ -64,15 +109,15 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_TAKE_SCREENSHOT -> gui.handleAction(SHORTCUT_TAKE_SCREENSHOT);
 
             // navigate actions
-            case SHORTCUT_GO_TO_FIRST_IMAGE -> scrollToNextImage(Axis.TIME, -1, true);
-            case SHORTCUT__GO_TO_PREV_IMAGE -> scrollToNextImage(Axis.TIME, -1, false);
-            case SHORTCUT_GO_TO_NEXT_IMAGE -> scrollToNextImage(Axis.TIME, 1, false);
-            case SHORTCUT_GO_TO_LAST_IMAGE -> scrollToNextImage(Axis.TIME, 1, true);
+            case SHORTCUT_GO_TO_FIRST_IMAGE -> scrollToBoundary(Axis.TIME, true);
+            case SHORTCUT__GO_TO_PREV_IMAGE -> scroll(Axis.TIME, -1, false);
+            case SHORTCUT_GO_TO_NEXT_IMAGE -> scroll(Axis.TIME, 1, false);
+            case SHORTCUT_GO_TO_LAST_IMAGE -> scrollToBoundary(Axis.TIME, false);
 
-            case SHORTCUT_GO_TO_FIRST_LEVEL -> scrollToNextImage(Axis.LEVEL, -1, true);
-            case SHORTCUT_GO_TO_PREV_LEVEL -> scrollToNextImage(Axis.LEVEL, -1, false);
-            case SHORTCUT_GO_TO_NEXT_LEVEL -> scrollToNextImage(Axis.LEVEL, 1, false);
-            case SHORTCUT_GO_TO_LAST_LEVEL -> scrollToNextImage(Axis.LEVEL, 1, true);
+            case SHORTCUT_GO_TO_FIRST_LEVEL -> scrollToBoundary(Axis.LEVEL, true);
+            case SHORTCUT_GO_TO_PREV_LEVEL -> scroll(Axis.LEVEL, -1, false);
+            case SHORTCUT_GO_TO_NEXT_LEVEL -> scroll(Axis.LEVEL, 1, false);
+            case SHORTCUT_GO_TO_LAST_LEVEL -> scrollToBoundary(Axis.LEVEL, false);
 
             // window actions
             case SHORTCUT_FONT_SIZE_DECREASE -> GuiUtils.decreaseFont(gui);
@@ -86,29 +131,14 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_SELECT_LANGUAGE -> dialogLanguageSelection.show(gui);
             case SHORTCUT_TOGGLE_THEME -> GuiUtils.toggleTheme(gui);
             case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show(gui);
-            default -> {
-            }
         }
     }
 
-    private void scrollToNextImage(Axis axis, int rotation, boolean goToFirstOrLast) {
-        if (rotation == 0 || !allowNextImageChange()) return;
-
-        if (rotation < 0) {
-            if (goToFirstOrLast) imageFileHandler.toFirst(axis);
-            else imageFileHandler.prev(axis);
-        } else {
-            if (goToFirstOrLast) imageFileHandler.toLast(axis);
-            else imageFileHandler.next(axis);
-        }
-        gui.update(axis);
-    }
-
-    private boolean allowNextImageChange() {
-        long delay = imageFileHandler.getImageRotation() != 0 ? HIGH_LOAD_DELAY : LOAD_DELAY;
+    private boolean preventNextUpdate() {
         long now = System.currentTimeMillis();
-        if (now - lastImageChangedTime < delay) return false;
-        lastImageChangedTime = now;
-        return true;
+        long interval = imageFileHandler.getImageRotation() != 0 ? LONG_UPLOAD_INTERVAL_MS : UPDATE_INTERVAL_MS;
+        if (now - lastUpdateTime < interval) return true;
+        lastUpdateTime = now;
+        return false;
     }
 }

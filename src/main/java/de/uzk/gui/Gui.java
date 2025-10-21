@@ -5,7 +5,6 @@ import de.uzk.action.ActionType;
 import de.uzk.action.HandleActionListener;
 import de.uzk.gui.dialogs.DialogImageLoad;
 import de.uzk.gui.menubar.AppMenuBar;
-import de.uzk.gui.viewer.OViewer;
 import de.uzk.image.Axis;
 import de.uzk.image.ImageFileNameExtension;
 import de.uzk.image.LoadingResult;
@@ -22,6 +21,11 @@ import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class Gui extends AreaContainerInteractive<JFrame> {
+    // Mindestgröße des Fensters
+    private static final int MIN_WIDTH = 400;
+    private static final int MIN_HEIGHT = 100;
+
+    // Observer Pattern - Listeners
     private final List<HandleActionListener> handleActionListeners;
     private final List<ToggleListener> toggleListeners;
     private final List<UpdateImageListener> updateImageListeners;
@@ -43,6 +47,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         logger.info("Building UI ...");
         GuiUtils.initFlatLaf();
 
+        this.container.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         this.container.setIconImage(Icons.APP_IMAGE);
         this.container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.container.addWindowListener(new WindowAdapter() {
@@ -115,18 +120,18 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // directory selection
+        // directorySelection
         AreaDirectorySelection directorySelection = new AreaDirectorySelection(this);
         mainPanel.add(directorySelection.getContainer(), BorderLayout.NORTH);
 
-        // splitPane (areaTabs, areaViewer)
-        AreaTabs areaTabs = new AreaTabs(this, actionHandler);
-        OViewer areaViewer = new OViewer(this, actionHandler);
+        // splitPane (tabs, imageViewer)
+        AreaTabs tabs = new AreaTabs(this, actionHandler);
+        AreaImageViewer imageViewer = new AreaImageViewer(this, actionHandler);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setOneTouchExpandable(true);
-        splitPane.add(areaTabs.getContainer());
-        splitPane.add(areaViewer.getContainer());
+        splitPane.add(tabs.getContainer());
+        splitPane.add(imageViewer.getContainer());
         mainPanel.add(splitPane, BorderLayout.CENTER);
 
         // disclaimer
@@ -207,7 +212,6 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     public void handleAction(ActionType actionType) {
         if (actionType == ActionType.SHORTCUT_TOGGLE_PIN_TIME) {
             imageFileHandler.togglePinTime();
-            actionType = ActionType.ACTION_UPDATE_PIN_TIME;
         }
 
         for (HandleActionListener listener : handleActionListeners) {
@@ -235,7 +239,6 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     @Override
     public void update(Axis axis) {
-        if (axis == null) return;
         for (UpdateImageListener listener : updateImageListeners) {
             listener.update(axis);
         }
@@ -251,6 +254,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     @Override
     public void appGainedFocus() {
+        // Überprüfe, ob Bilder noch vorhanden sind
+        imageFileHandler.checkMissingFiles();
+
         for (AppFocusListener listener : appFocusListeners) {
             listener.appGainedFocus();
         }

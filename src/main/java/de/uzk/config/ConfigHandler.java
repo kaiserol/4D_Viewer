@@ -258,7 +258,7 @@ public class ConfigHandler {
                 String fileName = String.format("%s(%d)_%s", date, count, imageFileHandler.getImageFile().getName());
                 File saveFile = new File(SCREENSHOT_DIRECTORY.getAbsolutePath() + StringUtils.FILE_SEP + fileName);
 
-                BufferedImage edited = GuiUtils.getEditedImage(originalImage, true);
+                BufferedImage edited = GuiUtils.getEditedImage(originalImage, false);
                 ImageIO.write(edited, imageFileHandler.getImageFileNameExtension().getType(), saveFile);
                 logger.info("Saved Screenshot under: '" + saveFile.getAbsolutePath() + "'.");
                 return true;

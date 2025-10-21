@@ -9,7 +9,6 @@ import java.io.File;
  * Die Hilfsklasse für String-Operationen und Formatierungen.
  * Diese Klasse bietet Methoden für:
  * <ul>
- *   <li>Formatierung von Zeit- und Ebenenangaben</li>
  *   <li>Array-zu-String Konvertierungen</li>
  *   <li>HTML-Formatierung und Styling</li>
  *   <li>Farb-zu-Hex Konvertierung</li>
@@ -28,34 +27,6 @@ public final class StringUtils {
 
     private StringUtils() {
         // Verhindert die Instanziierung dieser Hilfsklasse
-    }
-
-    /**
-     * Formatiert eine Zeitangabe (z. B. Sekunden) im Format hh:mm:ss.
-     *
-     * @param time       Zeitwert (z. B. Sekunden)
-     * @param multiplier Multiplikator zur Umrechnung (z. B. Zeitfaktor)
-     * @return formatierte Zeitzeichenkette
-     */
-    public static String formatTime(int time, double multiplier) {
-        time = (int) (time * multiplier);
-
-        int seconds = time % 60;
-        int minute = time / 60 % 60;
-        int hour = time / 60 / 60;
-
-        return String.format("%02d:%02d:%02d", hour, minute, seconds);
-    }
-
-    /**
-     * Formatiert eine numerische Ebene (z. B. Höhenwert) in Mikrometer.
-     *
-     * @param level      numerischer Wert (z. B. Ebenennummer)
-     * @param multiplier Umrechnungsfaktor zu μm
-     * @return formatierte Zeichenkette (z. B. „12.3 μm“)
-     */
-    public static String formatLevel(int level, double multiplier) {
-        return String.format("%.01f μm", level * multiplier);
     }
 
     /**
@@ -98,28 +69,43 @@ public final class StringUtils {
     }
 
     /**
-     * Hebt den Text fett hervor (HTML <b>-Tag).
+     * Hebt den Text fett hervor.
      */
     public static String wrapBold(String text) {
         return "<b>" + text + "</b>";
     }
 
     /**
-     * Hebt den Text kursiv hervor (HTML <i>-Tag).
+     * Umgibt den Text mit einer Überschrift.
+     */
+    public static String wrapHeading(String text, int size) {
+        if (size < 1 || size > 6) throw new IllegalArgumentException("size must be between 1 and 6");
+        return "<h" + size + " style='margin: 0; padding:0;'>" + text + "</h" + size + ">";
+    }
+
+    /**
+     * Umgibt den Text mit einem <small>-Tag.
+     */
+    public static String wrapSmall(String text) {
+        return "<p style='font-size: 0.75em; white-space:nowrap;'>" + text + "</p>";
+    }
+
+    /**
+     * Hebt den Text kursiv hervor.
      */
     public static String wrapItalic(String text) {
         return "<i>" + text + "</i>";
     }
 
     /**
-     * Zentriert den Text (HTML <center>-Tag).
+     * Zentriert den Text.
      */
     public static String wrapCenter(String text) {
         return "<center>" + text + "</center>";
     }
 
     /**
-     * Umgibt den Text mit einem HTML <pre>-Tag und
+     * Umgibt den Text mit einem <pre>-Tag und
      * ersetzt Zeilenumbrüche durch <br> und Tabs durch Leerzeichen.
      */
     public static String wrapPre(String text) {
@@ -143,7 +129,7 @@ public final class StringUtils {
     }
 
     /**
-     * Umgibt Text mit dem HTML-Haupttag <html>.
+     * Umgibt Text mit dem HTML-Haupttag.
      */
     public static String wrapHtml(String text) {
         return "<html>" + text + "</html>";

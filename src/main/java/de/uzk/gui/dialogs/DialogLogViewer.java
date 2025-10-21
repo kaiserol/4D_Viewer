@@ -27,7 +27,7 @@ public class DialogLogViewer {
     public DialogLogViewer(JFrame frame) {
         this.dialog = new JDialog(frame, getWord("dialog.logViewer.title"), true);
         this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.dialog.setLayout(new BorderLayout(0, 0));
+        this.dialog.setLayout(new BorderLayout());
 
         // ESC schließt Dialog
         this.dialog.getRootPane().registerKeyboardAction(e -> dialog.dispose(),
@@ -56,7 +56,6 @@ public class DialogLogViewer {
     private void resizeWindow() {
         // Breite der Scrollbar
         int scrollBarWidth = UIManager.getInt("ScrollBar.width");
-        if (scrollBarWidth <= 0) scrollBarWidth = 20;
 
         // Bildschirmgröße
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();

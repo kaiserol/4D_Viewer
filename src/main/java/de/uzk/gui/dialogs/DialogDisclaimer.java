@@ -18,7 +18,7 @@ public class DialogDisclaimer {
     public DialogDisclaimer(JFrame frame) {
         this.dialog = new JDialog(frame, getWord("dialog.disclaimer.title"), true);
         this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.dialog.setLayout(new BorderLayout(0, 0));
+        this.dialog.setLayout(new BorderLayout());
         this.dialog.setResizable(false);
 
         // ESC schließt Dialog

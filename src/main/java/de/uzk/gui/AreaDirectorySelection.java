@@ -1,6 +1,9 @@
 package de.uzk.gui;
 
+import de.uzk.image.Axis;
+import de.uzk.image.ImageFile;
 import de.uzk.image.ImageFileNameExtension;
+import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -8,10 +11,12 @@ import java.awt.*;
 import java.io.File;
 
 import static de.uzk.Main.imageFileHandler;
+import static de.uzk.Main.logger;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
     private JTextField txtFieldDirectory;
+    private JButton clearImagesButton;
 
     public AreaDirectorySelection(Gui gui) {
         super(new JPanel(), gui);
@@ -20,6 +25,12 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
 
     private void init() {
         this.container.setLayout(new BorderLayout(10, 0));
+
+        // clearImagesButton
+        this.clearImagesButton = new JButton(Icons.ICON_DELETE);
+        this.clearImagesButton.addActionListener(a -> clearImages());
+        this.clearImagesButton.setToolTipText(getWord("tooltips.clearImages"));
+        this.container.add(this.clearImagesButton, BorderLayout.WEST);
 
         // txtFieldDirectory
         this.txtFieldDirectory = new JTextField();
@@ -31,6 +42,23 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         JButton btnChooseDirectory = new JButton(getWord("button.chooseDirectory"));
         btnChooseDirectory.addActionListener(a -> openFileChooser());
         this.container.add(btnChooseDirectory, BorderLayout.EAST);
+
+        // Fokus setzen, nachdem die UI aufgebaut ist
+        SwingUtilities.invokeLater(btnChooseDirectory::requestFocusInWindow);
+    }
+
+    private void clearImages() {
+        int option = JOptionPane.showConfirmDialog(gui.getContainer(),
+                getWord("optionPane.directory.clear"),
+                getWord("optionPane.title.confirm"),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (option == JOptionPane.YES_OPTION) {
+            logger.info("Clear images...");
+            gui.toggleOff();
+        } else this.container.requestFocusInWindow();
     }
 
     private void openFileChooser() {
@@ -110,11 +138,25 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
 
     @Override
     public void toggleOn() {
-        this.txtFieldDirectory.setText(imageFileHandler.getImageFilesDirectoryPath());
+        this.clearImagesButton.setEnabled(true);
+        updateDirectoryText();
     }
 
     @Override
     public void toggleOff() {
+        this.clearImagesButton.setEnabled(false);
         this.txtFieldDirectory.setText(null);
+    }
+
+    @Override
+    public void update(Axis axis) {
+        updateDirectoryText();
+    }
+
+    private void updateDirectoryText() {
+        ImageFile imageFile = imageFileHandler.getImageFile();
+        String imageFileString = imageFile == null ? null : StringUtils.FILE_SEP + imageFile.getName();
+        this.txtFieldDirectory.setText(imageFileHandler.getImageFilesDirectoryPath() + imageFileString);
+        this.txtFieldDirectory.setCaretPosition(0);
     }
 }

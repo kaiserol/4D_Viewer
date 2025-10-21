@@ -32,7 +32,7 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
-        double scaleFactor = GuiUtils.getImageScaleFactor(this, this.background);
+        double scaleFactor = GuiUtils.getImageScaleFactor(this.background, this);
 
         int width = (int) (this.background.getWidth() * scaleFactor);
         int height = (int) (this.background.getHeight() * scaleFactor);

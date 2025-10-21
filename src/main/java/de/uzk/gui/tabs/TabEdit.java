@@ -33,6 +33,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
         // mirrorXBox
         JCheckBox mirrorXBox = new JCheckBox(getWord("items.edit.mirrorHor"));
+        mirrorXBox.setFocusable(false);
         initCheckBox(mirrorXBox, true);
         this.container.add(mirrorXBox, gbc);
 
@@ -41,6 +42,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
         // mirrorYBox
         JCheckBox mirrorYBox = new JCheckBox(getWord("items.edit.mirrorVert"));
+        mirrorYBox.setFocusable(false);
         initCheckBox(mirrorYBox, false);
         this.container.add(mirrorYBox, gbc);
 
@@ -91,11 +93,11 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         boolean startValue = isMirrorXBox ? imageFileHandler.isImageMirrorX() : imageFileHandler.isImageMirrorY();
         checkBox.setSelected(startValue);
         checkBox.addItemListener(e -> {
-            if (GuiUtils.isEnabled(checkBox)) {
-                if (isMirrorXBox) imageFileHandler.setImageMirrorX(checkBox.isSelected());
-                else imageFileHandler.setImageMirrorY(checkBox.isSelected());
-                gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
-            }
+//            if (GuiUtils.isEnabled(checkBox)) {
+//                if (isMirrorXBox) imageFileHandler.setImageMirrorX(checkBox.isSelected());
+//                else imageFileHandler.setImageMirrorY(checkBox.isSelected());
+//                gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
+//            }
         });
     }
 
@@ -107,10 +109,10 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         else setRotationInImageHandler(spinner);
 
         spinner.addChangeListener(e -> {
-            if (GuiUtils.isEnabled(spinner)) {
-                setRotationInImageHandler(spinner);
-                gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
-            }
+//            if (GuiUtils.isEnabled(spinner)) {
+//                setRotationInImageHandler(spinner);
+//                gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
+//            }
         });
         return spinner;
     }

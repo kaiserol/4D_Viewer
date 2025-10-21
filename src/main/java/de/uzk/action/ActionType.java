@@ -5,9 +5,9 @@ import java.util.List;
 
 public enum ActionType {
     // edit shortcuts
-    SHORTCUT_TOGGLE_PIN_TIME(new Shortcut(KeyEvent.VK_P, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
-    SHORTCUT_TURN_IMAGE_90_LEFT(new Shortcut(KeyEvent.VK_L, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
-    SHORTCUT_TURN_IMAGE_90_RIGHT(new Shortcut(KeyEvent.VK_R, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
+    SHORTCUT_TOGGLE_PIN_TIME(new Shortcut(KeyEvent.VK_P, Shortcut.CTRL_DOWN)),
+    SHORTCUT_TURN_IMAGE_90_LEFT(new Shortcut(KeyEvent.VK_LEFT, Shortcut.ALT_DOWN | Shortcut.SHIFT_DOWN)),
+    SHORTCUT_TURN_IMAGE_90_RIGHT(new Shortcut(KeyEvent.VK_RIGHT, Shortcut.ALT_DOWN | Shortcut.SHIFT_DOWN)),
     SHORTCUT_TAKE_SCREENSHOT(new Shortcut(KeyEvent.VK_S, Shortcut.CTRL_DOWN)),
 
     // navigate shortcuts
@@ -42,9 +42,6 @@ public enum ActionType {
     ACTION_ADD_MARKER,
     ACTION_REMOVE_MARKER,
 
-    ACTION_UPDATE_PIN_TIME,
-    ACTION_UPDATE_TIME_UNIT,
-    ACTION_UPDATE_LEVEL_UNIT,
     ACTION_UPDATE_SCREENSHOT_COUNTER,
     ACTION_UPDATE_FONT;
 

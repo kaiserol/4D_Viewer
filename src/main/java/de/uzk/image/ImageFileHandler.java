@@ -23,14 +23,15 @@ public class ImageFileHandler {
     private double shiftLevelUnit;
 
     // Weitere Eigenschaften
+    private final Set<Integer> pinTimes;
     private ImageFile[][] matrix;
     private ImageFile imageFile;
     private int missingImagesCount;
     private int maxTime;
     private int maxLevel;
-    private int pinTime;
 
     public ImageFileHandler() {
+        this.pinTimes = new TreeSet<>();
         clear(true);
     }
 
@@ -212,43 +213,46 @@ public class ImageFileHandler {
         return this.maxTime;
     }
 
-    public int getPinTime() {
-        return this.pinTime;
+    public boolean isPinned(int time) {
+        return this.pinTimes.contains(time);
     }
 
-    public boolean hasPinTime() {
-        return this.pinTime != -1;
+    public Integer[] getPinTimesArray() {
+        return this.pinTimes.toArray(new Integer[0]);
     }
 
     public void togglePinTime() {
-        if (!isEmpty()) {
-            if (this.pinTime == this.imageFile.getTime()) this.pinTime = -1;
-            else this.pinTime = this.imageFile.getTime();
-        }
+        if (isEmpty()) return;
+
+        int time = this.imageFile.getTime();
+        if (isPinned(time)) this.pinTimes.remove(time);
+        else this.pinTimes.add(time);
     }
 
     public void toFirst(Axis axis) {
-        if (!isEmpty() && axis != null) {
-            this.imageFile = axis == Axis.TIME ?
-                    getImageFile(0, this.imageFile.getLevel()) :
-                    getImageFile(this.imageFile.getTime(), 0);
+        if (isEmpty()) return;
+        switch (axis) {
+            case TIME -> this.imageFile = getImageFile(0, this.imageFile.getLevel());
+            case LEVEL -> this.imageFile = getImageFile(this.imageFile.getTime(), 0);
         }
     }
 
     public void toLast(Axis axis) {
-        if (!isEmpty() && axis != null) {
-            this.imageFile = axis == Axis.TIME ?
-                    getImageFile(this.maxTime, this.imageFile.getLevel()) :
-                    getImageFile(this.imageFile.getTime(), this.maxLevel);
+        if (isEmpty()) return;
+        switch (axis) {
+            case TIME -> this.imageFile = getImageFile(this.maxTime, this.imageFile.getLevel());
+            case LEVEL -> this.imageFile = getImageFile(this.imageFile.getTime(), this.maxLevel);
         }
     }
 
     public void prev(Axis axis) {
-        if (!isEmpty() && axis != null) {
-            if (axis == Axis.TIME) {
+        if (isEmpty()) return;
+        switch (axis) {
+            case TIME -> {
                 int prevTime = Math.max(0, this.imageFile.getTime() - 1);
                 this.imageFile = getImageFile(prevTime, this.imageFile.getLevel());
-            } else {
+            }
+            case LEVEL -> {
                 int prevLevel = Math.max(0, this.imageFile.getLevel() - 1);
                 this.imageFile = getImageFile(this.imageFile.getTime(), prevLevel);
             }
@@ -256,11 +260,13 @@ public class ImageFileHandler {
     }
 
     public void next(Axis axis) {
-        if (!isEmpty() && axis != null) {
-            if (axis == Axis.TIME) {
+        if (isEmpty()) return;
+        switch (axis) {
+            case TIME -> {
                 int nextTime = Math.min(this.maxTime, this.imageFile.getTime() + 1);
                 this.imageFile = getImageFile(nextTime, this.imageFile.getLevel());
-            } else {
+            }
+            case LEVEL -> {
                 int nextLevel = Math.min(this.maxLevel, this.imageFile.getLevel() + 1);
                 this.imageFile = getImageFile(this.imageFile.getTime(), nextLevel);
             }
@@ -274,7 +280,7 @@ public class ImageFileHandler {
         this.missingImagesCount = 0;
         this.maxLevel = 0;
         this.maxTime = 0;
-        this.pinTime = -1;
+        this.pinTimes.clear();
     }
 
     private boolean loadImageFiles(LoadingImageListener progress) throws InterruptedException {

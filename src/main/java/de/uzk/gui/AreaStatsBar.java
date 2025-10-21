@@ -1,0 +1,90 @@
+package de.uzk.gui;
+
+import de.uzk.image.Axis;
+import de.uzk.utils.StringUtils;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+
+import static de.uzk.Main.imageFileHandler;
+import static de.uzk.config.LanguageHandler.getWord;
+
+public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
+    private JLabel labelTime;
+    private JLabel labelLevel;
+    private JLabel labelTimeLevel;
+
+    public AreaStatsBar(Gui gui) {
+        super(new JPanel(), gui);
+        init();
+    }
+
+    private void init() {
+        this.container.setLayout(new BorderLayout());
+        this.container.setBorder(new EmptyBorder(5, 10, 5, 10));
+
+        // Zeit-Label
+        this.labelTime = new JLabel("", SwingConstants.CENTER);
+        this.container.add(this.labelTime, BorderLayout.CENTER);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout(10, 0));
+
+        // Zeit-Level-Label
+        this.labelTimeLevel = new JLabel("", SwingConstants.LEFT);
+        this.labelTimeLevel.setOpaque(true);
+        panel.add(this.labelTimeLevel, BorderLayout.WEST);
+
+        // Ebenen-Label
+        this.labelLevel = new JLabel("", SwingConstants.RIGHT);
+        this.labelLevel.setOpaque(true);
+        panel.add(this.labelLevel, BorderLayout.EAST);
+        this.container.add(panel, BorderLayout.SOUTH);
+    }
+
+    @Override
+    public void toggleOn() {
+        updateTime();
+        updateLevel();
+        updateTimeLevel();
+    }
+
+    @Override
+    public void toggleOff() {
+        updateTime();
+        updateLevel();
+        updateTimeLevel();
+    }
+
+    @Override
+    public void update(Axis axis) {
+        switch (axis) {
+            case TIME -> updateTime();
+            case LEVEL -> updateLevel();
+        }
+        updateTimeLevel();
+    }
+
+    private void updateTime() {
+        int time = (int) (imageFileHandler.getTime() * imageFileHandler.getShiftTimeUnit());
+        int seconds = time % 60;
+        int minute = time / 60 % 60;
+        int hour = time / 60 / 60;
+
+        String timeString = String.format("%02d:%02d:%02d", hour, minute, seconds);
+        this.labelTime.setText(StringUtils.wrapHtml(StringUtils.wrapHeading(timeString, 2)));
+    }
+
+    private void updateLevel() {
+        double level = (int) (imageFileHandler.getLevel() * imageFileHandler.getShiftLevelUnit());
+        String levelString = String.format("%.01f μm", level);
+        this.labelLevel.setText(StringUtils.wrapHtml(StringUtils.wrapSmall(levelString)));
+    }
+
+    private void updateTimeLevel() {
+        String timeString = String.format("%s: %d", getWord("items.nav.axis.time"), imageFileHandler.getTime());
+        String levelString = String.format("%s: %d", getWord("items.nav.axis.level"), imageFileHandler.getLevel());
+        this.labelTimeLevel.setText(StringUtils.wrapHtml(StringUtils.wrapSmall(timeString + " | " + levelString)));
+    }
+}

@@ -9,6 +9,7 @@ import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.AdjustmentListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
@@ -22,10 +23,6 @@ public final class GuiUtils {
     public static final Color COLOR_YELLOW = new Color(252, 204, 78);
     public static final Color COLOR_RED = new Color(255, 86, 86);
     public static final Color COLOR_DARK_RED = new Color(148, 0, 0);
-
-    // Text Konstanten
-    public static final String COMP_DISABLED = "DISABLED";
-    public static final String SLIDER_DRAGGED = "DRAGGING";
 
     // UI Eigenschaften
     private static Color borderColor;
@@ -70,7 +67,7 @@ public final class GuiUtils {
         UIManager.put("ProgressBar.arc", 5);
 
         // TabbedPane Eigenschaften
-        UIManager.put("TabbedPane.contentSeparatorHeight", 2);
+        UIManager.put("TabbedPane.contentSeparatorHeight", 1);
         UIManager.put("TabbedPane.showTabSeparators", true);
         UIManager.put("TabbedPane.contentAreaColor", borderColor);
         UIManager.put("TabbedPane.selectedBackground", UIManager.getColor("TabbedPane.buttonHoverBackground").brighter());
@@ -93,7 +90,7 @@ public final class GuiUtils {
         UIManager.put("SplitPaneDivider.gripDotCount", 3);
         UIManager.put("SplitPaneDivider.gripDotSize", 3);
         UIManager.put("SplitPaneDivider.gripGap", 3);
-        UIManager.put("SplitPane.dividerSize", 10);
+        UIManager.put("SplitPane.dividerSize", 15);
         UIManager.put("SplitPane.supportsOneTouchButtons", false);
 
         // Mnemonics/Icons Eigenschaften
@@ -153,8 +150,8 @@ public final class GuiUtils {
         return g2d;
     }
 
-    public static BufferedImage getEditedImage(BufferedImage image, boolean jpgImage) {
-        int imageType = jpgImage ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+    public static BufferedImage getEditedImage(BufferedImage image, boolean transparentBackground) {
+        int imageType = transparentBackground ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
 
         // Spiegelung & Rotation
         BufferedImage mirrored = getMirroredImage(image, imageFileHandler.isImageMirrorX(), imageFileHandler.isImageMirrorY(), imageType);
@@ -204,17 +201,23 @@ public final class GuiUtils {
         return rotatedImage;
     }
 
-    public static double getImageScaleFactor(Container container, BufferedImage currentImage) {
-        int width = container.getWidth();
-        int height = container.getHeight();
+    public static double getImageScaleFactor(BufferedImage image, Container container) {
+        int imgWidth = image.getWidth(null);
+        int imgHeight = image.getHeight(null);
 
-        int imgWidth = currentImage.getWidth(null);
-        int imgHeight = currentImage.getHeight(null);
-
-        double scaleWidth = (double) width / imgWidth;
-        double scaleHeight = (double) height / imgHeight;
-
+        double scaleWidth = (double) container.getWidth() / imgWidth;
+        double scaleHeight = (double) container.getHeight() / imgHeight;
         return Math.min(scaleWidth, scaleHeight);
+    }
+
+    public static void drawCenteredText(Graphics2D g2D, String text, Container container) {
+        FontMetrics metrics = g2D.getFontMetrics(g2D.getFont());
+        int textWidth = metrics.stringWidth(text);
+        int textHeight = metrics.getHeight();
+
+        int x = (container.getWidth() - textWidth) / 2;
+        int y = (container.getHeight() + textHeight) / 2;
+        g2D.drawString(text, x, y);
     }
 
     public static boolean valueFitsInRange(Number number, SpinnerNumberModel model) {
@@ -224,17 +227,6 @@ public final class GuiUtils {
         double value = number.doubleValue();
 
         return NumberUtils.valueFitsInRange(value, minValue, maxValue, stepSize);
-    }
-
-    // TODO: @isEnabled() und @updateSecretly() durch rubustures Verfahren ersetzen
-    public static boolean isEnabled(JComponent component) {
-        return component.getName() == null || !component.getName().equals(COMP_DISABLED);
-    }
-
-    public static void updateSecretly(JComponent component, Runnable runnable) {
-        component.setName(COMP_DISABLED);
-        runnable.run();
-        component.setName(null);
     }
 
     public static void setEnabled(Container container, boolean enabled) {
@@ -256,5 +248,15 @@ public final class GuiUtils {
         else if (container instanceof JMenu menu) return menu.getMenuComponents();
         else if (container instanceof JScrollPane scrollPane) return scrollPane.getViewport().getComponents();
         else return container.getComponents();
+    }
+
+    public static void runWithoutAdjustmentEvents(JScrollBar scrollBar, Runnable action) {
+        AdjustmentListener[] listeners = scrollBar.getAdjustmentListeners();
+        for (AdjustmentListener l : listeners) scrollBar.removeAdjustmentListener(l);
+        try {
+            action.run();
+        } finally {
+            for (AdjustmentListener l : listeners) scrollBar.addAdjustmentListener(l);
+        }
     }
 }

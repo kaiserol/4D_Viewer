@@ -26,8 +26,10 @@ public class AreaTabs extends AreaContainerInteractive<JPanel>  {
         this.container.setLayout(new BorderLayout());
         this.container.setMinimumSize(new Dimension(0, 0));
 
-        // Tabs hinzufügen
+        // Tabs hinzufügen (Erzwingt Fokus nach Tab-Wechsel)
         JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+        tabbedPane.addChangeListener(e -> tabbedPane.requestFocusInWindow());
+
         Border border = new EmptyBorder(10, 10, 10, 10);
 
         TabEdit tabEdit = new TabEdit(this.gui, this.actionHandler);
@@ -47,6 +49,6 @@ public class AreaTabs extends AreaContainerInteractive<JPanel>  {
 
     @Override
     public void updateTheme() {
-        this.container.setBorder(new MatteBorder(2, 2, 2, 2, GuiUtils.getBorderColor()));
+        this.container.setBorder(new MatteBorder(1, 1, 1, 1, GuiUtils.getBorderColor()));
     }
 }

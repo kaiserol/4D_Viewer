@@ -26,7 +26,7 @@ public class DialogLanguageSelection {
 
         // Ergebnis auswerten
         Object selectedValue = this.pane.getValue();
-        if (!selectedValue.equals(JOptionPane.OK_OPTION)) return;
+        if (selectedValue == null || !selectedValue.equals(JOptionPane.OK_OPTION)) return;
 
         Language newLanguage = (Language) this.selectBox.getSelectedItem();
         if (newLanguage == null || this.oldLanguage == newLanguage) return;
