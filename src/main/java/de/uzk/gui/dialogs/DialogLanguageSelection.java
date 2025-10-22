@@ -5,8 +5,8 @@ import de.uzk.gui.Gui;
 
 import javax.swing.*;
 
-import static de.uzk.Main.configHandler;
 import static de.uzk.Main.logger;
+import static de.uzk.Main.settings;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogLanguageSelection {
@@ -20,7 +20,7 @@ public class DialogLanguageSelection {
 
     public void show(Gui gui) {
         // Dialog anzeigen
-        this.oldLanguage = configHandler.getLanguage();
+        this.oldLanguage = settings.getLanguage();
         this.initDialogPane(gui.getContainer());
         this.dialog.setVisible(true);
 
@@ -33,7 +33,7 @@ public class DialogLanguageSelection {
 
         // Sprache setzen
         logger.info("Changing Language from '" + this.oldLanguage + "' to '" + newLanguage + "'");
-        configHandler.setLanguage(newLanguage);
+        settings.setLanguage(newLanguage);
 
         // UI aktualisieren
         gui.rebuild();

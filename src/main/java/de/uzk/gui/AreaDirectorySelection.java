@@ -9,9 +9,9 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Path;
 
-import static de.uzk.Main.imageFileHandler;
-import static de.uzk.Main.logger;
+import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
@@ -65,8 +65,8 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         JFileChooser fileChooser = getFileChooser();
 
         // Startverzeichnis
-        if (imageFileHandler.hasImageFilesDirectory()) {
-            fileChooser.setSelectedFile(imageFileHandler.getImageFilesDirectory());
+        if (settings.getLastHistory() != null) {
+            fileChooser.setSelectedFile(settings.getLastHistory().toFile());
         } else {
             String userDirectory = System.getProperty("user.dir");
             if (userDirectory != null) fileChooser.setCurrentDirectory(new File(userDirectory));
@@ -80,7 +80,7 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
 
             // Lade Image-Files
             ImageFileNameExtension extension = getSelectedExtension((FileNameExtensionFilter) fileChooser.getFileFilter());
-            gui.loadImageFiles(selectedFile.getAbsolutePath(), extension, false);
+            gui.loadImageFiles(Path.of(selectedFile.getAbsolutePath()), extension, false);
         }
     }
 
@@ -101,7 +101,7 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
             fileChooser.addChoosableFileFilter(filter);
 
             // Standardfilter auswählen
-            if (ext == imageFileHandler.getImageFileNameExtension()) {
+            if (ext == settings.getFileNameExt()) {
                 fileChooser.setFileFilter(filter);
             }
         }

@@ -27,7 +27,6 @@ public class ConfigHandler {
 
     // Dateien / Verzeichnisse
     private static final File CONFIG_FILE = new File("config.cfg");
-    private static final File SCREENSHOT_DIRECTORY = new File("screenshots");
 
     // Bild Konstanten
     private static final ImageFileNameExtension DEFAULT_IMAGE_FILE_NAME_EXTENSION = ImageFileNameExtension.getDefault();
@@ -108,7 +107,7 @@ public class ConfigHandler {
     }
 
     public String loadConfig() {
-        logger.info("Reading Config File ...");
+        logger.info("Reading Settings File ...");
         Properties properties = new Properties();
 
         try (FileInputStream fileInputStream = new FileInputStream(CONFIG_FILE)) {
@@ -121,11 +120,11 @@ public class ConfigHandler {
     }
 
     public void saveConfig() {
-        logger.info("Storing Config File ...");
+        logger.info("Storing Settings File ...");
         Properties properties = new Properties();
         try {
             if (!CONFIG_FILE.exists() && !CONFIG_FILE.createNewFile()) {
-                logger.error("The Config File was already created.");
+                logger.error("The Settings File was already created.");
             }
         } catch (IOException e) {
             logger.logException(e);
@@ -164,7 +163,7 @@ public class ConfigHandler {
         this.setConfirmExit(DEFAULT_CONFIRM_EXIT);
 
         // Bild Eigenschaften
-        imageFileHandler.setImageFileNameExtension(DEFAULT_IMAGE_FILE_NAME_EXTENSION.name());
+       // imageFileHandler.setImageFileNameExtension(DEFAULT_IMAGE_FILE_NAME_EXTENSION.name());
         imageFileHandler.setImageFileNameTimeSep(DEFAULT_IMAGE_FILE_NAME_TIME_SEP);
         imageFileHandler.setImageFileNameLevelSep(DEFAULT_IMAGE_FILE_NAME_LEVEL_SEP);
         imageFileHandler.setImageMirrorX(DEFAULT_IMAGE_MIRROR_X);
@@ -184,7 +183,7 @@ public class ConfigHandler {
         this.setConfirmExit(loadBoolean(properties, "Settings.ConfirmExit", DEFAULT_CONFIRM_EXIT));
 
         // Bild Eigenschaften
-        imageFileHandler.setImageFileNameExtension(loadString(properties, "ImageFileNameExtension", DEFAULT_IMAGE_FILE_NAME_EXTENSION.name()));
+       // imageFileHandler.setImageFileNameExtension(loadString(properties, "ImageFileNameExtension", DEFAULT_IMAGE_FILE_NAME_EXTENSION.name()));
         imageFileHandler.setImageFileNameTimeSep(loadString(properties, "ImageFileNameTimeSep", DEFAULT_IMAGE_FILE_NAME_TIME_SEP));
         imageFileHandler.setImageFileNameLevelSep(loadString(properties, "ImageFileNameLevelSep", DEFAULT_IMAGE_FILE_NAME_LEVEL_SEP));
         imageFileHandler.setImageMirrorX(loadBoolean(properties, "ImageMirrorX", DEFAULT_IMAGE_MIRROR_X));
@@ -208,7 +207,7 @@ public class ConfigHandler {
 
         // Bild Eigenschaften
         properties.setProperty("ImageFilesDirectory", imageFileHandler.getImageFilesDirectoryPath());
-        properties.setProperty("ImageFileNameExtension", imageFileHandler.getImageFileNameExtension().name());
+    //    properties.setProperty("ImageFileNameExtension", imageFileHandler.getImageFileNameExtension().name());
         properties.setProperty("ImageFileNameTimeSep", imageFileHandler.getImageFileNameTimeSep());
         properties.setProperty("ImageFileNameLevelSep", imageFileHandler.getImageFileNameLevelSep());
         properties.setProperty("ImageMirrorX", String.valueOf(imageFileHandler.isImageMirrorX()));
@@ -250,58 +249,7 @@ public class ConfigHandler {
         }
     }
 
-    public boolean saveScreenshot(BufferedImage originalImage) {
-        try {
-            if (SCREENSHOT_DIRECTORY.isDirectory() || SCREENSHOT_DIRECTORY.mkdirs()) {
-                String date = this.dateFormat.format(new Date());
-                int count = getNextScreenshotIndex(date);
-                String fileName = String.format("%s(%d)_%s", date, count, imageFileHandler.getImageFile().getName());
-                File saveFile = new File(SCREENSHOT_DIRECTORY.getAbsolutePath() + StringUtils.FILE_SEP + fileName);
 
-                BufferedImage edited = GuiUtils.getEditedImage(originalImage, false);
-                ImageIO.write(edited, imageFileHandler.getImageFileNameExtension().getType(), saveFile);
-                logger.info("Saved Screenshot under: '" + saveFile.getAbsolutePath() + "'.");
-                return true;
-            }
-        } catch (IOException e) {
-            logger.logException(e);
-        }
-        return false;
-    }
 
-    private int getNextScreenshotIndex(String date) {
-        int index = 1;
-        if (SCREENSHOT_DIRECTORY.isDirectory()) {
-            File[] files = SCREENSHOT_DIRECTORY.listFiles();
-            if (files == null) return index;
 
-            String fileNamePattern = date + "\\(\\d+\\)_" + imageFileHandler.getFileNamePattern();
-            for (File file : files) {
-                String filename = file.getName();
-                if (filename.matches(fileNamePattern)) {
-                    int indexStart = filename.indexOf("(") + 1;
-                    int indexEnd = filename.indexOf(")");
-
-                    int count = Integer.parseInt(filename.substring(indexStart, indexEnd)) + 1;
-                    if (count > index) index = count;
-                }
-            }
-        }
-        return index;
-    }
-
-    public int getScreenshotCount() {
-        int count = 0;
-        if (SCREENSHOT_DIRECTORY.isDirectory()) {
-            File[] files = SCREENSHOT_DIRECTORY.listFiles();
-            if (files == null) return count;
-
-            String filePattern = this.dateFormatPattern + "\\(\\d+\\)_" + imageFileHandler.getFileNamePattern();
-            for (File file : files) {
-                String filename = file.getName();
-                if (filename.matches(filePattern)) count++;
-            }
-        }
-        return count;
-    }
 }

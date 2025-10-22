@@ -67,7 +67,7 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
     }
 
     private void updateTime() {
-        int time = (int) (imageFileHandler.getTime() * imageFileHandler.getShiftTimeUnit());
+        int time = imageFileHandler != null ?  (int) (imageFileHandler.getTime() * imageFileHandler.getShiftTimeUnit()) : 0;
         int seconds = time % 60;
         int minute = time / 60 % 60;
         int hour = time / 60 / 60;
@@ -78,15 +78,17 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
     }
 
     private void updateLevel() {
-        double level = (int) (imageFileHandler.getLevel() * imageFileHandler.getShiftLevelUnit());
+        double level =imageFileHandler != null ? (int) (imageFileHandler.getLevel() * imageFileHandler.getShiftLevelUnit()):0;
         String levelString = String.format("%.01f μm", level);
         this.labelLevel.setText(StringUtils.wrapHtml(StringUtils.applyFontSize(
                 levelString, 75)));
     }
 
     private void updateTimeLevel() {
-        String timeString = String.format("%s: %d", getWord("items.nav.axis.time"), imageFileHandler.getTime());
-        String levelString = String.format("%s: %d", getWord("items.nav.axis.level"), imageFileHandler.getLevel());
+        int time =  imageFileHandler != null ? (int) (imageFileHandler.getTime()) : 0;
+        int level =  imageFileHandler != null ? (int) (imageFileHandler.getLevel()) : 0;
+        String timeString = String.format("%s: %d", getWord("items.nav.axis.time"), time);
+        String levelString = String.format("%s: %d", getWord("items.nav.axis.level"), level);
         this.labelTimeLevel.setText(StringUtils.wrapHtml(StringUtils.wrapItalic(StringUtils.applyFontSize(
                 timeString + " | " + levelString, 75))));
     }

@@ -98,10 +98,17 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "0.0");
         spinner.setEditor(editor);
 
-        boolean isTime = axis == Axis.TIME;
-        Number number = isTime ? imageFileHandler.getShiftTimeUnit() : imageFileHandler.getShiftLevelUnit();
-        if (GuiUtils.valueFitsInRange(number, spinnerModel)) spinner.setValue(number);
-        else updateUnitValue(spinner, isTime);
+        Number number =  0;
+        if(imageFileHandler != null) {
+            number = switch(axis) {
+                case TIME -> imageFileHandler.getTime();
+                case LEVEL -> imageFileHandler.getLevel();
+            };
+            if (GuiUtils.valueFitsInRange(number, spinnerModel)) spinner.setValue(number);
+            else updateUnitValue(spinner, axis);
+        }
+
+
 
         spinner.addChangeListener(e -> {
 //            if (GuiUtils.isEnabled(spinner)) {
@@ -111,9 +118,9 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         return spinner;
     }
 
-    private void updateUnitValue(JSpinner spinner, boolean isTime) {
+    private void updateUnitValue(JSpinner spinner, Axis axis) {
         Number value = (Number) spinner.getValue();
-        if (isTime) imageFileHandler.setShiftTimeUnit(value.doubleValue());
+        if (axis == Axis.TIME) imageFileHandler.setShiftTimeUnit(value.doubleValue());
         else imageFileHandler.setShiftLevelUnit(value.doubleValue());
     }
 

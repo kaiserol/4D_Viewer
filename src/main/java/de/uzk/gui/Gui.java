@@ -14,6 +14,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +35,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     private final List<AppFocusListener> appFocusListeners;
     private boolean windowInitialized;
 
-    public Gui(String imageFilesDirectory) {
+    public Gui(Path imageFilesDirectory) {
         super(new JFrame(), null);
         this.handleActionListeners = new ArrayList<>();
         this.toggleListeners = new ArrayList<>();
@@ -43,7 +45,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         build(imageFilesDirectory);
     }
 
-    private void build(String imageFilesDirectory) {
+    private void build(Path imageFilesDirectory) {
         logger.info("Building UI ...");
         GuiUtils.initFlatLaf();
 
@@ -74,7 +76,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         updateTheme();
 
         // Lade Image-Files
-        if (!loadImageFiles(imageFilesDirectory, imageFileHandler.getImageFileNameExtension(), true)) {
+        if (imageFileHandler == null || !loadImageFiles(imageFilesDirectory, settings.getFileNameExt(), true)) {
             toggleOff();
         }
 
@@ -140,7 +142,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.add(mainPanel);
     }
 
-    public boolean loadImageFiles(String directoryPath, ImageFileNameExtension extension, boolean isGuiBeingBuilt) {
+    public boolean loadImageFiles(Path directoryPath, ImageFileNameExtension extension, boolean isGuiBeingBuilt) {
         if (directoryPath == null) return false;
 
         // Prüfe, ob das Verzeichnis passende Bilder hat
@@ -229,7 +231,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     @Override
     public void toggleOff() {
-        imageFileHandler.clear(true);
+        if(imageFileHandler != null) {
+            imageFileHandler.clear(true);
+        }
 
         for (ToggleListener listener : toggleListeners) {
             listener.toggleOff();
@@ -255,7 +259,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     @Override
     public void appGainedFocus() {
         // Überprüfe, ob Bilder noch vorhanden sind
-        imageFileHandler.checkMissingFiles();
+        if(imageFileHandler != null) {
+            imageFileHandler.checkMissingFiles();
+        }
 
         for (AppFocusListener listener : appFocusListeners) {
             listener.appGainedFocus();
@@ -268,7 +274,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     public void confirmExitApp() {
-        if (configHandler.isConfirmExit()) {
+        if (settings.isConfirmExit()) {
             JCheckBox checkBox = new JCheckBox(getWord("optionPane.closeApp.dont_ask_again"));
             Object[] message = new Object[]{getWord("optionPane.closeApp.question"), checkBox};
 
@@ -284,11 +290,11 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             if (option != JOptionPane.YES_OPTION) return;
 
             // Wenn Checkbox aktiv → Einstellung merken
-            if (checkBox.isSelected()) configHandler.setConfirmExit(false);
+            if (checkBox.isSelected()) settings.setConfirmExit(false);
         }
 
-        // Config abspeichern &  Anwendung beenden
-        configHandler.saveConfig();
+        // Settings abspeichern &  Anwendung beenden
+        settings.save();
         System.exit(0);
     }
 }

@@ -2,13 +2,13 @@ package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
+import de.uzk.config.ScreenshotHelper;
 import de.uzk.gui.*;
 import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static de.uzk.Main.configHandler;
 import static de.uzk.Main.imageFileHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 
@@ -90,7 +90,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     }
 
     private void initCheckBox(JCheckBox checkBox, boolean isMirrorXBox) {
-        boolean startValue = isMirrorXBox ? imageFileHandler.isImageMirrorX() : imageFileHandler.isImageMirrorY();
+        boolean startValue = imageFileHandler != null && (isMirrorXBox ? imageFileHandler.isImageMirrorX() : imageFileHandler.isImageMirrorY());
         checkBox.setSelected(startValue);
         checkBox.addItemListener(e -> {
 //            if (GuiUtils.isEnabled(checkBox)) {
@@ -104,7 +104,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     public JSpinner getDegreeSpinner(SpinnerNumberModel spinnerModel) {
         JSpinner spinner = new JSpinner(spinnerModel);
 
-        Number rotation = imageFileHandler.getImageRotation();
+        Number rotation = imageFileHandler != null ? imageFileHandler.getImageRotation() : 0;
         if (GuiUtils.valueFitsInRange(rotation, spinnerModel)) spinner.setValue(rotation);
         else setRotationInImageHandler(spinner);
 
@@ -149,6 +149,6 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     }
 
     private void updateScreenshotCounter() {
-        this.screenshots.setText(String.valueOf(configHandler.getScreenshotCount()));
+        this.screenshots.setText(String.valueOf(ScreenshotHelper.getScreenshotCount()));
     }
 }

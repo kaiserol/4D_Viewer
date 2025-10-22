@@ -40,8 +40,8 @@ public final class GuiUtils {
     }
 
     public static void initFlatLaf() {
-        FlatLaf.setup(configHandler.getTheme().isLight() ? getLightMode() : getDarkMode());
-        borderColor = configHandler.getTheme().isLight() ? Color.LIGHT_GRAY : Color.DARK_GRAY;
+        FlatLaf.setup(settings.getTheme().isLight() ? getLightMode() : getDarkMode());
+        borderColor = settings.getTheme().isLight() ? Color.LIGHT_GRAY : Color.DARK_GRAY;
 
         // MacOS Eigenschaften
         if (operationSystem.isMacOS()) {
@@ -100,7 +100,7 @@ public final class GuiUtils {
 
         // Font Eigenschaften
         font = UIManager.getFont("defaultFont");
-        updateFontSize(configHandler.getFontSize());
+        updateFontSize(settings.getFontSize());
     }
 
     public static Color getBorderColor() {
@@ -108,12 +108,12 @@ public final class GuiUtils {
     }
 
     public static void decreaseFont(Gui gui) {
-        int newFontSize = configHandler.getFontSize() - 1;
+        int newFontSize = settings.getFontSize() - 1;
         if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
     }
 
     public static void increaseFont(Gui gui) {
-        int newFontSize = configHandler.getFontSize() + 1;
+        int newFontSize = settings.getFontSize() + 1;
         if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
     }
 
@@ -123,7 +123,7 @@ public final class GuiUtils {
     }
 
     private static boolean updateFontSize(float fontSize) {
-        if (configHandler.setFontSize((int) fontSize)) {
+        if (settings.setFontSize((int) fontSize)) {
             font = font.deriveFont(fontSize);
             UIManager.put("defaultFont", font);
             FlatLaf.updateUI();
@@ -134,9 +134,9 @@ public final class GuiUtils {
 
     public static void toggleTheme(Gui gui) {
         UIManager.getDefaults().clear();
-        configHandler.toggleTheme();
+        settings.toggleTheme();
 
-        logger.info("Changing Theme from '" + configHandler.getTheme().opposite() + "' to '" + configHandler.getTheme() + "'");
+        logger.info("Changing Theme from '" + settings.getTheme().opposite() + "' to '" + settings.getTheme() + "'");
         initFlatLaf();
         FlatLaf.updateUI();
         gui.updateTheme();

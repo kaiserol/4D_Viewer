@@ -1,6 +1,7 @@
 package de.uzk;
 
 import de.uzk.config.ConfigHandler;
+import de.uzk.config.Settings;
 import de.uzk.gui.Gui;
 import de.uzk.image.ImageFileHandler;
 import de.uzk.logger.LogEntryHandler;
@@ -13,25 +14,26 @@ import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
 
 public class Main {
+
+
     public static final LogEntryHandler logger;
     public static final OperatingSystem operationSystem;
-    public static final ConfigHandler configHandler;
-    public static final ImageFileHandler imageFileHandler;
+    public static  ImageFileHandler imageFileHandler;
     public static final MarkerHandler markerHandler;
+    public static final Settings settings;
 
     static {
+
         logger = new LogEntryHandler(Main.class.getName());
         operationSystem = OperatingSystem.getOP();
-        imageFileHandler = new ImageFileHandler();
-        configHandler = new ConfigHandler();
         markerHandler = new MarkerHandler();
+        settings = Settings.load();
     }
 
     public static void main(String[] args) {
-        String imageFilesDirectory = configHandler.loadConfig();
 
         SwingUtilities.invokeLater(() -> {
-            Gui gui = new Gui(imageFilesDirectory);
+            Gui gui = new Gui(Settings.load().getLastHistory());
 
             // Behandle den Shortcut: Cmd+Q (unter macOS)
             if (operationSystem.isMacOS() && Desktop.isDesktopSupported()) {

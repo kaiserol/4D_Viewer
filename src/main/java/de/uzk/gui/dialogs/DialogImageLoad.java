@@ -1,5 +1,6 @@
 package de.uzk.gui.dialogs;
 
+import de.uzk.image.ImageFileHandler;
 import de.uzk.image.ImageFileNameExtension;
 import de.uzk.image.LoadingImageListener;
 import de.uzk.image.LoadingResult;
@@ -11,6 +12,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static de.uzk.Main.imageFileHandler;
 import static de.uzk.Main.logger;
@@ -118,10 +121,10 @@ public class DialogImageLoad implements LoadingImageListener {
         return textField;
     }
 
-    public LoadingResult loadImages(String directoryPath, ImageFileNameExtension extension) {
+    public LoadingResult loadImages(Path directoryPath, ImageFileNameExtension extension) {
         this.dialog.setTitle(getWord("dialog.imageLoading.title") + " (" + extension.getDescription() + ")");
-        File directory = new File(directoryPath).isFile() ? new File(directoryPath).getParentFile() : new File(directoryPath);
-        this.textFieldDirectoryName.setText(directory.getAbsolutePath());
+        Path directory = Files.isDirectory(directoryPath) ? directoryPath : directoryPath.getParent();
+        this.textFieldDirectoryName.setText(directory.toAbsolutePath().toString());
 
         // Fenster packen
         this.dialog.pack();
@@ -138,9 +141,10 @@ public class DialogImageLoad implements LoadingImageListener {
         return this.result != null ? this.result : LoadingResult.INTERRUPTED;
     }
 
-    private void startThread(String directoryPath, ImageFileNameExtension extension) {
+    private void startThread(Path directoryPath, ImageFileNameExtension extension) {
         if (this.thread != null) return;
         this.thread = new Thread(() -> {
+            imageFileHandler = new ImageFileHandler();
             this.result = imageFileHandler.setImageFilesDirectory(directoryPath, extension, DialogImageLoad.this);
             SwingUtilities.invokeLater(this.dialog::dispose);
         });

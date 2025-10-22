@@ -6,7 +6,7 @@ import de.uzk.utils.StringUtils;
 import javax.swing.*;
 import java.awt.*;
 
-import static de.uzk.Main.configHandler;
+import static de.uzk.Main.settings;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogSettings {
@@ -17,7 +17,7 @@ public class DialogSettings {
     }
 
     public void show(Gui gui) {
-        this.oldConfirmExit = configHandler.isConfirmExit();
+        this.oldConfirmExit = settings.isConfirmExit();
 
         int option = JOptionPane.showConfirmDialog(
                 gui.getContainer(),
@@ -29,7 +29,7 @@ public class DialogSettings {
         if (option != JOptionPane.OK_OPTION) return;
 
         // Einstellungen aktualisieren
-        configHandler.setConfirmExit(checkBox.isSelected());
+        settings.setConfirmExit(checkBox.isSelected());
     }
 
     private JPanel createSettingsPanel() {

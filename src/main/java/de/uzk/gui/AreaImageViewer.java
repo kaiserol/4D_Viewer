@@ -2,6 +2,7 @@ package de.uzk.gui;
 
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
+import de.uzk.config.ScreenshotHelper;
 import de.uzk.image.Axis;
 import de.uzk.markers.MarkerMapping;
 
@@ -122,7 +123,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
             }
         } else {
             // Wenn das Bild nicht geladen werden konnte, zeigt es eine Fehlermeldung an
-            String text = imageFileHandler.isEmpty() ? "" : getWord("placeholder.imageCouldNotLoad");
+            String text = imageFileHandler == null ? "" : getWord("placeholder.imageCouldNotLoad");
             GuiUtils.drawCenteredText(g2D, text, this.panelImage);
         }
     }
@@ -166,7 +167,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         switch (actionType) {
             case ACTION_EDIT_IMAGE -> updateCurrentImage();
             case SHORTCUT_TAKE_SCREENSHOT -> {
-                if (originalImage != null && configHandler.saveScreenshot(this.originalImage)) {
+                if (originalImage != null && ScreenshotHelper.saveScreenshot(this.originalImage)) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER);
                 }
             }
@@ -211,7 +212,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     // Hilfsfunktionen
     // ==========================================================
     private void updateCurrentImage() {
-        File file = imageFileHandler.getImageFile() != null ? imageFileHandler.getImageFile().getFile() : null;
+        File file = imageFileHandler != null ? imageFileHandler.getImageFile() != null ? imageFileHandler.getImageFile().getFile() : null: null;
         this.currentImage = this.originalImage = (file != null ? Icons.loadImage(file, false) : null);
         if (this.originalImage != null) this.currentImage = GuiUtils.getEditedImage(this.originalImage, true);
         this.container.repaint();

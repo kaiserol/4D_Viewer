@@ -1,19 +1,21 @@
 package de.uzk.image;
 
+import de.uzk.config.Settings;
 import de.uzk.utils.StringUtils;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.*;
 
 import static de.uzk.Main.logger;
+import static de.uzk.Main.settings;
 import static de.uzk.gui.GuiUtils.COLOR_RED;
 
 public class ImageFileHandler {
     // Bild Eigenschaften
     private File imageFilesDirectory;
-    private ImageFileNameExtension imageFileNameExtension;
-    private String imageFileNameTimeSep;
-    private String imageFileNameLevelSep;
+    private String imageFileNameTimeSep = "X";
+    private String imageFileNameLevelSep = "L";
     private boolean imageMirrorX;
     private boolean imageMirrorY;
     private int imageRotation;
@@ -39,23 +41,23 @@ public class ImageFileHandler {
         return this.imageFilesDirectory;
     }
 
-    public LoadingResult setImageFilesDirectory(String directoryPath, ImageFileNameExtension extension, LoadingImageListener progress) {
-        if (directoryPath != null && !directoryPath.isBlank()) {
-            File newFile = new File(directoryPath);
+    public LoadingResult setImageFilesDirectory(Path directoryPath, ImageFileNameExtension extension, LoadingImageListener progress) {
+        if (directoryPath != null) {
+            File newFile = directoryPath.toFile();
             File directory = newFile.isFile() ? newFile.getParentFile() : newFile;
 
             // Prüfe, ob das Verzeichnis bereits geladen worden ist
             boolean sameDirectory = Objects.equals(this.imageFilesDirectory, directory);
-            boolean sameExtension = this.imageFileNameExtension == extension;
+            boolean sameExtension = settings.getFileNameExt() == extension;
             if (sameDirectory && sameExtension) return LoadingResult.ALREADY_LOADED;
 
             if (directory.isDirectory()) {
                 File oldDirectory = this.imageFilesDirectory;
-                ImageFileNameExtension oldExtension = this.imageFileNameExtension;
+                ImageFileNameExtension oldExtension = settings.getFileNameExt();
 
                 // Verzeichnis & Datei-Typ aktualisieren
                 this.imageFilesDirectory = directory;
-                this.imageFileNameExtension = extension;
+                settings.setFileNameExt(extension);
 
                 // Setze das Verzeichnis zurück, wenn das übergebene Verzeichnis keine Image-Files hat
                 try {
@@ -63,14 +65,14 @@ public class ImageFileHandler {
 
                     // Zurücksetzen der Variablen
                     this.imageFilesDirectory = oldDirectory;
-                    this.imageFileNameExtension = oldExtension;
+                    settings.setFileNameExt(oldExtension);
                     return LoadingResult.DIRECTORY_HAS_NO_IMAGES;
                 } catch (InterruptedException e) {
                     logger.warning("Loading Images was interrupted.");
 
                     // Zurücksetzen der Variablen
                     this.imageFilesDirectory = oldDirectory;
-                    this.imageFileNameExtension = oldExtension;
+                    settings.setFileNameExt(oldExtension);
                     return LoadingResult.INTERRUPTED;
                 }
             }
@@ -84,15 +86,6 @@ public class ImageFileHandler {
 
     public boolean hasImageFilesDirectory() {
         return this.imageFilesDirectory != null;
-    }
-
-    public ImageFileNameExtension getImageFileNameExtension() {
-        return this.imageFileNameExtension;
-    }
-
-    public void setImageFileNameExtension(String extension) {
-        ImageFileNameExtension temp = ImageFileNameExtension.fromExtension(extension);
-        this.imageFileNameExtension = temp != null ? temp : ImageFileNameExtension.getDefault();
     }
 
     public String getImageFileNameTimeSep() {
@@ -345,7 +338,7 @@ public class ImageFileHandler {
         return "(?i)" +                            // Case-insensitive Matching
                 this.imageFileNameTimeSep + "\\d{1,5}" +   // Zeitkomponente (1–5 Ziffern)
                 this.imageFileNameLevelSep + "\\d{1,3}" +  // Levelkomponente (1–3 Ziffern)
-                "\\." + StringUtils.formatArray(this.imageFileNameExtension.getExtensions(), "|", '(', ')') +
+                "\\." + StringUtils.formatArray(settings.getFileNameExt().getExtensions(), "|", '(', ')') +
                 "$"; // Dateiende
     }
 

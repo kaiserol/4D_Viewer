@@ -11,8 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import static de.uzk.Main.configHandler;
-import static de.uzk.Main.logger;
+import static de.uzk.Main.*;
 
 public final class Icons {
     // edit icons
@@ -111,7 +110,7 @@ public final class Icons {
         for (FlatSVGIcon svgIcon : ICONS_DIFFERENT_COLORS) {
             // Tausche Farben aus
             updateSVGIconsColor(svgIcon, new FlatSVGIcon.ColorFilter(color -> {
-                if (color.equals(Color.BLACK)) return configHandler.getTheme().isLight() ? Color.GRAY : Color.WHITE;
+                if (color.equals(Color.BLACK)) return settings.getTheme().isLight() ? Color.GRAY : Color.WHITE;
                 return color;
             }));
         }

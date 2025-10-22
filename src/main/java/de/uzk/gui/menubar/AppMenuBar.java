@@ -2,14 +2,14 @@ package de.uzk.gui.menubar;
 
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
-import de.uzk.config.ConfigHandler;
+import de.uzk.config.Settings;
 import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
 
-import static de.uzk.Main.configHandler;
+import static de.uzk.Main.settings;
 import static de.uzk.action.ActionType.*;
 import static de.uzk.config.LanguageHandler.getWord;
 import static de.uzk.gui.Icons.*;
@@ -99,10 +99,10 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     }
 
     private void updateFontItems() {
-        int fontSize = configHandler.getFontSize();
-        itemFontDecrease.getComponent().setEnabled(fontSize != ConfigHandler.MIN_FONT_SIZE);
-        itemFontIncrease.getComponent().setEnabled(fontSize != ConfigHandler.MAX_FONT_SIZE);
-        itemFontRestore.getComponent().setEnabled(fontSize != ConfigHandler.DEFAULT_FONT_SIZE);
+        int fontSize = settings.getFontSize();
+        itemFontDecrease.getComponent().setEnabled(fontSize != Settings.MIN_FONT_SIZE);
+        itemFontIncrease.getComponent().setEnabled(fontSize != Settings.MAX_FONT_SIZE);
+        itemFontRestore.getComponent().setEnabled(fontSize != Settings.DEFAULT_FONT_SIZE);
         gui.updateUI();
     }
 
