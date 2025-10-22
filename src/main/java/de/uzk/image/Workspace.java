@@ -40,7 +40,7 @@ public class Workspace {
             Path directory = Files.isDirectory(directoryPath) ? directoryPath : directoryPath.getParent();
 
             Workspace workspace = new Workspace();
-            workspace.config = Config.load(directoryPath);
+            workspace.config = Config.load(directory);
 
             // Verzeichnis & Datei-Typ aktualisieren
             workspace.imageFilesDirectory = directory;
@@ -50,6 +50,7 @@ public class Workspace {
             try {
                 if (workspace.loadImageFiles(progress)) {
                     progress.onFinished(LoadingResult.LOADED);
+                    settings.pushHistory(directory);
                     return workspace;
                 }
 

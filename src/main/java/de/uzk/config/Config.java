@@ -10,6 +10,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static de.uzk.Main.settings;
+
 public class Config implements Serializable {
     private static final Path CONFIG_FILE_NAME = Path.of("config.json");
 
@@ -90,14 +92,21 @@ public class Config implements Serializable {
     }
 
     public static Config load(Path location) {
+        return load(location, true);
+    }
+
+    public static Config load(Path location, boolean fallback) {
         try(BufferedReader in = Files.newBufferedReader(location.resolve(CONFIG_FILE_NAME))) {
             Gson gson = new Gson();
             return gson.fromJson(in, Config.class);
 
         } catch (IOException e) {
 
-            //TODO wenn keine lokale config vorhanden ist (FileNotFoundException als separaten fall?) dann sollte die zuletzt geöffnete config geladen werden
-            return new Config();
+           if(fallback && settings.getLastHistory() != null) {
+               return Config.load(settings.getLastHistory(), false);
+           }
+
+           return new Config();
         }
     }
 }
