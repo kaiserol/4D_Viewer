@@ -81,7 +81,7 @@ public class DialogDisclaimer {
         gbc.gridx = 0;
         gbc.gridy = row;
         gbc.insets.right = 20;
-        panel.add(new JLabel(StringUtils.wrapHtml(StringUtils.applyFontStyle(label, Font.BOLD))), gbc);
+        panel.add(new JLabel(StringUtils.wrapHtml(StringUtils.wrapBold(label))), gbc);
 
         gbc.gridx = 1;
         gbc.insets.right = 0;
@@ -96,9 +96,9 @@ public class DialogDisclaimer {
                         new EmptyBorder(10, 0, 10, 0))));
         copyrightPanel.setLayout(new BorderLayout());
 
-        String copyRightText = StringUtils.wrapHtml(StringUtils.wrapCenter(StringUtils.applyFontStyle(
+        String copyRightText = StringUtils.wrapHtml(StringUtils.wrapCenter(
                 getWord("dialog.disclaimer.copyRight1") + "<br>" +
-                        getWord("dialog.disclaimer.copyRight2"), Font.PLAIN)));
+                        getWord("dialog.disclaimer.copyRight2")));
         JLabel copyRightLabel = new JLabel(copyRightText);
         copyRightLabel.setHorizontalAlignment(SwingConstants.CENTER);
         copyrightPanel.add(copyRightLabel, BorderLayout.CENTER);

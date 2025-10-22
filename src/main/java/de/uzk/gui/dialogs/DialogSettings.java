@@ -45,8 +45,7 @@ public class DialogSettings {
         gbc.gridy++;
 
         // Abschnitt: Fenster-Verhalten
-        panel.add(new JLabel(StringUtils.wrapHtml(StringUtils.applyFontStyle(
-                getWord("dialog.settings.section.windowBehavior"), Font.BOLD))), gbc);
+        panel.add(new JLabel(StringUtils.wrapHtml(StringUtils.wrapBold(getWord("dialog.settings.section.windowBehavior")))), gbc);
 
         // Checkbox für „Bestätigung beim Schließen“
         this.checkBox = new JCheckBox();

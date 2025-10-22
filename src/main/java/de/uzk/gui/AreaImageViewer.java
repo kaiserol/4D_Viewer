@@ -78,7 +78,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         }
     }
 
-    // Klick holt Fokus
+    // Listener für Fokusaktivierung
     private class FocusMouseListener extends MouseAdapter {
         @Override
         public void mouseReleased(MouseEvent e) {

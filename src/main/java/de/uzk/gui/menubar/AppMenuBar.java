@@ -17,8 +17,8 @@ import static de.uzk.gui.Icons.*;
 public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     private final CustomMenuBar menuBar;
     private CustomMenuItem itemFontDecrease;
-    private CustomMenuItem itemFontRestore;
     private CustomMenuItem itemFontIncrease;
+    private CustomMenuItem itemFontRestore;
 
     public AppMenuBar(Gui gui, ActionHandler actionHandler) {
         super(new JMenuBar(), gui);
@@ -62,8 +62,8 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
 
         // font: decrease, restore, increase
         menuWindow.add(itemFontDecrease = new CustomMenuItem(getWord("items.window.fontSizeDecrease"), actionHandler, SHORTCUT_FONT_SIZE_DECREASE));
-        menuWindow.add(itemFontRestore = new CustomMenuItem(getWord("items.window.fontSizeRestore"), actionHandler, SHORTCUT_FONT_SIZE_RESTORE));
         menuWindow.add(itemFontIncrease = new CustomMenuItem(getWord("items.window.fontSizeIncrease"), actionHandler, SHORTCUT_FONT_SIZE_INCREASE));
+        menuWindow.add(itemFontRestore = new CustomMenuItem(getWord("items.window.fontSizeRestore"), actionHandler, SHORTCUT_FONT_SIZE_RESTORE));
         menuWindow.addSeparator();
         updateFontItems();
 
@@ -101,8 +101,8 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     private void updateFontItems() {
         int fontSize = configHandler.getFontSize();
         itemFontDecrease.getComponent().setEnabled(fontSize != ConfigHandler.MIN_FONT_SIZE);
-        itemFontRestore.getComponent().setEnabled(fontSize != ConfigHandler.DEFAULT_FONT_SIZE);
         itemFontIncrease.getComponent().setEnabled(fontSize != ConfigHandler.MAX_FONT_SIZE);
+        itemFontRestore.getComponent().setEnabled(fontSize != ConfigHandler.DEFAULT_FONT_SIZE);
         gui.updateUI();
     }
 

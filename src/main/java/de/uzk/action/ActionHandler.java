@@ -44,12 +44,9 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     // ======================================
     @Override
     public void keyPressed(KeyEvent e) {
-        executeAction(ActionType.getAction(e));
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        executeAction(ActionType.getAction(e));
+        ActionType actionType = ActionType.getAction(e);
+        if (actionType == null) return;
+        navigateImage(actionType);
     }
 
     // ======================================
@@ -100,7 +97,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     // Aktionen aus Tastaturkürzeln
     // ======================================
     public void executeAction(ActionType actionType) {
-        if (actionType == null) return; // Der Fall sollte eigentlich nie eintreten
+        if (actionType == null) return;
         switch (actionType) {
             // edit actions
             case SHORTCUT_TOGGLE_PIN_TIME -> gui.handleAction(SHORTCUT_TOGGLE_PIN_TIME);
@@ -108,6 +105,23 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_TURN_IMAGE_90_RIGHT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_RIGHT);
             case SHORTCUT_TAKE_SCREENSHOT -> gui.handleAction(SHORTCUT_TAKE_SCREENSHOT);
 
+            // window actions
+            case SHORTCUT_FONT_SIZE_DECREASE -> GuiUtils.decreaseFont(gui);
+            case SHORTCUT_FONT_SIZE_INCREASE -> GuiUtils.increaseFont(gui);
+            case SHORTCUT_FONT_SIZE_RESTORE -> GuiUtils.restoreFont(gui);
+
+            case SHORTCUT_SHOW_DISCLAIMER -> dialogDisclaimer.show();
+            case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();
+
+            // settings actions
+            case SHORTCUT_SELECT_LANGUAGE -> dialogLanguageSelection.show(gui);
+            case SHORTCUT_TOGGLE_THEME -> GuiUtils.toggleTheme(gui);
+            case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show(gui);
+        }
+    }
+
+    private void navigateImage(ActionType actionType) {
+        switch (actionType) {
             // navigate actions
             case SHORTCUT_GO_TO_FIRST_IMAGE -> scrollToBoundary(Axis.TIME, true);
             case SHORTCUT_GO_TO_PREV_IMAGE -> scroll(Axis.TIME, -1, false);
@@ -118,19 +132,6 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_GO_TO_PREV_LEVEL -> scroll(Axis.LEVEL, -1, false);
             case SHORTCUT_GO_TO_NEXT_LEVEL -> scroll(Axis.LEVEL, 1, false);
             case SHORTCUT_GO_TO_LAST_LEVEL -> scrollToBoundary(Axis.LEVEL, false);
-
-            // window actions
-            case SHORTCUT_FONT_SIZE_DECREASE -> GuiUtils.decreaseFont(gui);
-            case SHORTCUT_FONT_SIZE_RESTORE -> GuiUtils.restoreFont(gui);
-            case SHORTCUT_FONT_SIZE_INCREASE -> GuiUtils.increaseFont(gui);
-
-            case SHORTCUT_SHOW_DISCLAIMER -> dialogDisclaimer.show();
-            case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();
-
-            // settings actions
-            case SHORTCUT_SELECT_LANGUAGE -> dialogLanguageSelection.show(gui);
-            case SHORTCUT_TOGGLE_THEME -> GuiUtils.toggleTheme(gui);
-            case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show(gui);
         }
     }
 

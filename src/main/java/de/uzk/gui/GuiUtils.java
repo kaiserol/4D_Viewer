@@ -112,13 +112,13 @@ public final class GuiUtils {
         if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
     }
 
-    public static void restoreFont(Gui gui) {
-        int newFontSize = ConfigHandler.DEFAULT_FONT_SIZE;
+    public static void increaseFont(Gui gui) {
+        int newFontSize = configHandler.getFontSize() + 1;
         if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
     }
 
-    public static void increaseFont(Gui gui) {
-        int newFontSize = configHandler.getFontSize() + 1;
+    public static void restoreFont(Gui gui) {
+        int newFontSize = ConfigHandler.DEFAULT_FONT_SIZE;
         if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
     }
 

@@ -24,10 +24,10 @@ public enum ActionType {
     // window shortcuts
     SHORTCUT_FONT_SIZE_DECREASE(new Shortcut(KeyEvent.VK_MINUS, Shortcut.CTRL_DOWN),
             new Shortcut(KeyEvent.VK_SUBTRACT, Shortcut.CTRL_DOWN)),
-    SHORTCUT_FONT_SIZE_RESTORE(new Shortcut(KeyEvent.VK_0, Shortcut.CTRL_DOWN),
-            new Shortcut(KeyEvent.VK_EQUALS, Shortcut.CTRL_DOWN)),
     SHORTCUT_FONT_SIZE_INCREASE(new Shortcut(KeyEvent.VK_PLUS, Shortcut.CTRL_DOWN),
             new Shortcut(KeyEvent.VK_ADD, Shortcut.CTRL_DOWN)),
+    SHORTCUT_FONT_SIZE_RESTORE(new Shortcut(KeyEvent.VK_0, Shortcut.CTRL_DOWN),
+            new Shortcut(KeyEvent.VK_EQUALS, Shortcut.CTRL_DOWN)),
 
     SHORTCUT_SHOW_DISCLAIMER(new Shortcut(KeyEvent.VK_F1)),
     SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F2)),

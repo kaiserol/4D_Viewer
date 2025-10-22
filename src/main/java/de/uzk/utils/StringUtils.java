@@ -1,7 +1,5 @@
 package de.uzk.utils;
 
-import org.intellij.lang.annotations.MagicConstant;
-
 import java.awt.*;
 import java.io.File;
 
@@ -65,7 +63,23 @@ public final class StringUtils {
      * @return Text in HTML-Font-Tag mit Farbangabe
      */
     public static String wrapColor(String text, Color color) {
-        return "<font color=\"" + colorToHex(color) + "\">" + text + "</font>";
+        return "<span color=\"" + colorToHex(color) + "\">" + text + "</span>";
+    }
+
+    /**
+     * Ändert die Schriftgröße eines Textes durch HTML-Formatierung.
+     * Die Größe wird in Prozent des Standardwertes angegeben und in em-Einheiten umgerechnet.
+     * Der Text wird in einem span-Tag platziert.
+     *
+     * @param text       der zu formatierende Text
+     * @param percentage Schriftgröße in Prozent (0-500)
+     * @return HTML-formatierter Text mit angepasster Schriftgröße
+     * @throws IllegalArgumentException wenn der Prozentwert außerhalb des gültigen Bereichs liegt
+     */
+    public static String applyFontSize(String text, int percentage) {
+        if (percentage < 0 || percentage > 500) throw new IllegalArgumentException("Percentage must be between 0 and 500");
+        String fontSizeString = (percentage / 100.0) + "em";
+        return "<span style='font-size: %s;'>".formatted(fontSizeString) + text + "</span>";
     }
 
     /**
@@ -73,21 +87,6 @@ public final class StringUtils {
      */
     public static String wrapBold(String text) {
         return "<b>" + text + "</b>";
-    }
-
-    /**
-     * Umgibt den Text mit einer Überschrift.
-     */
-    public static String wrapHeading(String text, int size) {
-        if (size < 1 || size > 6) throw new IllegalArgumentException("size must be between 1 and 6");
-        return "<h" + size + " style='margin: 0; padding:0;'>" + text + "</h" + size + ">";
-    }
-
-    /**
-     * Umgibt den Text mit einem <small>-Tag.
-     */
-    public static String wrapSmall(String text) {
-        return "<p style='font-size: 0.75em; white-space:nowrap;'>" + text + "</p>";
     }
 
     /**
@@ -116,6 +115,13 @@ public final class StringUtils {
     }
 
     /**
+     * Umgibt Text mit dem HTML-Haupttag.
+     */
+    public static String wrapHtml(String text) {
+        return "<html>" + text + "</html>";
+    }
+
+    /**
      * Baut ein vollständiges HTML-Dokument mit Grundstil auf
      * (Monospaced-Schriftart und einfache Absatzabstände).
      *
@@ -126,29 +132,6 @@ public final class StringUtils {
         String fontFamilyText = "font-family: %s;".formatted("monospaced");
         return wrapHtml("<head><style>body { %s } p {margin: 5px 0}</style></head><body>"
                 .formatted(fontFamilyText) + htmlContent + "</body>");
-    }
-
-    /**
-     * Umgibt Text mit dem HTML-Haupttag.
-     */
-    public static String wrapHtml(String text) {
-        return "<html>" + text + "</html>";
-    }
-
-    /**
-     * Wendet einen bestimmten Schriftstil auf Text an (fett, kursiv oder beides).
-     *
-     * @param text      der Text, der formatiert werden soll
-     * @param fontStyle Schriftstil (Font.PLAIN, Font.BOLD, Font.ITALIC)
-     * @return entsprechend formatierter Text in HTML-Form
-     */
-    public static String applyFontStyle(String text, @MagicConstant(flags = {Font.PLAIN, Font.BOLD, Font.ITALIC}) int fontStyle) {
-        return switch (fontStyle) {
-            case Font.BOLD -> wrapBold(text);
-            case Font.ITALIC -> wrapItalic(text);
-            case Font.BOLD | Font.ITALIC -> wrapBold(wrapItalic(text));
-            default -> text;
-        };
     }
 
     /**

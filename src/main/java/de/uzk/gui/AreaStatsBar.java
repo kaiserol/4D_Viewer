@@ -73,18 +73,21 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
         int hour = time / 60 / 60;
 
         String timeString = String.format("%02d:%02d:%02d", hour, minute, seconds);
-        this.labelTime.setText(StringUtils.wrapHtml(StringUtils.wrapHeading(timeString, 2)));
+        this.labelTime.setText(StringUtils.wrapHtml(StringUtils.wrapBold(StringUtils.applyFontSize(
+                timeString, 175))));
     }
 
     private void updateLevel() {
         double level = (int) (imageFileHandler.getLevel() * imageFileHandler.getShiftLevelUnit());
         String levelString = String.format("%.01f μm", level);
-        this.labelLevel.setText(StringUtils.wrapHtml(StringUtils.wrapSmall(levelString)));
+        this.labelLevel.setText(StringUtils.wrapHtml(StringUtils.applyFontSize(
+                levelString, 75)));
     }
 
     private void updateTimeLevel() {
         String timeString = String.format("%s: %d", getWord("items.nav.axis.time"), imageFileHandler.getTime());
         String levelString = String.format("%s: %d", getWord("items.nav.axis.level"), imageFileHandler.getLevel());
-        this.labelTimeLevel.setText(StringUtils.wrapHtml(StringUtils.wrapSmall(timeString + " | " + levelString)));
+        this.labelTimeLevel.setText(StringUtils.wrapHtml(StringUtils.wrapItalic(StringUtils.applyFontSize(
+                timeString + " | " + levelString, 75))));
     }
 }
