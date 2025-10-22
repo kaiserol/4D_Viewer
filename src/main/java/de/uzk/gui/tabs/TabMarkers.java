@@ -12,7 +12,7 @@ import de.uzk.markers.MarkerMapping;
 import javax.swing.*;
 import java.awt.*;
 
-import static de.uzk.Main.imageFileHandler;
+import static de.uzk.Main.workspace;
 import static de.uzk.Main.markerHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 
@@ -48,7 +48,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
 
         JButton add = new JButton(getWord("items.markers.addMarker"));
         add.addActionListener(e -> {
-            MarkerEditor initial = new MarkerEditor(imageFileHandler.getImageFile());
+            MarkerEditor initial = new MarkerEditor(workspace.getImageFile());
             int option = JOptionPane.showConfirmDialog(
                     null,
                     initial,
@@ -57,7 +57,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
             );
 
             if (option == JOptionPane.OK_OPTION) {
-                markerHandler.addMarker(initial.getMarker(), imageFileHandler.getTime());
+                markerHandler.addMarker(initial.getMarker(), workspace.getTime());
                 gui.handleAction(ActionType.ACTION_ADD_MARKER);
                 gui.updateUI();
             }

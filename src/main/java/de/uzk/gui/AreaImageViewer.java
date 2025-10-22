@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import static de.uzk.Main.*;
@@ -117,13 +118,13 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
             g2D.drawImage(this.currentImage, x, y, width, height, null);
 
             // Zeichnet Marker
-            List<MarkerMapping> marker = markerHandler.getMarkers(imageFileHandler.getTime());
+            List<MarkerMapping> marker = markerHandler.getMarkers(workspace.getTime());
             for (MarkerMapping m : marker) {
                 m.getMarker().draw(g2D, new Rectangle(x, y, width, height), scale);
             }
         } else {
             // Wenn das Bild nicht geladen werden konnte, zeigt es eine Fehlermeldung an
-            String text = imageFileHandler == null ? "" : getWord("placeholder.imageCouldNotLoad");
+            String text = workspace == null ? "" : getWord("placeholder.imageCouldNotLoad");
             GuiUtils.drawCenteredText(g2D, text, this.panelImage);
         }
     }
@@ -133,7 +134,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         JScrollBar scrollBar = new JScrollBar(orientation);
         scrollBar.addAdjustmentListener(e -> {
             // Abbrechen, wenn der Wert sich nicht geändert hat
-            int oldValue = (axis == Axis.TIME) ? imageFileHandler.getTime() : imageFileHandler.getLevel();
+            int oldValue = (axis == Axis.TIME) ? workspace.getTime() : workspace.getLevel();
             int newValue = e.getValue();
             if (oldValue == newValue) return;
 
@@ -180,8 +181,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         GuiUtils.setEnabled(this.container, true);
 
         updateCurrentImage();
-        setScrollBarValues(this.scrollBarTime, imageFileHandler.getTime(), imageFileHandler.getMaxTime());
-        setScrollBarValues(this.scrollBarLevel, imageFileHandler.getLevel(), imageFileHandler.getMaxLevel());
+        setScrollBarValues(this.scrollBarTime, workspace.getTime(), workspace.getMaxTime());
+        setScrollBarValues(this.scrollBarLevel, workspace.getLevel(), workspace.getMaxLevel());
     }
 
     @Override
@@ -198,8 +199,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     public void update(Axis axis) {
         updateCurrentImage();
         switch (axis) {
-            case TIME -> setScrollBarValue(this.scrollBarTime, imageFileHandler.getTime());
-            case LEVEL -> setScrollBarValue(this.scrollBarLevel, imageFileHandler.getLevel());
+            case TIME -> setScrollBarValue(this.scrollBarTime, workspace.getTime());
+            case LEVEL -> setScrollBarValue(this.scrollBarLevel, workspace.getLevel());
         }
     }
 
@@ -212,7 +213,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     // Hilfsfunktionen
     // ==========================================================
     private void updateCurrentImage() {
-        File file = imageFileHandler != null ? imageFileHandler.getImageFile() != null ? imageFileHandler.getImageFile().getFile() : null: null;
+        Path file = workspace != null ? workspace.getImageFile() != null ? workspace.getImageFile().getFile() : null: null;
         this.currentImage = this.originalImage = (file != null ? Icons.loadImage(file, false) : null);
         if (this.originalImage != null) this.currentImage = GuiUtils.getEditedImage(this.originalImage, true);
         this.container.repaint();

@@ -4,7 +4,6 @@ import de.uzk.gui.GuiUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -32,7 +31,7 @@ public class ScreenshotHelper {
                 String date = DATE_FORMAT.format(new Date());
                 int count = getNextScreenshotIndex(date);
 
-                Path fileName = Path.of(date, String.valueOf(count), imageFileHandler.getImageFile().getName());
+                Path fileName = Path.of(date + count + workspace.getImageFile().getName());
                 Path saveFile = SCREENSHOT_DIRECTORY.toAbsolutePath().resolve(fileName);
 
                 BufferedImage edited = GuiUtils.getEditedImage(originalImage, false);
@@ -50,7 +49,7 @@ public class ScreenshotHelper {
         int index = 1;
         if (Files.isDirectory(SCREENSHOT_DIRECTORY)) {
             try (DirectoryStream<Path> files = Files.newDirectoryStream(SCREENSHOT_DIRECTORY)) {
-                String fileNamePattern = date + "\\(\\d+\\)_" + imageFileHandler.getFileNamePattern();
+                String fileNamePattern = date + "\\(\\d+\\)_" + workspace.getFileNamePattern();
                 for (Path file : files) {
                     String filename = file.getFileName().toString();
                     if (filename.matches(fileNamePattern)) {
@@ -70,9 +69,9 @@ public class ScreenshotHelper {
 
     public static int getScreenshotCount() {
         int count = 0;
-        if (Files.isDirectory(SCREENSHOT_DIRECTORY) &&  imageFileHandler != null) {
+        if (Files.isDirectory(SCREENSHOT_DIRECTORY) &&  workspace != null) {
             try(DirectoryStream<Path> files = Files.newDirectoryStream(SCREENSHOT_DIRECTORY)) {
-                String filePattern = DATE_FORMAT_PATTERN + "\\(\\d+\\)_" + imageFileHandler.getFileNamePattern();
+                String filePattern = DATE_FORMAT_PATTERN + "\\(\\d+\\)_" + workspace.getFileNamePattern();
                 for (Path file : files) {
                     String filename = file.getFileName().toString();
                     if (filename.matches(filePattern)) count++;

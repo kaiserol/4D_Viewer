@@ -1,18 +1,20 @@
 package de.uzk.image;
 
-import java.io.File;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 
 public class ImageFile implements Comparable<ImageFile> {
-    private final File file;
+    private final Path file;
     private final String name;
     private final int time;
     private final int level;
 
-    public ImageFile(File file, int time, int level) {
+    public ImageFile(Path file, int time, int level) {
         if (file == null) throw new NullPointerException("File is null.");
         this.file = file;
-        this.name = file.getName();
+        this.name = file.getFileName().toString();
 
         if (time < 0) throw new IllegalArgumentException("Time must be greater than 0.");
         if (level < 0) throw new IllegalArgumentException("Level must be greater than 0.");
@@ -20,7 +22,7 @@ public class ImageFile implements Comparable<ImageFile> {
         this.level = level;
     }
 
-    public File getFile() {
+    public Path getFile() {
         return this.file;
     }
 
@@ -29,7 +31,7 @@ public class ImageFile implements Comparable<ImageFile> {
     }
 
     public boolean exists() {
-        return this.file.exists();
+        return Files.exists(this.file);
     }
 
     public int getTime() {

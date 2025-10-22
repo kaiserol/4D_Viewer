@@ -13,7 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-import static de.uzk.Main.imageFileHandler;
+import static de.uzk.Main.workspace;
 import static de.uzk.action.ActionType.*;
 
 public class ActionHandler extends KeyAdapter implements MouseWheelListener {
@@ -69,18 +69,18 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         if (abs > 1) {
             if (axis == Axis.TIME) {
                 int newTime = (rotation < 0) ?
-                        Math.max(0, imageFileHandler.getTime() - abs) :
-                        Math.min(imageFileHandler.getMaxTime(), imageFileHandler.getTime() + rotation);
-                imageFileHandler.setTime(newTime);
+                        Math.max(0, workspace.getTime() - abs) :
+                        Math.min(workspace.getMaxTime(), workspace.getTime() + rotation);
+                workspace.setTime(newTime);
             } else {
                 int newLevel = (rotation < 0) ?
-                        Math.max(0, imageFileHandler.getLevel() - abs) :
-                        Math.min(imageFileHandler.getMaxLevel(), imageFileHandler.getLevel() + rotation);
-                imageFileHandler.setLevel(newLevel);
+                        Math.max(0, workspace.getLevel() - abs) :
+                        Math.min(workspace.getMaxLevel(), workspace.getLevel() + rotation);
+                workspace.setLevel(newLevel);
             }
         } else {
-            if (rotation < 0) imageFileHandler.prev(axis);
-            else imageFileHandler.next(axis);
+            if (rotation < 0) workspace.prev(axis);
+            else workspace.next(axis);
         }
         gui.update(axis);
     }
@@ -88,8 +88,8 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     private void scrollToBoundary(Axis axis, boolean toFirst) {
         if (preventNextUpdate()) return;
 
-        if (toFirst) imageFileHandler.toFirst(axis);
-        else imageFileHandler.toLast(axis);
+        if (toFirst) workspace.toFirst(axis);
+        else workspace.toLast(axis);
         gui.update(axis);
     }
 
@@ -137,7 +137,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
 
     private boolean preventNextUpdate() {
         long now = System.currentTimeMillis();
-        long interval = imageFileHandler.getImageRotation() != 0 ? LONG_UPLOAD_INTERVAL_MS : UPDATE_INTERVAL_MS;
+        long interval = workspace.getConfig().getRotation() != 0 ? LONG_UPLOAD_INTERVAL_MS : UPDATE_INTERVAL_MS;
         if (now - lastUpdateTime < interval) return true;
         lastUpdateTime = now;
         return false;

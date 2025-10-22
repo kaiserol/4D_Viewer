@@ -4,7 +4,7 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import de.uzk.action.ActionType;
-import de.uzk.config.ConfigHandler;
+import de.uzk.config.Settings;
 import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
@@ -118,7 +118,7 @@ public final class GuiUtils {
     }
 
     public static void restoreFont(Gui gui) {
-        int newFontSize = ConfigHandler.DEFAULT_FONT_SIZE;
+        int newFontSize = Settings.DEFAULT_FONT_SIZE;
         if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
     }
 
@@ -154,8 +154,8 @@ public final class GuiUtils {
         int imageType = transparentBackground ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
 
         // Spiegelung & Rotation
-        BufferedImage mirrored = getMirroredImage(image, imageFileHandler.isImageMirrorX(), imageFileHandler.isImageMirrorY(), imageType);
-        return getRotatedImage(mirrored, imageFileHandler.getImageRotation(), imageType);
+        BufferedImage mirrored = getMirroredImage(image, workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), imageType);
+        return getRotatedImage(mirrored, workspace.getConfig().getRotation(), imageType);
     }
 
     private static BufferedImage getMirroredImage(BufferedImage image, boolean mirrorX, boolean mirrorY, int imageType) {

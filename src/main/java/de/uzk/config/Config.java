@@ -13,13 +13,13 @@ import java.nio.file.Path;
 public class Config implements Serializable {
     private static final Path CONFIG_FILE_NAME = Path.of("config.json");
 
-    private String timeSep;
-    private String levelSep;
-    private double timeUnit;
-    private double levelUnit;
-    private boolean mirrorX;
-    private boolean mirrorY;
-    private int rotation;
+    private String timeSep = "X";
+    private String levelSep = "L";
+    private double timeUnit = 30.0; //30s
+    private double levelUnit = 1.0; //1 um
+    private boolean mirrorX = false;
+    private boolean mirrorY = false;
+    private int rotation = 0;
 
 
 
@@ -93,7 +93,10 @@ public class Config implements Serializable {
         try(BufferedReader in = Files.newBufferedReader(location.resolve(CONFIG_FILE_NAME))) {
             Gson gson = new Gson();
             return gson.fromJson(in, Config.class);
+
         } catch (IOException e) {
+
+            //TODO wenn keine lokale config vorhanden ist (FileNotFoundException als separaten fall?) dann sollte die zuletzt geöffnete config geladen werden
             return new Config();
         }
     }

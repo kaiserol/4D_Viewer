@@ -8,7 +8,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-import static de.uzk.Main.imageFileHandler;
+import static de.uzk.Main.workspace;
 import static de.uzk.Main.logger;
 import static de.uzk.config.LanguageHandler.getWord;
 
@@ -89,7 +89,7 @@ public class DialogLogViewer {
     private JTabbedPane getTabs() {
         JTabbedPane tabs = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         tabs.add(getWord("dialog.logViewer.logs"), getLogsPanel());
-        if (imageFileHandler.getMissingImagesCount() > 0) {
+        if (workspace.getMissingImagesCount() > 0) {
             tabs.add(getWord("dialog.logViewer.missingImages"), getMissingImagesPanel());
         }
         return tabs;
@@ -104,7 +104,7 @@ public class DialogLogViewer {
     }
 
     private JComponent getMissingImagesPanel() {
-        String missingImages = StringUtils.wrapPre(imageFileHandler.getMissingImages());
+        String missingImages = StringUtils.wrapPre(workspace.getMissingImages());
         return getEditorPane(StringUtils.wrapHtmlDocument(missingImages));
     }
 

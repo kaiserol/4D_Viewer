@@ -154,9 +154,9 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
     }
 
     private void updateDirectoryText() {
-        ImageFile imageFile = imageFileHandler.getImageFile();
+        ImageFile imageFile = workspace.getImageFile();
         String imageFileString = imageFile == null ? null : StringUtils.FILE_SEP + imageFile.getName();
-        this.txtFieldDirectory.setText(imageFileHandler.getImageFilesDirectoryPath() + imageFileString);
+        this.txtFieldDirectory.setText(workspace.getImageFilesDirectoryPath() + imageFileString);
         this.txtFieldDirectory.setCaretPosition(0);
     }
 }

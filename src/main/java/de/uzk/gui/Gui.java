@@ -14,7 +14,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +75,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         updateTheme();
 
         // Lade Image-Files
-        if (imageFileHandler == null || !loadImageFiles(imageFilesDirectory, settings.getFileNameExt(), true)) {
+        if (workspace == null || !loadImageFiles(imageFilesDirectory, settings.getFileNameExt(), true)) {
             toggleOff();
         }
 
@@ -102,7 +101,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         updateTheme();
 
         // Prüfe, ob Bilder geladen sind
-        if (imageFileHandler.hasImageFilesDirectory()) toggleOn();
+        if (workspace != null) toggleOn();
         else toggleOff();
 
         // Fenster packen
@@ -213,7 +212,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     @Override
     public void handleAction(ActionType actionType) {
         if (actionType == ActionType.SHORTCUT_TOGGLE_PIN_TIME) {
-            imageFileHandler.togglePinTime();
+            workspace.togglePinTime();
         }
 
         for (HandleActionListener listener : handleActionListeners) {
@@ -231,8 +230,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     @Override
     public void toggleOff() {
-        if(imageFileHandler != null) {
-            imageFileHandler.clear(true);
+        if(workspace != null) {
+            workspace.clear(true);
         }
 
         for (ToggleListener listener : toggleListeners) {
@@ -259,8 +258,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     @Override
     public void appGainedFocus() {
         // Überprüfe, ob Bilder noch vorhanden sind
-        if(imageFileHandler != null) {
-            imageFileHandler.checkMissingFiles();
+        if(workspace != null) {
+            workspace.checkMissingFiles();
         }
 
         for (AppFocusListener listener : appFocusListeners) {

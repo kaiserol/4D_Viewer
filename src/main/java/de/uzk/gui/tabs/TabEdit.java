@@ -9,7 +9,7 @@ import de.uzk.utils.NumberUtils;
 import javax.swing.*;
 import java.awt.*;
 
-import static de.uzk.Main.imageFileHandler;
+import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 // TODO: Überarbeite Klasse
@@ -90,7 +90,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     }
 
     private void initCheckBox(JCheckBox checkBox, boolean isMirrorXBox) {
-        boolean startValue = imageFileHandler != null && (isMirrorXBox ? imageFileHandler.isImageMirrorX() : imageFileHandler.isImageMirrorY());
+        boolean startValue = workspace != null && (isMirrorXBox ? workspace.getConfig().isMirrorX() : workspace.getConfig().isMirrorY());
         checkBox.setSelected(startValue);
         checkBox.addItemListener(e -> {
 //            if (GuiUtils.isEnabled(checkBox)) {
@@ -104,7 +104,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     public JSpinner getDegreeSpinner(SpinnerNumberModel spinnerModel) {
         JSpinner spinner = new JSpinner(spinnerModel);
 
-        Number rotation = imageFileHandler != null ? imageFileHandler.getImageRotation() : 0;
+        Number rotation = workspace != null ? workspace.getConfig().getRotation() : 0;
         if (GuiUtils.valueFitsInRange(rotation, spinnerModel)) spinner.setValue(rotation);
         else setRotationInImageHandler(spinner);
 
@@ -119,15 +119,15 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
     private void setRotationInImageHandler(JSpinner spinner) {
         Number value = (Number) spinner.getValue();
-        imageFileHandler.setImageRotation(value.intValue());
+        workspace.getConfig().setRotation(value.intValue());
     }
 
     @Override
     public void handleAction(ActionType actionType) {
         if (actionType == ActionType.SHORTCUT_TURN_IMAGE_90_LEFT) {
-            degreeSpinner.setValue(NumberUtils.turn90Left(imageFileHandler.getImageRotation()));
+            degreeSpinner.setValue(NumberUtils.turn90Left(workspace.getConfig().getRotation()));
         } else if (actionType == ActionType.SHORTCUT_TURN_IMAGE_90_RIGHT) {
-            degreeSpinner.setValue(NumberUtils.turn90Right(imageFileHandler.getImageRotation()));
+            degreeSpinner.setValue(NumberUtils.turn90Right(workspace.getConfig().getRotation()));
         } else if (actionType == ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER) {
             updateScreenshotCounter();
         }

@@ -10,7 +10,7 @@ import de.uzk.markers.MarkerMapping;
 import javax.swing.*;
 import java.awt.*;
 
-import static de.uzk.Main.imageFileHandler;
+import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 /* Nur JPanel erweitern, da diese Komponente dynamisch während UI Updates erstellt wird.
@@ -43,8 +43,8 @@ public class MarkerMappingInfo extends JPanel {
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
         this.add(nameLabel, c);
 
-        SpinnerNumberModel fromModel = new SpinnerNumberModel(this.mapping.getFrom(), 0, imageFileHandler.getMaxTime(), 1);
-        SpinnerNumberModel toModel = new SpinnerNumberModel(this.mapping.getTo(), this.mapping.getFrom(), imageFileHandler.getMaxTime(), 1);
+        SpinnerNumberModel fromModel = new SpinnerNumberModel(this.mapping.getFrom(), 0, workspace.getMaxTime(), 1);
+        SpinnerNumberModel toModel = new SpinnerNumberModel(this.mapping.getTo(), this.mapping.getFrom(), workspace.getMaxTime(), 1);
 
         fromModel.addChangeListener(e -> {
             int newValue = fromModel.getNumber().intValue();
@@ -91,7 +91,7 @@ public class MarkerMappingInfo extends JPanel {
         GenericMarkerPreview edit = new GenericMarkerPreview(this.mapping.getMarker().getShape(), this.mapping.getMarker().getColor());
         edit.setOnClick(() -> {
 
-            MarkerEditor initial = new MarkerEditor(imageFileHandler.getImageFile(), new Marker(this.mapping.getMarker()));
+            MarkerEditor initial = new MarkerEditor(workspace.getImageFile(), new Marker(this.mapping.getMarker()));
             int option = JOptionPane.showConfirmDialog(
                     null,
                     initial,

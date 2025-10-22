@@ -1,6 +1,6 @@
 package de.uzk.gui.dialogs;
 
-import de.uzk.image.ImageFileHandler;
+import de.uzk.image.Workspace;
 import de.uzk.image.ImageFileNameExtension;
 import de.uzk.image.LoadingImageListener;
 import de.uzk.image.LoadingResult;
@@ -15,7 +15,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static de.uzk.Main.imageFileHandler;
+import static de.uzk.Main.workspace;
 import static de.uzk.Main.logger;
 import static de.uzk.config.LanguageHandler.getWord;
 
@@ -144,8 +144,7 @@ public class DialogImageLoad implements LoadingImageListener {
     private void startThread(Path directoryPath, ImageFileNameExtension extension) {
         if (this.thread != null) return;
         this.thread = new Thread(() -> {
-            imageFileHandler = new ImageFileHandler();
-            this.result = imageFileHandler.setImageFilesDirectory(directoryPath, extension, DialogImageLoad.this);
+            workspace = Workspace.open(directoryPath, extension, DialogImageLoad.this);
             SwingUtilities.invokeLater(this.dialog::dispose);
         });
         this.thread.start();
@@ -173,7 +172,7 @@ public class DialogImageLoad implements LoadingImageListener {
 
     @Override
     public void onLoadingStart() {
-        logger.info("Loading Images from '" + imageFileHandler.getImageFilesDirectoryPath() + "' ...");
+        logger.info("Loading Images...");
     }
 
     @Override
@@ -186,7 +185,7 @@ public class DialogImageLoad implements LoadingImageListener {
     }
 
     @Override
-    public void onScanningUpdate(int filesCount, int currentFileNumber, File currentFile, int imagesCount) throws InterruptedException {
+    public void onScanningUpdate(int filesCount, int currentFileNumber, Path currentFile, int imagesCount) throws InterruptedException {
         // Thread anhalten
         Thread.sleep(0, SLEEP_TIME_NANOS);
 
@@ -194,7 +193,7 @@ public class DialogImageLoad implements LoadingImageListener {
             updateProgress(filesCount, currentFileNumber, imagesCount);
             this.progressBar.setStringPainted(true);
             this.progressBar.setBorderPainted(true);
-            this.textFieldFileName.setText(currentFile.getName());
+            this.textFieldFileName.setText(currentFile.getFileName().toString());
         });
     }
 
@@ -209,5 +208,10 @@ public class DialogImageLoad implements LoadingImageListener {
     @Override
     public void onLoadingComplete(int imageFiles) {
         logger.info("Loaded Images: " + imageFiles);
+    }
+
+    @Override
+    public void onFinished(LoadingResult result) {
+        this.result = result;
     }
 }

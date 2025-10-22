@@ -7,7 +7,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import static de.uzk.Main.imageFileHandler;
+import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
@@ -67,7 +67,7 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
     }
 
     private void updateTime() {
-        int time = imageFileHandler != null ?  (int) (imageFileHandler.getTime() * imageFileHandler.getShiftTimeUnit()) : 0;
+        int time = workspace != null ?  (int) (workspace.getTime() * workspace.getConfig().getTimeUnit()) : 0;
         int seconds = time % 60;
         int minute = time / 60 % 60;
         int hour = time / 60 / 60;
@@ -78,15 +78,15 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
     }
 
     private void updateLevel() {
-        double level =imageFileHandler != null ? (int) (imageFileHandler.getLevel() * imageFileHandler.getShiftLevelUnit()):0;
+        double level = workspace != null ? (int) (workspace.getLevel() * workspace.getConfig().getLevelUnit()):0;
         String levelString = String.format("%.01f μm", level);
         this.labelLevel.setText(StringUtils.wrapHtml(StringUtils.applyFontSize(
                 levelString, 75)));
     }
 
     private void updateTimeLevel() {
-        int time =  imageFileHandler != null ? (int) (imageFileHandler.getTime()) : 0;
-        int level =  imageFileHandler != null ? (int) (imageFileHandler.getLevel()) : 0;
+        int time =  workspace != null ? (int) (workspace.getTime()) : 0;
+        int level =  workspace != null ? (int) (workspace.getLevel()) : 0;
         String timeString = String.format("%s: %d", getWord("items.nav.axis.time"), time);
         String levelString = String.format("%s: %d", getWord("items.nav.axis.level"), level);
         this.labelTimeLevel.setText(StringUtils.wrapHtml(StringUtils.wrapItalic(StringUtils.applyFontSize(

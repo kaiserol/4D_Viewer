@@ -1,9 +1,8 @@
 package de.uzk;
 
-import de.uzk.config.ConfigHandler;
 import de.uzk.config.Settings;
 import de.uzk.gui.Gui;
-import de.uzk.image.ImageFileHandler;
+import de.uzk.image.Workspace;
 import de.uzk.logger.LogEntryHandler;
 import de.uzk.markers.MarkerHandler;
 import de.uzk.utils.OperatingSystem;
@@ -18,7 +17,7 @@ public class Main {
 
     public static final LogEntryHandler logger;
     public static final OperatingSystem operationSystem;
-    public static  ImageFileHandler imageFileHandler;
+    public static Workspace workspace;
     public static final MarkerHandler markerHandler;
     public static final Settings settings;
 

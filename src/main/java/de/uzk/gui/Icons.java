@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
 
 import static de.uzk.Main.*;
 
@@ -62,11 +63,11 @@ public final class Icons {
     private Icons() {
     }
 
-    public static BufferedImage loadImage(File file, boolean showErrorIfNotFound) {
+    public static BufferedImage loadImage(Path file, boolean showErrorIfNotFound) {
         try {
-            return ImageIO.read(file);
+            return ImageIO.read(file.toFile());
         } catch (Exception e) {
-            if (showErrorIfNotFound) logger.error("The Image '" + file.getAbsolutePath() + "' could not be loaded.");
+            if (showErrorIfNotFound) logger.error("The Image '" + file.toAbsolutePath() + "' could not be loaded.");
             return null;
         }
     }

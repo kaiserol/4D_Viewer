@@ -10,7 +10,7 @@ import de.uzk.image.Axis;
 import javax.swing.*;
 import java.awt.*;
 
-import static de.uzk.Main.imageFileHandler;
+import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 // TODO: Überarbeite Klasse
@@ -99,10 +99,10 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         spinner.setEditor(editor);
 
         Number number =  0;
-        if(imageFileHandler != null) {
+        if(workspace != null) {
             number = switch(axis) {
-                case TIME -> imageFileHandler.getTime();
-                case LEVEL -> imageFileHandler.getLevel();
+                case TIME -> workspace.getTime();
+                case LEVEL -> workspace.getLevel();
             };
             if (GuiUtils.valueFitsInRange(number, spinnerModel)) spinner.setValue(number);
             else updateUnitValue(spinner, axis);
@@ -120,8 +120,8 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
 
     private void updateUnitValue(JSpinner spinner, Axis axis) {
         Number value = (Number) spinner.getValue();
-        if (axis == Axis.TIME) imageFileHandler.setShiftTimeUnit(value.doubleValue());
-        else imageFileHandler.setShiftLevelUnit(value.doubleValue());
+        if (axis == Axis.TIME) workspace.getConfig().setTimeUnit(value.doubleValue());
+        else workspace.getConfig().setTimeUnit(value.doubleValue());
     }
 
     private JSlider getSlider(Axis axis) {
@@ -141,9 +141,9 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
     }
 
     private void update(JSlider slider, Axis axis, int newValue, boolean isAdjusting) {
-        if (imageFileHandler.isEmpty()) return;
+        if (workspace == null) return;
 
-        int oldValue = axis == Axis.TIME ? imageFileHandler.getTime() : imageFileHandler.getLevel();
+        int oldValue = axis == Axis.TIME ? workspace.getTime() : workspace.getLevel();
         if (oldValue == newValue) return;
 
         if (!isAdjusting) {
@@ -160,8 +160,8 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
     @Override
     public void toggleOn() {
         GuiUtils.setEnabled(this.container, true);
-        updateSliderValuesSecretly(timeSlider, imageFileHandler.getTime(), imageFileHandler.getMaxTime());
-        updateSliderValuesSecretly(levelSlider, imageFileHandler.getLevel(), imageFileHandler.getMaxLevel());
+        updateSliderValuesSecretly(timeSlider, workspace.getTime(), workspace.getMaxTime());
+        updateSliderValuesSecretly(levelSlider, workspace.getLevel(), workspace.getMaxLevel());
     }
 
     @Override
@@ -175,10 +175,10 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
     public void update(Axis axis) {
         if (axis == Axis.TIME) {
             // sets only a new value to timeSlider if the slider is not moving
-            if (!timeSlider.getValueIsAdjusting()) updateSliderValueSecretly(timeSlider, imageFileHandler.getTime());
+            if (!timeSlider.getValueIsAdjusting()) updateSliderValueSecretly(timeSlider, workspace.getTime());
         } else {
             // sets only a new value to levelSlider if the slider is not moving
-            if (!levelSlider.getValueIsAdjusting()) updateSliderValueSecretly(levelSlider, imageFileHandler.getLevel());
+            if (!levelSlider.getValueIsAdjusting()) updateSliderValueSecretly(levelSlider, workspace.getLevel());
         }
     }
 
