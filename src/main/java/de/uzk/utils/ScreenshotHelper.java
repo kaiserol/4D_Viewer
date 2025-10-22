@@ -1,4 +1,4 @@
-package de.uzk.config;
+package de.uzk.utils;
 
 import de.uzk.gui.GuiUtils;
 
@@ -31,7 +31,7 @@ public class ScreenshotHelper {
                 String date = DATE_FORMAT.format(new Date());
                 int count = getNextScreenshotIndex(date);
 
-                Path fileName = Path.of(date + count + workspace.getImageFile().getName());
+                Path fileName = Path.of(date + "("+ count + ")_" + workspace.getImageFile().getName());
                 Path saveFile = SCREENSHOT_DIRECTORY.toAbsolutePath().resolve(fileName);
 
                 BufferedImage edited = GuiUtils.getEditedImage(originalImage, false);

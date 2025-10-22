@@ -3,7 +3,6 @@ package de.uzk.image;
 import de.uzk.config.Config;
 import de.uzk.utils.StringUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -66,6 +65,10 @@ public class Workspace {
 
     public Config getConfig() {
         return this.config;
+    }
+
+    public void saveConfig() {
+        this.config.save(this.imageFilesDirectory);
     }
 
     public Path getImageFilesDirectoryPath() {

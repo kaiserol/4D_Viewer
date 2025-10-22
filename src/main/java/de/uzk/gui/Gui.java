@@ -142,6 +142,10 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     public boolean loadImageFiles(Path directoryPath, ImageFileNameExtension extension, boolean isGuiBeingBuilt) {
+        if(workspace != null) {
+            workspace.saveConfig();
+        }
+
         if (directoryPath == null) return false;
 
         // Prüfe, ob das Verzeichnis passende Bilder hat

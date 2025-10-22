@@ -2,7 +2,7 @@ package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
-import de.uzk.config.ScreenshotHelper;
+import de.uzk.utils.ScreenshotHelper;
 import de.uzk.gui.*;
 import de.uzk.utils.NumberUtils;
 

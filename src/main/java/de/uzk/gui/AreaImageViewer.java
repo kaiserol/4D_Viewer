@@ -2,7 +2,7 @@ package de.uzk.gui;
 
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
-import de.uzk.config.ScreenshotHelper;
+import de.uzk.utils.ScreenshotHelper;
 import de.uzk.image.Axis;
 import de.uzk.markers.MarkerMapping;
 
@@ -14,7 +14,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -109,7 +108,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     // Zeichnet das aktuelle Bild und Marker
     private void paintImage(Graphics g) {
         Graphics2D g2D = GuiUtils.createHighQualityGraphics2D(g);
-        if (this.currentImage != null) {
+        if (this.currentImage != null && workspace != null) {
             double scale = GuiUtils.getImageScaleFactor(this.currentImage, this.panelImage);
             int width = (int) (this.currentImage.getWidth() * scale);
             int height = (int) (this.currentImage.getHeight() * scale);
