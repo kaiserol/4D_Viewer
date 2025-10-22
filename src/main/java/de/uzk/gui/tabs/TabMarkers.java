@@ -33,7 +33,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
         if (!currentMarkers.isEmpty()) {
             Box panel = new Box(BoxLayout.Y_AXIS);
             for (MarkerMapping currentMarker : currentMarkers) {
-                JPanel next = new MarkerMappingInfo(currentMarker, this.gui).getContainer();
+                JPanel next = new MarkerMappingInfo(currentMarker, this.gui);
                 next.setBorder(BorderFactory.createEmptyBorder());
                 panel.add(next);
             }

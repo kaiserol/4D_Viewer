@@ -1,7 +1,6 @@
 package de.uzk.gui.marker;
 
 import de.uzk.action.ActionType;
-import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.OGridBagConstraints;
 import de.uzk.image.Axis;
@@ -14,22 +13,25 @@ import java.awt.*;
 import static de.uzk.Main.imageFileHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class MarkerMappingInfo extends AreaContainerInteractive<JPanel> {
-
+/* Nur JPanel erweitern, da diese Komponente dynamisch während UI Updates erstellt wird.
+AreaContainerInteractive würde während der initialisierung eventhandler registrieren, was eine Exception
+ auslöst. */
+public class MarkerMappingInfo extends JPanel {
+    private final Gui gui;
     private final MarkerMapping mapping;
 
     public MarkerMappingInfo(MarkerMapping mapping, Gui gui) {
-        super(new JPanel(), gui);
+        this.gui = gui;
         this.mapping = mapping;
         init();
     }
 
     private void init() {
-        this.container.setPreferredSize(new Dimension(150, 100));
-        this.container.setMinimumSize(new Dimension(150, 100));
-        this.container.setMaximumSize(new Dimension(500, 100));
-        this.container.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        this.container.setLayout(new GridBagLayout());
+        this.setPreferredSize(new Dimension(150, 100));
+        this.setMinimumSize(new Dimension(150, 100));
+        this.setMaximumSize(new Dimension(500, 100));
+        this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        this.setLayout(new GridBagLayout());
         OGridBagConstraints c = new OGridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -39,7 +41,7 @@ public class MarkerMappingInfo extends AreaContainerInteractive<JPanel> {
 
         JLabel nameLabel=new JLabel(this.mapping.getMarker().getLabel());
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
-        this.container.add(nameLabel, c);
+        this.add(nameLabel, c);
 
         SpinnerNumberModel fromModel = new SpinnerNumberModel(this.mapping.getFrom(), 0, imageFileHandler.getMaxTime(), 1);
         SpinnerNumberModel toModel = new SpinnerNumberModel(this.mapping.getTo(), this.mapping.getFrom(), imageFileHandler.getMaxTime(), 1);
@@ -48,10 +50,11 @@ public class MarkerMappingInfo extends AreaContainerInteractive<JPanel> {
             int newValue = fromModel.getNumber().intValue();
             this.mapping.setFrom(newValue);
             toModel.setMinimum(newValue);
-            gui.update(Axis.TIME);
             if(toModel.getNumber().intValue() < newValue) {
                 toModel.setValue(newValue);
             }
+                gui.update(Axis.TIME);
+
         });
 
         toModel.addChangeListener(e -> {
@@ -62,25 +65,25 @@ public class MarkerMappingInfo extends AreaContainerInteractive<JPanel> {
 
         c.gridy = 1;
         c.gridwidth = 1;
-        this.container.add(new JLabel(getWord("items.markers.visibleFromImage") + ":"), c);
+        this.add(new JLabel(getWord("items.markers.visibleFromImage") + ":"), c);
 
         c.gridx = 1;
         JSpinner minimum = new JSpinner(fromModel);
-        this.container.add(minimum, c);
+        this.add(minimum, c);
 
         c.setPos(0, 2);
-        this.container.add(new JLabel(getWord("items.markers.visibleToImage") + ":"), c);
+        this.add(new JLabel(getWord("items.markers.visibleToImage") + ":"), c);
 
         c.gridx = 1;
         JSpinner maximum = new JSpinner(toModel);
-        this.container.add(maximum, c);
+        this.add(maximum, c);
 
 
         c.setPos(2, 0);
         c.setInsets(0,0,0,0);
         c.anchor = GridBagConstraints.FIRST_LINE_END;
         c.setSizeAndWeight(1,3,0.1,1);
-        this.container.add(getEditButton(), c);
+        this.add(getEditButton(), c);
 
     }
 
