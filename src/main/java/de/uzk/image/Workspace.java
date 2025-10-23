@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.StreamSupport;
 
 import static de.uzk.Main.logger;
@@ -379,7 +382,7 @@ public class Workspace {
         // Dynamische Bestandteile erzeugen
         String timeStr = (this.config.getTimeSep() + "%0" + timeStrLength + "d").formatted(time);
         String levelStr = (this.config.getLevelSep() + "%0" + levelStrLength + "d").formatted(level);
-        return imageFileNameReference.getFile().getParent().resolve(Path.of(timeStr + levelStr + "." + extension));
+        return imageFileNameReference.getPath().getParent().resolve(Path.of(timeStr + levelStr + "." + extension));
 
     }
 

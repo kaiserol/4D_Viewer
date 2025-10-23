@@ -142,7 +142,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     public boolean loadImageFiles(Path directoryPath, ImageFileNameExtension extension, boolean isGuiBeingBuilt) {
-        if(workspace != null) {
+        if (workspace != null) {
             workspace.saveConfig();
         }
 
@@ -235,7 +235,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     @Override
     public void toggleOff() {
-        if(workspace != null) {
+        if (workspace != null) {
             workspace.clear(true);
         }
 
@@ -263,7 +263,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     @Override
     public void appGainedFocus() {
         // Überprüfe, ob Bilder noch vorhanden sind
-        if(workspace != null) {
+        if (workspace != null) {
             workspace.checkMissingFiles();
         }
 
@@ -297,7 +297,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             if (checkBox.isSelected()) settings.setConfirmExit(false);
         }
 
-        // Settings abspeichern &  Anwendung beenden
+        // Settings abspeichern & Anwendung beenden
         if(workspace != null) {
             workspace.saveConfig();
         }

@@ -8,14 +8,16 @@ import java.util.Date;
 import static de.uzk.logger.LogLevel.EXCEPTION;
 
 public class LogEntry {
-    private final SimpleDateFormat dateFormat;
+    // Formate
+    private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss");
+
+    // Protokoll Attribute
     private final String dateTime;
     private final String source;
     private final LogLevel level;
     private final String message;
 
     public LogEntry(LogLevel level, String message) {
-        this.dateFormat = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss");
         this.dateTime = initDateTime();
         this.source = initSource();
         this.level = level;
@@ -23,7 +25,7 @@ public class LogEntry {
     }
 
     private String initDateTime() {
-        return this.dateFormat.format(new Date());
+        return DATE_TIME_FORMAT.format(new Date());
     }
 
     private String initSource() {

@@ -127,7 +127,6 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
 
     private ImageFileNameExtension getSelectedExtension(FileNameExtensionFilter filter) {
         if (filter == null) return null;
-
         for (ImageFileNameExtension ext : ImageFileNameExtension.values()) {
             if (ext.getFullDescription().equals(filter.getDescription())) {
                 return ext;

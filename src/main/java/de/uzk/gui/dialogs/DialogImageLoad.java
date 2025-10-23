@@ -1,9 +1,9 @@
 package de.uzk.gui.dialogs;
 
-import de.uzk.image.Workspace;
 import de.uzk.image.ImageFileNameExtension;
 import de.uzk.image.LoadingImageListener;
 import de.uzk.image.LoadingResult;
+import de.uzk.image.Workspace;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -11,12 +11,11 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static de.uzk.Main.workspace;
 import static de.uzk.Main.logger;
+import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogImageLoad implements LoadingImageListener {
@@ -123,6 +122,8 @@ public class DialogImageLoad implements LoadingImageListener {
 
     public LoadingResult loadImages(Path directoryPath, ImageFileNameExtension extension) {
         this.dialog.setTitle(getWord("dialog.imageLoading.title") + " (" + extension.getDescription() + ")");
+        // TODO: Das wird einen Nebeneffekt haben: wenn man einen Ordner angibt, der nicht existiert,
+        // dann wird der Überordner als Verzeichnisname. Mit isFile deshalb prüfen
         Path directory = Files.isDirectory(directoryPath) ? directoryPath : directoryPath.getParent();
         this.textFieldDirectoryName.setText(directory.toAbsolutePath().toString());
 

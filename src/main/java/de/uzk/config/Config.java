@@ -2,10 +2,6 @@ package de.uzk.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import de.uzk.Main;
 import de.uzk.markers.Marker;
 import de.uzk.markers.MarkerMapping;
@@ -107,11 +103,10 @@ public class Config {
     }
 
     public void save(Path location) {
-        try(BufferedWriter out = Files.newBufferedWriter(location.resolve(CONFIG_FILE_NAME))) {
+        try (BufferedWriter out = Files.newBufferedWriter(location.resolve(CONFIG_FILE_NAME))) {
             String s = new GsonBuilder().setPrettyPrinting().create().toJson(this);
             out.write(s);
-
-        } catch(IOException e) {
+        } catch (IOException e) {
             Main.logger.error("Couldn't save settings.json");
         }
     }
@@ -121,19 +116,15 @@ public class Config {
     }
 
     public static Config load(Path location, boolean fallback) {
-        try(BufferedReader in = Files.newBufferedReader(location.resolve(CONFIG_FILE_NAME))) {
+        try (BufferedReader in = Files.newBufferedReader(location.resolve(CONFIG_FILE_NAME))) {
             Gson gson = new Gson();
             return gson.fromJson(in, Config.class);
 
         } catch (IOException e) {
-
-           if(fallback && settings.getLastHistory() != null) {
-               return Config.load(settings.getLastHistory(), false);
-           }
-
-
-
-           return new Config();
+            if (fallback && settings.getLastHistory() != null) {
+                return Config.load(settings.getLastHistory(), false);
+            }
+            return new Config();
         }
     }
 }

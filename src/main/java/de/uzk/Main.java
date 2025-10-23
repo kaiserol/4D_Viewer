@@ -12,11 +12,9 @@ import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
 
 public class Main {
-
-
     public static final LogEntryHandler logger;
     public static final OperatingSystem operationSystem;
-    public static Workspace workspace;
+    public static Workspace workspace; // TODO: würde ich final lassen
     public static final Settings settings;
 
     static {
@@ -26,7 +24,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-
         SwingUtilities.invokeLater(() -> {
             Gui gui = new Gui(settings.getLastHistory());
 

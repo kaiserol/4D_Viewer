@@ -87,11 +87,12 @@ public final class GuiUtils {
         UIManager.put("ScrollBar.hoverTrackColor", bgBrighter);
 
         // SplitPane Eigenschaften
-        UIManager.put("SplitPaneDivider.gripDotCount", 3);
+        UIManager.put("SplitPaneDivider.gripDotCount", 0);
         UIManager.put("SplitPaneDivider.gripDotSize", 3);
         UIManager.put("SplitPaneDivider.gripGap", 3);
         UIManager.put("SplitPane.dividerSize", 15);
-        UIManager.put("SplitPane.supportsOneTouchButtons", false);
+        UIManager.put("SplitPane.oneTouchButtonSize", 5);
+        UIManager.put("SplitPane.supportsOneTouchButtons", true);
 
         // Mnemonics/Icons Eigenschaften
         UIManager.put("Component.hideMnemonics", false);

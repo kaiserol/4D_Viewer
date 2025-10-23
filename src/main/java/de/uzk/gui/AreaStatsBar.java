@@ -28,19 +28,20 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
         this.labelTime = new JLabel("", SwingConstants.CENTER);
         this.container.add(this.labelTime, BorderLayout.CENTER);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout(10, 0));
+        // Zeit-Level-Panel
+        JPanel panelTimeLevel = new JPanel();
+        panelTimeLevel.setLayout(new BorderLayout(10, 0));
 
         // Zeit-Level-Label
         this.labelTimeLevel = new JLabel("", SwingConstants.LEFT);
         this.labelTimeLevel.setOpaque(true);
-        panel.add(this.labelTimeLevel, BorderLayout.WEST);
+        panelTimeLevel.add(this.labelTimeLevel, BorderLayout.WEST);
 
         // Ebenen-Label
         this.labelLevel = new JLabel("", SwingConstants.RIGHT);
         this.labelLevel.setOpaque(true);
-        panel.add(this.labelLevel, BorderLayout.EAST);
-        this.container.add(panel, BorderLayout.SOUTH);
+        panelTimeLevel.add(this.labelLevel, BorderLayout.EAST);
+        this.container.add(panelTimeLevel, BorderLayout.SOUTH);
     }
 
     @Override
@@ -90,6 +91,6 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
         String timeString = String.format("%s: %d", getWord("items.nav.axis.time"), time);
         String levelString = String.format("%s: %d", getWord("items.nav.axis.level"), level);
         this.labelTimeLevel.setText(StringUtils.wrapHtml(StringUtils.wrapItalic(StringUtils.applyFontSize(
-                timeString + " | " + levelString, 75))));
+                timeString + " / " + levelString, 75))));
     }
 }

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.uzk</groupId>
-    <artifactId>4d_viewer</artifactId>
+    <artifactId>4D_Viewer</artifactId>
     <version>v2.1</version>
 
     <properties>
@@ -18,12 +18,12 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
-            <version>3.5</version>
+            <version>3.6</version>
         </dependency>
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-extras</artifactId>
-            <version>3.2.1</version>
+            <version>3.6</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>24.1.0</version>
+            <version>26.0.2</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -212,8 +212,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     // Hilfsfunktionen
     // ==========================================================
     private void updateCurrentImage() {
-        Path file = workspace != null ? workspace.getImageFile() != null ? workspace.getImageFile().getFile() : null: null;
-        this.currentImage = this.originalImage = (file != null ? Icons.loadImage(file, false) : null);
+        Path path = workspace != null ? workspace.getImageFile() != null ? workspace.getImageFile().getPath() : null: null;
+        this.currentImage = this.originalImage = (path != null ? Icons.loadImage(path, false) : null);
         if (this.originalImage != null) this.currentImage = GuiUtils.getEditedImage(this.originalImage, true);
         this.container.repaint();
     }

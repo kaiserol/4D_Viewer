@@ -6,13 +6,13 @@ import de.uzk.utils.StringUtils;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 
-import static de.uzk.Main.*;
+import static de.uzk.Main.logger;
+import static de.uzk.Main.settings;
 
 public final class Icons {
     // edit icons

@@ -6,15 +6,15 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 public class ImageFile implements Comparable<ImageFile> {
-    private final Path file;
+    private final Path path;
     private final String name;
     private final int time;
     private final int level;
 
-    public ImageFile(Path file, int time, int level) {
-        if (file == null) throw new NullPointerException("File is null.");
-        this.file = file;
-        this.name = file.getFileName().toString();
+    public ImageFile(Path path, int time, int level) {
+        if (path == null) throw new NullPointerException("Path is null.");
+        this.path = path;
+        this.name = path.getFileName().toString();
 
         if (time < 0) throw new IllegalArgumentException("Time must be greater than 0.");
         if (level < 0) throw new IllegalArgumentException("Level must be greater than 0.");
@@ -22,8 +22,8 @@ public class ImageFile implements Comparable<ImageFile> {
         this.level = level;
     }
 
-    public Path getFile() {
-        return this.file;
+    public Path getPath() {
+        return this.path;
     }
 
     public String getName() {
@@ -31,7 +31,7 @@ public class ImageFile implements Comparable<ImageFile> {
     }
 
     public boolean exists() {
-        return Files.exists(this.file);
+        return Files.exists(this.path);
     }
 
     public int getTime() {
