@@ -65,8 +65,8 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         JFileChooser fileChooser = getFileChooser();
 
         // Startverzeichnis
-        if (settings.getLastHistory() != null) {
-            fileChooser.setSelectedFile(settings.getLastHistory().toFile());
+        if (history.last() != null) {
+            fileChooser.setSelectedFile(history.last().toFile());
         } else {
             String userDirectory = System.getProperty("user.dir");
             if (userDirectory != null) fileChooser.setCurrentDirectory(new File(userDirectory));

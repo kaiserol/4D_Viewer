@@ -1,6 +1,7 @@
 package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionHandler;
+import de.uzk.config.Config;
 import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
@@ -39,7 +40,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         gbc.setPosAndInsets(0, 1, 0, 0, 0, 15);
 
         // timeSpinner
-        SpinnerNumberModel timeSpinnerModel = new SpinnerNumberModel(30, 1, 600, 0.1);
+        SpinnerNumberModel timeSpinnerModel = new SpinnerNumberModel(30, 1, Config.MAX_TIME_UNIT, 0.1);
         JSpinner timeUnitSpinner = getUnitSpinner(timeSpinnerModel, Axis.TIME);
         this.container.add(timeUnitSpinner, gbc);
 
@@ -70,7 +71,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         gbc.setPosAndInsets(0, 4, 0, 0, 0, 15);
 
         // timeSpinner
-        SpinnerNumberModel levelSpinnerModel = new SpinnerNumberModel(1, 0.1, 1000, 0.1);
+        SpinnerNumberModel levelSpinnerModel = new SpinnerNumberModel(1, 0.1, Config.MAX_LEVEL_UNIT, 0.1);
         JSpinner levelUnitSpinner = getUnitSpinner(levelSpinnerModel, Axis.LEVEL);
         this.container.add(levelUnitSpinner, gbc);
 

@@ -2,6 +2,7 @@ package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
+import de.uzk.config.Config;
 import de.uzk.utils.ScreenshotHelper;
 import de.uzk.gui.*;
 import de.uzk.utils.NumberUtils;
@@ -50,7 +51,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         gbc.setPosAndInsets(0, 2, 0, 0, 10, 15);
 
         // Create a SpinnerModel for numeric values
-        CyclingSpinnerNumberModel degreeSpinnerModel = new CyclingSpinnerNumberModel(0, 0, 359, 1);
+        CyclingSpinnerNumberModel degreeSpinnerModel = new CyclingSpinnerNumberModel(0, 0, Config.MAX_ROTATION, 1);
         this.degreeSpinner = getDegreeSpinner(degreeSpinnerModel);
         this.container.add(this.degreeSpinner, gbc);
 

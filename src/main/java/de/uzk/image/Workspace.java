@@ -32,7 +32,7 @@ public class Workspace {
 
     public Workspace() {
         this.pinTimes = new TreeSet<>();
-        this.config = Config.load(null);
+        this.config = Config.load("");
 
         clear(true);
     }
@@ -40,7 +40,6 @@ public class Workspace {
     public LoadingResult open(Path directoryPath, ImageFileNameExtension extension, LoadingImageListener progress) {
         if (directoryPath != null && Files.exists(directoryPath)) {
             Path directory = Files.isDirectory(directoryPath) ? directoryPath : directoryPath.getParent();
-
 
             // Verzeichnis & Datei-Typ aktualisieren
             this.imageFilesDirectory = directory;
@@ -68,7 +67,7 @@ public class Workspace {
     }
 
     public void saveConfig() {
-        if (this.isOpen()) {
+        if (isOpen()) {
             Path fileName = this.imageFilesDirectory.getFileName();
             this.config.save(fileName + ".json");
         }
@@ -95,22 +94,22 @@ public class Workspace {
     }
 
     public int getTime() {
-        return this.isOpen() ? this.imageFile.getTime() : -1;
+        return isOpen() ? this.imageFile.getTime() : -1;
     }
 
     public void setTime(int time) {
-        if (checkTime(time) && this.isOpen()) {
+        if (isOpen() && checkTime(time)) {
             ImageFile loadedImageFile = getImageFile(time, this.imageFile.getLevel());
             if (loadedImageFile != null) this.imageFile = loadedImageFile;
         }
     }
 
     public int getLevel() {
-        return this.isOpen() ? this.imageFile.getLevel() : -1;
+        return isOpen() ? this.imageFile.getLevel() : -1;
     }
 
     public void setLevel(int level) {
-        if (checkLevel(level) && this.isOpen()) {
+        if (isOpen() && checkLevel(level)) {
             ImageFile loadedImageFile = getImageFile(this.imageFile.getTime(), level);
             if (loadedImageFile != null) this.imageFile = loadedImageFile;
         }
@@ -200,7 +199,7 @@ public class Workspace {
         this.maxLevel = 0;
         this.maxTime = 0;
         this.pinTimes.clear();
-        this.config = Config.load(null);
+        this.config = Config.load("");
     }
 
     public boolean isOpen() {
@@ -333,8 +332,8 @@ public class Workspace {
     }
 
     public void checkMissingFiles() {
-        if (!this.isOpen()) {
-            logger.info("Workspace is closed, no need to check for missing images");
+        if (!isOpen()) {
+            logger.info("Workspace is closed. No need to check for missing images.");
             return;
         }
 
@@ -392,13 +391,13 @@ public class Workspace {
         String timeStr = (this.config.getTimeSep() + "%0" + timeStrLength + "d").formatted(time);
         String levelStr = (this.config.getLevelSep() + "%0" + levelStrLength + "d").formatted(level);
         return imageFileNameReference.getPath().getParent().resolve(Path.of(timeStr + levelStr + "." + extension));
-
     }
 
     public String getMissingImages() {
         StringBuilder sb = new StringBuilder();
-        int totalMissing = 0;
+        if (!isOpen()) return sb.toString();
 
+        int totalMissing = 0;
         for (int time = 0; time <= this.maxTime; time++) {
             List<Integer> missingLevels = new ArrayList<>();
 

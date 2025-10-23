@@ -1,17 +1,13 @@
 package de.uzk.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import de.uzk.Main;
 import de.uzk.image.ImageFileNameExtension;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 
 import static de.uzk.Main.logger;
@@ -26,6 +22,7 @@ public class Settings {
     public static final int MAX_FONT_SIZE = 22;
 
     // Einstellungen
+
     private Language language;
     private Theme theme;
     private int fontSize;
@@ -45,6 +42,11 @@ public class Settings {
         return language;
     }
 
+    @JsonSetter("language")
+    private void setLanguage(String language) {
+        this.setLanguage(Language.fromLanguage(language));
+    }
+
     public void setLanguage(Language language) {
         if (language == null || this.language == language) return;
 
@@ -58,6 +60,11 @@ public class Settings {
         return theme;
     }
 
+    @JsonSetter("theme")
+    private void setTheme(String theme) {
+        this.setTheme(Theme.fromName(theme));
+    }
+
     public void setTheme(Theme theme) {
         this.theme = theme;
     }
@@ -66,6 +73,7 @@ public class Settings {
         return fontSize;
     }
 
+    @JsonSetter("fontSize")
     public boolean setFontSize(int fontSize) {
         if (fontSize < MIN_FONT_SIZE || fontSize > MAX_FONT_SIZE) {
             if (this.fontSize < MIN_FONT_SIZE) {
@@ -86,19 +94,19 @@ public class Settings {
     }
 
     public void save() {
-        try (BufferedWriter bw = Files.newBufferedWriter(SETTINGS_FILE_NAME, StandardOpenOption.CREATE)) {
-            bw.write(new GsonBuilder().setPrettyPrinting().create().toJson(this));
-        } catch (IOException e) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(SETTINGS_FILE_NAME, this);
+        } catch (JacksonException e) {
             Main.logger.error("Couldn't save settings.json: " + e.getMessage());
         }
     }
 
     public static Settings load() {
-        try (BufferedReader br = Files.newBufferedReader(SETTINGS_FILE_NAME)) {
-            Gson gson = new Gson();
-            Settings result = gson.fromJson(br, Settings.class);
-            if (result != null) return result;
-        } catch (IOException e) {
+        try  {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(SETTINGS_FILE_NAME, Settings.class);
+        } catch (JacksonException e) {
             logger.error("Couldn't load settings.json: " + e.getMessage());
         }
         return new Settings();
@@ -111,6 +119,7 @@ public class Settings {
     public ImageFileNameExtension getFileNameExt() {
         return fileNameExt;
     }
+
 
     public void setFileNameExt(ImageFileNameExtension fileNameExt) {
         this.fileNameExt = fileNameExt;

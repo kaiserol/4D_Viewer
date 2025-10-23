@@ -213,7 +213,6 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     @Override
     public void toggleOff() {
-
         workspace.clear(true);
 
         for (ToggleListener listener : toggleListeners) {
@@ -240,9 +239,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     @Override
     public void appGainedFocus() {
         // Überprüfe, ob Bilder noch vorhanden sind
-
         workspace.checkMissingFiles();
-
 
         for (AppFocusListener listener : appFocusListeners) {
             listener.appGainedFocus();
@@ -258,8 +255,13 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         if (settings.isConfirmExit()) {
             JCheckBox checkBox = new JCheckBox(getWord("optionPane.closeApp.dont_ask_again"));
             Object[] message = new Object[]{getWord("optionPane.closeApp.question"), checkBox};
-
-            int option = JOptionPane.showConfirmDialog(this.container, message, getWord("optionPane.title.confirm"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int option = JOptionPane.showConfirmDialog(
+                    this.container,
+                    message,
+                    getWord("optionPane.title.confirm"),
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
 
             // Wenn der Benutzer "Nein" klickt → Abbrechen
             if (option != JOptionPane.YES_OPTION) return;
@@ -268,10 +270,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             if (checkBox.isSelected()) settings.setConfirmExit(false);
         }
 
-        // Settings abspeichern & Anwendung beenden
-
+        // Settings, Config abspeichern & Anwendung beenden
         workspace.saveConfig();
-
         settings.save();
         System.exit(0);
     }
