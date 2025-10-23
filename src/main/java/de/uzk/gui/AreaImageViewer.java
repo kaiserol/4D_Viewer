@@ -108,7 +108,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     // Zeichnet das aktuelle Bild und Marker
     private void paintImage(Graphics g) {
         Graphics2D g2D = GuiUtils.createHighQualityGraphics2D(g);
-        if (this.currentImage != null && workspace != null) {
+        if (this.currentImage != null) {
             double scale = GuiUtils.getImageScaleFactor(this.currentImage, this.panelImage);
             int width = (int) (this.currentImage.getWidth() * scale);
             int height = (int) (this.currentImage.getHeight() * scale);
@@ -123,7 +123,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
             }
         } else {
             // Wenn das Bild nicht geladen werden konnte, zeigt es eine Fehlermeldung an
-            String text = workspace == null ? "" : getWord("placeholder.imageCouldNotLoad");
+            String text =  getWord("placeholder.imageCouldNotLoad");
             GuiUtils.drawCenteredText(g2D, text, this.panelImage);
         }
     }
@@ -212,7 +212,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     // Hilfsfunktionen
     // ==========================================================
     private void updateCurrentImage() {
-        Path path = workspace != null ? workspace.getImageFile() != null ? workspace.getImageFile().getPath() : null: null;
+        Path path =  workspace.getImageFile() != null ? workspace.getImageFile().getPath() : null;
         this.currentImage = this.originalImage = (path != null ? Icons.loadImage(path, false) : null);
         if (this.originalImage != null) this.currentImage = GuiUtils.getEditedImage(this.originalImage, true);
         this.container.repaint();

@@ -34,36 +34,34 @@ public class Workspace {
     public Workspace() {
         this.pinTimes = new TreeSet<>();
         this.config = new Config();
+
         clear(true);
     }
 
-    public static Workspace open(Path directoryPath, ImageFileNameExtension extension, LoadingImageListener progress) {
+    public LoadingResult open(Path directoryPath, ImageFileNameExtension extension, LoadingImageListener progress) {
         if (directoryPath != null && Files.exists(directoryPath)) {
             Path directory = Files.isDirectory(directoryPath) ? directoryPath : directoryPath.getParent();
 
-            Workspace workspace = new Workspace();
-            workspace.config = Config.load(directory);
 
             // Verzeichnis & Datei-Typ aktualisieren
-            workspace.imageFilesDirectory = directory;
+            this.imageFilesDirectory = directory;
+            this.config = Config.load(operationSystem.getDataDirectory().resolve(directory.getFileName()));
             settings.setFileNameExt(extension);
 
             // Setze das Verzeichnis zurück, wenn das übergebene Verzeichnis keine Image-Files hat
             try {
-                if (workspace.loadImageFiles(progress)) {
-                    progress.onFinished(LoadingResult.LOADED);
+                if (this.loadImageFiles(progress)) {
                     settings.pushHistory(directory);
-                    return workspace;
+                    return LoadingResult.LOADED;
                 }
 
-                progress.onFinished(LoadingResult.DIRECTORY_HAS_NO_IMAGES);
+                return LoadingResult.DIRECTORY_HAS_NO_IMAGES;
             } catch (InterruptedException e) {
-                progress.onFinished(LoadingResult.INTERRUPTED);
                 logger.warning("Loading Images was interrupted.");
+                return LoadingResult.INTERRUPTED;
             }
         }
-        progress.onFinished(LoadingResult.DIRECTORY_NOT_EXISTING);
-        return null;
+        return LoadingResult.DIRECTORY_NOT_EXISTING;
     }
 
     public Config getConfig() {
@@ -71,9 +69,11 @@ public class Workspace {
     }
 
     public void saveConfig() {
-        this.config.save(
-                operationSystem.getDataDirectory().resolve(this.imageFilesDirectory.getFileName())
-        );
+        if(this.isOpen()) {
+            this.config.save(
+                    operationSystem.getDataDirectory().resolve(this.imageFilesDirectory.getFileName())
+            );
+        }
     }
 
     public Path getImageFilesDirectoryPath() {
@@ -97,22 +97,22 @@ public class Workspace {
     }
 
     public int getTime() {
-        return this.imageFile.getTime();
+        return this.isOpen() ? this.imageFile.getTime() : -1;
     }
 
     public void setTime(int time) {
-        if (checkTime(time)) {
+        if (checkTime(time) && this.isOpen()) {
             ImageFile loadedImageFile = getImageFile(time, this.imageFile.getLevel());
             if (loadedImageFile != null) this.imageFile = loadedImageFile;
         }
     }
 
     public int getLevel() {
-        return this.imageFile.getLevel();
+        return this.isOpen() ? this.imageFile.getLevel() : -1;
     }
 
     public void setLevel(int level) {
-        if (checkLevel(level)) {
+        if (checkLevel(level) && this.isOpen()) {
             ImageFile loadedImageFile = getImageFile(this.imageFile.getTime(), level);
             if (loadedImageFile != null) this.imageFile = loadedImageFile;
         }
@@ -202,6 +202,11 @@ public class Workspace {
         this.maxLevel = 0;
         this.maxTime = 0;
         this.pinTimes.clear();
+        this.config = new Config();
+    }
+
+    public boolean isOpen() {
+        return this.imageFilesDirectory != null;
     }
 
     private boolean loadImageFiles(LoadingImageListener progress) throws InterruptedException {
@@ -330,6 +335,11 @@ public class Workspace {
     }
 
     public void checkMissingFiles() {
+        if(!this.isOpen()) {
+            logger.info("Workspace is closed, no need to check for missing images");
+            return;
+        }
+
         StringBuilder missingImagesReport = new StringBuilder();
         int missingImagesCount = 0;
 

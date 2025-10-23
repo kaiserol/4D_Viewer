@@ -23,9 +23,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
     }
 
     private void rerender() {
-
-
-        java.util.List<MarkerMapping> currentMarkers = workspace != null?  workspace.getConfig().getMarkers() : new ArrayList<>();
+        java.util.List<MarkerMapping> currentMarkers =  workspace.getConfig().getMarkers();
 
         this.container.removeAll();
         this.container.setLayout(new BorderLayout());

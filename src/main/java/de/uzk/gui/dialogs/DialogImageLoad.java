@@ -145,7 +145,7 @@ public class DialogImageLoad implements LoadingImageListener {
     private void startThread(Path directoryPath, ImageFileNameExtension extension) {
         if (this.thread != null) return;
         this.thread = new Thread(() -> {
-            workspace = Workspace.open(directoryPath, extension, DialogImageLoad.this);
+            this.result = workspace.open(directoryPath, extension, DialogImageLoad.this);
             SwingUtilities.invokeLater(this.dialog::dispose);
         });
         this.thread.start();

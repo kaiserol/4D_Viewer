@@ -68,7 +68,7 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
     }
 
     private void updateTime() {
-        int time = workspace != null ?  (int) (workspace.getTime() * workspace.getConfig().getTimeUnit()) : 0;
+        int time =  (int) (workspace.getTime() * workspace.getConfig().getTimeUnit());
         int seconds = time % 60;
         int minute = time / 60 % 60;
         int hour = time / 60 / 60;
@@ -79,15 +79,15 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
     }
 
     private void updateLevel() {
-        double level = workspace != null ? (int) (workspace.getLevel() * workspace.getConfig().getLevelUnit()):0;
+        double level =  (int) (workspace.getLevel() * workspace.getConfig().getLevelUnit());
         String levelString = String.format("%.01f μm", level);
         this.labelLevel.setText(StringUtils.wrapHtml(StringUtils.applyFontSize(
                 levelString, 75)));
     }
 
     private void updateTimeLevel() {
-        int time =  workspace != null ? (int) (workspace.getTime()) : 0;
-        int level =  workspace != null ? (int) (workspace.getLevel()) : 0;
+        int time = workspace.getTime();
+        int level =  workspace.getLevel();
         String timeString = String.format("%s: %d", getWord("items.nav.axis.time"), time);
         String levelString = String.format("%s: %d", getWord("items.nav.axis.level"), level);
         this.labelTimeLevel.setText(StringUtils.wrapHtml(StringUtils.wrapItalic(StringUtils.applyFontSize(

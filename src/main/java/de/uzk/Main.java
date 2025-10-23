@@ -12,18 +12,22 @@ import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
 
 public class Main {
+
+
     public static final LogEntryHandler logger;
     public static final OperatingSystem operationSystem;
-    public static Workspace workspace; // TODO: würde ich final lassen
+    public static final Workspace workspace;
     public static final Settings settings;
 
     static {
         logger = new LogEntryHandler(Main.class.getName());
         operationSystem = OperatingSystem.getOP();
         settings = Settings.load();
+        workspace = new Workspace();
     }
 
     public static void main(String[] args) {
+
         SwingUtilities.invokeLater(() -> {
             Gui gui = new Gui(settings.getLastHistory());
 

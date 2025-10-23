@@ -90,7 +90,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     }
 
     private void initCheckBox(JCheckBox checkBox, boolean isMirrorXBox) {
-        boolean startValue = workspace != null && (isMirrorXBox ? workspace.getConfig().isMirrorX() : workspace.getConfig().isMirrorY());
+        boolean startValue =  (isMirrorXBox ? workspace.getConfig().isMirrorX() : workspace.getConfig().isMirrorY());
         checkBox.setSelected(startValue);
         checkBox.addItemListener(e -> {
 //            if (GuiUtils.isEnabled(checkBox)) {
@@ -104,7 +104,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     public JSpinner getDegreeSpinner(SpinnerNumberModel spinnerModel) {
         JSpinner spinner = new JSpinner(spinnerModel);
 
-        Number rotation = workspace != null ? workspace.getConfig().getRotation() : 0;
+        Number rotation = workspace.getConfig().getRotation();
         if (GuiUtils.valueFitsInRange(rotation, spinnerModel)) spinner.setValue(rotation);
         else setRotationInImageHandler(spinner);
 

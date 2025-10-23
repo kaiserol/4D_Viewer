@@ -75,7 +75,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         updateTheme();
 
         // Lade Image-Files
-        if (workspace == null || !loadImageFiles(imageFilesDirectory, settings.getFileNameExt(), true)) {
+        if (!loadImageFiles(imageFilesDirectory, settings.getFileNameExt(), true)) {
             toggleOff();
         }
 
@@ -101,7 +101,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         updateTheme();
 
         // Prüfe, ob Bilder geladen sind
-        if (workspace != null) toggleOn();
+        if (workspace.isOpen()) toggleOn();
         else toggleOff();
 
         // Fenster packen
@@ -142,10 +142,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     public boolean loadImageFiles(Path directoryPath, ImageFileNameExtension extension, boolean isGuiBeingBuilt) {
-        if (workspace != null) {
-            workspace.saveConfig();
-        }
-
+        workspace.saveConfig();
         if (directoryPath == null) return false;
 
         // Prüfe, ob das Verzeichnis passende Bilder hat
@@ -158,37 +155,18 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             }
             case ALREADY_LOADED -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + extension + " " +
-                        getWord("file.directory") + ": '" + directoryPath + "' " +
-                        getWord("optionPane.directory.alreadyLoaded") + ".";
-                JOptionPane.showMessageDialog(
-                        this.container,
-                        message,
-                        getWord("optionPane.title.error"),
-                        JOptionPane.ERROR_MESSAGE
-                );
+                String message = getWord("optionPane.directory.the") + " " + extension + " " + getWord("file.directory") + ": '" + directoryPath + "' " + getWord("optionPane.directory.alreadyLoaded") + ".";
+                JOptionPane.showMessageDialog(this.container, message, getWord("optionPane.title.error"), JOptionPane.ERROR_MESSAGE);
             }
             case DIRECTORY_NOT_EXISTING -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directoryPath + "' " +
-                        getWord("optionPane.directory.doesNotExisting") + ".";
-                JOptionPane.showMessageDialog(
-                        this.container,
-                        message,
-                        getWord("optionPane.title.error"),
-                        JOptionPane.ERROR_MESSAGE
-                );
+                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directoryPath + "' " + getWord("optionPane.directory.doesNotExisting") + ".";
+                JOptionPane.showMessageDialog(this.container, message, getWord("optionPane.title.error"), JOptionPane.ERROR_MESSAGE);
             }
             case DIRECTORY_HAS_NO_IMAGES -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directoryPath + "' " +
-                        getWord("optionPane.directory.hasNo") + " " + extension.getDescription() + ".";
-                JOptionPane.showMessageDialog(
-                        this.container,
-                        message,
-                        getWord("optionPane.title.error"),
-                        JOptionPane.ERROR_MESSAGE
-                );
+                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directoryPath + "' " + getWord("optionPane.directory.hasNo") + " " + extension.getDescription() + ".";
+                JOptionPane.showMessageDialog(this.container, message, getWord("optionPane.title.error"), JOptionPane.ERROR_MESSAGE);
             }
         }
         return false;
@@ -235,9 +213,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     @Override
     public void toggleOff() {
-        if (workspace != null) {
-            workspace.clear(true);
-        }
+
+        workspace.clear(true);
 
         for (ToggleListener listener : toggleListeners) {
             listener.toggleOff();
@@ -263,9 +240,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     @Override
     public void appGainedFocus() {
         // Überprüfe, ob Bilder noch vorhanden sind
-        if (workspace != null) {
-            workspace.checkMissingFiles();
-        }
+
+        workspace.checkMissingFiles();
+
 
         for (AppFocusListener listener : appFocusListeners) {
             listener.appGainedFocus();
@@ -282,13 +259,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             JCheckBox checkBox = new JCheckBox(getWord("optionPane.closeApp.dont_ask_again"));
             Object[] message = new Object[]{getWord("optionPane.closeApp.question"), checkBox};
 
-            int option = JOptionPane.showConfirmDialog(
-                    this.container,
-                    message,
-                    getWord("optionPane.title.confirm"),
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE
-            );
+            int option = JOptionPane.showConfirmDialog(this.container, message, getWord("optionPane.title.confirm"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
             // Wenn der Benutzer "Nein" klickt → Abbrechen
             if (option != JOptionPane.YES_OPTION) return;
@@ -298,9 +269,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         }
 
         // Settings abspeichern & Anwendung beenden
-        if(workspace != null) {
-            workspace.saveConfig();
-        }
+
+        workspace.saveConfig();
+
         settings.save();
         System.exit(0);
     }

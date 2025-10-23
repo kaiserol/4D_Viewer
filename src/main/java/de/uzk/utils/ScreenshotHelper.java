@@ -70,7 +70,7 @@ public class ScreenshotHelper {
 
     public static int getScreenshotCount() {
         int count = 0;
-        if (Files.isDirectory(SCREENSHOT_DIRECTORY) && workspace != null) {
+        if (Files.isDirectory(SCREENSHOT_DIRECTORY)) {
             try (DirectoryStream<Path> paths = Files.newDirectoryStream(SCREENSHOT_DIRECTORY)) {
                 String filePattern = DATE_PATTERN + "\\(\\d+\\)_" + workspace.getFileNamePattern();
                 for (Path path : paths) {

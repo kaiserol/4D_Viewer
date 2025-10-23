@@ -94,17 +94,18 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
 
     public JSpinner getUnitSpinner(SpinnerNumberModel spinnerModel, Axis axis) {
         JSpinner spinner = new JSpinner(spinnerModel);
+
         JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "0.0");
         spinner.setEditor(editor);
 
-        if (workspace != null) {
-            Number number = switch (axis) {
-                case TIME -> workspace.getTime();
-                case LEVEL -> workspace.getLevel();
-            };
-            if (GuiUtils.valueFitsInRange(number, spinnerModel)) spinner.setValue(number);
-            else updateUnitValue(spinner, axis);
-        }
+        Number number = switch (axis) {
+            case TIME -> workspace.getConfig().getTimeUnit();
+            case LEVEL -> workspace.getConfig().getLevelUnit();
+        };
+        if (GuiUtils.valueFitsInRange(number, spinnerModel)) spinner.setValue(number);
+        else updateUnitValue(spinner, axis);
+
+
         spinner.addChangeListener(e -> {
 //            if (GuiUtils.isEnabled(spinner)) {
 //                updateUnitValue(spinner, isTime);
@@ -138,7 +139,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
     }
 
     private void update(JSlider slider, Axis axis, int newValue, boolean isAdjusting) {
-        if (workspace == null) return;
+
 
         int oldValue = axis == Axis.TIME ? workspace.getTime() : workspace.getLevel();
         if (oldValue == newValue) return;
