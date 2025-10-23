@@ -147,23 +147,23 @@ public class Config {
     }
 
     public void addMarker(Marker marker, int image) {
-        addMarker(marker, image, image);
-    }
-
-    public void addMarker(Marker marker, int from, int to) {
-        this.markers.add(new MarkerMapping(marker, from, to));
+        this.markers.add(new MarkerMapping(marker, image, image));
     }
 
     public void save(String fileName) {
-        Path location = operationSystem.getDirectoryPath(true).resolve(fileName);
-        try (BufferedWriter out = Files.newBufferedWriter(location)) {
-            out.write(new GsonBuilder().setPrettyPrinting().create().toJson(this));
-        } catch (IOException e) {
-            logger.logException(e);
+        logger.info("Storing Config File ...");
+        if (fileName != null && !fileName.isBlank()) {
+            Path location = operationSystem.getDirectoryPath(true).resolve(fileName);
+            try (BufferedWriter out = Files.newBufferedWriter(location)) {
+                out.write(new GsonBuilder().setPrettyPrinting().create().toJson(this));
+            } catch (IOException e) {
+                logger.error("Failed to store config: " + e.getMessage());
+            }
         }
     }
 
     public static Config load(String fileName) {
+        logger.info("Loading Config File ...");
         if (fileName != null && !fileName.isBlank()) {
             Path location = operationSystem.getDirectoryPath(true).resolve(fileName);
             try {
