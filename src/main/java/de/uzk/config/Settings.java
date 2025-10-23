@@ -15,12 +15,15 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static de.uzk.Main.operationSystem;
+
 public class Settings {
-    private static final Path SETTINGS_FILE_NAME = Path.of("settings.json");
+    private static final Path SETTINGS_FILE_NAME = operationSystem.getDataDirectory().resolve("settings.json");
 
     public static final int MIN_FONT_SIZE = 10;
     public static final int DEFAULT_FONT_SIZE = 16;
@@ -102,7 +105,7 @@ public class Settings {
     }
 
     public void save() {
-        try (BufferedWriter bw = Files.newBufferedWriter(SETTINGS_FILE_NAME)) {
+        try  (BufferedWriter bw = Files.newBufferedWriter(SETTINGS_FILE_NAME, StandardOpenOption.CREATE)) {
             bw.write(new GsonBuilder().setPrettyPrinting().create().toJson(this));
         } catch (IOException e) {
             Main.logger.error("Couldn't save settings.json");
