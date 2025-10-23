@@ -117,13 +117,14 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
             g2D.drawImage(this.currentImage, x, y, width, height, null);
 
             // Zeichnet Marker
-            List<MarkerMapping> marker = workspace.getConfig().getMarkers(workspace.getTime());
+            List<MarkerMapping> marker = workspace.getConfig().getMarkers();
             for (MarkerMapping m : marker) {
+                if (!m.shouldRender(workspace.getTime())) continue;
                 m.getMarker().draw(g2D, new Rectangle(x, y, width, height), scale);
             }
         } else {
             // Wenn das Bild nicht geladen werden konnte, zeigt es eine Fehlermeldung an
-            String text =  getWord("placeholder.imageCouldNotLoad");
+            String text = getWord("placeholder.imageCouldNotLoad");
             GuiUtils.drawCenteredText(g2D, text, this.panelImage);
         }
     }
@@ -212,7 +213,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     // Hilfsfunktionen
     // ==========================================================
     private void updateCurrentImage() {
-        Path path =  workspace.getImageFile() != null ? workspace.getImageFile().getPath() : null;
+        Path path = workspace.getImageFile() != null ? workspace.getImageFile().getPath() : null;
         this.currentImage = this.originalImage = (path != null ? Icons.loadImage(path, false) : null);
         if (this.originalImage != null) this.currentImage = GuiUtils.getEditedImage(this.originalImage, true);
         this.container.repaint();

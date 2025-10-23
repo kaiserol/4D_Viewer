@@ -20,11 +20,12 @@ import static de.uzk.Main.operationSystem;
 
 // TODO: Validate
 public class Settings {
-    private static final Path SETTINGS_FILE_NAME = operationSystem.getDirectoryPath(false).resolve("settings.json");
-
     public static final int MIN_FONT_SIZE = 10;
     public static final int DEFAULT_FONT_SIZE = 16;
     public static final int MAX_FONT_SIZE = 22;
+
+    // Verzeichnisse
+    private static final Path SETTINGS_FILE_NAME = operationSystem.getDirectoryPath(false).resolve("settings.json");
 
     // Einstellungen
     private Language language;

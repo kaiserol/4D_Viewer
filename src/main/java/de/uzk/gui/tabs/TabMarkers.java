@@ -43,7 +43,6 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
                 gui.handleAction(ActionType.ACTION_ADD_MARKER);
                 gui.updateUI();
             }
-
         });
 
         this.container.add(add, BorderLayout.SOUTH);
