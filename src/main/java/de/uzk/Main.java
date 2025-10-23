@@ -13,24 +13,21 @@ import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
 
 public class Main {
-
-
     public static final LogEntryHandler logger;
     public static final OperatingSystem operationSystem;
-    public static final Workspace workspace;
     public static final Settings settings;
     public static final History history;
+    public static final Workspace workspace;
 
     static {
         logger = new LogEntryHandler(Main.class.getName());
         operationSystem = OperatingSystem.getOP();
-        history = History.load();
         settings = Settings.load();
+        history = History.load();
         workspace = new Workspace();
     }
 
     public static void main(String[] args) {
-
         SwingUtilities.invokeLater(() -> {
             Gui gui = new Gui(history.last());
 

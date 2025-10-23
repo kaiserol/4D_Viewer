@@ -14,17 +14,34 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.uzk.Main.*;
+import static de.uzk.Main.history;
+import static de.uzk.Main.operationSystem;
 
 public class Config {
-    private String timeSep = "X";
-    private String levelSep = "L";
-    private double timeUnit = 30.0; //30s
-    private double levelUnit = 1.0; //1 um
-    private boolean mirrorX = false;
-    private boolean mirrorY = false;
-    private int rotation = 0;
-    private final List<MarkerMapping> markers = new ArrayList<>();
+    // Primitive Datentypen & String
+    private String timeSep;
+    private String levelSep;
+    private double timeUnit;
+    private double levelUnit;
+    private boolean mirrorX;
+    private boolean mirrorY;
+    private int rotation;
+
+    // Komplexe Datentypen
+    private final List<MarkerMapping> markers;
+
+    private Config() {
+        setTimeSep("X");
+        setLevelSep("L");
+        setTimeUnit(30.0);
+        setLevelUnit(1.0);
+        setMirrorX(false);
+        setMirrorY(false);
+        setRotation(0);
+
+        // Liste initialisieren
+        this.markers = new ArrayList<>();
+    }
 
     public String getTimeSep() {
         return this.timeSep;
@@ -90,22 +107,20 @@ public class Config {
         return this.markers;
     }
 
-
     public void addMarker(Marker marker, int image) {
         this.addMarker(marker, image, image);
     }
 
     public void addMarker(Marker marker, int from, int to) {
-
         this.markers.add(new MarkerMapping(marker, from, to));
     }
 
     public void save(Path fileName) {
-        Path location = operationSystem.getDataDirectory().resolve(fileName);
+        Path location = operationSystem.getDirectoryPath(true).resolve(fileName);
         try (BufferedWriter out = Files.newBufferedWriter(location)) {
             out.write(new GsonBuilder().setPrettyPrinting().create().toJson(this));
         } catch (IOException e) {
-            Main.logger.error("Couldn't save " + location.getFileName().toString() +": " + e.getMessage());
+            Main.logger.error("Couldn't save " + location.getFileName().toString() + ": " + e.getMessage());
         }
     }
 
@@ -114,7 +129,7 @@ public class Config {
     }
 
     public static Config load(Path fileName, boolean fallback) {
-        Path location = operationSystem.getDataDirectory().resolve(fileName);
+        Path location = operationSystem.getDirectoryPath(true).resolve(fileName);
         try (BufferedReader in = Files.newBufferedReader(location)) {
             Gson gson = new Gson();
             return gson.fromJson(in, Config.class);

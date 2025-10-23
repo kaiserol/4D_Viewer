@@ -12,13 +12,15 @@ public enum Theme {
     }
 
     public static Theme fromName(String name) {
-        if (name == null) return null;
-        try {
-            for (Theme theme : Theme.values()) {
-                if (theme.name().equalsIgnoreCase(name)) return theme;
+        if (name != null) {
+            try {
+                for (Theme theme : Theme.values()) {
+                    if (theme.name().equalsIgnoreCase(name)) return theme;
+                }
+            } catch (Exception ignore) {
             }
-        } catch (Exception ignore) {
         }
-        return null;
+        // Fallback
+        return Theme.LIGHT_MODE;
     }
 }

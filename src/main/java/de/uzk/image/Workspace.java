@@ -16,6 +16,7 @@ import java.util.stream.StreamSupport;
 import static de.uzk.Main.*;
 import static de.uzk.gui.GuiUtils.COLOR_RED;
 
+// TODO: Validate
 public class Workspace {
     // Bild Eigenschaften
     private Path imageFilesDirectory;

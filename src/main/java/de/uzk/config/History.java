@@ -9,10 +9,10 @@ import java.util.List;
 
 import static de.uzk.Main.operationSystem;
 
+// TODO: Validate
 public class History {
-    private static Path HISTORY_PATH = operationSystem.getDataDirectory().resolve("history");
-
-    private List<Path> history;
+    private static final Path HISTORY_PATH = operationSystem.getDirectoryPath(true).resolve("history");
+    private final List<Path> history;
 
     private History(List<Path> history) {
         this.history = new LinkedList<>(history);
@@ -32,7 +32,7 @@ public class History {
     }
 
     public Path last() {
-        if(!this.isEmpty()) {
+        if (!this.isEmpty()) {
             return this.history.get(this.history.size() - 1);
         } else {
             return null;

@@ -2,10 +2,6 @@ package de.uzk.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import de.uzk.Main;
 import de.uzk.image.ImageFileNameExtension;
 
@@ -16,15 +12,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import static de.uzk.Main.logger;
 import static de.uzk.Main.operationSystem;
 
+// TODO: Validate
 public class Settings {
-    private static final Path SETTINGS_FILE_NAME = operationSystem.getDataDirectory().resolve("settings.json");
+    private static final Path SETTINGS_FILE_NAME = operationSystem.getDirectoryPath(false).resolve("settings.json");
 
     public static final int MIN_FONT_SIZE = 10;
     public static final int DEFAULT_FONT_SIZE = 16;
@@ -125,6 +120,4 @@ public class Settings {
         ImageFileNameExtension temp = ImageFileNameExtension.fromExtension(extension);
         this.fileNameExt = temp != null ? temp : ImageFileNameExtension.getDefault();
     }
-
-
 }
