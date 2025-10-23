@@ -1,15 +1,14 @@
 package de.uzk.markers;
 
-import com.google.gson.TypeAdapter;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import de.uzk.utils.NumberUtils;
+import de.uzk.utils.StringUtils;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
-import java.io.IOException;
-import java.util.Arrays;
 
 public class Marker {
     private static final int LINE_WIDTH = 5;
@@ -19,12 +18,11 @@ public class Marker {
     private int width;
     private int height;
     private MarkerShape shape;
-    @JsonAdapter(ColorAdapter.class)
     private Color color;
     private String label;
 
     public Marker() {
-        this(0,0,0,0, MarkerShape.RECTANGLE, Color.RED, "Marker");
+        this(0, 0, 0, 0, MarkerShape.RECTANGLE, Color.RED, "Marker");
     }
 
     public Marker(Marker other) {
@@ -40,13 +38,32 @@ public class Marker {
     }
 
     public Marker(int x, int y, int width, int height, MarkerShape shape, Color color, String label) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.shape = shape;
-        this.color = color;
-        this.label = label;
+        this.setX(x);
+        this.setY(y);
+        this.setWidth(width);
+        this.setHeight(height);
+        this.setShape(shape);
+        this.setLabel(label);
+        this.setColor(color);
+    }
+
+    @JsonCreator
+    public Marker(
+            @JsonProperty("x")
+            int x,
+            @JsonProperty("y")
+            int y,
+            @JsonProperty("width")
+            int width,
+            @JsonProperty("height")
+            int height,
+            @JsonProperty(value = "shape", defaultValue = "RECTANGLE")
+            MarkerShape shape,
+            @JsonProperty(value = "color", defaultValue = "#000000")
+            String color,
+            @JsonProperty("label")
+            String label) {
+        this(x, y, width, height, shape, Color.decode(color), label);
     }
 
     public int getY() {
@@ -97,21 +114,21 @@ public class Marker {
         this.color = color;
     }
 
-    public  void draw(Graphics2D to, Rectangle imageArea, double scaleFactor) {
+    public void draw(Graphics2D to, Rectangle imageArea, double scaleFactor) {
         Rectangle actualBounds = this.getActualBounds(imageArea, scaleFactor);
-        Shape finalShape = switch(this.shape) {
+        Shape finalShape = switch (this.shape) {
             case RECTANGLE -> actualBounds;
-            case ELLIPSE -> new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
+            case ELLIPSE ->
+                    new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
 
         };
-
 
 
         Color prevColor = to.getColor();
         Stroke prevStroke = to.getStroke();
 
         to.setColor(this.color);
-        to.setStroke(new BasicStroke(LINE_WIDTH * (float)scaleFactor));
+        to.setStroke(new BasicStroke(LINE_WIDTH * (float) scaleFactor));
         to.draw(finalShape);
         this.drawName(to, actualBounds.x, actualBounds.y);
 
@@ -123,11 +140,11 @@ public class Marker {
         FontMetrics metrics = to.getFontMetrics();
         int width = metrics.stringWidth(this.label);
         int height = metrics.getHeight();
-        to.fillRect(x,y - metrics.getAscent()  ,width,height);
+        to.fillRect(x, y - metrics.getAscent(), width, height);
 
         double brightness = NumberUtils.calculatePerceivedBrightness(this.color);
         if (brightness > 186) {
-           to.setColor(Color.BLACK);
+            to.setColor(Color.BLACK);
         } else {
             to.setColor(Color.WHITE);
         }
@@ -135,15 +152,14 @@ public class Marker {
         to.drawString(this.label, x, y);
     }
 
-
     private Rectangle getActualBounds(Rectangle imageBounds, double scale) {
-        int x = imageBounds.x + (int)(this.x * scale);
-        int y = imageBounds.y + (int)(this.y * scale);
+        int x = imageBounds.x + (int) (this.x * scale);
+        int y = imageBounds.y + (int) (this.y * scale);
 
-        int width = (int)(this.width * scale);
-        int height = (int)(this.height * scale);
+        int width = (int) (this.width * scale);
+        int height = (int) (this.height * scale);
 
-        return new Rectangle(x, y, width,height);
+        return new Rectangle(x, y, width, height);
     }
 
     public String getLabel() {
@@ -154,35 +170,10 @@ public class Marker {
         this.label = label;
     }
 
-    private static class ColorAdapter extends TypeAdapter<Color> {
-
-        @Override
-        public void write(JsonWriter jsonWriter, Color color) throws IOException {
-            float[] components = color.getRGBComponents(null /* Array wird von der Methode erstellt*/);
-            StringBuilder builder = new StringBuilder("#");
-            for (float component : components) {
-                int c = (int)(component*255);
-                if(c != 0) {
-                    builder.append(Integer.toHexString(c));
-                } else {
-                    // toHexString würde 0 einstellig darstellen
-                    builder.append("00");
-                }
-            }
-            jsonWriter.value(builder.toString());
-        }
-
-        @Override
-        public Color read(JsonReader jsonReader) throws IOException {
-            String color = jsonReader.nextString();
-            if(color.charAt(0) == '#') {
-                int[] components = new int[3];
-                for(int i = 1; i < 7; i+=2) {
-                    components[i / 2] =  Integer.parseInt(color.substring(i,i+2), 16);
-                }
-                return new Color(components[0], components[1], components[2]);
-            }
-            return null;
-        }
+    @JsonGetter("color")
+    private String getHexColor() {
+        return StringUtils.colorToHex(this.color);
     }
+
+
 }

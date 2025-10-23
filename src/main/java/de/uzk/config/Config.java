@@ -2,12 +2,15 @@ package de.uzk.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.formdev.flatlaf.json.Json;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.uzk.markers.Marker;
 import de.uzk.markers.MarkerMapping;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -44,7 +47,7 @@ public class Config {
     private int rotation;
 
     // Komplexe Datentypen
-    private List<MarkerMapping> markers;
+    private final List<MarkerMapping> markers;
 
     @JsonCreator
     public Config(
@@ -64,20 +67,22 @@ public class Config {
         this.setMirrorX(mirrorX);
         this.setMirrorY(mirrorY);
         this.setRotation(rotation);
-        this.setMarkers(markers);
+
+        if (markers == null) markers = new ArrayList<>();
+        else markers.removeIf((Predicate<? super MarkerMapping>) m -> m == null || m.getMarker() == null);
+        this.markers = markers;
     }
 
+
     private Config() {
-        this(
-                DEFAULT_TIME_SEP,
+        this(DEFAULT_TIME_SEP,
                 DEFAULT_LEVEL_SEP,
                 DEFAULT_TIME_UNIT,
-                DEFAULT_LEVEL_UNIT,
+               DEFAULT_LEVEL_UNIT,
                 DEFAULT_MIRROR_X,
                 DEFAULT_MIRROR_Y,
                 DEFAULT_ROTATION,
-                new ArrayList<>()
-        );
+                new ArrayList<>());
     }
 
     public String getTimeSep() {
@@ -140,12 +145,6 @@ public class Config {
         return this.markers;
     }
 
-    public void setMarkers(List<MarkerMapping> markers) {
-        if (markers == null) markers = new ArrayList<>();
-        else markers.removeIf((Predicate<? super MarkerMapping>) m -> m == null || m.getMarker() == null);
-        this.markers = markers;
-    }
-
     public void addMarker(Marker marker, int image) {
         addMarker(marker, image, image);
     }
@@ -156,9 +155,9 @@ public class Config {
 
     public void save(String fileName) {
         Path location = operationSystem.getDirectoryPath(true).resolve(fileName);
-        try (BufferedWriter out = Files.newBufferedWriter(location)) {
-            out.write(new GsonBuilder().setPrettyPrinting().create().toJson(this));
-        } catch (IOException e) {
+        try {
+            new ObjectMapper().writeValue(location, this);
+        } catch (JacksonException e) {
             logger.logException(e);
         }
     }

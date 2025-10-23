@@ -1,17 +1,22 @@
 package de.uzk.markers;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class MarkerMapping {
     private Marker marker;
     private int from;
     private int to;
 
-
-    public MarkerMapping(Marker marker, int from, int to) {
+    @JsonCreator
+    public MarkerMapping(
+            @JsonProperty("marker") Marker marker, @JsonProperty("from") int from, @JsonProperty("to") int to) {
         this.marker = marker;
         this.from = from;
         this.to = to;
     }
+
     public MarkerMapping(Marker marker, int on) {
         this(marker, on, on);
     }
