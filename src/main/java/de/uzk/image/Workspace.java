@@ -18,9 +18,7 @@ import static de.uzk.gui.GuiUtils.COLOR_RED;
 
 // TODO: Validate
 public class Workspace {
-    // Bild Eigenschaften
     private Path imageFilesDirectory;
-
     private Config config;
 
 
@@ -52,7 +50,7 @@ public class Workspace {
             try {
                 if (this.loadImageFiles(progress)) {
                     history.open(directory);
-                    this.config = Config.load(Path.of(directory.getFileName() + ".json"));
+                    this.config = Config.load(directory.getFileName() + ".json");
                     return LoadingResult.LOADED;
                 }
 
@@ -70,11 +68,9 @@ public class Workspace {
     }
 
     public void saveConfig() {
-        if(this.isOpen()) {
+        if (this.isOpen()) {
             Path fileName = this.imageFilesDirectory.getFileName();
-            this.config.save(
-                   Path.of(fileName + ".json")
-            );
+            this.config.save(fileName + ".json");
         }
     }
 
@@ -337,7 +333,7 @@ public class Workspace {
     }
 
     public void checkMissingFiles() {
-        if(!this.isOpen()) {
+        if (!this.isOpen()) {
             logger.info("Workspace is closed, no need to check for missing images");
             return;
         }

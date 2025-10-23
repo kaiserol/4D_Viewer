@@ -2,7 +2,6 @@ package de.uzk.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.uzk.Main;
 import de.uzk.markers.Marker;
 import de.uzk.markers.MarkerMapping;
 
@@ -14,7 +13,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.uzk.Main.history;
+import static de.uzk.Main.logger;
 import static de.uzk.Main.operationSystem;
 
 public class Config {
@@ -115,29 +114,22 @@ public class Config {
         this.markers.add(new MarkerMapping(marker, from, to));
     }
 
-    public void save(Path fileName) {
+    public void save(String fileName) {
         Path location = operationSystem.getDirectoryPath(true).resolve(fileName);
         try (BufferedWriter out = Files.newBufferedWriter(location)) {
             out.write(new GsonBuilder().setPrettyPrinting().create().toJson(this));
         } catch (IOException e) {
-            Main.logger.error("Couldn't save " + location.getFileName().toString() + ": " + e.getMessage());
+            logger.logException(e);
         }
     }
 
-    public static Config load(Path fileName) {
-        return load(fileName, true);
-    }
-
-    public static Config load(Path fileName, boolean fallback) {
+    public static Config load(String fileName) {
         Path location = operationSystem.getDirectoryPath(true).resolve(fileName);
         try (BufferedReader in = Files.newBufferedReader(location)) {
             Gson gson = new Gson();
             return gson.fromJson(in, Config.class);
         } catch (IOException e) {
-            if (fallback && !history.isEmpty()) {
-                Path last = Path.of(history.last().getFileName() + ".json");
-                return Config.load(last, false);
-            }
+            logger.logException(e);
             return new Config();
         }
     }
