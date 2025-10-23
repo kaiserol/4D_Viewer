@@ -105,7 +105,7 @@ public class Settings {
     }
 
     public void save() {
-        try  (BufferedWriter bw = Files.newBufferedWriter(SETTINGS_FILE_NAME, StandardOpenOption.CREATE)) {
+        try (BufferedWriter bw = Files.newBufferedWriter(SETTINGS_FILE_NAME, StandardOpenOption.CREATE)) {
             bw.write(new GsonBuilder().setPrettyPrinting().create().toJson(this));
         } catch (IOException e) {
             Main.logger.error("Couldn't save settings.json");
