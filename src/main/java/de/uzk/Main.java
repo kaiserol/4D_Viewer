@@ -1,5 +1,6 @@
 package de.uzk;
 
+import de.uzk.config.History;
 import de.uzk.config.Settings;
 import de.uzk.gui.Gui;
 import de.uzk.image.Workspace;
@@ -18,10 +19,12 @@ public class Main {
     public static final OperatingSystem operationSystem;
     public static final Workspace workspace;
     public static final Settings settings;
+    public static final History history;
 
     static {
         logger = new LogEntryHandler(Main.class.getName());
         operationSystem = OperatingSystem.getOP();
+        history = History.load();
         settings = Settings.load();
         workspace = new Workspace();
     }
@@ -29,7 +32,7 @@ public class Main {
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> {
-            Gui gui = new Gui(settings.getLastHistory());
+            Gui gui = new Gui(history.last());
 
             // Behandle den Shortcut: Cmd+Q (unter macOS)
             if (operationSystem.isMacOS() && Desktop.isDesktopSupported()) {

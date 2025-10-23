@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static de.uzk.Main.logger;
 import static de.uzk.Main.operationSystem;
 
 public class Settings {
@@ -34,8 +35,6 @@ public class Settings {
     private Theme theme;
     private int fontSize;
     private boolean confirmExit;
-    @JsonAdapter(HistoryAdapter.class)
-    private List<Path> history;
     private ImageFileNameExtension fileNameExt;
 
     public Settings() {
@@ -44,7 +43,7 @@ public class Settings {
         this.setFontSize(16);
         this.setConfirmExit(true);
         this.fileNameExt = ImageFileNameExtension.getDefault();
-        this.history = new ArrayList<>();
+
     }
 
     public Language getLanguage() {
@@ -91,19 +90,6 @@ public class Settings {
         this.confirmExit = confirmExit;
     }
 
-    public Path getLastHistory() {
-        if (this.history.isEmpty()) {
-            return null;
-        }
-        return this.history.get(this.history.size() - 1);
-    }
-
-    public void pushHistory(Path opened) {
-        if (!opened.equals(this.getLastHistory())) {
-            history.add(opened);
-        }
-    }
-
     public void save() {
         try (BufferedWriter bw = Files.newBufferedWriter(SETTINGS_FILE_NAME, StandardOpenOption.CREATE)) {
             bw.write(new GsonBuilder().setPrettyPrinting().create().toJson(this));
@@ -117,7 +103,8 @@ public class Settings {
             Gson gson = new Gson();
             Settings result = gson.fromJson(br, Settings.class);
             if (result != null) return result;
-        } catch (Exception ignore) {
+        } catch (IOException e) {
+            logger.error("Couldn't load settings.json: " + e.getMessage());
         }
         return new Settings();
     }
@@ -139,25 +126,5 @@ public class Settings {
         this.fileNameExt = temp != null ? temp : ImageFileNameExtension.getDefault();
     }
 
-    private static class HistoryAdapter extends TypeAdapter<List<Path>> {
-        @Override
-        public void write(JsonWriter jsonWriter, List<Path> paths) throws IOException {
-            jsonWriter.beginArray();
-            for (Path path : paths) {
-                jsonWriter.value(path.toAbsolutePath().normalize().toString());
-            }
-            jsonWriter.endArray();
-        }
 
-        @Override
-        public List<Path> read(JsonReader jsonReader) throws IOException {
-            List<Path> result = new ArrayList<>();
-            jsonReader.beginArray();
-            while (jsonReader.hasNext()) {
-                result.add(Path.of(jsonReader.nextString()));
-            }
-            jsonReader.endArray();
-            return result;
-        }
-    }
 }

@@ -11,8 +11,6 @@ public class ImageFile implements Comparable<ImageFile> {
     private final int time;
     private final int level;
 
-    public static final ImageFile NONE = new ImageFile(Path.of(""), 0, 0);
-
     public ImageFile(Path path, int time, int level) {
         if (path == null) throw new NullPointerException("Path is null.");
         this.path = path;

@@ -50,7 +50,7 @@ public class Workspace {
             // Setze das Verzeichnis zurück, wenn das übergebene Verzeichnis keine Image-Files hat
             try {
                 if (this.loadImageFiles(progress)) {
-                    settings.pushHistory(directory);
+                    history.open(directory);
                     this.config = Config.load(Path.of(directory.getFileName() + ".json"));
                     return LoadingResult.LOADED;
                 }

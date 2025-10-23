@@ -14,12 +14,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.uzk.Main.operationSystem;
-import static de.uzk.Main.settings;
+import static de.uzk.Main.*;
 
 public class Config {
-    private static final Path CONFIG_FILE_NAME = Path.of("config.json");
-
     private String timeSep = "X";
     private String levelSep = "L";
     private double timeUnit = 30.0; //30s
@@ -27,7 +24,7 @@ public class Config {
     private boolean mirrorX = false;
     private boolean mirrorY = false;
     private int rotation = 0;
-    private List<MarkerMapping> markers = new ArrayList<>();
+    private final List<MarkerMapping> markers = new ArrayList<>();
 
     public String getTimeSep() {
         return this.timeSep;
@@ -122,8 +119,8 @@ public class Config {
             Gson gson = new Gson();
             return gson.fromJson(in, Config.class);
         } catch (IOException e) {
-            if (fallback && settings.getLastHistory() != null) {
-                Path last = Path.of(settings.getLastHistory().getFileName() + ".json");
+            if (fallback && !history.isEmpty()) {
+                Path last = Path.of(history.last().getFileName() + ".json");
                 return Config.load(last, false);
             }
             return new Config();
