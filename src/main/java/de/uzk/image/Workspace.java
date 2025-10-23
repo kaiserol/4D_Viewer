@@ -10,8 +10,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
-import static de.uzk.Main.logger;
-import static de.uzk.Main.settings;
+import static de.uzk.Main.*;
 import static de.uzk.gui.GuiUtils.COLOR_RED;
 
 public class Workspace {
@@ -69,7 +68,9 @@ public class Workspace {
     }
 
     public void saveConfig() {
-        this.config.save(this.imageFilesDirectory);
+        this.config.save(
+                operationSystem.getDataDirectory().resolve(this.imageFilesDirectory.getFileName())
+        );
     }
 
     public Path getImageFilesDirectoryPath() {
