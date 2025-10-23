@@ -45,13 +45,13 @@ public class Workspace {
 
             // Verzeichnis & Datei-Typ aktualisieren
             this.imageFilesDirectory = directory;
-            this.config = Config.load(operationSystem.getDataDirectory().resolve(directory.getFileName()));
             settings.setFileNameExt(extension);
 
             // Setze das Verzeichnis zurück, wenn das übergebene Verzeichnis keine Image-Files hat
             try {
                 if (this.loadImageFiles(progress)) {
                     settings.pushHistory(directory);
+                    this.config = Config.load(Path.of(directory.getFileName() + ".json"));
                     return LoadingResult.LOADED;
                 }
 
@@ -70,8 +70,9 @@ public class Workspace {
 
     public void saveConfig() {
         if(this.isOpen()) {
+            Path fileName = this.imageFilesDirectory.getFileName();
             this.config.save(
-                    operationSystem.getDataDirectory().resolve(this.imageFilesDirectory.getFileName())
+                   Path.of(fileName + ".json")
             );
         }
     }

@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.uzk.Main.operationSystem;
 import static de.uzk.Main.settings;
 
 public class Config {
@@ -102,27 +103,28 @@ public class Config {
         this.markers.add(new MarkerMapping(marker, from, to));
     }
 
-    public void save(Path location) {
-        try (BufferedWriter out = Files.newBufferedWriter(location.resolve(CONFIG_FILE_NAME))) {
-            String s = new GsonBuilder().setPrettyPrinting().create().toJson(this);
-            out.write(s);
+    public void save(Path fileName) {
+        Path location = operationSystem.getDataDirectory().resolve(fileName);
+        try (BufferedWriter out = Files.newBufferedWriter(location)) {
+            out.write(new GsonBuilder().setPrettyPrinting().create().toJson(this));
         } catch (IOException e) {
-            Main.logger.error("Couldn't save settings.json");
+            Main.logger.error("Couldn't save " + location.getFileName().toString() +": " + e.getMessage());
         }
     }
 
-    public static Config load(Path location) {
-        return load(location, true);
+    public static Config load(Path fileName) {
+        return load(fileName, true);
     }
 
-    public static Config load(Path location, boolean fallback) {
-        try (BufferedReader in = Files.newBufferedReader(location.resolve(CONFIG_FILE_NAME))) {
+    public static Config load(Path fileName, boolean fallback) {
+        Path location = operationSystem.getDataDirectory().resolve(fileName);
+        try (BufferedReader in = Files.newBufferedReader(location)) {
             Gson gson = new Gson();
             return gson.fromJson(in, Config.class);
-
         } catch (IOException e) {
             if (fallback && settings.getLastHistory() != null) {
-                return Config.load(settings.getLastHistory(), false);
+                Path last = Path.of(settings.getLastHistory().getFileName() + ".json");
+                return Config.load(last, false);
             }
             return new Config();
         }
