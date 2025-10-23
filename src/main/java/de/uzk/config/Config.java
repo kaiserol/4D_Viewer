@@ -42,6 +42,25 @@ public class Config {
         this.markers = new ArrayList<>();
     }
 
+    private void validate() {
+        if(this.timeSep == null) {
+            setTimeSep("X");
+        }
+        if(this.levelSep == null) {
+            setLevelSep("L");
+        }
+        if(this.timeUnit <= 0 ) {
+            setTimeUnit(30.0);
+        }
+        if(this.levelUnit <= 0 ) {
+            setLevelUnit(1.0);
+        }
+        if(this.rotation <= 0) {
+            setRotation(0);
+        }
+        this.markers.remove(null); // Ungültige Marker werden zu null serialisiert
+    }
+
     public String getTimeSep() {
         return this.timeSep;
     }
@@ -125,9 +144,12 @@ public class Config {
 
     public static Config load(String fileName) {
         Path location = operationSystem.getDirectoryPath(true).resolve(fileName);
+
         try (BufferedReader in = Files.newBufferedReader(location)) {
             Gson gson = new Gson();
-            return gson.fromJson(in, Config.class);
+            Config parsed = gson.fromJson(in, Config.class);
+            parsed.validate();
+            return parsed;
         } catch (IOException e) {
             logger.logException(e);
             return new Config();

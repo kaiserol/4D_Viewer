@@ -32,7 +32,7 @@ public class Workspace {
 
     public Workspace() {
         this.pinTimes = new TreeSet<>();
-        this.config = new Config();
+        this.config = Config.load(null);
 
         clear(true);
     }
@@ -200,7 +200,7 @@ public class Workspace {
         this.maxLevel = 0;
         this.maxTime = 0;
         this.pinTimes.clear();
-        this.config = new Config();
+        this.config = Config.load(null);
     }
 
     public boolean isOpen() {
