@@ -2,6 +2,10 @@ package de.uzk.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import de.uzk.Main;
 import de.uzk.image.ImageFileNameExtension;
 import jdk.jshell.spi.ExecutionControl;
@@ -14,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class Settings implements Serializable {
+public class Settings {
     private static final Path SETTINGS_FILE_NAME = Path.of("settings.json");
 
     public static final int MIN_FONT_SIZE = 10;
@@ -25,6 +29,7 @@ public class Settings implements Serializable {
     private Theme theme;
     private int fontSize;
     private boolean confirmExit;
+    @JsonAdapter(HistoryAdapter.class)
     private List<Path> history;
     private ImageFileNameExtension fileNameExt;
 
@@ -92,7 +97,7 @@ public class Settings implements Serializable {
     }
 
     public void pushHistory(Path opened) {
-        if(!opened.equals(history.get(history.size() - 1))) {
+        if(!opened.equals(this.getLastHistory())) {
             history.add(opened);
         }
     }
@@ -110,7 +115,12 @@ public class Settings implements Serializable {
     public static Settings load()  {
         try (BufferedReader br = Files.newBufferedReader(SETTINGS_FILE_NAME)) {
             Gson gson = new Gson();
-            return  gson.fromJson(br, Settings.class);
+            Settings result = gson.fromJson(br, Settings.class);
+            if(result == null) {
+                return new Settings();
+            } else {
+                return result;
+            }
         } catch(Exception e) {
             return new Settings();
         }
@@ -136,5 +146,28 @@ public class Settings implements Serializable {
         ImageFileNameExtension temp = ImageFileNameExtension.fromExtension(extension);
         this.fileNameExt = temp != null ? temp : ImageFileNameExtension.getDefault();
 
+    }
+
+    private static class HistoryAdapter extends TypeAdapter<List<Path>> {
+
+        @Override
+        public void write(JsonWriter jsonWriter, List<Path> paths) throws IOException {
+            jsonWriter.beginArray();
+            for(Path path : paths) {
+                jsonWriter.value(path.toAbsolutePath().normalize().toString());
+            }
+            jsonWriter.endArray();
+        }
+
+        @Override
+        public List<Path> read(JsonReader jsonReader) throws IOException {
+            List<Path> result = new ArrayList<>();
+             jsonReader.beginArray();
+             while(jsonReader.hasNext()) {
+                 result.add(Path.of(jsonReader.nextString()));
+             }
+             jsonReader.endArray();
+            return result;
+        }
     }
 }

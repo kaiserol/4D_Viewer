@@ -2,9 +2,9 @@ package de.uzk.gui;
 
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
-import de.uzk.utils.ScreenshotHelper;
 import de.uzk.image.Axis;
 import de.uzk.markers.MarkerMapping;
+import de.uzk.utils.ScreenshotHelper;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.List;
 
-import static de.uzk.Main.*;
+import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
@@ -117,7 +117,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
             g2D.drawImage(this.currentImage, x, y, width, height, null);
 
             // Zeichnet Marker
-            List<MarkerMapping> marker = markerHandler.getMarkers(workspace.getTime());
+            List<MarkerMapping> marker = workspace.getConfig().getMarkers(workspace.getTime());
             for (MarkerMapping m : marker) {
                 m.getMarker().draw(g2D, new Rectangle(x, y, width, height), scale);
             }

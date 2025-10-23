@@ -1,9 +1,15 @@
 package de.uzk.markers;
 
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import de.uzk.utils.NumberUtils;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class Marker {
     private static final int LINE_WIDTH = 5;
@@ -13,6 +19,7 @@ public class Marker {
     private int width;
     private int height;
     private MarkerShape shape;
+    @JsonAdapter(ColorAdapter.class)
     private Color color;
     private String label;
 
@@ -145,5 +152,37 @@ public class Marker {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    private static class ColorAdapter extends TypeAdapter<Color> {
+
+        @Override
+        public void write(JsonWriter jsonWriter, Color color) throws IOException {
+            float[] components = color.getRGBComponents(null /* Array wird von der Methode erstellt*/);
+            StringBuilder builder = new StringBuilder("#");
+            for (float component : components) {
+                int c = (int)(component*255);
+                if(c != 0) {
+                    builder.append(Integer.toHexString(c));
+                } else {
+                    // toHexString würde 0 einstellig darstellen
+                    builder.append("00");
+                }
+            }
+            jsonWriter.value(builder.toString());
+        }
+
+        @Override
+        public Color read(JsonReader jsonReader) throws IOException {
+            String color = jsonReader.nextString();
+            if(color.charAt(0) == '#') {
+                int[] components = new int[3];
+                for(int i = 1; i < 7; i+=2) {
+                    components[i / 2] =  Integer.parseInt(color.substring(i,i+2), 16);
+                }
+                return new Color(components[0], components[1], components[2]);
+            }
+            return null;
+        }
     }
 }

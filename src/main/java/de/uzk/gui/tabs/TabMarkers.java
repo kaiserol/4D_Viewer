@@ -11,9 +11,9 @@ import de.uzk.markers.MarkerMapping;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 import static de.uzk.Main.workspace;
-import static de.uzk.Main.markerHandler;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class TabMarkers extends AreaContainerInteractive<JPanel> {
@@ -24,11 +24,31 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
 
     private void rerender() {
 
-        java.util.List<MarkerMapping> currentMarkers = markerHandler.getMarkers();
+
+        java.util.List<MarkerMapping> currentMarkers = workspace != null?  workspace.getConfig().getMarkers() : new ArrayList<>();
 
         this.container.removeAll();
         this.container.setLayout(new BorderLayout());
 
+        JButton add = new JButton(getWord("items.markers.addMarker"));
+        add.addActionListener(e -> {
+            MarkerEditor initial = new MarkerEditor(workspace.getImageFile());
+            int option = JOptionPane.showConfirmDialog(
+                    null,
+                    initial,
+                    getWord("dialog.markers.newMarker"),
+                    JOptionPane.OK_CANCEL_OPTION
+            );
+
+            if (option == JOptionPane.OK_OPTION) {
+                workspace.getConfig().addMarker(initial.getMarker(), workspace.getTime());
+                gui.handleAction(ActionType.ACTION_ADD_MARKER);
+                gui.updateUI();
+            }
+
+        });
+
+        this.container.add(add, BorderLayout.SOUTH);
 
         if (!currentMarkers.isEmpty()) {
             Box panel = new Box(BoxLayout.Y_AXIS);
@@ -46,25 +66,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
             this.container.add(noneLabel, BorderLayout.CENTER);
         }
 
-        JButton add = new JButton(getWord("items.markers.addMarker"));
-        add.addActionListener(e -> {
-            MarkerEditor initial = new MarkerEditor(workspace.getImageFile());
-            int option = JOptionPane.showConfirmDialog(
-                    null,
-                    initial,
-                    getWord("dialog.markers.newMarker"),
-                    JOptionPane.OK_CANCEL_OPTION
-            );
 
-            if (option == JOptionPane.OK_OPTION) {
-                markerHandler.addMarker(initial.getMarker(), workspace.getTime());
-                gui.handleAction(ActionType.ACTION_ADD_MARKER);
-                gui.updateUI();
-            }
-
-        });
-
-        this.container.add(add, BorderLayout.SOUTH);
 
     }
 

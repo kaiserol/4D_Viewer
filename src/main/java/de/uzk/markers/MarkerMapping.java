@@ -9,6 +9,8 @@ public class MarkerMapping {
 
     public MarkerMapping(Marker marker, int from, int to) {
         this.marker = marker;
+        this.from = from;
+        this.to = to;
     }
     public MarkerMapping(Marker marker, int on) {
         this(marker, on, on);

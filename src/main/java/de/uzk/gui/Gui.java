@@ -153,6 +153,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         switch (result) {
             case LOADED -> {
                 toggleOn();
+                this.handleAction(ActionType.ACTION_ADD_MARKER);
                 return true;
             }
             case ALREADY_LOADED -> {
@@ -297,6 +298,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         }
 
         // Settings abspeichern &  Anwendung beenden
+        if(workspace != null) {
+            workspace.saveConfig();
+        }
         settings.save();
         System.exit(0);
     }
