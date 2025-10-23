@@ -203,7 +203,7 @@ public class Workspace {
     }
 
     public boolean isOpen() {
-        return this.imageFilesDirectory != null;
+        return this.imageFilesDirectory != null && this.matrix != null;
     }
 
     private boolean loadImageFiles(LoadingImageListener progress) throws InterruptedException {
@@ -211,11 +211,7 @@ public class Workspace {
 
         List<Path> files;
         try (DirectoryStream<Path> dir = Files.newDirectoryStream(this.imageFilesDirectory)) {
-            String fileNamePattern = getFileNamePattern();
-
-            files = StreamSupport.stream(dir.spliterator(), false).sorted((f1, f2) -> f1.getFileName().toString().compareToIgnoreCase(f2.getFileName().toString())).filter(Files::isRegularFile).filter(p -> p.getFileName().toString().matches(fileNamePattern))
-
-                    .toList();
+            files = StreamSupport.stream(dir.spliterator(), false).toList();
         } catch (IOException e) {
             files = new ArrayList<>();
         }
@@ -231,22 +227,22 @@ public class Workspace {
         for (int number = 1; number <= files.size(); number++) {
             if (Thread.currentThread().isInterrupted()) throw new InterruptedException();
 
+
+
             Path currentFile = files.get(number - 1);
+            String fileNamePattern = getFileNamePattern();
 
             // Prüfen, ob reguläre Datei und Name auf Muster passt
+            if (Files.isRegularFile(currentFile) && currentFile.getFileName().toString().matches(fileNamePattern)) {
+                int time = Integer.parseInt(getTimeStr(currentFile.getFileName().toString()));
+                int level = Integer.parseInt(getLevelStr(currentFile.getFileName().toString()));
 
-            int time = Integer.parseInt(getTimeStr(currentFile.getFileName().toString()));
-            int level = Integer.parseInt(getLevelStr(currentFile.getFileName().toString()));
+                // Maximalwerte bestimmen (Matrixgröße)
+                tempMaxTime = Math.max(tempMaxTime, time);
+                tempMaxLevel = Math.max(tempMaxLevel, level);
 
-            // Maximalwerte bestimmen (Matrixgröße)
-            tempMaxTime = Math.max(tempMaxTime, time);
-            tempMaxLevel = Math.max(tempMaxLevel, level);
-
-            imageFiles.add(new ImageFile(currentFile, time, level));
-
-
-            // Fortschritt aktualisieren
-            progress.onScanningUpdate(files.size(), number, currentFile, imageFiles.size());
+                imageFiles.add(new ImageFile(currentFile, time, level));
+            }
         }
 
         progress.onScanningComplete(files.size(), files.size(), imageFiles.size());

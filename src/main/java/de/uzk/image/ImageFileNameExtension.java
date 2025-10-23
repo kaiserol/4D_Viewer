@@ -56,7 +56,7 @@ public enum ImageFileNameExtension {
                 if (ext.matches(extension)) return ext;
             }
         }
-        return null;
+        return getDefault();
     }
 
     public static ImageFileNameExtension getDefault() {
