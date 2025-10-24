@@ -16,41 +16,42 @@ import static de.uzk.Main.*;
 
 public class ScreenshotHelper {
     // Pfade
-    private static final Path SCREENSHOT_DIRECTORY = Path.of("screenshots");
+    private static final Path SCREENSHOT_DIRECTORY_PATH = Path.of("screenshots");
 
     // Format und Pattern
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-dd-MM");
     private static final String DATE_PATTERN = "\\d{4}-\\d{2}-\\d{2}";
 
-    public static boolean saveScreenshot(BufferedImage originalImage) {
+    public static boolean saveScreenshot(BufferedImage image) {
+        if (image == null || !workspace.isOpen()) return false;
         try {
-            if (!Files.exists(SCREENSHOT_DIRECTORY)) {
-                Files.createDirectories(SCREENSHOT_DIRECTORY);
+            if (!Files.exists(SCREENSHOT_DIRECTORY_PATH)) {
+                Files.createDirectories(SCREENSHOT_DIRECTORY_PATH);
             }
 
-            if (Files.isDirectory(SCREENSHOT_DIRECTORY)) {
+            if (Files.isDirectory(SCREENSHOT_DIRECTORY_PATH)) {
                 String date = DATE_FORMAT.format(new Date());
                 int count = getNextScreenshotIndex(date);
 
-                Path fileName = Path.of("%s(%02d)_%s".formatted(date, count, workspace.getImageFile().getName()));
-                Path savePath = SCREENSHOT_DIRECTORY.toAbsolutePath().resolve(fileName);
+                String fileName = "%s(%02d)_%s".formatted(date, count, workspace.getImageFile().getName());
+                Path path = SCREENSHOT_DIRECTORY_PATH.toAbsolutePath().resolve(fileName);
 
-                BufferedImage edited = GuiUtils.getEditedImage(originalImage, false);
-                ImageIO.write(edited, settings.getFileNameExt().getType(), savePath.toFile());
-                logger.info("Saved Screenshot under: '" + savePath.toAbsolutePath() + "'.");
+                BufferedImage editedImage = GuiUtils.getEditedImage(image, false);
+                ImageIO.write(editedImage, workspace.getConfig().getImageFileType().getType(), path.toFile());
+                logger.info("Saved Screenshot under '" + path.toAbsolutePath() + "'.");
                 return true;
             }
         } catch (IOException e) {
-            logger.logException(e);
+            logger.error("Failed to save screenshot: " + e.getMessage());
         }
         return false;
     }
 
     private static int getNextScreenshotIndex(String date) {
         int index = 1;
-        if (Files.isDirectory(SCREENSHOT_DIRECTORY)) {
-            try (DirectoryStream<Path> paths = Files.newDirectoryStream(SCREENSHOT_DIRECTORY)) {
-                String fileNamePattern = date + "\\(\\d+\\)_" + workspace.getFileNamePattern();
+        if (Files.isDirectory(SCREENSHOT_DIRECTORY_PATH)) {
+            try (DirectoryStream<Path> paths = Files.newDirectoryStream(SCREENSHOT_DIRECTORY_PATH)) {
+                String fileNamePattern = date + "\\(\\d+\\)_" + workspace.getImageFileNamePattern();
 
                 for (Path path : paths) {
                     String fileName = path.getFileName().toString();
@@ -62,7 +63,7 @@ public class ScreenshotHelper {
                     }
                 }
             } catch (IOException e) {
-                logger.logException(e);
+                logger.error("Failed to get next screenshot index: " + e.getMessage());
             }
         }
         return index;
@@ -70,15 +71,16 @@ public class ScreenshotHelper {
 
     public static int getScreenshotCount() {
         int count = 0;
-        if (Files.isDirectory(SCREENSHOT_DIRECTORY)) {
-            try (DirectoryStream<Path> paths = Files.newDirectoryStream(SCREENSHOT_DIRECTORY)) {
-                String filePattern = DATE_PATTERN + "\\(\\d+\\)_" + workspace.getFileNamePattern();
+        if (workspace.isOpen() && Files.isDirectory(SCREENSHOT_DIRECTORY_PATH)) {
+            try (DirectoryStream<Path> paths = Files.newDirectoryStream(SCREENSHOT_DIRECTORY_PATH)) {
+                String fileNamePattern = DATE_PATTERN + "\\(\\d+\\)_" + workspace.getImageFileNamePattern();
+
                 for (Path path : paths) {
                     String fileName = path.getFileName().toString();
-                    if (fileName.matches(filePattern)) count++;
+                    if (fileName.matches(fileNamePattern)) count++;
                 }
             } catch (IOException e) {
-                logger.logException(e);
+                logger.error("Failed to get screenshot count: " + e.getMessage());
             }
         }
         return count;

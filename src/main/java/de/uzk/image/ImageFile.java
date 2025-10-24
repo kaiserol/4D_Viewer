@@ -30,16 +30,23 @@ public class ImageFile implements Comparable<ImageFile> {
         return this.name;
     }
 
-    public boolean exists() {
-        return Files.exists(this.path);
-    }
-
     public int getTime() {
         return this.time;
     }
 
     public int getLevel() {
         return this.level;
+    }
+
+    public boolean exists() {
+        return Files.exists(this.path);
+    }
+
+    @Override
+    public int compareTo(ImageFile imageFile) {
+        if (this.time != imageFile.time) return Integer.compare(this.time, imageFile.time);
+        if (this.level != imageFile.level) return Integer.compare(this.level, imageFile.level);
+        return name.compareToIgnoreCase(imageFile.name);
     }
 
     @Override
@@ -53,13 +60,6 @@ public class ImageFile implements Comparable<ImageFile> {
     @Override
     public int hashCode() {
         return Objects.hash(this.time, this.level);
-    }
-
-    @Override
-    public int compareTo(ImageFile imageFile) {
-        if (this.time != imageFile.time) return Integer.compare(this.time, imageFile.time);
-        if (this.level != imageFile.level) return Integer.compare(this.level, imageFile.level);
-        return name.compareToIgnoreCase(imageFile.name);
     }
 
     @Override

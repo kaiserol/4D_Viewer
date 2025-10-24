@@ -50,7 +50,7 @@ public class LogEntryHandler {
     }
 
     private void log(LogLevel level, String message) {
-        String msgText = message == null ? "" : message;
+        String msgText = message != null ? message : "";
         LogEntry logEntry = new LogEntry(level, msgText + StringUtils.NEXT_LINE);
 
         if (level != null) {

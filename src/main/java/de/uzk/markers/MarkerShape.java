@@ -9,7 +9,7 @@ public enum MarkerShape {
     ELLIPSE;
 
     public static MarkerShape[] sortedValues() {
-        MarkerShape[] values = values();
+        MarkerShape[] values = MarkerShape.values();
         Arrays.sort(values, (mark1, mark2) -> mark1.toString().compareToIgnoreCase(mark2.toString()));
         return values;
     }

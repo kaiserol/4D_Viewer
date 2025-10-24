@@ -26,7 +26,6 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     // Bildanzeige
     private JPanel panelView;
     private JPanel panelImage;
-    private BufferedImage originalImage;
     private BufferedImage currentImage;
 
     // GUI-Elemente
@@ -123,8 +122,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
                 m.getMarker().draw(g2D, new Rectangle(x, y, width, height), scale);
             }
         } else {
-            // Wenn das Bild nicht geladen werden konnte, zeigt es eine Fehlermeldung an
-            String text = getWord("placeholder.imageCouldNotLoad");
+            // Fehlermeldung wird angezeigt, wenn das aktuelle Bild nicht geladen werden kann (weil es nicht existiert)
+            String text = workspace.isOpen() ? getWord("placeholder.imageCouldNotLoad") : "";
             GuiUtils.drawCenteredText(g2D, text, this.panelImage);
         }
     }
@@ -168,7 +167,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         switch (actionType) {
             case ACTION_EDIT_IMAGE -> updateCurrentImage();
             case SHORTCUT_TAKE_SCREENSHOT -> {
-                if (originalImage != null && ScreenshotHelper.saveScreenshot(this.originalImage)) {
+                if (ScreenshotHelper.saveScreenshot(this.currentImage)) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER);
                 }
             }
@@ -213,9 +212,15 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     // Hilfsfunktionen
     // ==========================================================
     private void updateCurrentImage() {
-        Path path = workspace.getImageFile() != null ? workspace.getImageFile().getPath() : null;
-        this.currentImage = this.originalImage = (path != null ? Icons.loadImage(path, false) : null);
-        if (this.originalImage != null) this.currentImage = GuiUtils.getEditedImage(this.originalImage, true);
+        // Bild neu laden
+        this.currentImage = null;
+        if (workspace.isOpen()) {
+            Path imagePath = workspace.getImageFile().getPath();
+            BufferedImage originalImage = Icons.loadImage(imagePath, false);
+            if (originalImage != null) this.currentImage = GuiUtils.getEditedImage(originalImage, true);
+        }
+
+        // Bild zeichnen
         this.container.repaint();
     }
 

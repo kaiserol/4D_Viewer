@@ -2,12 +2,7 @@ package de.uzk.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import de.uzk.Main;
-import de.uzk.image.ImageFileNameExtension;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
@@ -18,43 +13,38 @@ import java.util.Locale;
 import static de.uzk.Main.logger;
 import static de.uzk.Main.operationSystem;
 
-// TODO: Validate
 public class Settings {
+    // MinMax Konstanten
     public static final int MIN_FONT_SIZE = 10;
-    public static final int DEFAULT_FONT_SIZE = 16;
     public static final int MAX_FONT_SIZE = 22;
 
+    // Default-Konstanten
+    private static final Language DEFAULT_LANGUAGE = Language.getSystemDefault();
+    private static final Theme DEFAULT_THEME = Theme.getDefault();
+    public static final int DEFAULT_FONT_SIZE = 16;
+    private static final boolean DEFAULT_CONFIRM_EXIT = true;
+
     // Verzeichnisse
-    private static final Path SETTINGS_FILE_NAME = operationSystem.getDirectoryPath(false).resolve("settings.json");
+    private static final Path SETTINGS_FILE_NAME = operationSystem.getDirectory(false).resolve("settings.json");
 
     // Einstellungen
     private Language language;
     private Theme theme;
     private int fontSize;
     private boolean confirmExit;
-    private ImageFileNameExtension fileNameExt;
 
-    private Settings() {
-        this.setTheme(Theme.LIGHT_MODE);
-        this.setFontSize(DEFAULT_FONT_SIZE);
-        this.setConfirmExit(true);
-        this.setLanguage(Language.getSystemDefault());
-        this.setFileNameExt(ImageFileNameExtension.getDefault());
-    }
-
+    // Nur Konstanten vom primitiven Datentyp können als Default-Werte verwendet werden (inklusive Strings)
     @JsonCreator
     public Settings(
-            @JsonProperty(value = "language", defaultValue = "ENGLISH") String language,
-            @JsonProperty(value = "theme", defaultValue = "LIGHT_MODE") String theme,
-            @JsonProperty(value = "fontSize", defaultValue = "16") int fontSize,
-            @JsonProperty(value = "confirmExit", defaultValue = "true") boolean confirmExit,
-            @JsonProperty(value = "fileNameExt", defaultValue = "JPEG")  String fileNameExt
+            @JsonProperty(value = "language") String language,
+            @JsonProperty(value = "theme") String theme,
+            @JsonProperty(value = "fontSize", defaultValue = DEFAULT_FONT_SIZE + "") int fontSize,
+            @JsonProperty(value = "confirmExit", defaultValue = DEFAULT_CONFIRM_EXIT + "") boolean confirmExit
     ) {
-        this.setTheme(Theme.fromName(theme));
+        this.setTheme(Theme.fromTheme(theme));
         this.setLanguage(Language.fromLanguage(language));
         this.setFontSize(fontSize);
         this.setConfirmExit(confirmExit);
-        this.setFileNameExt(ImageFileNameExtension.fromExtension(fileNameExt));
     }
 
     public Language getLanguage() {
@@ -62,35 +52,31 @@ public class Settings {
     }
 
     public void setLanguage(Language language) {
-        if (language == null || this.language == language) return;
-
-        this.language = language;
-        Locale.setDefault(language.getLocale());
-        JComponent.setDefaultLocale(language.getLocale());
-        LanguageHandler.load(language);
+        if (this.language == language) return;
+        this.language = (language != null) ? language : DEFAULT_LANGUAGE;
+        Locale.setDefault(this.language.getLocale());
+        JComponent.setDefaultLocale(this.language.getLocale());
+        LanguageHandler.load(this.language);
     }
 
     public Theme getTheme() {
-        return theme;
+        return this.theme;
     }
 
     public void setTheme(Theme theme) {
-        this.theme = theme;
+        this.theme = (theme != null) ? theme : DEFAULT_THEME;
+    }
+
+    public void toggleTheme() {
+        this.theme = this.theme.toggle();
     }
 
     public int getFontSize() {
         return fontSize;
     }
 
-    public boolean setFontSize(int fontSize) {
-        if (fontSize < MIN_FONT_SIZE || fontSize > MAX_FONT_SIZE) {
-            if (this.fontSize < MIN_FONT_SIZE) {
-                this.fontSize = DEFAULT_FONT_SIZE;
-            }
-            return false;
-        }
-        this.fontSize = fontSize;
-        return true;
+    public void setFontSize(int fontSize) {
+        this.fontSize = (fontSize >= MIN_FONT_SIZE && fontSize <= MAX_FONT_SIZE) ? fontSize : DEFAULT_FONT_SIZE;
     }
 
     public boolean isConfirmExit() {
@@ -102,6 +88,7 @@ public class Settings {
     }
 
     public void save() {
+        logger.info("Saving settings.json ...");
         try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.writeValue(SETTINGS_FILE_NAME, this);
@@ -111,25 +98,22 @@ public class Settings {
     }
 
     public static Settings load() {
-        try  {
+        logger.info("Loading settings.json ...");
+        try {
             ObjectMapper mapper = new ObjectMapper();
-            Settings settings = mapper.readValue(SETTINGS_FILE_NAME, Settings.class);
-            return settings;
+            return mapper.readValue(SETTINGS_FILE_NAME, Settings.class);
         } catch (JacksonException e) {
             logger.error("Couldn't load settings.json: " + e.getMessage());
         }
-        return new Settings();
+        return getDefault();
     }
 
-    public void toggleTheme() {
-        this.theme = this.theme.opposite();
-    }
-
-    public ImageFileNameExtension getFileNameExt() {
-        return fileNameExt;
-    }
-
-    public void setFileNameExt(ImageFileNameExtension fileNameExt) {
-        this.fileNameExt = fileNameExt != null ? fileNameExt : ImageFileNameExtension.getDefault();
+    private static Settings getDefault() {
+        return new Settings(
+                DEFAULT_LANGUAGE.name(),
+                DEFAULT_THEME.name(),
+                DEFAULT_FONT_SIZE,
+                DEFAULT_CONFIRM_EXIT
+        );
     }
 }

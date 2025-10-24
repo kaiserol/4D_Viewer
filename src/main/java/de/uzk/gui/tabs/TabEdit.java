@@ -78,7 +78,6 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         // screenshotLabel
         this.screenshots = new JLabel();
         this.container.add(this.screenshots, gbc);
-        updateScreenshotCounter();
 
         // gbc
         gbc.setPosAndInsets(0, 4, 0, 0, 0, 0);
@@ -137,11 +136,13 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     @Override
     public void toggleOn() {
         GuiUtils.setEnabled(this.container, true);
+        updateScreenshotCounter();
     }
 
     @Override
     public void toggleOff() {
         GuiUtils.setEnabled(this.container, false);
+        updateScreenshotCounter();
     }
 
     @Override

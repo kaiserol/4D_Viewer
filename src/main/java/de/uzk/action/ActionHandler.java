@@ -44,7 +44,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     // ======================================
     @Override
     public void keyPressed(KeyEvent e) {
-        ActionType actionType = ActionType.getAction(e);
+        ActionType actionType = ActionType.fromKeyEvent(e);
         if (actionType == null) return;
         navigateImage(actionType);
     }
@@ -137,7 +137,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
 
     private boolean preventNextUpdate() {
         long now = System.currentTimeMillis();
-        long interval = workspace.getConfig().getRotation() != 0 ? LONG_UPLOAD_INTERVAL_MS : UPDATE_INTERVAL_MS;
+        long interval = (workspace.getConfig().getRotation() != 0) ? LONG_UPLOAD_INTERVAL_MS : UPDATE_INTERVAL_MS;
         if (now - lastUpdateTime < interval) return true;
         lastUpdateTime = now;
         return false;

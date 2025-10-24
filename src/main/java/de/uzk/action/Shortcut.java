@@ -86,11 +86,6 @@ public class Shortcut {
     }
 
     @Override
-    public String toString() {
-        return getKeyText();
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Shortcut other)) return false;
@@ -100,5 +95,10 @@ public class Shortcut {
     @Override
     public int hashCode() {
         return Objects.hash(extendedKeyCode, modifiers);
+    }
+
+    @Override
+    public String toString() {
+        return getKeyText();
     }
 }

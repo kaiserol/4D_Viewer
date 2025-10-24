@@ -58,7 +58,7 @@ public enum ActionType {
 
     ActionType(Shortcut... shortcuts) {
         this.shortcuts = List.of(shortcuts);
-        this.keyEventType = this.shortcuts.isEmpty() ? KeyEventType.NONE : KeyEventType.RELEASED;
+        this.keyEventType = !this.shortcuts.isEmpty() ? KeyEventType.RELEASED : KeyEventType.NONE;
     }
 
     public List<Shortcut> getShortcuts() {
@@ -69,13 +69,13 @@ public enum ActionType {
         return this.keyEventType;
     }
 
-    public static ActionType getAction(KeyEvent e) {
+    public static ActionType fromKeyEvent(KeyEvent e) {
         if (e != null) {
             for (ActionType actionType : ActionType.values()) {
                 for (Shortcut shortcut : actionType.getShortcuts()) {
-                    if (shortcut.equals(new Shortcut(e)) && actionType.getKeyEventType().getID() == e.getID()) {
-                        return actionType;
-                    }
+                    boolean sameShortcut = shortcut.equals(new Shortcut(e));
+                    boolean sameID = actionType.getKeyEventType().getID() == e.getID();
+                    if (sameShortcut && sameID) return actionType;
                 }
             }
         }

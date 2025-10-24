@@ -1,14 +1,14 @@
 package de.uzk.gui;
 
 import de.uzk.image.Axis;
-import de.uzk.image.ImageFile;
-import de.uzk.image.ImageFileNameExtension;
-import de.uzk.utils.StringUtils;
+import de.uzk.image.ImageFileType;
+import de.uzk.utils.AppPath;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static de.uzk.Main.*;
@@ -64,23 +64,23 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
     private void openFileChooser() {
         JFileChooser fileChooser = getFileChooser();
 
-        // Startverzeichnis
-        if (history.last() != null) {
-            fileChooser.setSelectedFile(history.last().toFile());
+        // Startverzeichnis wählen
+        if (history.isEmpty()) {
+            Path startDirectory = AppPath.USER_WORKING_DIRECTORY;
+            if (Files.isDirectory(startDirectory)) fileChooser.setCurrentDirectory(startDirectory.toFile());
         } else {
-            String userDirectory = System.getProperty("user.dir");
-            if (userDirectory != null) fileChooser.setCurrentDirectory(new File(userDirectory));
+            fileChooser.setSelectedFile(history.getLast().toFile());
         }
 
-        // Öffne Dialog
+        // Dialog öffnen
         int option = fileChooser.showOpenDialog(gui.getContainer());
         if (option == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             if (selectedFile == null) return;
 
-            // Lade Image-Files
-            ImageFileNameExtension extension = getSelectedExtension((FileNameExtensionFilter) fileChooser.getFileFilter());
-            gui.loadImageFiles(Path.of(selectedFile.getAbsolutePath()), extension, false);
+            // Image-Files laden
+            ImageFileType imageFileType = getSelectedImageFileType((FileNameExtensionFilter) fileChooser.getFileFilter());
+            gui.loadImageFiles(Path.of(selectedFile.getAbsolutePath()), imageFileType, false);
         }
     }
 
@@ -90,24 +90,22 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.putClientProperty("FileChooser.readOnly", Boolean.TRUE);
+        fileChooser.setAcceptAllFileFilterUsed(false); // TODO: Prüfe, ob man das weglassen kann (richtige Reihenfolge?)
         setFileChooserTitel(fileChooser);
 
         // FileNameExtensionFilter hinzufügen
-        for (ImageFileNameExtension ext : ImageFileNameExtension.sortedValues()) {
+        for (ImageFileType type : ImageFileType.sortedValues()) {
             FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    ext.getFullDescription(),
-                    ext.getExtensions()
+                    type.getFullDescription(),
+                    type.getExtensions()
             );
             fileChooser.addChoosableFileFilter(filter);
 
             // Standardfilter auswählen
-            if (ext == settings.getFileNameExt()) {
+            if (type == workspace.getConfig().getImageFileType()) {
                 fileChooser.setFileFilter(filter);
             }
         }
-
-        // Optional: Nur Ordner zulassen, die Bilder enthalten
-        fileChooser.setAcceptAllFileFilterUsed(false);
         return fileChooser;
     }
 
@@ -118,21 +116,18 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         // Dialogtitel dynamisch setzen, wenn der Filter geändert wird
         fileChooser.addPropertyChangeListener(evt -> {
             if (evt.getNewValue() instanceof FileNameExtensionFilter filter) {
-                ImageFileNameExtension extension = getSelectedExtension(filter);
-                String newTitle = String.format("%s (%s)", getWord("button.chooseDirectory"), extension.getDescription());
+                ImageFileType imageFileType = getSelectedImageFileType(filter);
+                String newTitle = String.format("%s (%s)", getWord("button.chooseDirectory"), imageFileType.getDescription());
                 fileChooser.setDialogTitle(newTitle);
             }
         });
     }
 
-    private ImageFileNameExtension getSelectedExtension(FileNameExtensionFilter filter) {
-        if (filter == null) return null;
-        for (ImageFileNameExtension ext : ImageFileNameExtension.values()) {
-            if (ext.getFullDescription().equals(filter.getDescription())) {
-                return ext;
-            }
-        }
-        return null;
+    private ImageFileType getSelectedImageFileType(FileNameExtensionFilter filter) {
+        if (filter == null) return ImageFileType.getDefault();
+
+        String firstExtension = filter.getExtensions()[0];
+        return ImageFileType.fromExtension(firstExtension);
     }
 
     @Override
@@ -144,7 +139,7 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
     @Override
     public void toggleOff() {
         this.clearImagesButton.setEnabled(false);
-        this.txtFieldDirectory.setText(null);
+        updateDirectoryText();
     }
 
     @Override
@@ -153,9 +148,12 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
     }
 
     private void updateDirectoryText() {
-        ImageFile imageFile = workspace.getImageFile();
-        String imageFileString = imageFile == null ? null : StringUtils.FILE_SEP + imageFile.getName();
-        this.txtFieldDirectory.setText(workspace.getImageFilesDirectoryPath() + imageFileString);
+        if (workspace.isOpen()) {
+            Path path = workspace.getImageFilesDirectory().resolve(workspace.getImageFile().getName());
+            this.txtFieldDirectory.setText(path.toAbsolutePath().toString());
+        } else {
+            this.txtFieldDirectory.setText(null);
+        }
         this.txtFieldDirectory.setCaretPosition(0);
     }
 }

@@ -13,14 +13,14 @@ public class CyclingSpinnerNumberModel extends SpinnerNumberModel {
 
     @Override
     public Object getNextValue() {
-        // Return minimum when maximum is reached
+        // Gibt das Minimum zurück, wenn das Maximum überschritten wird
         Comparable<?> next = (Comparable<?>) super.getNextValue();
         return (next != null) ? next : getMinimum();
     }
 
     @Override
     public Object getPreviousValue() {
-        // Return maximum when minimum is reached
+        // Gibt das Maximum zurück, wenn das Minimum überschritten wird
         Comparable<?> previous = (Comparable<?>) super.getPreviousValue();
         return (previous != null) ? previous : getMaximum();
     }

@@ -30,15 +30,13 @@ public enum OperatingSystem {
         return this == OTHER;
     }
 
-    public static OperatingSystem getOP() {
-        return SystemInfo.isWindows ? WINDOWS : SystemInfo.isLinux ? LINUX : SystemInfo.isMacOS ? MACOS : OTHER;
-    }
-
-    public Path getDirectoryPath(boolean isProjectData) {
+    // TODO: Validate method
+    // TODO: Alle Paths auslagern: AppPath Klasse (auch ".4D_Viewer")
+    public Path getDirectory(boolean isProjectData) {
         Path userHome = Path.of(System.getProperty("user.home"));
-        Path base;
+        Path directory;
         if (!isProjectData) {
-            base = switch (this) {
+            directory = switch (this) {
                 case WINDOWS -> Path.of(System.getenv("LOCALAPPDATA"));
                 case LINUX -> {
                     String xdgHome = System.getenv("XDG_DATA_HOME");
@@ -54,18 +52,21 @@ public enum OperatingSystem {
             };
         } else {
             // Für Projektdaten immer im Benutzerverzeichnis
-            base = userHome;
+            directory = userHome;
         }
 
-        Path result = base.resolve(".4D_Viewer");
+        Path result = directory.resolve(".4D_Viewer");
         if (!Files.exists(result)) {
             try {
                 Files.createDirectories(result);
             } catch (IOException e) {
                 logger.logException(e);
-                return userHome;
             }
         }
         return result;
+    }
+
+    public static OperatingSystem load() {
+        return SystemInfo.isWindows ? WINDOWS : SystemInfo.isLinux ? LINUX : SystemInfo.isMacOS ? MACOS : OTHER;
     }
 }

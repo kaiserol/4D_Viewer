@@ -5,6 +5,7 @@ import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import de.uzk.action.ActionType;
 import de.uzk.config.Settings;
+import de.uzk.config.Theme;
 import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
@@ -17,14 +18,14 @@ import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public final class GuiUtils {
-    // Farben Attribute
+    // Farben
     public static final Color COLOR_BLUE = new Color(0, 122, 255);
     public static final Color COLOR_GREEN = new Color(8, 166, 52);
     public static final Color COLOR_YELLOW = new Color(252, 204, 78);
     public static final Color COLOR_RED = new Color(255, 86, 86);
     public static final Color COLOR_DARK_RED = new Color(148, 0, 0);
 
-    // UI Eigenschaften
+    // GUI-Elemente
     private static Color borderColor;
     private static Font font;
 
@@ -124,20 +125,23 @@ public final class GuiUtils {
     }
 
     private static boolean updateFontSize(float fontSize) {
-        if (settings.setFontSize((int) fontSize)) {
-            font = font.deriveFont(fontSize);
-            UIManager.put("defaultFont", font);
-            FlatLaf.updateUI();
-            return true;
-        }
-        return false;
+        int newFontSize = (int) fontSize;
+        if (font.getSize() == newFontSize) return false;
+
+        settings.setFontSize(newFontSize);
+        font = font.deriveFont(fontSize);
+        UIManager.put("defaultFont", font);
+        FlatLaf.updateUI();
+        return true;
     }
 
     public static void toggleTheme(Gui gui) {
-        UIManager.getDefaults().clear();
+        // Neues Theme setzen
+        Theme currentTheme = settings.getTheme();
         settings.toggleTheme();
+        logger.info("Changing Theme from '" + currentTheme + "' to '" + settings.getTheme() + "'.");
 
-        logger.info("Changing Theme from '" + settings.getTheme().opposite() + "' to '" + settings.getTheme() + "'");
+        // Update UI
         initFlatLaf();
         FlatLaf.updateUI();
         gui.updateTheme();

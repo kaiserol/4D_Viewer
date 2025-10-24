@@ -30,12 +30,20 @@ public enum Language {
         return this.locale;
     }
 
-    public static Language fromLanguage(String lang) {
-        for (Language language : Language.values()) {
-            if (language.getLanguage().equalsIgnoreCase(lang)) return language;
+    public static Language fromLanguage(String language) {
+        if (language != null) {
+            for (Language lang : Language.values()) {
+                boolean sameName = lang.name().equalsIgnoreCase(language);
+                boolean sameLanguage = lang.getLanguage().equalsIgnoreCase(language);
+                if (sameName || sameLanguage) return lang;
+            }
         }
         // Fallback
-        return Language.ENGLISH;
+        return getDefault();
+    }
+
+    public static Language getDefault() {
+        return ENGLISH;
     }
 
     public static Language getSystemDefault() {
@@ -43,7 +51,7 @@ public enum Language {
     }
 
     public static Language[] sortedValues() {
-        Language[] values = values();
+        Language[] values = Language.values();
         Arrays.sort(values, (lang1, lang2) -> lang1.toString().compareToIgnoreCase(lang2.toString()));
         return values;
     }

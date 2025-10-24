@@ -3,7 +3,6 @@ package de.uzk.markers;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.JsonAdapter;
 import de.uzk.utils.NumberUtils;
 import de.uzk.utils.StringUtils;
 
@@ -174,6 +173,4 @@ public class Marker {
     private String getHexColor() {
         return StringUtils.colorToHex(this.color);
     }
-
-
 }

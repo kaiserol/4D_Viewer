@@ -1,9 +1,8 @@
 package de.uzk.gui.dialogs;
 
-import de.uzk.image.ImageFileNameExtension;
+import de.uzk.image.ImageFileType;
 import de.uzk.image.LoadingImageListener;
 import de.uzk.image.LoadingResult;
-import de.uzk.image.Workspace;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -14,8 +13,7 @@ import java.awt.event.WindowEvent;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static de.uzk.Main.logger;
-import static de.uzk.Main.workspace;
+import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogImageLoad implements LoadingImageListener {
@@ -66,7 +64,7 @@ public class DialogImageLoad implements LoadingImageListener {
         // Fortschrittsbalken anzeigen
         this.progressBar = new JProgressBar();
         this.progressBar.setStringPainted(true);
-        this.progressBar.setIndeterminate(true);
+        this.progressBar.setBorderPainted(true); // TODO: Brauche ich das wirklich? Wenn nicht, was fehlt dann
         this.progressBar.setPreferredSize(new Dimension(0, 20));
         panel.add(this.progressBar, BorderLayout.SOUTH);
 
@@ -120,32 +118,36 @@ public class DialogImageLoad implements LoadingImageListener {
         return textField;
     }
 
-    public LoadingResult loadImages(Path directoryPath, ImageFileNameExtension extension) {
-        this.dialog.setTitle(getWord("dialog.imageLoading.title") + " (" + extension.getDescription() + ")");
-        // TODO: Das wird einen Nebeneffekt haben: wenn man einen Ordner angibt, der nicht existiert,
-        // dann wird der Überordner als Verzeichnisname. Mit isFile deshalb prüfen
-        Path directory = Files.isDirectory(directoryPath) ? directoryPath : directoryPath.getParent();
-        this.textFieldDirectoryName.setText(directory.toAbsolutePath().toString());
+    public LoadingResult loadImages(Path directory, ImageFileType imageFileType) {
+        if (directory == null) return LoadingResult.DIRECTORY_NOT_EXISTING;
 
-        // Fenster packen
+        // Wenn eine gültige "Datei" übergeben wird, dann wird ins Elternverzeichnis navigiert,
+        // ansonsten wird "directory" beibehalten
+        Path changedDirectory = Files.isRegularFile(directory) ? directory.getParent() : directory;
+        this.textFieldDirectoryName.setText(changedDirectory.toAbsolutePath().toString());
+
+        // Dialog aktualisieren
+        this.dialog.setTitle(getWord("dialog.imageLoading.title") + " (" + imageFileType.getDescription() + ")");
         this.dialog.pack();
         this.dialog.setLocationRelativeTo(this.dialog.getOwner());
 
         // Thread starten
         this.thread = null;
         this.result = null;
-        startThread(directoryPath, extension);
+        startThread(changedDirectory, imageFileType);
 
         // Dialog anzeigen
         this.dialog.setVisible(true);
 
+        // Das übergebene LoadingResult wird zurückgegeben, wenn beim Laden der Bilder nichts schiefläuft (es können
+        // theoretisch Exceptions auftreten, wodurch LoadingResult null wäre)
         return this.result != null ? this.result : LoadingResult.INTERRUPTED;
     }
 
-    private void startThread(Path directoryPath, ImageFileNameExtension extension) {
+    private void startThread(Path directory, ImageFileType imageFileType) {
         if (this.thread != null) return;
         this.thread = new Thread(() -> {
-            this.result = workspace.open(directoryPath, extension, DialogImageLoad.this);
+            this.result = workspace.openDirectory(directory, imageFileType, DialogImageLoad.this);
             SwingUtilities.invokeLater(this.dialog::dispose);
         });
         this.thread.start();
@@ -157,14 +159,15 @@ public class DialogImageLoad implements LoadingImageListener {
             try {
                 this.thread.join();
             } catch (InterruptedException e) {
-                logger.logException(e);
+                logger.error("Interrupted 'loading images' while waiting for the thread to finish.");
             }
         }
         dialog.dispose();
     }
 
-    // ------------------------- LoadingImageListener Funktionen -------------------------
-
+    // ==========================================================
+    // LoadingImageListener
+    // ==========================================================
     private void updateProgress(int filesCount, int currentFileNumber, int imagesCount) {
         this.progressBar.setValue(currentFileNumber);
         this.progressBar.setString(currentFileNumber + " / " + filesCount);
@@ -173,7 +176,8 @@ public class DialogImageLoad implements LoadingImageListener {
 
     @Override
     public void onLoadingStart() {
-        logger.info("Loading Images...");
+        logger.info("Loading Images from '" + workspace.getImageFilesDirectory() + "' ...");
+        SwingUtilities.invokeLater(() -> this.progressBar.setIndeterminate(true));
     }
 
     @Override
@@ -186,15 +190,13 @@ public class DialogImageLoad implements LoadingImageListener {
     }
 
     @Override
-    public void onScanningUpdate(int filesCount, int currentFileNumber, Path currentFile, int imagesCount) throws InterruptedException {
+    public void onScanningUpdate(int filesCount, int currentFileNumber, Path path, int imagesCount) throws InterruptedException {
         // Thread anhalten
         Thread.sleep(0, SLEEP_TIME_NANOS);
 
         SwingUtilities.invokeLater(() -> {
             updateProgress(filesCount, currentFileNumber, imagesCount);
-            this.progressBar.setStringPainted(true);
-            this.progressBar.setBorderPainted(true);
-            this.textFieldFileName.setText(currentFile.getFileName().toString());
+            this.textFieldFileName.setText(path.getFileName().toString());
         });
     }
 
@@ -209,10 +211,5 @@ public class DialogImageLoad implements LoadingImageListener {
     @Override
     public void onLoadingComplete(int imageFiles) {
         logger.info("Loaded Images: " + imageFiles);
-    }
-
-    @Override
-    public void onFinished(LoadingResult result) {
-        this.result = result;
     }
 }

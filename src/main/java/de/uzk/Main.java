@@ -21,7 +21,7 @@ public class Main {
 
     static {
         logger = new LogEntryHandler(Main.class.getName());
-        operationSystem = OperatingSystem.getOP();
+        operationSystem = OperatingSystem.load();
         settings = Settings.load();
         history = History.load();
         workspace = new Workspace();
@@ -29,7 +29,7 @@ public class Main {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            Gui gui = new Gui(history.last());
+            Gui gui = new Gui();
 
             // Behandle den Shortcut: Cmd+Q (unter macOS)
             if (operationSystem.isMacOS() && Desktop.isDesktopSupported()) {

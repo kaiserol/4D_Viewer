@@ -10,7 +10,7 @@ public abstract class AreaContainerInteractive<T extends Container> implements H
     protected T container;
     protected final Gui gui;
 
-    protected AreaContainerInteractive(T container, Gui gui) {
+    public AreaContainerInteractive(T container, Gui gui) {
         this.container = container;
         this.gui = gui;
         if (gui != null) {

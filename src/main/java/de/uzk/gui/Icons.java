@@ -63,13 +63,15 @@ public final class Icons {
     private Icons() {
     }
 
-    public static BufferedImage loadImage(Path file, boolean showErrorIfNotFound) {
-        try {
-            return ImageIO.read(file.toFile());
-        } catch (Exception e) {
-            if (showErrorIfNotFound) logger.error("The Image '" + file.toAbsolutePath() + "' could not be loaded.");
-            return null;
+    public static BufferedImage loadImage(Path path, boolean showErrorIfNotFound) {
+        if (path != null) {
+            try {
+                return ImageIO.read(path.toFile());
+            } catch (Exception e) {
+                if (showErrorIfNotFound) logger.error("The Image '" + path.toAbsolutePath() + "' could not be loaded.");
+            }
         }
+        return null;
     }
 
     private static FlatSVGIcon loadResourceSVG(String svgFilePath) {

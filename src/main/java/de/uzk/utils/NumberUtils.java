@@ -34,7 +34,7 @@ public final class NumberUtils {
      * @return true, wenn der Wert im Bereich liegt und exakt auf die Schrittweite passt
      */
     public static boolean valueFitsInRange(double value, double minValue, double maxValue, double stepSize) {
-        // Prüfen, ob der Wert innerhalb des Bereichs liegt
+        // Prüfe, ob der Wert innerhalb des Bereichs liegt
         if (value < minValue - EPSILON || value > maxValue + EPSILON) {
             return false;
         }
@@ -47,7 +47,7 @@ public final class NumberUtils {
             remainder += stepSize;
         }
 
-        // Prüfen, ob der Rest nahe bei 0 oder bei stepSize liegt
+        // Prüfe, ob der Rest nahe bei 0 oder bei stepSize liegt
         return remainder < EPSILON || Math.abs(remainder - stepSize) < EPSILON;
     }
 

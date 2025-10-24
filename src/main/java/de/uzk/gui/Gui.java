@@ -6,7 +6,7 @@ import de.uzk.action.HandleActionListener;
 import de.uzk.gui.dialogs.DialogImageLoad;
 import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.image.Axis;
-import de.uzk.image.ImageFileNameExtension;
+import de.uzk.image.ImageFileType;
 import de.uzk.image.LoadingResult;
 
 import javax.swing.*;
@@ -26,7 +26,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     private static final int MIN_WIDTH = 400;
     private static final int MIN_HEIGHT = 100;
 
-    // Observer Pattern - Listeners
+    // Observer Pattern
     private final List<HandleActionListener> handleActionListeners;
     private final List<ToggleListener> toggleListeners;
     private final List<UpdateImageListener> updateImageListeners;
@@ -34,17 +34,19 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     private final List<AppFocusListener> appFocusListeners;
     private boolean windowInitialized;
 
-    public Gui(Path imageFilesDirectory) {
+    public Gui() {
         super(new JFrame(), null);
         this.handleActionListeners = new ArrayList<>();
         this.toggleListeners = new ArrayList<>();
         this.updateImageListeners = new ArrayList<>();
         this.updateThemeListeners = new ArrayList<>();
         this.appFocusListeners = new ArrayList<>();
-        build(imageFilesDirectory);
+
+        // Gui erstellen
+        build();
     }
 
-    private void build(Path imageFilesDirectory) {
+    private void build() {
         logger.info("Building UI ...");
         GuiUtils.initFlatLaf();
 
@@ -57,16 +59,17 @@ public class Gui extends AreaContainerInteractive<JFrame> {
                 confirmExitApp();
             }
         });
+        // TODO: Werden diese WindowFocusListener auch richtig aufgerufen? (soll nur aufgerufen werden, wenn das Fenster, aber auch alle Dialoge Fokus erhalten / verlieren)
         this.container.addWindowFocusListener(new WindowAdapter() {
             @Override
             public void windowGainedFocus(WindowEvent e) {
-                if (windowInitialized) Gui.this.appGainedFocus();
+                if (windowInitialized) appGainedFocus();
                 windowInitialized = true;
             }
 
             @Override
             public void windowLostFocus(WindowEvent e) {
-                if (windowInitialized) Gui.this.appLostFocus();
+                if (windowInitialized) appLostFocus();
             }
         });
 
@@ -74,8 +77,10 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         initContent();
         updateTheme();
 
-        // Lade Image-Files
-        if (!loadImageFiles(imageFilesDirectory, settings.getFileNameExt(), true)) {
+        // Image-Files laden
+        // TODO: Jedes Verzeichnis kann seine eigene Config-File haben (dort enthalten ist auch die ImageFileType -> beachten und darauf aufbauen config suchen, wenn nicht vorhanden, dann aktuelle config nehmen), es kann sein dass Verzeichnis (aus der Historie) entweder ungültig ist oder keine Config hat, weil Config gelöscht (Config und markers würde ich in einem ordner = gleichbenannt mit Verzeichnis speichern und daraus dann die config laden...)
+        // TODO: snapshots (soll so heißen anstatt screenshots) screenshot == bildschrim, snap = momentaufnahme, jedes verzeichnis soll einen snapshots ordner haben
+        if (!loadImageFiles(history.getLast(), workspace.getConfig().getImageFileType(), true)) {
             toggleOff();
         }
 
@@ -141,37 +146,56 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.add(mainPanel);
     }
 
-    public boolean loadImageFiles(Path directoryPath, ImageFileNameExtension extension, boolean isGuiBeingBuilt) {
-        workspace.saveConfig();
-        if (directoryPath == null) return false;
-
+    public boolean loadImageFiles(Path directory, ImageFileType imageFileType, boolean isGuiBeingBuilt) {
         // Prüfe, ob das Verzeichnis passende Bilder hat
-        LoadingResult result = new DialogImageLoad(this.container).loadImages(directoryPath, extension);
+        LoadingResult result = new DialogImageLoad(this.container).loadImages(directory, imageFileType);
         switch (result) {
             case LOADED -> {
                 toggleOn();
-                this.handleAction(ActionType.ACTION_ADD_MARKER);
+                handleAction(ActionType.ACTION_ADD_MARKER);
                 return true;
             }
             case ALREADY_LOADED -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + extension + " " + getWord("file.directory") + ": '" + directoryPath + "' " + getWord("optionPane.directory.alreadyLoaded") + ".";
-                JOptionPane.showMessageDialog(this.container, message, getWord("optionPane.title.error"), JOptionPane.ERROR_MESSAGE);
+                String message = getWord("optionPane.directory.the") + " " + imageFileType + " " +
+                        getWord("file.directory") + ": '" + directory + "' " +
+                        getWord("optionPane.directory.alreadyLoaded") + ".";
+                JOptionPane.showMessageDialog(
+                        this.container,
+                        message,
+                        getWord("optionPane.title.error"),
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
             case DIRECTORY_NOT_EXISTING -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directoryPath + "' " + getWord("optionPane.directory.doesNotExisting") + ".";
-                JOptionPane.showMessageDialog(this.container, message, getWord("optionPane.title.error"), JOptionPane.ERROR_MESSAGE);
+                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directory + "' " +
+                        getWord("optionPane.directory.doesNotExisting") + ".";
+                JOptionPane.showMessageDialog(
+                        this.container,
+                        message,
+                        getWord("optionPane.title.error"),
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
             case DIRECTORY_HAS_NO_IMAGES -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directoryPath + "' " + getWord("optionPane.directory.hasNo") + " " + extension.getDescription() + ".";
-                JOptionPane.showMessageDialog(this.container, message, getWord("optionPane.title.error"), JOptionPane.ERROR_MESSAGE);
+                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directory + "' " +
+                        getWord("optionPane.directory.hasNo") + " " + imageFileType.getDescription() + ".";
+                JOptionPane.showMessageDialog(
+                        this.container,
+                        message,
+                        getWord("optionPane.title.error"),
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         }
         return false;
     }
 
+    // ======================================
+    // Observer Registrierung
+    // ======================================
     public void addHandleActionListener(HandleActionListener handleActionListener) {
         this.handleActionListeners.add(handleActionListener);
     }
@@ -192,60 +216,67 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.appFocusListeners.add(appFocusListener);
     }
 
+    // ======================================
+    // Observer Ausführen
+    // ======================================
     @Override
     public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.SHORTCUT_TOGGLE_PIN_TIME) {
-            workspace.togglePinTime();
-        }
+        // Prüfe, ob der Zeitpunkt angepinnt wurde
+        if (actionType == ActionType.SHORTCUT_TOGGLE_PIN_TIME) workspace.togglePinTime();
 
-        for (HandleActionListener listener : handleActionListeners) {
-            listener.handleAction(actionType);
-        }
+        // Observer ausführen
+        for (HandleActionListener observer : handleActionListeners) observer.handleAction(actionType);
     }
 
     @Override
     public void toggleOn() {
-        for (ToggleListener listener : toggleListeners) {
-            listener.toggleOn();
-        }
+        // Observer ausführen
+        for (ToggleListener observer : toggleListeners) observer.toggleOn();
         updateUI();
     }
 
     @Override
     public void toggleOff() {
+        // Workspace leeren
         workspace.clear(true);
 
-        for (ToggleListener listener : toggleListeners) {
-            listener.toggleOff();
-        }
+        // Observer ausführen
+        for (ToggleListener observer : toggleListeners) observer.toggleOff();
         updateUI();
     }
 
     @Override
     public void update(Axis axis) {
-        for (UpdateImageListener listener : updateImageListeners) {
-            listener.update(axis);
-        }
+        // Observer ausführen
+        for (UpdateImageListener observer : updateImageListeners) observer.update(axis);
         updateUI();
     }
 
     @Override
     public void updateTheme() {
-        for (UpdateThemeListener listener : updateThemeListeners) {
-            listener.updateTheme();
-        }
+        // Observer ausführen
+        for (UpdateThemeListener observer : updateThemeListeners) observer.updateTheme();
+        updateUI();
     }
 
     @Override
     public void appGainedFocus() {
-        // Überprüfe, ob Bilder noch vorhanden sind
+        // Prüfe, ob Bilder noch vorhanden sind
         workspace.checkMissingFiles();
 
-        for (AppFocusListener listener : appFocusListeners) {
-            listener.appGainedFocus();
-        }
+        // Observer ausführen
+        for (AppFocusListener observer : appFocusListeners) observer.appGainedFocus();
     }
 
+    @Override
+    public void appLostFocus() {
+        // Observer ausführen
+        for (AppFocusListener observer : appFocusListeners) observer.appLostFocus();
+    }
+
+    // ======================================
+    // Sonstige Methoden
+    // ======================================
     public void updateUI() {
         this.container.revalidate();
         this.container.repaint();
@@ -270,9 +301,12 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             if (checkBox.isSelected()) settings.setConfirmExit(false);
         }
 
-        // Settings, Config abspeichern & Anwendung beenden
-        workspace.saveConfig();
+        // Dateien abspeichern
         settings.save();
+        history.save();
+        workspace.saveConfig();
+
+        // Anwendung beenden
         System.exit(0);
     }
 }

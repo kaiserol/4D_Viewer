@@ -119,7 +119,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         Number value = (Number) spinner.getValue();
         switch (axis) {
             case TIME -> workspace.getConfig().setTimeUnit(value.doubleValue());
-            case LEVEL -> workspace.getConfig().setTimeUnit(value.doubleValue());
+            case LEVEL -> workspace.getConfig().setLevelUnit(value.doubleValue());
         }
     }
 
