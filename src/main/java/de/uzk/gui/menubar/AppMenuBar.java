@@ -26,7 +26,6 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         this.menuBar.add(getMenuEdit(actionHandler));
         this.menuBar.add(getMenuNavigate(actionHandler));
         this.menuBar.add(getMenuWindow(actionHandler));
-        this.menuBar.add(getMenuSettings(actionHandler));
     }
 
     private CustomMenu getMenuEdit(ActionHandler actionHandler) {
@@ -70,17 +69,12 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         // disclaimer, logViewer
         menuWindow.add(new CustomMenuItem(getWord("items.window.showDisclaimer"), actionHandler, SHORTCUT_SHOW_DISCLAIMER));
         menuWindow.add(new CustomMenuItem(getWord("items.window.showLogViewer"), actionHandler, SHORTCUT_SHOW_LOG_VIEWER));
+
+        menuWindow.addSeparator();
+        menuWindow.add(new CustomMenuItem(getWord("items.settings.openSettings"), actionHandler, SHORTCUT_OPEN_SETTINGS));
+
+
         return menuWindow;
-    }
-
-    private CustomMenu getMenuSettings(ActionHandler actionHandler) {
-        CustomMenu menuSettings = new CustomMenu(getWord("items.settings"));
-
-        // language, theme, settings
-        menuSettings.add(new CustomMenuItem(getWord("items.settings.selectLanguage"), actionHandler, SHORTCUT_SELECT_LANGUAGE));
-        menuSettings.add(new CustomMenuItem(getWord("items.settings.toggleTheme"), actionHandler, SHORTCUT_TOGGLE_THEME));
-        menuSettings.add(new CustomMenuItem(getWord("items.settings.openSettings"), actionHandler, SHORTCUT_OPEN_SETTINGS));
-        return menuSettings;
     }
 
     @Override

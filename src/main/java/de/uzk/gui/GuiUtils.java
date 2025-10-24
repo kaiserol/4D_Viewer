@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import de.uzk.action.ActionType;
+import de.uzk.config.Language;
 import de.uzk.config.Settings;
 import de.uzk.config.Theme;
 import de.uzk.utils.NumberUtils;
@@ -135,10 +136,10 @@ public final class GuiUtils {
         return true;
     }
 
-    public static void toggleTheme(Gui gui) {
-        // Neues Theme setzen
+    public static void setTheme(Gui gui, Theme theme) {
         Theme currentTheme = settings.getTheme();
-        settings.toggleTheme();
+        if(currentTheme == theme) return;
+        settings.setTheme(theme);
         logger.info("Changing Theme from '" + currentTheme + "' to '" + settings.getTheme() + "'.");
 
         // Update UI
@@ -146,6 +147,19 @@ public final class GuiUtils {
         FlatLaf.updateUI();
         gui.updateTheme();
     }
+
+    public static void setLanguage(Gui gui, Language language) {
+        Language currentLanguage = settings.getLanguage();
+        if(currentLanguage == language) return;
+
+        settings.setLanguage(language);
+        logger.info("Changing Language from '" + language + "' to '" + settings.getLanguage() + "'.");
+
+
+        gui.rebuild();
+    }
+
+
 
     public static Graphics2D createHighQualityGraphics2D(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;

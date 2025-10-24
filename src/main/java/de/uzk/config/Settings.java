@@ -2,6 +2,7 @@ package de.uzk.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import de.uzk.Main;
 import de.uzk.utils.AppPath;
 import tools.jackson.core.JacksonException;
@@ -28,6 +29,7 @@ public class Settings {
     private static final Path SETTINGS_FILE_NAME = AppPath.VIEWER_HOME_DIRECTORY.resolve("settings.json");
 
     // Einstellungen
+    @JsonUnwrapped
     private Language language;
     private Theme theme;
     private int fontSize;

@@ -115,7 +115,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
 
             // settings actions
             case SHORTCUT_SELECT_LANGUAGE -> dialogLanguageSelection.show(gui);
-            case SHORTCUT_TOGGLE_THEME -> GuiUtils.toggleTheme(gui);
+
             case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show(gui);
         }
     }

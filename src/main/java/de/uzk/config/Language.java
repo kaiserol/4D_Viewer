@@ -1,13 +1,16 @@
 package de.uzk.config;
 
+import com.fasterxml.jackson.annotation.*;
+
 import java.util.Arrays;
 import java.util.Locale;
 
 import static de.uzk.config.LanguageHandler.getWord;
 
 public enum Language {
-    ENGLISH("en", "UK"),
+    ENGLISH( "en", "UK"),
     GERMAN("de", "DE");
+
 
     private final String language;
     private final Locale locale;
@@ -22,6 +25,7 @@ public enum Language {
                 .build();
     }
 
+    @JsonValue
     public String getLanguage() {
         return this.language;
     }
@@ -30,6 +34,7 @@ public enum Language {
         return this.locale;
     }
 
+    @JsonCreator
     public static Language fromLanguage(String language) {
         if (language != null) {
             for (Language lang : Language.values()) {

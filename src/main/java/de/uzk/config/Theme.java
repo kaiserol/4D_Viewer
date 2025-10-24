@@ -1,5 +1,8 @@
 package de.uzk.config;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import static de.uzk.config.LanguageHandler.getWord;
 
 public enum Theme {
@@ -16,6 +19,7 @@ public enum Theme {
         return values[i];
     }
 
+    @JsonCreator
     public static Theme fromTheme(String theme) {
         if (theme != null) {
             for (Theme t : Theme.values()) {
@@ -26,6 +30,9 @@ public enum Theme {
         // Fallback
         return getDefault();
     }
+
+    @JsonValue
+    private String jsonName() { return this.name(); }
 
     public static Theme getDefault() {
         return LIGHT_MODE;
