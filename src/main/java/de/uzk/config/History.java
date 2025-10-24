@@ -1,18 +1,18 @@
 package de.uzk.config;
 
+import de.uzk.utils.AppPath;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
-import static de.uzk.Main.operationSystem;
+import static de.uzk.Main.logger;
 
 public class History {
     // Pfade
-    private static final Path HISTORY_PATH = operationSystem.getDirectory(false).resolve("history");
-
-    // Historie
+    private static final Path HISTORY_PATH = AppPath.VIEWER_HOME_DIRECTORY.resolve("history");
     private final LinkedList<Path> history;
 
     private History(List<Path> history) {
@@ -36,9 +36,13 @@ public class History {
         return this.history.getLast();
     }
 
-    // TODO: Verbessere save / load (muss ins home Verzeichni...)
     public void save() {
-       // In eine normale Datei schreiben
+        try {
+            List<String> lines = this.history.stream().map(Path::toString).toList();
+            Files.write(HISTORY_PATH, lines);
+        } catch (IOException e) {
+            logger.error("Failed to save history: " + e.getMessage());
+        }
     }
 
     public static History load() {

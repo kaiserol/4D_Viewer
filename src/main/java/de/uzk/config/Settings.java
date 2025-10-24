@@ -3,6 +3,7 @@ package de.uzk.config;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.uzk.Main;
+import de.uzk.utils.AppPath;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
@@ -11,7 +12,6 @@ import java.nio.file.Path;
 import java.util.Locale;
 
 import static de.uzk.Main.logger;
-import static de.uzk.Main.operationSystem;
 
 public class Settings {
     // MinMax Konstanten
@@ -25,7 +25,7 @@ public class Settings {
     private static final boolean DEFAULT_CONFIRM_EXIT = true;
 
     // Verzeichnisse
-    private static final Path SETTINGS_FILE_NAME = operationSystem.getDirectory(false).resolve("settings.json");
+    private static final Path SETTINGS_FILE_NAME = AppPath.VIEWER_HOME_DIRECTORY.resolve("settings.json");
 
     // Einstellungen
     private Language language;

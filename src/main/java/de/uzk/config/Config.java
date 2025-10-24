@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import de.uzk.image.ImageFileType;
 import de.uzk.markers.Marker;
 import de.uzk.markers.MarkerMapping;
+import de.uzk.utils.AppPath;
 import tools.jackson.databind.ObjectMapper;
 
 import java.nio.file.Path;
@@ -147,7 +148,7 @@ public class Config {
     }
 
     public void save(String fileName) {
-        Path directory = operationSystem.getDirectory(true).resolve(fileName);
+        Path directory = AppPath.VIEWER_HOME_DIRECTORY.resolve(fileName);
         logger.info("Loading config under '" + directory.toAbsolutePath() + "' ...");
         try {
             new ObjectMapper().writeValue(directory, this);
@@ -157,7 +158,7 @@ public class Config {
     }
 
     public static Config load(String fileName) {
-        Path directory = operationSystem.getDirectory(true).resolve(fileName);
+        Path directory = AppPath.VIEWER_HOME_DIRECTORY.resolve(fileName);
         logger.info("Loading config from '" + directory.toAbsolutePath() + "' ...");
         try {
             ObjectMapper mapper = new ObjectMapper();
