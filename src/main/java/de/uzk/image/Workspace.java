@@ -208,8 +208,10 @@ public class Workspace {
     }
 
     public void clear(boolean removeImageFilesDirectory) {
-        if (removeImageFilesDirectory) this.imageFilesDirectory = null;
-        this.config = Config.getDefault();
+        if (removeImageFilesDirectory) {
+            this.imageFilesDirectory = null;
+            this.config = Config.getDefault();
+        }
 
         this.matrix = null;
         this.imageFile = null;
