@@ -8,6 +8,7 @@ import de.uzk.markers.MarkerMapping;
 import de.uzk.utils.AppPath;
 import tools.jackson.databind.ObjectMapper;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class Config {
     private static final boolean DEFAULT_MIRROR_X = false;
     private static final boolean DEFAULT_MIRROR_Y = false;
     private static final int DEFAULT_ROTATION = 0;
+    private static final String CONFIG_FILE_NAME = "config.json";
 
     // Konfigurationen
     private ImageFileType imageFileType;
@@ -41,8 +43,6 @@ public class Config {
     private boolean mirrorY;
     private int rotation;
 
-    // Markierungen
-    private final List<MarkerMapping> markers;
 
     // Nur Konstanten vom primitiven Datentyp können als Default-Werte verwendet werden (inklusive Strings)
     @JsonCreator
@@ -54,9 +54,8 @@ public class Config {
             @JsonProperty(value = "levelUnit", defaultValue = DEFAULT_LEVEL_UNIT + "") double levelUnit,
             @JsonProperty(value = "mirrorX", defaultValue = DEFAULT_MIRROR_X + "") boolean mirrorX,
             @JsonProperty(value = "mirrorY", defaultValue = DEFAULT_MIRROR_Y + "") boolean mirrorY,
-            @JsonProperty(value = "rotation", defaultValue = DEFAULT_ROTATION + "") int rotation,
-            @JsonProperty(value = "markers", defaultValue = "[]") List<MarkerMapping> markers // TODO: klappt das so, oder wird fehler geworfen (wenn falscher input bei markers -> klappt defaultValue überall)
-    ) {
+            @JsonProperty(value = "rotation", defaultValue = DEFAULT_ROTATION + "") int rotation
+            ) {
         this.setImageFileType(ImageFileType.fromExtension(imageFileType));
         this.setTimeSep(timeSep);
         this.setLevelSep(levelSep);
@@ -66,13 +65,7 @@ public class Config {
         this.setMirrorY(mirrorY);
         this.setRotation(rotation);
 
-        // Markierungen initialisieren
-        if (markers == null) {
-            this.markers = new ArrayList<>();
-        } else {
-            markers.removeIf((Predicate<? super MarkerMapping>) m -> m == null || m.getMarker() == null);
-            this.markers = markers;
-        }
+
     }
 
     public ImageFileType getImageFileType() {
@@ -139,26 +132,22 @@ public class Config {
         this.rotation = (rotation >= 0 && rotation <= MAX_ROTATION) ? rotation : DEFAULT_ROTATION;
     }
 
-    public List<MarkerMapping> getMarkers() {
-        return this.markers;
-    }
 
-    public void addMarker(Marker marker, int image) {
-        this.markers.add(new MarkerMapping(marker, image, image));
-    }
-
-    public void save(String fileName) {
-        Path directory = AppPath.VIEWER_HOME_DIRECTORY.resolve(fileName);
-        logger.info("Loading config under '" + directory.toAbsolutePath() + "' ...");
+    public void save(Path folderName) {
+        Path location = AppPath.VIEWER_HOME_DIRECTORY.resolve(folderName).resolve(CONFIG_FILE_NAME);
+        logger.info("Loading config under '" + location.toAbsolutePath() + "' ...");
         try {
-            new ObjectMapper().writeValue(directory, this);
+            if(!Files.exists(location)) {
+                Files.createDirectories(location.getParent());
+            }
+            new ObjectMapper().writeValue(location, this);
         } catch (Exception e) {
             logger.error("Failed to save config: " + e.getMessage());
         }
     }
 
-    public static Config load(String fileName) {
-        Path directory = AppPath.VIEWER_HOME_DIRECTORY.resolve(fileName);
+    public static Config load(Path folderName) {
+        Path directory = AppPath.VIEWER_HOME_DIRECTORY.resolve(folderName).resolve(CONFIG_FILE_NAME);
         logger.info("Loading config from '" + directory.toAbsolutePath() + "' ...");
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -181,8 +170,7 @@ public class Config {
                 DEFAULT_LEVEL_UNIT,
                 DEFAULT_MIRROR_X,
                 DEFAULT_MIRROR_Y,
-                DEFAULT_ROTATION,
-                new ArrayList<>()
+                DEFAULT_ROTATION
         );
     }
 }

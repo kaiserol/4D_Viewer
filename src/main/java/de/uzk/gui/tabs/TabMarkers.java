@@ -11,7 +11,6 @@ import de.uzk.markers.MarkerMapping;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -23,7 +22,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
     }
 
     private void rerender() {
-        java.util.List<MarkerMapping> currentMarkers =  workspace.getConfig().getMarkers();
+        java.util.List<MarkerMapping> currentMarkers =  workspace.getMarkers().getAllMarkers();
 
         this.container.removeAll();
         this.container.setLayout(new BorderLayout());
@@ -39,7 +38,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
             );
 
             if (option == JOptionPane.OK_OPTION) {
-                workspace.getConfig().addMarker(initial.getMarker(), workspace.getTime());
+                workspace.getMarkers().addMarker(initial.getMarker(), workspace.getTime());
                 gui.handleAction(ActionType.ACTION_ADD_MARKER);
                 gui.updateUI();
             }

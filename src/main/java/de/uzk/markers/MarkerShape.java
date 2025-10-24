@@ -1,10 +1,13 @@
 package de.uzk.markers;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+
 import java.util.Arrays;
 
 import static de.uzk.config.LanguageHandler.getWord;
 
 public enum MarkerShape {
+    @JsonEnumDefaultValue
     RECTANGLE,
     ELLIPSE;
 

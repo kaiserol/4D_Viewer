@@ -1,6 +1,7 @@
 package de.uzk.image;
 
 import de.uzk.config.Config;
+import de.uzk.markers.Markers;
 import de.uzk.utils.StringUtils;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class Workspace {
     // Eigenschaften
     private Path imageFilesDirectory;
     private Config config;
+    private Markers markers;
 
     private ImageFile[][] matrix;
     private ImageFile imageFile;
@@ -51,7 +53,8 @@ public class Workspace {
 
             // Verzeichnis & Config aktualisieren
             this.imageFilesDirectory = directory;
-            this.config = Config.load(directory.getFileName() + ".json");
+            this.config = Config.load(directory.getFileName());
+            this.markers = Markers.load(directory.getFileName());
             this.config.setImageFileType(imageFileType);
 
             // Setze das Verzeichnis zurück, wenn das übergebene Verzeichnis keine Image-Files hat
@@ -74,6 +77,10 @@ public class Workspace {
         return LoadingResult.DIRECTORY_NOT_EXISTING;
     }
 
+    public Markers getMarkers() {
+        return this.markers;
+    }
+
     public Config getConfig() {
         return this.config;
     }
@@ -81,7 +88,8 @@ public class Workspace {
     public void saveConfig() {
         if (isOpen()) {
             Path fileName = this.imageFilesDirectory.getFileName();
-            this.config.save(fileName + ".json");
+            this.config.save(fileName);
+            this.markers.save(fileName);
         }
     }
 
@@ -211,6 +219,7 @@ public class Workspace {
         if (removeImageFilesDirectory) {
             this.imageFilesDirectory = null;
             this.config = Config.getDefault();
+            this.markers = new Markers();
         }
 
         this.matrix = null;

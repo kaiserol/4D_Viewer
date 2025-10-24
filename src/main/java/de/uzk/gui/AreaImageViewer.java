@@ -116,7 +116,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
             g2D.drawImage(this.currentImage, x, y, width, height, null);
 
             // Zeichnet Marker
-            List<MarkerMapping> marker = workspace.getConfig().getMarkers();
+            List<MarkerMapping> marker = workspace.getMarkers().getAllMarkers();
             for (MarkerMapping m : marker) {
                 if (!m.shouldRender(workspace.getTime())) continue;
                 m.getMarker().draw(g2D, new Rectangle(x, y, width, height), scale);
