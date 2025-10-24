@@ -47,23 +47,19 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
         this.container.add(add, BorderLayout.SOUTH);
 
         if (!currentMarkers.isEmpty()) {
-            Box panel = new Box(BoxLayout.Y_AXIS);
+            JScrollPane panel = new JScrollPane(new Box(BoxLayout.Y_AXIS));
+
             for (MarkerMapping currentMarker : currentMarkers) {
                 JPanel next = new MarkerMappingInfo(currentMarker, this.gui);
                 next.setBorder(BorderFactory.createEmptyBorder());
                 panel.add(next);
             }
-
-
             this.container.add(panel, BorderLayout.CENTER);
         } else {
             JLabel noneLabel = new JLabel(getWord("items.markers.noMarkersSet"));
             noneLabel.setHorizontalAlignment(SwingConstants.CENTER);
             this.container.add(noneLabel, BorderLayout.CENTER);
         }
-
-
-
     }
 
     @Override

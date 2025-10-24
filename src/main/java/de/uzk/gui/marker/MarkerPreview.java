@@ -16,6 +16,9 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
     private final Marker marker;
     private Point dragStart;
     private final MarkerEditor editor;
+    private final Dimension dimension;
+
+    private static final int SHRINK_FACTOR = 2;
 
     public MarkerPreview(BufferedImage background, Marker marker, MarkerEditor editor) {
         this.addMouseListener(this);
@@ -23,6 +26,10 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
         this.background = background;
         this.marker = marker;
         this.editor = editor;
+        Dimension base = new Dimension(this.background.getWidth(), this.background.getHeight());
+        base.width /= SHRINK_FACTOR;
+        base.height /= SHRINK_FACTOR;
+        this.dimension = base;
     }
 
     @Override
@@ -45,7 +52,7 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(this.background.getWidth(), this.background.getHeight());
+        return this.dimension;
     }
 
     @Override
@@ -70,6 +77,7 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
             Point pos = this.getPointRelativeToImage(e.getPoint());
 
 
+
             Rectangle rect = new Rectangle(this.dragStart);
             rect.add(pos);
 
@@ -89,6 +97,8 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
     private Point getPointRelativeToImage(Point2D pointRelativeToWindow) {
         int x = (int) pointRelativeToWindow.getX() - this.getX();
         int y = (int) pointRelativeToWindow.getY() - this.getY();
+        x *= SHRINK_FACTOR; // Sonst wird das Rechteck viel kleiner als eigentlich erwartet
+        y *= SHRINK_FACTOR;
         return new Point(x, y);
     }
 
