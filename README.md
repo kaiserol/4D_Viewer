@@ -6,72 +6,84 @@ Entwickelt in **Java**, speziell für **mikroskopische und biologische Anwendung
 ## 🚀 Funktionsübersicht
 
 - **Visualisierung von 4D-Bildern** (Zeit + Raum)
-- **Unterstützte Formate**: GIF, JPEG, PNG, TIFF
-- **Interaktive Steuerung**: Bewegungen mit Maus und Tastatur möglich
-- **Markierungen**: Ellipse, Rechteck (Farbe frei wählbar)
+- **Interaktive Steuerung**: Bewegungen mit Maus und Tastatur
 - **Bilder Bearbeitung**: Spiegelung, Rotation
+- **Markierungen**: Ellipse, Rechteck (Farbe frei wählbar)
+- **Unterstützte Formate**: GIF, JPEG, PNG, TIFF
 - **Internationalisierung**: Deutsch und Englisch
-- **Snapshots**: Momentaufnahmen von bearbeiteten Bildern
-- **Konfigurierbare Bilderverzeichnisse** über config.cfg
+- **Projektdaten**:\
+  *Verzeichnis*: {Benutzerverzeichnis}/.4D_Viewer/{Bilderverzeichnis}/
+    - *config.json* – speichert projektbezogene Konfigurationen (Dateityp, Zeit-Trenner, Ebenen-Trenner,
+      Zeit-Einheit, Ebenen-Einheit, Bild-Spiegelung_X, Bild-Spiegelung_Y, Bild-Rotation)
+    - *markers.json* – speichert projektbezogene Markierungen von der UI
+    - *snapshots/ (Ordner)* – Ablage für erzeugte Momentaufnahmen
+- **Einstellungen**:\
+  *Verzeichnis*: {Benutzerverzeichnis}/.4D_Viewer/
+    - *history.txt* – speichert die zuletzt verwendeten Bilderverzeichnisse
+    - *settings.json* – speichert die Benutzereinstellungen (Sprache, Theme, Schriftgröße, ...)
 
 ## 📂 Projektstruktur
 4d_viewer/\
-├── images/ >>> **Test-Bilder für den 4D Viewer**\
-├── src/ >>> **Source-Code des Projekts**\
-├── pom.xml >>> **Maven Build-Konfiguration**\
-├── README.md >>> **Projektdokumentation**\
-└──.gitignore >>> **Git Ignore-Regeln**
-
-## 📝 Installation
-
-1. **Repository klonen**
-   ```bash
-   git clone https://gitlab.git.nrw/okaiser1/4d_viewer.git
-   ```
-
-2. **Abhängigkeiten installieren**\
-   Navigieren Sie in das Projektverzeichnis und führen Sie Maven aus
-   ```bash
-   mvn clean install
-   ```
-
-3. **Projekt starten**
-   ```bash
-   mvn exec:java
-   ```
+├── *images/* – Ablage für Test-Bilder\
+├── *src/* – Source-Code des Projekts\
+├── *pom.xml* – Maven Build-Konfiguration\
+├── *README.md* – Projektdokumentation\
+└── *.gitignore* – Git Ignore-Regeln
 
 ## 🔧 Entwicklung
 
 ### Technologien
 
-- **Entwicklungsumgebung (IDE)**: IntelliJ IDEA
-- **Programmiersprache:** Java (OpenJDK 20)
-- **Build-Tool:** Maven 3
+- IDE: IntelliJ IDEA (Community / Ultimate)
+- Sprache: Java 20 (OpenJDK)
+- Build-Tool: Apache Maven 3.9.11
 
-### Abhängigkeiten
+### Abhängigkeiten (Auszug)
+| Bibliothek                                       | Version | Zweck / Beschreibung                                         |
+|--------------------------------------------------|---------|--------------------------------------------------------------|
+| com.fasterxml.jackson.core:jackson-annotations   | 2.20    | Annotationen zur Steuerung von JSON-(De-)Serialisierung      |
+| tools.jackson.core:jackson-core                  | 3.0.1   | JSON Parser/Generator                                        |
+| tools.jackson.core:jackson-databinding           | 3.0.1   | ObjectMapper für POJO ↔ JSON (inkl. Serializer/Deserializer) |
+| com.formdev:flatlaf                              | 3.6     | Modernes Look & Feel für Swing                               |
+| com.formdev:flatlaf-extras                       | 3.6     | Erweiterungen für FlatLaf                                    |
+| javax.swing                                      | -       | Standard-GUI-Toolkit (Java SE)                               |
+| org.jetbrains:annotations                        | 26.0.2  | Annotationen für statische Analysen                          |
+| org.junit.jupiter:junit-jupiter                  | 6.0.0   | Test-Framework (JUnit 5)                                     |
 
-Auszug aus pom.xml:
 
-| **Bibliothek**                  | **Version** | **Zweck / Beschreibung**                                            | 
-|---------------------------------|-------------|---------------------------------------------------------------------|
-| com.formdev:flatlaf             | 3.6         | Moderne, leichtgewichtige Look-and-Feel-Bibliothek für Swing-GUIs.  |
-| com.formdev:flatlaf-extras      | 3.6         | Erweiterungen für FlatLaf, z. B. Themen, Icons und UI-Utilities.    |
-| com.google.code.gson:gson       | 2.13.2      | Serialisierung und Deserialisierung von JSON-Daten                  |
-| javax.swing                     | -           | GUI-Framework (Standardbibliothek) für Desktop-Anwendungen in Java. |
-| org.jetbrains:annotations       | 26.0.2      | Statische Analyse-Annotationen für IntelliJ IDEA und andere Tools.  |
-| org.junit.jupiter:junit-jupiter | 6.0.0       | JUnit 5 (Jupiter)-Plattform für moderne Teststrukturen.             |
+### Installation
+1. **Repository klonen**
+   ```bash
+   git clone https://gitlab.git.nrw/okaiser1/4d_viewer.git
+   cd 4d_viewer
+   ```
+2. **Abhängigkeiten installieren**\
+   Eine ausführbare JAR-Datei wird im Ordner *target/* erzeugt.
+   ```bash
+   mvn clean install && rm target/original-*.jar
+   ```
+3. **Projekt starten**\
+   Falls in der pom.xml Datei konfiguriert:
+   ```bash
+   mvn exec:java
+   ```
 
-### Build und Testen
+   Alternativ über die erzeugte JAR:
+   ```bash
+   java -jar target/*.jar
+   ```
 
-- **Build ausführen**
+### Nützliche Hinweise
+- Java-Version prüfen (Sollte Java 20 melden):
   ```bash
-  mvn compile
+  java -version
   ```
 
-- **Tests starten**
-  ```bash
-  mvn test
-  ```
+- Typische Maven-Befehle:
+    - Kompilieren: `mvn compile`
+    - Tests: `mvn test`
+- IntelliJ:
+    - JDK 20 als Projekt-SDK wählen, dann App über Run starten.
 
 ## 📗 Dokumentation
 
@@ -85,17 +97,18 @@ Auszug aus pom.xml:
 ## 🗺️ Roadmap
 
 - [x] Umstieg auf FlatLaf (Neues Erscheinungsbild)
-- [x] Menüleiste (Fenster, Hilfe)
-- [x] Verwendung von Shortcuts
+- [x] Bildbearbeitung (Spiegelung und Rotation) hinzugefügt
+- [x] Erweiterung um Menüleiste
+- [x] Erweiterung um Shortcuts
 - [x] Internationalisierung (DE/EN)
+- [x] Optimierung der Ladezeit und des Ladedialogs von Bildern
 - [x] Modularisierung des Codes
-- [x] Ladeleiste Optimierung
-- [ ] Reiter "Markierungen"
-- [ ] Reiter "Bearbeiten" Erweiterung
+- [ ] Erweiterung um Reiter "Markierungen"
+- [ ] Neue Features beim Reiter "Bearbeiten"
     - [ ] Helligkeit-, Kontrast-Regler
     - [ ] Zoom und Crop-Funktion
-- [ ] Reiter "Navigieren" Erweiterung
-- [ ] Performance-Optimierung
+- [ ] Neue Features beim Reiter "Navigieren"
+- [ ] Weitere Performance-Optimierungen
 
 ## 📊 Projektstatus
 
@@ -105,7 +118,8 @@ Ziel ist es, eine stabile, nutzerfreundliche und erweiterbare Plattform zur 4D-V
 ## 🤝 Beitragende
 
 Ein großes Dankeschön an alle Entwickler, Tester und Nutzer, die dieses Projekt mitgestalten!
->„Ich glaube, das Projekt macht dir genauso viel Spaß wie mir – und wir sind auf dem richtigen Weg.“ ~ Olaf
+>„Ich glaube, das Projekt macht dir genauso viel Spaß wie mir – und wir sind auf dem richtigen Weg.“\
+> ~ Olaf Bossinger
 
 ## 🔐 Lizenz
 
