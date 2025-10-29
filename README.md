@@ -5,22 +5,27 @@ Entwickelt in **Java**, speziell für **mikroskopische und biologische Anwendung
 
 ## 🚀 Funktionsübersicht
 
-- **Visualisierung von 4D-Bildern** (Zeit + Raum)
-- **Interaktive Steuerung**: Bewegungen mit Maus und Tastatur
-- **Bilder Bearbeitung**: Spiegelung, Rotation
-- **Markierungen**: Ellipse, Rechteck (Farbe frei wählbar)
+- **Visualisierung von 4D-Bilddaten**: (3D-Raum + Zeit) mit flüssiger Navigation
+- **Interaktive Steuerung**: Maus und Tastatur mit Shortcuts
+- **Bildbearbeitung**: 
+  - horizontale/vertikale Spiegelung
+  - Rotation in definierten Schritten
+- **Annotationen**:
+  - Formen: Ellipse und Rechteck
+  - Farbe, Größe und Position sind frei wählbar
+  - Automatischer Export/Import von Annotationen
 - **Unterstützte Formate**: GIF, JPEG, PNG, TIFF
-- **Internationalisierung**: Deutsch und Englisch
+- **Internationalisierung**: Deutsch und Englisch; umschaltbar zur Laufzeit
 - **Projektdaten**:\
   *Verzeichnis*: {Benutzerverzeichnis}/.4D_Viewer/{Bilderverzeichnis}/
-    - *config.json* – speichert projektbezogene Konfigurationen (Dateityp, Zeit-Trenner, Ebenen-Trenner,
-      Zeit-Einheit, Ebenen-Einheit, Bild-Spiegelung_X, Bild-Spiegelung_Y, Bild-Rotation)
-    - *markers.json* – speichert projektbezogene Markierungen von der UI
+    - *annotations.json* – projektbezogene Annotationen aus der UI
+    - *config.json* – projektbezogene Konfigurationen (Dateityp, Zeit-/Ebenen-Trenner, Zeit-/Ebenen-Einheit,
+      Bildspiegelung X/Y, Bildrotation)
     - *snapshots/ (Ordner)* – Ablage für erzeugte Momentaufnahmen
 - **Einstellungen**:\
   *Verzeichnis*: {Benutzerverzeichnis}/.4D_Viewer/
-    - *history.txt* – speichert die zuletzt verwendeten Bilderverzeichnisse
-    - *settings.json* – speichert die Benutzereinstellungen (Sprache, Theme, Schriftgröße, ...)
+    - *history.txt* – Liste der zuletzt verwendeten Bildverzeichnisse
+    - *settings.json* – Benutzereinstellungen (Sprache, Theme, Schriftgröße, Shortcuts)
 
 ## 📂 Projektstruktur
 4d_viewer/\

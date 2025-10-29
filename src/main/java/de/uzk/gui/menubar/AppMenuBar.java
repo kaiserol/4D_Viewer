@@ -33,12 +33,12 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
 
         // pinTime, turnImageLeft, turnImageRight
         menuEdit.add(new CustomMenuItem(getWord("items.edit.pinTime"), ICON_PIN, actionHandler, SHORTCUT_TOGGLE_PIN_TIME));
-        menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageLeft"), ICON_TURN_LEFT, actionHandler, SHORTCUT_TURN_IMAGE_90_LEFT));
-        menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageRight"), ICON_TURN_RIGHT, actionHandler, SHORTCUT_TURN_IMAGE_90_RIGHT));
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageLeft"), ICON_ARROW_LEFT_TURN, actionHandler, SHORTCUT_TURN_IMAGE_90_LEFT));
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageRight"), ICON_ARROW_RIGHT_TURN, actionHandler, SHORTCUT_TURN_IMAGE_90_RIGHT));
         menuEdit.addSeparator();
 
         // takeScreenshot
-        menuEdit.add(new CustomMenuItem(getWord("items.edit.takeScreenshot"), ICON_SCREENSHOT, actionHandler, SHORTCUT_TAKE_SCREENSHOT));
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.takeScreenshot"), actionHandler, SHORTCUT_TAKE_SCREENSHOT));
         return menuEdit;
     }
 

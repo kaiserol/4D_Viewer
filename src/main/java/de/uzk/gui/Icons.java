@@ -10,16 +10,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Objects;
 
 import static de.uzk.Main.logger;
 import static de.uzk.Main.settings;
 
 public final class Icons {
     // edit icons
-    public static final FlatSVGIcon ICON_PIN = loadResourceSVG("images/icons_edit/pin.svg");
-    public static final FlatSVGIcon ICON_TURN_RIGHT = loadResourceSVG("images/icons_edit/turn_right.svg");
-    public static final FlatSVGIcon ICON_TURN_LEFT = loadResourceSVG("images/icons_edit/turn_left.svg");
-    public static final FlatSVGIcon ICON_SCREENSHOT = loadResourceSVG("images/icons_edit/screenshot.svg");
+    public static final FlatSVGIcon ICON_ARROW_LEFT_TURN = loadResourceSVG("images/icons_edit/arrow_left_turn.svg");
+    public static final FlatSVGIcon ICON_ARROW_RIGHT_TURN = loadResourceSVG("images/icons_edit/arrow_right_turn.svg");
+    public static final FlatSVGIcon ICON_DELETE = loadResourceSVG("images/icons_edit/delete.svg");
 
     // navigate icons
     public static final FlatSVGIcon ICON_ARROW_LEFT_START = loadResourceSVG("images/icons_nav/arrow_left_start.svg");
@@ -32,17 +32,18 @@ public final class Icons {
     public static final FlatSVGIcon ICON_ARROW_DOWN = loadResourceSVG("images/icons_nav/arrow_down.svg");
     public static final FlatSVGIcon ICON_ARROW_DOWN_END = loadResourceSVG("images/icons_nav/arrow_down_end.svg");
 
-    // icons
-    public static final FlatSVGIcon ICON_DELETE = loadResourceSVG("images/icons/delete.svg");
+    // other icons
+    public static final FlatSVGIcon ICON_PIN = loadResourceSVG("images/icons/pin.svg");
 
-    private static final FlatSVGIcon[] ICONS_ONLY_ONE_COLOR = {
-            // edit icons
+    // App Image
+    public static final Image APP_IMAGE = Objects.requireNonNull(loadResourceSVG("images/4D.svg")).getImage();
+
+    // Icons Arrays
+    private static final FlatSVGIcon[] ICONS_COLOR_BLUE = {
+            // other icons
             ICON_PIN,
-            ICON_TURN_RIGHT,
-            ICON_TURN_LEFT,
-            ICON_SCREENSHOT,
     };
-    private static final FlatSVGIcon[] ICONS_DIFFERENT_COLORS = {
+    private static final FlatSVGIcon[] ICONS_COLOR_ON_THEME_SWITCH = {
             // navigate icons
             ICON_ARROW_LEFT_START,
             ICON_ARROW_LEFT,
@@ -54,11 +55,11 @@ public final class Icons {
             ICON_ARROW_DOWN,
             ICON_ARROW_DOWN_END,
 
-            // icons
+            // edit icons
+            ICON_ARROW_LEFT_TURN,
+            ICON_ARROW_RIGHT_TURN,
             ICON_DELETE,
     };
-
-    public static final Image APP_IMAGE = loadResourceAppImage();
 
     private Icons() {
     }
@@ -88,21 +89,8 @@ public final class Icons {
         }
     }
 
-    private static BufferedImage loadResourceAppImage() {
-        String imageNameCleanedFileSeps = "images/4D.png".replace("/", StringUtils.FILE_SEP);
-        URL imageUrl = Icons.class.getClassLoader().getResource(imageNameCleanedFileSeps);
-
-        try {
-            if (imageUrl == null) throw new IOException();
-            return ImageIO.read(imageUrl);
-        } catch (IOException e) {
-            logger.error("The Image '" + imageNameCleanedFileSeps + "' could not be loaded.");
-            return null;
-        }
-    }
-
     public static void updateSVGIcons() {
-        for (FlatSVGIcon svgIcon : ICONS_ONLY_ONE_COLOR) {
+        for (FlatSVGIcon svgIcon : ICONS_COLOR_BLUE) {
             // Tausche Farben aus
             updateSVGIconsColor(svgIcon, new FlatSVGIcon.ColorFilter(color -> {
                 if (color.equals(Color.BLACK)) return GuiUtils.COLOR_BLUE;
@@ -110,7 +98,7 @@ public final class Icons {
             }));
         }
 
-        for (FlatSVGIcon svgIcon : ICONS_DIFFERENT_COLORS) {
+        for (FlatSVGIcon svgIcon : ICONS_COLOR_ON_THEME_SWITCH) {
             // Tausche Farben aus
             updateSVGIconsColor(svgIcon, new FlatSVGIcon.ColorFilter(color -> {
                 if (color.equals(Color.BLACK)) return settings.getTheme().isLight() ? Color.GRAY : Color.WHITE;

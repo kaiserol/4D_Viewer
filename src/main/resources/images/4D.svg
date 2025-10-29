@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <!-- Hintergrundverlauf -->
+        <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#5cd1ff"/>
+            <stop offset="50%" stop-color="#2fa8ff"/>
+            <stop offset="100%" stop-color="#006aff"/>
+        </linearGradient>
+
+        <!-- Schatten -->
+        <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.25"/>
+        </filter>
+
+        <!-- Textverlauf -->
+        <linearGradient id="textGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="50%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#cccccc"/>
+        </linearGradient>
+    </defs>
+
+    <!-- Abgerundeter Hintergrund mit Verlauf -->
+    <rect x="32" y="32" width="448" height="448" rx="128" ry="128"
+          fill="url(#bgGrad)" filter="url(#soft)"/>
+
+    <!-- Schriftzug "4D" mit sanfter Rundung -->
+    <g font-family="Poppins, Nunito, 'Segoe UI Rounded', sans-serif"
+       font-weight="800"
+       font-size="250"
+       text-anchor="middle"
+       filter="url(#soft)">
+
+        <!-- depth shadow -->
+        <text x="240" y="340" fill="url(#textGrad)" transform="translate(16,16)" opacity="0.25">4D</text>
+
+        <text x="240" y="340" fill="url(#textGrad)">4D</text>
+    </g>
+
+    <!-- Leichter Glanz-Effekt -->
+    <rect x="48" y="48" width="416" height="416" rx="112" ry="112" fill="white" opacity="0.05"/>
+</svg>
