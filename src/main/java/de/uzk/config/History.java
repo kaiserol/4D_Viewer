@@ -16,7 +16,11 @@ public class History {
     private final LinkedList<Path> history;
 
     private History(List<Path> history) {
-        this.history = (history != null) ? new LinkedList<>(history) : new LinkedList<>();
+        this.history = new LinkedList<>();
+        if (history != null) {
+            // Pfade "manuell" mit Überprüfung hinzufügen
+            for (Path path : history) add(path);
+        }
     }
 
     public boolean isEmpty() {
@@ -25,10 +29,19 @@ public class History {
 
     public void add(Path directory) {
         if (directory == null) return;
-        if (!Files.isDirectory(directory) || this.history.contains(directory)) return;
+        if (directory.toAbsolutePath().toString().trim().isEmpty()) return;
+
+        // Normalisiere den Pfad für konsistente Vergleiche
+        Path normalized = directory.normalize();
+
+        // Wenn der Pfad existiert und kein Verzeichnis ist, ablehnen
+        if (Files.exists(normalized) && !Files.isDirectory(normalized)) return;
+
+        // Duplikate vermeiden
+        if (this.history.contains(normalized)) return;
 
         // Am Ende hinzufügen
-        this.history.add(directory);
+        this.history.add(normalized);
     }
 
     public Path getLast() {
@@ -47,7 +60,9 @@ public class History {
 
     public static History load() {
         try {
-            List<Path> history = Files.readAllLines(HISTORY_PATH).stream().map(Path::of).filter(Files::isDirectory).toList();
+            List<Path> history = Files.readAllLines(HISTORY_PATH).stream()
+                    .map(Path::of)
+                    .toList();
             return new History(history);
         } catch (IOException e) {
             return new History(null);

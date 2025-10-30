@@ -46,18 +46,17 @@ public class Workspace {
             boolean sameType = this.config.getImageFileType() == imageFileType;
             if (sameDirectory && sameType) return LoadingResult.ALREADY_LOADED;
 
-            // Alte Werte zwischenspeichern
-            Path oldDirectory = this.imageFilesDirectory;
+            // Verzeichnis, Config & Markers speichern
+            Path oldImageFilesDirectory = this.imageFilesDirectory;
             Config oldConfig = this.config;
-            this.saveConfig();
+            Markers oldMarkers = this.markers;
+            this.save();
 
-            // Verzeichnis & Config aktualisieren
+            // Verzeichnis, Config & Markers laden
             this.imageFilesDirectory = directory;
-            this.config = Config.load(directory.getFileName());
-            this.markers = Markers.load(directory.getFileName());
-            this.config.setImageFileType(imageFileType);
+            this.load(imageFileType);
 
-            // Setze das Verzeichnis zurück, wenn das übergebene Verzeichnis keine Image-Files hat
+            // Lade das Verzeichnis, wenn es Image-Files hat
             LoadingResult badResult;
             try {
                 if (this.loadImageFiles(progress)) {
@@ -70,8 +69,9 @@ public class Workspace {
             }
 
             // Variablen zurücksetzen
-            this.imageFilesDirectory = oldDirectory;
+            this.imageFilesDirectory = oldImageFilesDirectory;
             this.config = oldConfig;
+            this.markers = oldMarkers;
             return badResult;
         }
         return LoadingResult.DIRECTORY_NOT_EXISTING;
@@ -85,11 +85,18 @@ public class Workspace {
         return this.config;
     }
 
-    public void saveConfig() {
+    private void load(ImageFileType imageFileType) {
+        Path directoryName = this.imageFilesDirectory.getFileName();
+        this.config = Config.load(directoryName);
+        this.config.setImageFileType(imageFileType);
+        this.markers = Markers.load(directoryName);
+    }
+
+    public void save() {
         if (isOpen()) {
-            Path fileName = this.imageFilesDirectory.getFileName();
-            this.config.save(fileName);
-            this.markers.save(fileName);
+            Path directoryName = this.imageFilesDirectory.getFileName();
+            this.config.save(directoryName);
+            this.markers.save(directoryName);
         }
     }
 

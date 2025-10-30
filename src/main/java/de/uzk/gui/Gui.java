@@ -308,7 +308,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         // Dateien abspeichern
         settings.save();
         history.save();
-        workspace.saveConfig();
+        workspace.save();
 
         // Anwendung beenden
         System.exit(0);

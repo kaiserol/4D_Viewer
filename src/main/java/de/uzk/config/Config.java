@@ -3,18 +3,13 @@ package de.uzk.config;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.uzk.image.ImageFileType;
-import de.uzk.markers.Marker;
-import de.uzk.markers.MarkerMapping;
 import de.uzk.utils.AppPath;
 import tools.jackson.databind.ObjectMapper;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
 
-import static de.uzk.Main.*;
+import static de.uzk.Main.logger;
 
 public class Config {
     // MinMax Konstanten
@@ -64,8 +59,6 @@ public class Config {
         this.setMirrorX(mirrorX);
         this.setMirrorY(mirrorY);
         this.setRotation(rotation);
-
-
     }
 
     public ImageFileType getImageFileType() {
@@ -131,7 +124,6 @@ public class Config {
     public void setRotation(int rotation) {
         this.rotation = (rotation >= 0 && rotation <= MAX_ROTATION) ? rotation : DEFAULT_ROTATION;
     }
-
 
     public void save(Path folderName) {
         Path location = AppPath.VIEWER_HOME_DIRECTORY.resolve(folderName).resolve(CONFIG_FILE_NAME);

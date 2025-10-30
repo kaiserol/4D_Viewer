@@ -5,7 +5,6 @@ import de.uzk.action.ActionType;
 import de.uzk.config.Settings;
 import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
 
@@ -22,33 +21,38 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
 
     public AppMenuBar(Gui gui, ActionHandler actionHandler) {
         super(new JMenuBar(), gui);
-        this.menuBar = new CustomMenuBar(this.container, "App MenuBar");
+        this.menuBar = new CustomMenuBar(this.container, "MenuBar");
+        init(actionHandler);
+    }
+
+    private void init(ActionHandler actionHandler) {
         this.menuBar.add(getMenuEdit(actionHandler));
         this.menuBar.add(getMenuNavigate(actionHandler));
         this.menuBar.add(getMenuWindow(actionHandler));
+        this.menuBar.add(getMenuHelp(actionHandler));
     }
 
     private CustomMenu getMenuEdit(ActionHandler actionHandler) {
         CustomMenu menuEdit = new CustomMenu(getWord("items.edit"));
 
-        // pinTime, turnImageLeft, turnImageRight
         menuEdit.add(new CustomMenuItem(getWord("items.edit.pinTime"), ICON_PIN, actionHandler, SHORTCUT_TOGGLE_PIN_TIME));
         menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageLeft"), ICON_ARROW_LEFT_TURN, actionHandler, SHORTCUT_TURN_IMAGE_90_LEFT));
         menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageRight"), ICON_ARROW_RIGHT_TURN, actionHandler, SHORTCUT_TURN_IMAGE_90_RIGHT));
         menuEdit.addSeparator();
 
-        // takeScreenshot
         menuEdit.add(new CustomMenuItem(getWord("items.edit.takeScreenshot"), actionHandler, SHORTCUT_TAKE_SCREENSHOT));
         return menuEdit;
     }
 
     private CustomMenu getMenuNavigate(ActionHandler actionHandler) {
         CustomMenu menuNavigate = new CustomMenu(getWord("items.nav"));
+
         menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.time.first"), ICON_ARROW_LEFT_START, actionHandler, SHORTCUT_GO_TO_FIRST_IMAGE, true));
         menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.time.prev"), ICON_ARROW_LEFT, actionHandler, SHORTCUT_GO_TO_PREV_IMAGE, true));
         menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.time.next"), ICON_ARROW_RIGHT, actionHandler, SHORTCUT_GO_TO_NEXT_IMAGE, true));
         menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.time.last"), ICON_ARROW_RIGHT_END, actionHandler, SHORTCUT_GO_TO_LAST_IMAGE, true));
         menuNavigate.addSeparator();
+
         menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.level.first"), ICON_ARROW_UP_START, actionHandler, SHORTCUT_GO_TO_FIRST_LEVEL, true));
         menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.level.prev"), ICON_ARROW_UP, actionHandler, SHORTCUT_GO_TO_PREV_LEVEL, true));
         menuNavigate.add(new CustomMenuItem(getWord("items.nav.axis.level.next"), ICON_ARROW_DOWN, actionHandler, SHORTCUT_GO_TO_NEXT_LEVEL, true));
@@ -58,33 +62,21 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
 
     private CustomMenu getMenuWindow(ActionHandler actionHandler) {
         CustomMenu menuWindow = new CustomMenu(getWord("items.window"));
-
-        // font: decrease, restore, increase
         menuWindow.add(itemFontDecrease = new CustomMenuItem(getWord("items.window.fontSizeDecrease"), actionHandler, SHORTCUT_FONT_SIZE_DECREASE));
         menuWindow.add(itemFontIncrease = new CustomMenuItem(getWord("items.window.fontSizeIncrease"), actionHandler, SHORTCUT_FONT_SIZE_INCREASE));
         menuWindow.add(itemFontRestore = new CustomMenuItem(getWord("items.window.fontSizeRestore"), actionHandler, SHORTCUT_FONT_SIZE_RESTORE));
         menuWindow.addSeparator();
         updateFontItems();
 
-        // disclaimer, logViewer
-        menuWindow.add(new CustomMenuItem(getWord("items.window.showDisclaimer"), actionHandler, SHORTCUT_SHOW_DISCLAIMER));
-        menuWindow.add(new CustomMenuItem(getWord("items.window.showLogViewer"), actionHandler, SHORTCUT_SHOW_LOG_VIEWER));
-
-        menuWindow.addSeparator();
-        menuWindow.add(new CustomMenuItem(getWord("items.settings.openSettings"), actionHandler, SHORTCUT_OPEN_SETTINGS));
-
-
+        menuWindow.add(new CustomMenuItem(getWord("items.window.openSettings"), actionHandler, SHORTCUT_OPEN_SETTINGS));
         return menuWindow;
     }
 
-    @Override
-    public void toggleOn() {
-        toggleMenus(true);
-    }
-
-    @Override
-    public void toggleOff() {
-        toggleMenus(false);
+    private CustomMenu getMenuHelp(ActionHandler actionHandler) {
+        CustomMenu menuHelp = new CustomMenu(getWord("items.help"));
+        menuHelp.add(new CustomMenuItem(getWord("items.help.showDisclaimer"), actionHandler, SHORTCUT_SHOW_DISCLAIMER));
+        menuHelp.add(new CustomMenuItem(getWord("items.help.showLogViewer"), actionHandler, SHORTCUT_SHOW_LOG_VIEWER));
+        return menuHelp;
     }
 
     @Override
@@ -98,12 +90,5 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         itemFontIncrease.getComponent().setEnabled(fontSize != Settings.MAX_FONT_SIZE);
         itemFontRestore.getComponent().setEnabled(fontSize != Settings.DEFAULT_FONT_SIZE);
         gui.updateUI();
-    }
-
-    private void toggleMenus(boolean enabled) {
-        for (int i = 0; i < Math.min(2, menuBar.getMenus().size()); i++) {
-            JComponent component = menuBar.getMenus().get(i).getComponent();
-            GuiUtils.setEnabled(component, enabled);
-        }
     }
 }

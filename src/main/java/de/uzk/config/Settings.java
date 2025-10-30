@@ -16,8 +16,8 @@ import static de.uzk.Main.logger;
 
 public class Settings {
     // MinMax Konstanten
-    public static final int MIN_FONT_SIZE = 10;
-    public static final int MAX_FONT_SIZE = 22;
+    public static final int MIN_FONT_SIZE = 8;
+    public static final int MAX_FONT_SIZE = 24;
 
     // Default-Konstanten
     private static final Language DEFAULT_LANGUAGE = Language.getSystemDefault();
