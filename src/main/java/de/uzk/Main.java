@@ -26,7 +26,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        // Systemeigenschaften initialisieren.
+        // Systemeigenschaften initialisieren
         GuiUtils.initSystemProperties();
 
         // Gui erstellen und anzeigen

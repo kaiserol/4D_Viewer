@@ -1,16 +1,13 @@
 package de.uzk.gui.dialogs;
 
 import de.uzk.gui.GuiUtils;
+import de.uzk.gui.SelectableText;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.text.Caret;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-import static de.uzk.Main.logger;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogDisclaimer {
@@ -94,7 +91,7 @@ public class DialogDisclaimer {
         panel.add(getSubtitelLabel(getWord("dialog.disclaimer.subtitle-2")), BorderLayout.NORTH);
 
         // Disclaimer Text hinzufügen
-        JEditorPane disclaimerText = getEditorPane(toHTML(getWord("dialog.disclaimer.text"), "justify"));
+        SelectableText disclaimerText = new SelectableText(StringUtils.formatInputToHTML(getWord("dialog.disclaimer.text"), "justify", MAX_WIDTH));
         panel.add(disclaimerText, BorderLayout.CENTER);
         return panel;
     }
@@ -102,37 +99,6 @@ public class DialogDisclaimer {
     // ==========================================================
     // Hilfsfunktionen
     // ==========================================================
-    private JEditorPane getEditorPane(String htmlContent) {
-        JEditorPane editorPane = new JEditorPane();
-        editorPane.setEditable(false);
-        editorPane.setOpaque(false);
-        editorPane.setContentType("text/html");
-        editorPane.setText(htmlContent);
-        Caret newCaret = new DefaultCaret() {
-            @Override
-            public void paint(Graphics g) {
-            }
-        };
-        newCaret.setBlinkRate(0);
-        editorPane.setCaret(newCaret);
-
-        // Hyperlink-Klicks abfangen
-        editorPane.addHyperlinkListener(e -> {
-            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                try {
-                    if (!Desktop.isDesktopSupported()) {
-                        logger.warning("Desktop is not supported. => Unable to open links!");
-                        return;
-                    }
-                    Desktop.getDesktop().browse(e.getURL().toURI());
-                } catch (Exception ex) {
-                    logger.error("Unable to open link: " + e.getURL());
-                }
-            }
-        });
-        return editorPane;
-    }
-
     private void addLabelRow(JPanel panel, GridBagConstraints gbc, int row, String labelText, String labelValueText) {
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -151,33 +117,12 @@ public class DialogDisclaimer {
     }
 
     private JLabel getSubtitelLabel(String text) {
-        JLabel label = new JLabel(StringUtils.wrapHtml(StringUtils.alignText(StringUtils.applyFontSize(
+        JLabel label = new JLabel(StringUtils.wrapHtml(StringUtils.applyAlignment(StringUtils.applyFontSize(
                 text, 125), "center", MAX_WIDTH)));
         label.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
         label.setOpaque(true);
         label.setBackground(GuiUtils.COLOR_BLUE);
         label.setForeground(Color.WHITE);
         return label;
-    }
-
-    private static String toHTML(String text, String align) {
-        String[] words = text.replaceAll("\\r?\\n", "<br>").
-                replaceAll("\\s+", " ").
-                split(" ");
-        StringBuilder builder = new StringBuilder();
-
-        for (int i = 0; i < words.length; i++) {
-            String word = words[i];
-
-            // Links erkennen
-            if (word.matches("https?://.*?")) {
-                word = "<a href=\"" + word + "\">" + word.substring(word.indexOf("//") + 2) + "</a>";
-            }
-            builder.append(word);
-            if (i < words.length - 1) builder.append(" ");
-        }
-
-        // Text zurückgeben
-        return StringUtils.wrapHtml(StringUtils.alignText(builder.toString(), align, MAX_WIDTH));
     }
 }

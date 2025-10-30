@@ -452,7 +452,7 @@ public class Workspace {
             sb.append("No missing images.").append(StringUtils.NEXT_LINE);
         } else {
             String tempText = (totalMissing > 1 ? "images are" : "image is");
-            String headerText = StringUtils.wrapColor(StringUtils.wrapBold(totalMissing + " " + tempText + " missing:"), COLOR_RED);
+            String headerText = StringUtils.applyColor(StringUtils.wrapBold(totalMissing + " " + tempText + " missing:"), COLOR_RED);
             sb.insert(0, headerText + StringUtils.NEXT_LINE + StringUtils.NEXT_LINE);
         }
 

@@ -76,7 +76,7 @@ public class LogEntry {
 
         if (includeHTML) {
             String headerTextHTML = StringUtils.wrapBold(headerText);
-            String levelTextHTML = StringUtils.wrapColor(StringUtils.wrapBold(levelText), this.getLevel().getColor());
+            String levelTextHTML = StringUtils.applyColor(StringUtils.wrapBold(levelText), this.getLevel().getColor());
             return StringUtils.wrapPre(headerTextHTML + levelTextHTML + sb);
         }
         return headerText + levelText + sb;

@@ -1,5 +1,6 @@
 package de.uzk.gui.dialogs;
 
+import de.uzk.gui.SelectableText;
 import de.uzk.logger.LogEntry;
 import de.uzk.utils.StringUtils;
 
@@ -115,15 +116,12 @@ public class DialogLogViewer {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
-        // EditorPane erstellen
-        JEditorPane editorPane = new JEditorPane();
-        editorPane.setMargin(new Insets(5, 5, 5, 5));
-        editorPane.setEditable(false);
-        editorPane.setContentType("text/html");
-        editorPane.setText(htmlContent);
+        // Editor erstellen
+        SelectableText editor = new SelectableText(htmlContent);
+        editor.setMargin(new Insets(5, 5, 5, 5));
 
-        // EditorPane in ScrollPane packen
-        JScrollPane scrollPane = new JScrollPane(editorPane);
+        // Editor in ScrollPane packen
+        JScrollPane scrollPane = new JScrollPane(editor);
         panel.add(scrollPane);
         return panel;
     }

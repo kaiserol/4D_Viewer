@@ -16,6 +16,7 @@ import java.awt.desktop.QuitResponse;
 import java.awt.event.AdjustmentListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 
 import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -128,7 +129,7 @@ public final class GuiUtils {
 
     public static void initMacOS(Gui gui) {
         if (gui == null) return;
-        if (!operationSystem.isMacOS() || !Desktop.isDesktopSupported()) return;
+        if (!Desktop.isDesktopSupported() || !operationSystem.isMacOS()) return;
         Desktop desktop = Desktop.getDesktop();
 
         // Behandelt den Menüeintrag "Über 4D Viewer"
@@ -212,6 +213,17 @@ public final class GuiUtils {
         settings.setLanguage(language);
         logger.info("Changing Language from '" + language + "' to '" + settings.getLanguage() + "'.");
         gui.rebuild();
+    }
+
+    public static void openWebLink(URL url) {
+        if (!Desktop.isDesktopSupported()) return;
+        Desktop desktop = Desktop.getDesktop();
+
+        try {
+            desktop.browse(url.toURI());
+        } catch (Exception ex) {
+            logger.error("Unable to open link: " + url);
+        }
     }
 
 

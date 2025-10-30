@@ -4,148 +4,204 @@ import java.awt.*;
 import java.io.File;
 
 /**
- * Die Hilfsklasse für String-Operationen und Formatierungen.
- * Diese Klasse bietet Methoden für:
- * <ul>
- *   <li>Array-zu-String Konvertierungen</li>
- *   <li>HTML-Formatierung und Styling</li>
- *   <li>Farb-zu-Hex Konvertierung</li>
- * </ul>
- *
+ * Dienstklasse für Zeichenkettenoperationen und HTML-Formatierungen.
  * <p>
- * Die Klasse ist als "final" deklariert und der Konstruktor ist privat,
- * um die Instanziierung zu verhindern, da alle Methoden statisch sind.
+ * Bietet Methoden zur formatierten Darstellung von Arrays,
+ * Einbettung von Text in HTML-Tags (z. B. fett, kursiv, Farbe, Größe, Ausrichtung)
+ * sowie zur Umwandlung von {@link Color}-Objekten in Hexadezimaldarstellung.
+ * <p>
+ * Diese Klasse ist nicht instanziierbar.
  */
 public final class StringUtils {
-    // Systemabhängige Dateitrennzeichen (z. B. "/" oder "\")
+    /**
+     * Systemabhängiges Dateitrennzeichen (z. B. "/" oder "\\").
+     */
     public static final String FILE_SEP = File.separator;
 
-    // Systemabhängiger Zeilenumbruch (z. B. "\n" oder "\r\n")
+    /**
+     * Systemabhängiger Zeilenumbruch (z. B. "\n" oder "\r\n").
+     */
     public static final String NEXT_LINE = System.lineSeparator();
 
     private StringUtils() {
-        // Verhindert die Instanziierung dieser Hilfsklasse
+        // Verhindert Instanziierung dieser Hilfsklasse
     }
 
     /**
      * Formatiert ein Array als Zeichenkette mit Trennzeichen und Begrenzern.
      *
-     * @param arr         Array, das formatiert werden soll
-     * @param arrSep      Trennzeichen zwischen Elementen
-     * @param leftBorder  linke Klammer (z. B. '[')
-     * @param rightBorder rechte Klammer (z. B. ']')
-     * @return formatierte Array-Darstellung, z. B. [1,2,3]
+     * @param arr         das zu formatierende Array
+     * @param arrSep      Trennzeichen zwischen den Elementen
+     * @param leftBorder  linke Begrenzung (z. B. '[')
+     * @param rightBorder rechte Begrenzung (z. B. ']')
+     * @return Formatierte Darstellung, z. B. "[1, 2, 3]"
      */
     public static String formatArray(Object[] arr, String arrSep, char leftBorder, char rightBorder) {
-        if (arr == null) return String.valueOf(leftBorder) + rightBorder;
+        if (arr == null || arr.length == 0) return leftBorder + "" + rightBorder;
 
-        int iMax = arr.length - 1;
-        if (iMax == -1) return String.valueOf(leftBorder) + rightBorder;
-
-        StringBuilder arrBuilder = new StringBuilder();
-        arrBuilder.append(leftBorder);
-
-        for (int i = 0; i <= iMax; i++) {
-            arrBuilder.append(arr[i]);
-            if (i == iMax) break;
-            arrBuilder.append(arrSep);
+        StringBuilder builder = new StringBuilder();
+        builder.append(leftBorder);
+        for (int i = 0; i < arr.length; i++) {
+            builder.append(arr[i]);
+            if (i < arr.length - 1) builder.append(arrSep);
         }
-        return arrBuilder.append(rightBorder).toString();
+        return builder.append(rightBorder).toString();
     }
 
-    // ---------- HTML FORMAT ----------
+    // ==========================================================
+    // HTML FORMATIERUNG
+    // ==========================================================
 
     /**
-     * Umgibt Text mit einem HTML-Font-Tag, der die Farbe setzt.
+     * Umgibt den Text mit einem <span>-Tag, der eine Schriftfarbe definiert.
      *
      * @param text  der anzuzeigende Text
      * @param color gewünschte Schriftfarbe
-     * @return Text in HTML-Font-Tag mit Farbangabe
+     * @return HTML-String mit farbigem Text
      */
-    public static String wrapColor(String text, Color color) {
-        return "<span color=\"" + colorToHex(color) + "\">" + text + "</span>";
+    public static String applyColor(String text, Color color) {
+        return String.format("<span style=\"color:%s;\">%s</span>", colorToHex(color), text);
+    }
+
+    /**
+     * Richtet den Text in einem HTML-<div>-Element aus.
+     *
+     * @param text     der auszurichtende Text
+     * @param align    Textausrichtung (z. B. "left", "center", "right", "justify")
+     * @param maxWidth maximale Breite in Pixeln
+     * @return HTML-String mit entsprechendem Stil
+     */
+    public static String applyAlignment(String text, String align, int maxWidth) {
+        return String.format(
+                "<div style=\"text-align:%s; width:%dpx; word-wrap:break-word;\">%s</div>",
+                align, maxWidth, text
+        );
     }
 
     /**
      * Ändert die Schriftgröße eines Textes durch HTML-Formatierung.
-     * Die Größe wird in Prozent des Standardwertes angegeben und in em-Einheiten umgerechnet.
-     * Der Text wird in einem span-Tag platziert.
+     * <p>
+     * Die Schriftgröße wird in Prozent angegeben (relativ zur Standardgröße)
+     * und intern in <code>em</code>-Einheiten umgesetzt.
      *
      * @param text       der zu formatierende Text
-     * @param percentage Schriftgröße in Prozent (0-500)
+     * @param percentage Schriftgröße in Prozent (0–500)
      * @return HTML-formatierter Text mit angepasster Schriftgröße
-     * @throws IllegalArgumentException wenn der Prozentwert außerhalb des gültigen Bereichs liegt
+     * @throws IllegalArgumentException falls der Prozentwert außerhalb des gültigen Bereichs liegt
      */
     public static String applyFontSize(String text, int percentage) {
         if (percentage < 0 || percentage > 500)
-            throw new IllegalArgumentException("Percentage must be between 0 and 500");
-        String fontSizeString = (percentage / 100.0) + "em";
-        return "<span style='font-size: %s;'>".formatted(fontSizeString) + text + "</span>";
+            throw new IllegalArgumentException("Prozentwert muss zwischen 0 und 500 liegen.");
+
+        String fontSize = (percentage / 100.0) + "em";
+        return String.format("<span style=\"font-size:%s;\">%s</span>", fontSize, text);
     }
 
     /**
-     * Hebt den Text fett hervor.
+     * Hebt den angegebenen Text fett hervor.
+     *
+     * @param text der Text, der fett dargestellt werden soll
+     * @return HTML-String mit <b>-Tags
      */
     public static String wrapBold(String text) {
         return "<b>" + text + "</b>";
     }
 
     /**
-     * Hebt den Text kursiv hervor.
+     * Hebt den angegebenen Text kursiv hervor.
+     *
+     * @param text der Text, der kursiv dargestellt werden soll
+     * @return HTML-String mit <i>-Tags
      */
     public static String wrapItalic(String text) {
         return "<i>" + text + "</i>";
     }
 
     /**
-     * Richtet den angegebenen Text aus, indem er in ein formatiertes HTML-Element <div> eingeschlossen wird.
-     * Die Ausrichtung und die maximale Breite des Elements werden als Parameter angegeben.
+     * Erstellt einen klickbaren Hyperlink aus Text und URL.
      *
-     * @param text     Der auszurichtende Text
-     * @param align    Der Ausrichtungsstil (z. B. „left“, „center“, „right“, „justify“)
-     * @param maxWidth Die maximale Breite des Elements in Pixeln
-     * @return Eine formatierte HTML-Zeichenfolge, die den ausgerichteten Text enthält
+     * @param text der anzuzeigende Text
+     * @param url  die Ziel-URL
+     * @return HTML-Link (<a href="...">text</a>)
      */
-    public static String alignText(String text, String align, int maxWidth) {
-        return "<div style=\"text-align: %s; width: %d; word-wrap: break-word;\">".formatted(align, maxWidth) + text + "</div>";
+    public static String wrapA(String text, String url) {
+        return String.format("<a href=\"%s\">%s</a>", url, text);
     }
 
     /**
-     * Umgibt den Text mit einem <pre>-Tag und
-     * ersetzt Zeilenumbrüche durch <br> und Tabs durch Leerzeichen.
+     * Umgibt Text mit einem <pre>-Tag und ersetzt
+     * Zeilenumbrüche durch <br> sowie Tabs durch Leerzeichen.
+     *
+     * @param text der zu formatierende Text
+     * @return HTML-String im <pre>-Format
      */
     public static String wrapPre(String text) {
-        return "<pre>" + text
-                .replace(NEXT_LINE, "<br>")
-                .replace("\t", "    ")
-                + "</pre>";
+        return "<pre>" + text.replace(NEXT_LINE, "<br>").replace("\t", "    ") + "</pre>";
     }
 
     /**
-     * Umgibt Text mit dem HTML-Haupttag.
+     * Umgibt Text mit einem <html>-Tag.
+     *
+     * @param text der HTML-Inhalt
+     * @return vollständiger HTML-String
      */
     public static String wrapHtml(String text) {
         return "<html>" + text + "</html>";
     }
 
     /**
-     * Baut ein vollständiges HTML-Dokument mit Grundstil auf
-     * (Monospaced-Schriftart und einfache Absatzabstände).
+     * Erzeugt ein vollständiges HTML-Dokument mit einfacher Formatierung.
+     * <p>
+     * Standardmäßig wird eine monospaced Schriftart und ein schlichter Absatzstil verwendet.
      *
      * @param htmlContent der eigentliche HTML-Inhalt
      * @return vollständiges HTML-Dokument
      */
     public static String wrapHtmlDocument(String htmlContent) {
-        String fontFamilyText = "font-family: %s;".formatted("monospaced");
-        return wrapHtml("<head><style>body { %s } p {margin: 5px 0}</style></head><body>"
-                .formatted(fontFamilyText) + htmlContent + "</body>");
+        String style = "body { font-family: monospace; } p { margin: 5px 0; }";
+        return wrapHtml("<head><style>" + style + "</style></head><body>" + htmlContent + "</body>");
     }
 
     /**
-     * Wandelt eine AWT-Farbe in einen Hexadezimal-String um (#RRGGBB bzw. #AARRGGBB, wenn Alpha != 255).
+     * Formatiert beliebige Texteingaben zu einfachem HTML,
+     * erkennt URLs automatisch und richtet den Text nach Wunsch aus.
      *
-     * @param color zu konvertierende Farbe
-     * @return Hexadezimalwert als String (z. B. "#FF00FF" oder "#80FF00FF" mit Alpha)
+     * @param text     der Eingabetext (z. B. mit Zeilenumbrüchen)
+     * @param align    Textausrichtung (z. B. "left", "center", "right", "justify")
+     * @param maxWidth maximale Breite in Pixeln
+     * @return HTML-formatierter Text
+     */
+    public static String formatInputToHTML(String text, String align, int maxWidth) {
+        if (text == null || text.isEmpty()) return "";
+
+        String[] words = text.replace("\r\n", "<br>")
+                .replace("\n", "<br>")
+                .trim()
+                .split("\\s+");
+
+        StringBuilder builder = new StringBuilder();
+
+        for (String word : words) {
+            // Hyperlink-Erkennung (http/https)
+            if (word.matches("https?://\\S+")) {
+                builder.append(wrapA(word, word));
+            } else {
+                builder.append(word);
+            }
+            builder.append(" ");
+        }
+
+        String aligned = applyAlignment(builder.toString().trim(), align, maxWidth);
+        return wrapHtml(aligned);
+    }
+
+    /**
+     * Wandelt eine AWT-Farbe in eine Hexadezimaldarstellung um.
+     * <p>
+     * Falls der Alphawert ungleich 255 ist, wird dieser ebenfalls berücksichtigt.
+     *
+     * @param color die zu konvertierende Farbe
+     * @return Hexadezimalwert (z. B. "#FF00FF" oder "#80FF00FF" bei Transparenz)
      */
     public static String colorToHex(Color color) {
         if (color == null) return "#000000";
@@ -156,11 +212,8 @@ public final class StringUtils {
         int alpha = color.getAlpha();
 
         if (alpha != 255) {
-            int rgba = (red << 24) | (green << 16) | (blue << 8) | alpha;
-            return String.format("#%08X", rgba);
+            return String.format("#%02X%02X%02X%02X", alpha, red, green, blue);
         }
-
-        int rgb = (red << 16) | (green << 8) | blue;
-        return String.format("#%06X", rgb);
+        return String.format("#%02X%02X%02X", red, green, blue);
     }
 }
