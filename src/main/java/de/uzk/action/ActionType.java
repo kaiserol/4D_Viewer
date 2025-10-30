@@ -5,7 +5,6 @@ import java.util.List;
 
 public enum ActionType {
     // edit shortcuts
-    SHORTCUT_TOGGLE_PIN_TIME(new Shortcut(KeyEvent.VK_P, Shortcut.CTRL_DOWN)),
     SHORTCUT_TURN_IMAGE_90_LEFT(new Shortcut(KeyEvent.VK_LEFT, Shortcut.ALT_DOWN | Shortcut.SHIFT_DOWN)),
     SHORTCUT_TURN_IMAGE_90_RIGHT(new Shortcut(KeyEvent.VK_RIGHT, Shortcut.ALT_DOWN | Shortcut.SHIFT_DOWN)),
     SHORTCUT_TAKE_SCREENSHOT(new Shortcut(KeyEvent.VK_S, Shortcut.CTRL_DOWN)),
@@ -21,6 +20,9 @@ public enum ActionType {
     SHORTCUT_GO_TO_NEXT_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_DOWN)),
     SHORTCUT_GO_TO_LAST_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_DOWN, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
 
+    // other shortcuts
+    SHORTCUT_TOGGLE_PIN_TIME(new Shortcut(KeyEvent.VK_P, Shortcut.CTRL_DOWN)),
+
     // window shortcuts
     SHORTCUT_FONT_SIZE_DECREASE(new Shortcut(KeyEvent.VK_MINUS, Shortcut.CTRL_DOWN),
             new Shortcut(KeyEvent.VK_SUBTRACT, Shortcut.CTRL_DOWN)),
@@ -32,9 +34,6 @@ public enum ActionType {
     SHORTCUT_SHOW_DISCLAIMER(new Shortcut(KeyEvent.VK_F1)),
     SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F2)),
 
-    // settings shortcuts
-    SHORTCUT_SELECT_LANGUAGE(new Shortcut(KeyEvent.VK_L, Shortcut.CTRL_DOWN)),
-    SHORTCUT_TOGGLE_THEME(new Shortcut(KeyEvent.VK_T, Shortcut.CTRL_DOWN)),
     SHORTCUT_OPEN_SETTINGS(new Shortcut(KeyEvent.VK_COMMA, Shortcut.CTRL_DOWN)),
 
     // actions

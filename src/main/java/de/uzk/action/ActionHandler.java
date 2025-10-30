@@ -3,7 +3,6 @@ package de.uzk.action;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.dialogs.DialogDisclaimer;
-import de.uzk.gui.dialogs.DialogLanguageSelection;
 import de.uzk.gui.dialogs.DialogLogViewer;
 import de.uzk.gui.dialogs.DialogSettings;
 import de.uzk.image.Axis;
@@ -17,26 +16,24 @@ import static de.uzk.Main.workspace;
 import static de.uzk.action.ActionType.*;
 
 public class ActionHandler extends KeyAdapter implements MouseWheelListener {
-    // ca. 20/13 FPS, gleicht Slider & Keys Geschwindigkeit an
+    // Es werden ca. 20 FPS / 13 FPS (bei gedrehten Bildern) erreicht, wenn Bilder durchgescrollt werden
     private static final long UPDATE_INTERVAL_MS = 50;
     private static final long LONG_UPLOAD_INTERVAL_MS = 75;
 
     // GUI-Elemente
     private final Gui gui;
-    private final DialogSettings dialogSettings;
-    private final DialogLanguageSelection dialogLanguageSelection;
     private final DialogDisclaimer dialogDisclaimer;
     private final DialogLogViewer dialogLogViewer;
+    private final DialogSettings dialogSettings;
 
     // Zeitmessung, um Bildwechsel zu takten
     private long lastUpdateTime = 0;
 
     public ActionHandler(Gui gui) {
         this.gui = gui;
-        this.dialogSettings = new DialogSettings();
-        this.dialogLanguageSelection = new DialogLanguageSelection();
         this.dialogDisclaimer = new DialogDisclaimer(gui.getContainer());
         this.dialogLogViewer = new DialogLogViewer(gui.getContainer());
+        this.dialogSettings = new DialogSettings();
     }
 
     // ======================================
@@ -100,10 +97,12 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         if (actionType == null) return;
         switch (actionType) {
             // edit actions
-            case SHORTCUT_TOGGLE_PIN_TIME -> gui.handleAction(SHORTCUT_TOGGLE_PIN_TIME);
             case SHORTCUT_TURN_IMAGE_90_LEFT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_LEFT);
             case SHORTCUT_TURN_IMAGE_90_RIGHT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_RIGHT);
             case SHORTCUT_TAKE_SCREENSHOT -> gui.handleAction(SHORTCUT_TAKE_SCREENSHOT);
+
+            // other actions
+            case SHORTCUT_TOGGLE_PIN_TIME -> gui.handleAction(SHORTCUT_TOGGLE_PIN_TIME);
 
             // window actions
             case SHORTCUT_FONT_SIZE_DECREASE -> GuiUtils.decreaseFont(gui);
@@ -112,9 +111,6 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
 
             case SHORTCUT_SHOW_DISCLAIMER -> dialogDisclaimer.show();
             case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();
-
-            // settings actions
-            case SHORTCUT_SELECT_LANGUAGE -> dialogLanguageSelection.show(gui);
 
             case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show(gui);
         }
