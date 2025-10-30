@@ -3,14 +3,12 @@ package de.uzk;
 import de.uzk.config.History;
 import de.uzk.config.Settings;
 import de.uzk.gui.Gui;
+import de.uzk.gui.GuiUtils;
 import de.uzk.image.Workspace;
 import de.uzk.logger.LogEntryHandler;
 import de.uzk.utils.OperatingSystem;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.desktop.QuitEvent;
-import java.awt.desktop.QuitResponse;
 
 public class Main {
     public static final LogEntryHandler logger;
@@ -28,17 +26,15 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        // Systemeigenschaften initialisieren.
+        GuiUtils.initSystemProperties();
+
+        // Gui erstellen und anzeigen
         SwingUtilities.invokeLater(() -> {
             Gui gui = new Gui();
 
-            // Behandle den Shortcut: Cmd+Q (unter macOS)
-            if (operationSystem.isMacOS() && Desktop.isDesktopSupported()) {
-                Desktop desktop = Desktop.getDesktop();
-                desktop.setQuitHandler((QuitEvent e, QuitResponse response) -> {
-                    response.cancelQuit();
-                    gui.confirmExitApp();
-                });
-            }
+            // Behandelt macOS Einstellungen
+            GuiUtils.initMacOS(gui);
         });
     }
 }

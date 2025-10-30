@@ -36,7 +36,6 @@ public class MarkerEditor extends Container {
     }
 
     private void init() {
-
         this.setLayout(new GridBagLayout());
         OGridBagConstraints gbc = new OGridBagConstraints();
         gbc.fill = GridBagConstraints.NONE;
@@ -129,12 +128,10 @@ public class MarkerEditor extends Container {
 
     private JPanel createValuesPanel() {
         JPanel valuesPanel = new JPanel(new GridBagLayout());
-
         OGridBagConstraints gbc = new OGridBagConstraints();
         gbc.ipady = 10;
 
         JLabel[] labels = {new JLabel("X: "), new JLabel("Y: "), new JLabel(getWord("dialog.markers.width")), new JLabel(getWord("dialog.markers.height")),};
-
         JSpinner[] spinners = {
                 createSpinner(this.marker::getX, this.marker::setX),
                 createSpinner(this.marker::getY, this.marker::setY),

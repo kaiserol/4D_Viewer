@@ -4,7 +4,6 @@ import de.uzk.image.Axis;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 import static de.uzk.Main.workspace;
@@ -22,15 +21,15 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
 
     private void init() {
         this.container.setLayout(new BorderLayout());
-        this.container.setBorder(new EmptyBorder(5, 10, 5, 10));
+        this.container.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
         // Zeit-Label
         this.labelTime = new JLabel("", SwingConstants.CENTER);
         this.container.add(this.labelTime, BorderLayout.CENTER);
 
         // Zeit-Level-Panel
-        JPanel panelTimeLevel = new JPanel();
-        panelTimeLevel.setLayout(new BorderLayout(10, 0));
+        JPanel panelTimeLevel = new JPanel(new BorderLayout(10, 0));
+        panelTimeLevel.setOpaque(false);
 
         // Zeit-Level-Label
         this.labelTimeLevel = new JLabel("", SwingConstants.LEFT);
@@ -39,7 +38,6 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
 
         // Ebenen-Label
         this.labelLevel = new JLabel("", SwingConstants.RIGHT);
-        this.labelLevel.setOpaque(true);
         panelTimeLevel.add(this.labelLevel, BorderLayout.EAST);
         this.container.add(panelTimeLevel, BorderLayout.SOUTH);
     }
@@ -65,6 +63,13 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
             case LEVEL -> updateLevel();
         }
         updateTimeLevel();
+    }
+
+    @Override
+    public void updateTheme() {
+        Color backgroundColor = GuiUtils.getBackgroundColor();
+        this.container.setBackground(backgroundColor);
+        this.labelTimeLevel.setBackground(backgroundColor);
     }
 
     private void updateTime() {

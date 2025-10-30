@@ -14,11 +14,11 @@ public abstract class AreaContainerInteractive<T extends Container> implements H
         this.container = container;
         this.gui = gui;
         if (gui != null) {
-            this.gui.addHandleActionListener(this);
-            this.gui.addToggleListener(this);
-            this.gui.addUpdateImageListener(this);
-            this.gui.addUpdateThemeListener(this);
-            this.gui.addAppFocusListener(this);
+            this.gui.registerHandleActionListener(this);
+            this.gui.registerToggleListener(this);
+            this.gui.registerUpdateImageListener(this);
+            this.gui.registerUpdateThemeListener(this);
+            this.gui.registerAppFocusListener(this);
         }
     }
 

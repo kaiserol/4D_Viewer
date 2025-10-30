@@ -10,7 +10,6 @@ import de.uzk.image.ImageFileType;
 import de.uzk.image.LoadingResult;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -34,6 +33,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     private final List<AppFocusListener> appFocusListeners;
     private boolean windowInitialized;
 
+    // Dialog für das Laden von Bildern
+    private final DialogImageLoad dialogImageLoad;
+
     public Gui() {
         super(new JFrame(), null);
         this.handleActionListeners = new ArrayList<>();
@@ -41,6 +43,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.updateImageListeners = new ArrayList<>();
         this.updateThemeListeners = new ArrayList<>();
         this.appFocusListeners = new ArrayList<>();
+        this.windowInitialized = false;
+        this.dialogImageLoad = new DialogImageLoad(this.container);
 
         // Gui erstellen
         build();
@@ -48,7 +52,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     private void build() {
         logger.info("Building UI ...");
-        GuiUtils.initFlatLaf();
+        GuiUtils.updateFlatLaf();
 
         this.container.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         this.container.setIconImage(Icons.APP_IMAGE);
@@ -124,7 +128,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
         // mainPanel
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // directorySelection
         AreaDirectorySelection directorySelection = new AreaDirectorySelection(this);
@@ -140,15 +144,15 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         splitPane.add(imageViewer.getContainer());
         mainPanel.add(splitPane, BorderLayout.CENTER);
 
-        // disclaimer
-        AreaDisclaimerRightOfUse disclaimer = new AreaDisclaimerRightOfUse(this);
-        mainPanel.add(disclaimer.getContainer(), BorderLayout.SOUTH);
+        // disclaimerRightOfUse
+        AreaDisclaimerRightOfUse disclaimerRightOfUse = new AreaDisclaimerRightOfUse(this);
+        mainPanel.add(disclaimerRightOfUse.getContainer(), BorderLayout.SOUTH);
         this.container.add(mainPanel);
     }
 
     public boolean loadImageFiles(Path directory, ImageFileType imageFileType, boolean isGuiBeingBuilt) {
         // Prüfe, ob das Verzeichnis passende Bilder hat
-        LoadingResult result = new DialogImageLoad(this.container).loadImages(directory, imageFileType);
+        LoadingResult result = this.dialogImageLoad.show(directory, imageFileType);
         switch (result) {
             case LOADED -> {
                 toggleOn();
@@ -196,23 +200,23 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     // ======================================
     // Observer Registrierung
     // ======================================
-    public void addHandleActionListener(HandleActionListener handleActionListener) {
+    public void registerHandleActionListener(HandleActionListener handleActionListener) {
         this.handleActionListeners.add(handleActionListener);
     }
 
-    public void addToggleListener(ToggleListener toggleListener) {
+    public void registerToggleListener(ToggleListener toggleListener) {
         this.toggleListeners.add(toggleListener);
     }
 
-    public void addUpdateImageListener(UpdateImageListener updateImageListener) {
+    public void registerUpdateImageListener(UpdateImageListener updateImageListener) {
         this.updateImageListeners.add(updateImageListener);
     }
 
-    public void addUpdateThemeListener(UpdateThemeListener updateThemeListener) {
+    public void registerUpdateThemeListener(UpdateThemeListener updateThemeListener) {
         this.updateThemeListeners.add(updateThemeListener);
     }
 
-    public void addAppFocusListener(AppFocusListener appFocusListener) {
+    public void registerAppFocusListener(AppFocusListener appFocusListener) {
         this.appFocusListeners.add(appFocusListener);
     }
 

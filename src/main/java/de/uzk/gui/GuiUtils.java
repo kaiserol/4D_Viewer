@@ -11,6 +11,8 @@ import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.desktop.QuitEvent;
+import java.awt.desktop.QuitResponse;
 import java.awt.event.AdjustmentListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -28,6 +30,7 @@ public final class GuiUtils {
 
     // GUI-Elemente
     private static Color borderColor;
+    private static Color backgroundColor;
     private static Font font;
 
     private GuiUtils() {
@@ -41,22 +44,14 @@ public final class GuiUtils {
         return new FlatMacLightLaf();
     }
 
-    public static void initFlatLaf() {
+    public static void updateFlatLaf() {
         FlatLaf.setup(settings.getTheme().isLight() ? getLightMode() : getDarkMode());
-        borderColor = settings.getTheme().isLight() ? Color.LIGHT_GRAY : Color.DARK_GRAY;
+        borderColor = UIManager.getColor("Component.borderColor");
+        backgroundColor = UIManager.getColor("TextArea.background");
 
-        // MacOS Eigenschaften
-        if (operationSystem.isMacOS()) {
-            System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("apple.awt.application.name", getWord("app.name"));
-            System.setProperty("apple.awt.application.appearance", "system");
-        }
-
-        // Linux Eigenschaften
-        if (operationSystem.isLinux()) {
-            JFrame.setDefaultLookAndFeelDecorated(true);
-            JDialog.setDefaultLookAndFeelDecorated(true);
-        }
+        // Titelleiste auf FlatLaf-Dekoration umstellen
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        JDialog.setDefaultLookAndFeelDecorated(true);
 
         // Focus Eigenschaften
         UIManager.put("Component.focusWidth", 0);
@@ -71,34 +66,38 @@ public final class GuiUtils {
         // TabbedPane Eigenschaften
         UIManager.put("TabbedPane.contentSeparatorHeight", 1);
         UIManager.put("TabbedPane.showTabSeparators", true);
-        UIManager.put("TabbedPane.contentAreaColor", borderColor);
-        UIManager.put("TabbedPane.selectedBackground", UIManager.getColor("TabbedPane.buttonHoverBackground").brighter());
+        UIManager.put("TabbedPane.background", backgroundColor);
 
         // ScrollBar Eigenschaften
         UIManager.put("Component.arrowType", "chevron");
         UIManager.put("ScrollBar.showButtons", true);
         UIManager.put("ScrollBar.trackArc", 999);
         UIManager.put("ScrollBar.thumbArc", 999);
-        UIManager.put("ScrollBar.width", 15);
+        UIManager.put("ScrollBar.width", 10);
 
         UIManager.put("ScrollBar.trackInsets", new Insets(0, 0, 0, 0));
-        UIManager.put("ScrollBar.thumbInsets", new Insets(2, 2, 2, 2));
+        UIManager.put("ScrollBar.thumbInsets", BorderFactory.createEmptyBorder());
 
-        Color bgBrighter = UIManager.getColor("ScrollBar.background").brighter();
-        UIManager.put("ScrollBar.track", bgBrighter);
-        UIManager.put("ScrollBar.hoverTrackColor", bgBrighter);
+        Color trackColor = UIManager.getColor("ScrollBar.background");
+        UIManager.put("ScrollBar.track", trackColor);
+        UIManager.put("ScrollBar.hoverTrackColor", trackColor);
+
+        Color thumbColor = COLOR_BLUE;
+        UIManager.put("ScrollBar.thumb", thumbColor);
+        UIManager.put("ScrollBar.hoverThumbColor", thumbColor.darker());
+        UIManager.put("ScrollBar.pressedThumbColor", thumbColor.darker());
 
         // SplitPane Eigenschaften
         UIManager.put("SplitPaneDivider.gripDotCount", 0);
         UIManager.put("SplitPaneDivider.gripDotSize", 3);
         UIManager.put("SplitPaneDivider.gripGap", 3);
-        UIManager.put("SplitPane.dividerSize", 15);
-        UIManager.put("SplitPane.oneTouchButtonSize", 5);
+        UIManager.put("SplitPane.dividerSize", 10);
         UIManager.put("SplitPane.supportsOneTouchButtons", true);
 
         // Mnemonics/Icons Eigenschaften
         UIManager.put("Component.hideMnemonics", false);
         UIManager.put("OptionPane.showIcon", true);
+        UIManager.put("Dialog.showIcon", true);
         Icons.updateSVGIcons();
 
         // Font Eigenschaften
@@ -106,8 +105,66 @@ public final class GuiUtils {
         updateFontSize(settings.getFontSize());
     }
 
+    // Diese Methode sollte nur einmal zu Beginn der Anwendung
+    // aufgerufen werden, damit die Einstellungen unter macOS korrekt übernommen werden.
+    // Hinweis: Der App Name bleibt trotz Aktualisierungen nach dem ersten Gui()-Konstruktor Aufruf unverändert.
+    public static void initSystemProperties() {
+        // macOS Eigenschaften
+        if (operationSystem.isMacOS()) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+            System.setProperty("apple.awt.application.name", getWord("app.name"));
+        }
+
+        // App-Icon (plattformübergreifend) setzen
+        if (Taskbar.isTaskbarSupported()) {
+            try {
+                Taskbar.getTaskbar().setIconImage(Icons.APP_IMAGE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        // TODO: name setzen über taskbar app
+    }
+
+    public static void initMacOS(Gui gui) {
+        if (gui == null) return;
+        if (!operationSystem.isMacOS() || !Desktop.isDesktopSupported()) return;
+        Desktop desktop = Desktop.getDesktop();
+
+        // Behandelt den Menüeintrag "Über 4D Viewer"
+        if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
+            desktop.setAboutHandler(e ->
+                    JOptionPane.showMessageDialog(null,
+                            "4D Viewer v2.1\nErstellt von Oliver Kaiser",
+                            "Über 4D Viewer",
+                            JOptionPane.INFORMATION_MESSAGE)
+            );
+        }
+
+        // TODO: Füge einen Shortcut hinzu.
+        // TODO: Entferne das passende MenuItem Einstellungen, falls OS = macOS...
+        // Behandelt den Menüeintrag "Einstellungen"
+        if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
+            desktop.setPreferencesHandler(e ->
+                    System.out.println("Preferences Apple")
+            );
+        }
+
+        // Behandelt den Shortcut: Cmd+Q (Überschreibt den Quit-Handler)
+        if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
+            desktop.setQuitHandler((QuitEvent e, QuitResponse response) -> {
+                response.cancelQuit();
+                gui.confirmExitApp();
+            });
+        }
+    }
+
     public static Color getBorderColor() {
         return borderColor;
+    }
+
+    public static Color getBackgroundColor() {
+        return backgroundColor;
     }
 
     public static void decreaseFont(Gui gui) {
@@ -138,27 +195,24 @@ public final class GuiUtils {
 
     public static void setTheme(Gui gui, Theme theme) {
         Theme currentTheme = settings.getTheme();
-        if(currentTheme == theme) return;
+        if (currentTheme == theme) return;
         settings.setTheme(theme);
         logger.info("Changing Theme from '" + currentTheme + "' to '" + settings.getTheme() + "'.");
 
         // Update UI
-        initFlatLaf();
+        updateFlatLaf();
         FlatLaf.updateUI();
         gui.updateTheme();
     }
 
     public static void setLanguage(Gui gui, Language language) {
         Language currentLanguage = settings.getLanguage();
-        if(currentLanguage == language) return;
+        if (currentLanguage == language) return;
 
         settings.setLanguage(language);
         logger.info("Changing Language from '" + language + "' to '" + settings.getLanguage() + "'.");
-
-
         gui.rebuild();
     }
-
 
 
     public static Graphics2D createHighQualityGraphics2D(Graphics g) {

@@ -90,22 +90,15 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.putClientProperty("FileChooser.readOnly", Boolean.TRUE);
-        fileChooser.setAcceptAllFileFilterUsed(false); // TODO: Prüfe, ob man das weglassen kann (richtige Reihenfolge?)
+
+        // Dialogtitel setzen
         setFileChooserTitel(fileChooser);
 
-        // FileNameExtensionFilter hinzufügen
-        for (ImageFileType type : ImageFileType.sortedValues()) {
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    type.getFullDescription(),
-                    type.getExtensions()
-            );
-            fileChooser.addChoosableFileFilter(filter);
+        // Filter setzen
+        setFileChooserFilter(fileChooser);
 
-            // Standardfilter auswählen
-            if (type == workspace.getConfig().getImageFileType()) {
-                fileChooser.setFileFilter(filter);
-            }
-        }
+        // Inhalt hinzufügen (Zeit-Trenner, Ebenen-Trenner)
+        addFileChooserContent(fileChooser);
         return fileChooser;
     }
 
@@ -121,6 +114,40 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
                 fileChooser.setDialogTitle(newTitle);
             }
         });
+    }
+
+    private void setFileChooserFilter(JFileChooser fileChooser) {
+        fileChooser.setAcceptAllFileFilterUsed(false);
+
+        for (ImageFileType type : ImageFileType.sortedValues()) {
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    type.getFullDescription(),
+                    type.getExtensions()
+            );
+            fileChooser.addChoosableFileFilter(filter);
+
+            // Standardfilter auswählen
+            if (type == workspace.getConfig().getImageFileType()) {
+                fileChooser.setFileFilter(filter);
+            }
+        }
+    }
+
+    private void addFileChooserContent(JFileChooser fileChooser) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(0, 10, 0, 0),
+                BorderFactory.createLineBorder(GuiUtils.getBorderColor())
+        ));
+
+        // contentPanel
+        JPanel contentPanel = new JPanel();
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        contentPanel.setBackground(GuiUtils.getBackgroundColor());
+
+        // contentPanel hinzufügen
+        panel.add(contentPanel, BorderLayout.CENTER);
+        fileChooser.setAccessory(panel);
     }
 
     private ImageFileType getSelectedImageFileType(FileNameExtensionFilter filter) {

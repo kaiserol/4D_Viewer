@@ -7,14 +7,13 @@ import de.uzk.gui.tabs.TabNavigate;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 import java.awt.*;
 
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class AreaTabs extends AreaContainerInteractive<JPanel>  {
+public class AreaTabs extends AreaContainerInteractive<JPanel> {
     private final ActionHandler actionHandler;
+    private JTabbedPane tabbedPane;
 
     public AreaTabs(Gui gui, ActionHandler actionHandler) {
         super(new JPanel(), gui);
@@ -26,29 +25,33 @@ public class AreaTabs extends AreaContainerInteractive<JPanel>  {
         this.container.setLayout(new BorderLayout());
         this.container.setMinimumSize(new Dimension(0, 0));
 
-        // Tabs hinzufügen (Erzwingt Fokus nach Tab-Wechsel)
-        JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-        tabbedPane.addChangeListener(e -> tabbedPane.requestFocusInWindow());
+        // Tabs hinzufügen
+        this.tabbedPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+        this.tabbedPane.add(getWord("items.edit"), new TabEdit(this.gui, this.actionHandler).getContainer());
+        this.tabbedPane.add(getWord("items.nav"), new TabNavigate(this.gui, this.actionHandler).getContainer());
+        this.tabbedPane.add(getWord("items.markers"), new TabMarkers(this.gui).getContainer());
 
-        Border border = new EmptyBorder(10, 10, 10, 10);
-
-        TabEdit tabEdit = new TabEdit(this.gui, this.actionHandler);
-        tabEdit.getContainer().setBorder(border);
-        tabbedPane.add(getWord("items.edit"), tabEdit.getContainer());
-
-        TabNavigate tabNavigate = new TabNavigate(this.gui, this.actionHandler);
-        tabNavigate.getContainer().setBorder(border);
-        tabbedPane.add(getWord("items.nav"), tabNavigate.getContainer());
-
-        TabMarkers tabMarkers = new TabMarkers(this.gui);
-        tabNavigate.getContainer().setBorder(border);
-        tabbedPane.add(getWord("items.markers"), tabMarkers.getContainer());
-
-        this.container.add(tabbedPane, BorderLayout.CENTER);
+        // Erzwingt Fokus nach Tab-Wechsel
+        this.tabbedPane.addChangeListener(e -> this.tabbedPane.requestFocusInWindow());
+        this.container.add(this.tabbedPane, BorderLayout.CENTER);
     }
 
     @Override
     public void updateTheme() {
-        this.container.setBorder(new MatteBorder(1, 1, 1, 1, GuiUtils.getBorderColor()));
+        Border emptyBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+        Color borderColor = GuiUtils.getBorderColor();
+        Color backgroundColor = GuiUtils.getBackgroundColor();
+
+        // TabbedPane Farbe aktualisieren
+        this.container.setBorder(BorderFactory.createLineBorder(borderColor));
+        this.container.setBackground(backgroundColor);
+
+        // Tabs Panels Farben aktualisieren
+        for (int i = 0; i < this.tabbedPane.getTabCount(); i++) {
+            if (this.tabbedPane.getComponentAt(i) instanceof JPanel panel) {
+                panel.setBorder(emptyBorder);
+                panel.setBackground(backgroundColor);
+            }
+        }
     }
 }

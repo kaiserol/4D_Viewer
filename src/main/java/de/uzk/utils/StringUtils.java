@@ -77,7 +77,8 @@ public final class StringUtils {
      * @throws IllegalArgumentException wenn der Prozentwert außerhalb des gültigen Bereichs liegt
      */
     public static String applyFontSize(String text, int percentage) {
-        if (percentage < 0 || percentage > 500) throw new IllegalArgumentException("Percentage must be between 0 and 500");
+        if (percentage < 0 || percentage > 500)
+            throw new IllegalArgumentException("Percentage must be between 0 and 500");
         String fontSizeString = (percentage / 100.0) + "em";
         return "<span style='font-size: %s;'>".formatted(fontSizeString) + text + "</span>";
     }
@@ -97,10 +98,16 @@ public final class StringUtils {
     }
 
     /**
-     * Zentriert den Text.
+     * Richtet den angegebenen Text aus, indem er in ein formatiertes HTML-Element <div> eingeschlossen wird.
+     * Die Ausrichtung und die maximale Breite des Elements werden als Parameter angegeben.
+     *
+     * @param text     Der auszurichtende Text
+     * @param align    Der Ausrichtungsstil (z. B. „left“, „center“, „right“, „justify“)
+     * @param maxWidth Die maximale Breite des Elements in Pixeln
+     * @return Eine formatierte HTML-Zeichenfolge, die den ausgerichteten Text enthält
      */
-    public static String wrapCenter(String text) {
-        return "<center>" + text + "</center>";
+    public static String alignText(String text, String align, int maxWidth) {
+        return "<div style=\"text-align: %s; width: %d; word-wrap: break-word;\">".formatted(align, maxWidth) + text + "</div>";
     }
 
     /**
@@ -135,19 +142,25 @@ public final class StringUtils {
     }
 
     /**
-     * Wandelt eine AWT-Farbe in einen Hexadezimal-String um (#RRGGBB).
+     * Wandelt eine AWT-Farbe in einen Hexadezimal-String um (#RRGGBB bzw. #AARRGGBB, wenn Alpha != 255).
      *
      * @param color zu konvertierende Farbe
-     * @return Hexadezimalwert als String (z. B. "#FF00FF")
+     * @return Hexadezimalwert als String (z. B. "#FF00FF" oder "#80FF00FF" mit Alpha)
      */
     public static String colorToHex(Color color) {
         if (color == null) return "#000000";
 
-        int r = color.getRed();
-        int g = color.getGreen();
-        int b = color.getBlue();
-        int rgb = (r << 16) | (g << 8) | b;
+        int red = color.getRed();
+        int green = color.getGreen();
+        int blue = color.getBlue();
+        int alpha = color.getAlpha();
 
+        if (alpha != 255) {
+            int rgba = (red << 24) | (green << 16) | (blue << 8) | alpha;
+            return String.format("#%08X", rgba);
+        }
+
+        int rgb = (red << 16) | (green << 8) | blue;
         return String.format("#%06X", rgb);
     }
 }

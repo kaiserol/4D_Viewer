@@ -10,14 +10,13 @@ import javax.swing.*;
 import java.awt.*;
 
 import static de.uzk.Main.settings;
-import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogSettings {
-    private boolean oldConfirmExit;
-    private JCheckBox checkBox;
     private JComboBox<Language> selectLanguage;
     private JComboBox<Theme> selectTheme;
+    private boolean oldConfirmExit;
+    private JCheckBox checkBox;
     private JTextField timeSeparator;
     private JTextField levelSeparator;
 
@@ -30,7 +29,7 @@ public class DialogSettings {
         int option = JOptionPane.showConfirmDialog(
                 gui.getContainer(),
                 createSettingsPanel(),
-                getWord("dialog.settings.title"),
+                getWord("dialog.settings"),
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE
         );

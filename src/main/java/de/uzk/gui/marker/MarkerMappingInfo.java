@@ -2,6 +2,7 @@ package de.uzk.gui.marker;
 
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
+import de.uzk.gui.GuiUtils;
 import de.uzk.gui.OGridBagConstraints;
 import de.uzk.image.Axis;
 import de.uzk.markers.Marker;
@@ -30,7 +31,7 @@ public class MarkerMappingInfo extends JPanel {
         this.setPreferredSize(new Dimension(150, 100));
         this.setMinimumSize(new Dimension(150, 100));
         this.setMaximumSize(new Dimension(500, 100));
-        this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        this.setBorder(BorderFactory.createLineBorder(GuiUtils.getBorderColor()));
         this.setLayout(new GridBagLayout());
         OGridBagConstraints c = new OGridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;

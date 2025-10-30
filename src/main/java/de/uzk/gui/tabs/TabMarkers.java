@@ -51,7 +51,6 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
 
             for (MarkerMapping currentMarker : currentMarkers) {
                 JPanel next = new MarkerMappingInfo(currentMarker, this.gui);
-                next.setBorder(BorderFactory.createEmptyBorder());
                 panel.add(next);
             }
             this.container.add(panel, BorderLayout.CENTER);

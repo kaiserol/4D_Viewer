@@ -7,7 +7,6 @@ import de.uzk.markers.MarkerMapping;
 import de.uzk.utils.ScreenshotHelper;
 
 import javax.swing.*;
-import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -88,9 +87,9 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
 
     // Färbt den Rahmen bei Fokus
     private void setFocusBorder(boolean focus) {
-        Color color = focus ? GuiUtils.COLOR_BLUE : GuiUtils.getBorderColor();
-        this.container.setBorder(new MatteBorder(1, 1, 1, 1, color));
-        this.panelView.setBorder(new MatteBorder(1, 0, 0, 0, color));
+        Color borderColor = focus ? GuiUtils.COLOR_BLUE : GuiUtils.getBorderColor();
+        this.container.setBorder(BorderFactory.createLineBorder(borderColor));
+        this.panelView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
     }
 
     // Erstellt das Panel mit Bildanzeige
@@ -206,6 +205,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     @Override
     public void updateTheme() {
         setFocusBorder(this.container.isFocusOwner());
+        this.panelImage.setBackground(GuiUtils.getBackgroundColor());
     }
 
     // ==========================================================
