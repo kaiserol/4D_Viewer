@@ -1,5 +1,6 @@
 package de.uzk.gui.marker;
 
+import de.uzk.gui.GuiUtils;
 import de.uzk.markers.MarkerShape;
 
 import javax.swing.*;
@@ -20,7 +21,7 @@ public class GenericMarkerPreview extends JComponent implements MouseListener {
         this.addMouseListener(this);
         this.markerShape = markerShape;
         this.markerColor = markerColor;
-        this.setToolTipText(getWord("items.markers.tooltipEditMarker"));
+        GuiUtils.setToolTipText(this, getWord("items.markers.tooltipEditMarker"));
     }
 
     @Override

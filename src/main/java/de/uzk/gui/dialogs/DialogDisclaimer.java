@@ -118,11 +118,11 @@ public class DialogDisclaimer {
 
     private SelectableText getSubTitle(String title) {
         String htmlContent = StringUtils.applyDivAlignment(StringUtils.applyFontSize(title, 125), "center", MAX_WIDTH);
-        SelectableText text = new SelectableText(StringUtils.wrapHtml(htmlContent));
-        text.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        text.setOpaque(true);
-        text.setBackground(GuiUtils.COLOR_BLUE);
-        text.setForeground(Color.WHITE);
-        return text;
+        SelectableText subTitleText = new SelectableText(StringUtils.wrapHtml(htmlContent));
+        subTitleText.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        subTitleText.setOpaque(true);
+        subTitleText.setBackground(GuiUtils.COLOR_BLUE);
+        subTitleText.setForeground(Color.WHITE);
+        return subTitleText;
     }
 }

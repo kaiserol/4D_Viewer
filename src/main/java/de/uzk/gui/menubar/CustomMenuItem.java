@@ -3,6 +3,7 @@ package de.uzk.gui.menubar;
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
 import de.uzk.action.Shortcut;
+import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -79,7 +80,7 @@ public final class CustomMenuItem extends CustomMenuBarNode {
             }
         } else {
             // 6. Optional: Tooltip mit Shortcut-Anzeige
-            menuItem.setToolTipText(primaryShortcut.toString());
+            GuiUtils.setToolTipText(menuItem, primaryShortcut.toString());
         }
     }
 }

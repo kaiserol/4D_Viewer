@@ -52,25 +52,8 @@ public class Shortcut {
     }
 
     public String getKeyText() {
-        List<String> keyCharList = new ArrayList<>();
-
         // 1. Add Modifiers (in logical order)
-        if ((modifiers & InputEvent.META_DOWN_MASK) != 0)
-            keyCharList.add(Toolkit.getProperty("AWT.meta", "Meta"));
-        if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0)
-            keyCharList.add(Toolkit.getProperty("AWT.control", "Ctrl"));
-        if ((modifiers & ALT_DOWN) != 0)
-            keyCharList.add(Toolkit.getProperty("AWT.alt", "Alt"));
-        if ((modifiers & ALT_GRAPH_DOWN) != 0)
-            keyCharList.add(Toolkit.getProperty("AWT.altGraph", "Alt Graph"));
-        if ((modifiers & SHIFT_DOWN) != 0)
-            keyCharList.add(Toolkit.getProperty("AWT.shift", "Shift"));
-        if ((modifiers & BUTTON1_DOWN) != 0)
-            keyCharList.add(Toolkit.getProperty("AWT.button1", "Button 1"));
-        if ((modifiers & BUTTON2_DOWN) != 0)
-            keyCharList.add(Toolkit.getProperty("AWT.button2", "Button 2"));
-        if ((modifiers & BUTTON3_DOWN) != 0)
-            keyCharList.add(Toolkit.getProperty("AWT.button3", "Button 3"));
+        List<String> keyCharList = getModifiersList(modifiers);
 
         // 2. Add Keycode (if not modifier)
         String keyText = KeyEvent.getKeyText(extendedKeyCode);
@@ -83,6 +66,29 @@ public class Shortcut {
         }
 
         return String.join("+", keyCharList);
+    }
+
+    public static List<String> getModifiersList(int modifiersEx) {
+        List<String> keyCharList = new ArrayList<>();
+
+        if ((modifiersEx & InputEvent.META_DOWN_MASK) != 0)
+            keyCharList.add(Toolkit.getProperty("AWT.meta", "Meta"));
+        if ((modifiersEx & InputEvent.CTRL_DOWN_MASK) != 0)
+            keyCharList.add(Toolkit.getProperty("AWT.control", "Ctrl"));
+        if ((modifiersEx & ALT_DOWN) != 0)
+            keyCharList.add(Toolkit.getProperty("AWT.alt", "Alt"));
+        if ((modifiersEx & ALT_GRAPH_DOWN) != 0)
+            keyCharList.add(Toolkit.getProperty("AWT.altGraph", "Alt Graph"));
+        if ((modifiersEx & SHIFT_DOWN) != 0)
+            keyCharList.add(Toolkit.getProperty("AWT.shift", "Shift"));
+        if ((modifiersEx & BUTTON1_DOWN) != 0)
+            keyCharList.add(Toolkit.getProperty("AWT.button1", "Button 1"));
+        if ((modifiersEx & BUTTON2_DOWN) != 0)
+            keyCharList.add(Toolkit.getProperty("AWT.button2", "Button 2"));
+        if ((modifiersEx & BUTTON3_DOWN) != 0)
+            keyCharList.add(Toolkit.getProperty("AWT.button3", "Button 3"));
+
+        return keyCharList;
     }
 
     @Override

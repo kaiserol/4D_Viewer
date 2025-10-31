@@ -1,16 +1,26 @@
 package de.uzk.gui;
 
 import de.uzk.action.Shortcut;
+import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.Element;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.StyleSheet;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+
+import static de.uzk.Main.logger;
+import static de.uzk.config.LanguageHandler.getWord;
+import static javax.swing.event.HyperlinkEvent.EventType.*;
 
 /**
  * {@code SelectableText} ist eine spezialisierte {@link JEditorPane}-Komponente,
@@ -22,10 +32,11 @@ import java.awt.event.MouseMotionAdapter;
  *   <li>Wenn sich die Maus über einem Hyperlink befindet und die Command- (bzw. Ctrl-)Taste gedrückt ist,
  *       erscheint der Hand-Cursor (Pointer).</li>
  *   <li>Beim Klicken auf einen Link wird der Standardbrowser über {@link GuiUtils#openWebLink(java.net.URL)} geöffnet.</li>
- *   <li>Zeigt einen Tooltip („Open in browser…“), wenn sich die Maus über einem Link befindet und Command gedrückt ist.</li>
+ *   <li>Zeigt einen Tooltip („Open in browser…“), wenn sich die Maus über einem Link befindet.</li>
  * </ul>
  */
 public class SelectableText extends JEditorPane implements HyperlinkListener {
+
     /**
      * true, wenn die Command-/Strg-Taste aktuell gedrückt ist
      */
@@ -37,31 +48,62 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     private boolean overLink = false;
 
     /**
+     * Referenz auf das zuletzt betretene Link-Element (für Styling)
+     */
+    private Element currentLinkElement = null;
+
+    /**
+     * Merkt sich den aktuellen Cursor-/Tooltip-Zustand, um unnötige Updates zu vermeiden
+     */
+    private CursorMode currentCursorMode = CursorMode.TEXT;
+
+    /**
+     * Farbe, die einen aktiven Hyperlink darstellt
+     */
+    private static final Color COLOR_ACTIVE_LINK = GuiUtils.COLOR_BLUE;
+
+    /**
+     * Mögliche Cursor-/Tooltip-Zustände
+     */
+    private enum CursorMode {
+        TEXT,
+        LINK_HOVER,
+        LINK_CTRL_HOVER
+    }
+
+    /**
      * Erstellt eine neue {@code SelectableText}-Instanz mit gegebenem HTML-Inhalt.
      *
-     * @param htmlContent HTML-Text, der in der Komponente angezeigt werden soll.
+     * @param htmlContent HTML-Text, der angezeigt werden soll.
      */
     public SelectableText(String htmlContent) {
-        setEditable(false);
-        setOpaque(false);
         setContentType("text/html");
         setText(htmlContent);
-
-        // Standardcursor: Textcursor
-        setTextCursor();
+        setEditable(false);
+        setOpaque(false);
 
         // Unsichtbares Caret (kein blinkender Balken)
         setCaret(new NoBlinkCaret());
+        setTextCursor();
 
-        // Maus-Events
+        // Maus- & Hyperlink-Events
         addMouseListener(new MouseCaretListener());
         addMouseMotionListener(new MouseMotionCaretListener());
-
-        // Hyperlink-Events
         addHyperlinkListener(this);
 
         // Globale Tastaturüberwachung aktivieren
         setupGlobalKeyListener();
+
+        // Standard-Link-Styling auf neutral (schwarz) setzen
+        SwingUtilities.invokeLater(() -> {
+            if (getDocument() instanceof HTMLDocument htmlDoc) {
+                StyleSheet styleSheet = htmlDoc.getStyleSheet();
+                String hexDefaultColor = StringUtils.colorToHex(GuiUtils.getTextColor());
+                styleSheet.addRule(String.format("a { color: %s; }", hexDefaultColor));
+                styleSheet.addRule(String.format("a:visited { color: %s; }", hexDefaultColor));
+                styleSheet.addRule(String.format("a:hover { color: %s; }", hexDefaultColor));
+            }
+        });
     }
 
     // ==========================================================
@@ -69,7 +111,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     // ==========================================================
 
     /**
-     * Caret-Implementierung, die nicht blinkt und unsichtbar ist.
+     * Unsichtbares, nicht blinkendes Caret
      */
     private static class NoBlinkCaret extends DefaultCaret {
         public NoBlinkCaret() {
@@ -83,22 +125,24 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     }
 
     /**
-     * Listener, der den Cursor setzt, wenn die Maus das Feld betritt oder verlässt.
+     * Listener, der Cursor bei Eintritt/Austritt aus der Komponente anpasst
      */
     private class MouseCaretListener extends MouseAdapter {
         @Override
         public void mouseEntered(MouseEvent e) {
-            setTextCursor();
+            updateCursor();
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-            setCursor(Cursor.getDefaultCursor());
+            overLink = false;
+            updateCursor();
+            currentLinkElement = null;
         }
     }
 
     /**
-     * Listener, der Mausbewegungen überwacht und den Cursor dynamisch anpasst.
+     * Listener, der Cursor bei Mausbewegungen aktualisiert
      */
     private class MouseMotionCaretListener extends MouseMotionAdapter {
         @Override
@@ -116,73 +160,136 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      */
     @Override
     public void hyperlinkUpdate(HyperlinkEvent e) {
-        if (e.getEventType() == HyperlinkEvent.EventType.ENTERED) {
+        if (e.getEventType().equals(ENTERED)) {
             overLink = true;
+            currentLinkElement = e.getSourceElement();
             updateCursor();
-        } else if (e.getEventType() == HyperlinkEvent.EventType.EXITED) {
+        } else if (e.getEventType().equals(EXITED)) {
             overLink = false;
             updateCursor();
-        } else if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-            if (commandPressed) GuiUtils.openWebLink(e.getURL());
+            currentLinkElement = null;
+        } else if (e.getEventType().equals(ACTIVATED)) {
+            updateCursor();
+            if (commandPressed) {
+                GuiUtils.openWebLink(e.getURL());
+            }
         }
     }
 
     // ==========================================================
-    // Globale Tastaturüberwachung
+    // Tastaturüberwachung
     // ==========================================================
 
     /**
-     * Registriert einen globalen KeyEventDispatcher, der Command/Ctrl-Status systemweit überwacht.
+     * Überwacht systemweit, ob Ctrl/Command gedrückt ist
      */
     private void setupGlobalKeyListener() {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
             boolean oldValue = commandPressed;
-            int mask = Shortcut.CTRL_DOWN;
 
-            if (e.getID() == KeyEvent.KEY_PRESSED) {
-                if ((e.getModifiersEx() & mask) != 0) {
-                    commandPressed = true;
-                }
-            } else if (e.getID() == KeyEvent.KEY_RELEASED) {
-                commandPressed = (e.getModifiersEx() & mask) != 0;
+            if (e.getID() == KeyEvent.KEY_PRESSED || e.getID() == KeyEvent.KEY_RELEASED) {
+                commandPressed = (e.getModifiersEx() & Shortcut.CTRL_DOWN) != 0;
             }
 
-            // Falls sich der Status geändert hat → Cursor aktualisieren
+            // Nur bei Änderung aktualisieren
             if (commandPressed != oldValue) {
                 SwingUtilities.invokeLater(this::updateCursor);
             }
+
             return false;
         });
     }
 
     // ==========================================================
-    // Hilfsfunktionen
+    // Cursor- und Tooltip-Logik
     // ==========================================================
 
     /**
-     * Setzt den Textcursor (I-Beam).
+     * Aktualisiert Cursor, Tooltip und ggf. Link-Farbe nur, wenn sich der Zustand tatsächlich ändert.
+     */
+    private void updateCursor() {
+        CursorMode newMode;
+        if (overLink && commandPressed) {
+            newMode = CursorMode.LINK_CTRL_HOVER;
+        } else if (overLink) {
+            newMode = CursorMode.LINK_HOVER;
+        } else {
+            newMode = CursorMode.TEXT;
+        }
+
+        // Nur wenn sich der Zustand ändert
+        if (newMode != currentCursorMode) {
+            currentCursorMode = newMode;
+
+            SwingUtilities.invokeLater(() -> {
+                switch (newMode) {
+                    case LINK_CTRL_HOVER -> {
+                        applyLinkHoverStyle(true);
+                        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                        GuiUtils.setToolTipText(this, getWord("tooltip.openInBrowser"));
+                    }
+                    case LINK_HOVER -> {
+                        applyLinkHoverStyle(false);
+                        setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+
+                        String tooltipText = String.format("%s (%s %s)",
+                                getWord("tooltip.openInBrowser"),
+                                Shortcut.getModifiersList(Shortcut.CTRL_DOWN).get(0),
+                                getWord("tooltip.click")
+                        );
+                        GuiUtils.setToolTipText(this, tooltipText);
+                    }
+                    default -> {
+                        applyLinkHoverStyle(false);
+                        setTextCursor();
+                    }
+                }
+            });
+        }
+    }
+
+    // ==========================================================
+    // HTML Styling
+    // ==========================================================
+
+    /**
+     * Färbt den Hyperlink nur dann ein, wenn Command/Ctrl gedrückt ist.
+     *
+     * @param active true, wenn Link aktiv ist, sonst false
+     */
+    private void applyLinkHoverStyle(boolean active) {
+        if (currentLinkElement == null) return;
+
+        try {
+            if (!(getDocument() instanceof HTMLDocument htmlDoc)) return;
+
+            int start = currentLinkElement.getStartOffset();
+            int end = currentLinkElement.getEndOffset();
+            int length = Math.max(0, end - start);
+
+            SimpleAttributeSet set = new SimpleAttributeSet();
+            Color color = active ? COLOR_ACTIVE_LINK : GuiUtils.getTextColor();
+            StyleConstants.setForeground(set, color);
+
+            // Farbe nur ändern, wenn wirklich sichtbar (EDT!)
+            SwingUtilities.invokeLater(() ->
+                    htmlDoc.setCharacterAttributes(start, length, set, false)
+            );
+
+        } catch (Exception e) {
+            logger.error("Failed to apply link hover style: " + (active ? "active" : "inactive"));
+        }
+    }
+
+    // ==========================================================
+    // Hilfsmethoden
+    // ==========================================================
+
+    /**
+     * Setzt Standard-Textcursor und entfernt Tooltip
      */
     private void setTextCursor() {
         setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-        setToolTipText(null);
-    }
-
-    /**
-     * Setzt den Handcursor (Pointer).
-     */
-    private void setHandCursor() {
-        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        setToolTipText("Open in browser…");
-    }
-
-    /**
-     * Aktualisiert Cursor und Tooltip basierend auf aktuellem Zustand.
-     */
-    private void updateCursor() {
-        if (overLink && commandPressed) {
-            setHandCursor();
-        } else {
-            setTextCursor();
-        }
+        GuiUtils.setToolTipText(this, null);
     }
 }

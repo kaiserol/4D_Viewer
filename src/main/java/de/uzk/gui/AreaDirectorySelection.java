@@ -29,7 +29,7 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         // clearImagesButton
         this.clearImagesButton = new JButton(Icons.ICON_DELETE);
         this.clearImagesButton.addActionListener(a -> clearImages());
-        this.clearImagesButton.setToolTipText(getWord("tooltips.clearImages"));
+        GuiUtils.setToolTipText(this.clearImagesButton, getWord("tooltip.clearImages"));
         this.container.add(this.clearImagesButton, BorderLayout.WEST);
 
         // txtFieldDirectory

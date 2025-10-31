@@ -2,6 +2,7 @@ package de.uzk.utils;
 
 import de.uzk.gui.GuiUtils;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
@@ -164,8 +165,6 @@ public final class StringUtils {
      * <ul>
      *   <li>Verwendet die angegebene Schriftart für den gesamten Text.</li>
      *   <li>Reduziert Abstände bei &lt;pre&gt;-Elementen.</li>
-     *   <li>Setzt Standard-Farbe (schwarz) und Hover-Farbe
-     *       ({@link GuiUtils#COLOR_BLUE}) für Links.</li>
      * </ul>
      *
      * @param htmlContent der eigentliche HTML-Inhalt
@@ -176,9 +175,7 @@ public final class StringUtils {
         String style = String.format("""
                 body { font-family: %s; }
                 pre { margin: 5px 0; }
-                a { color: %s; }
-                a:hover { color: %s; }
-                """, fontName, colorToHex(Color.BLACK), colorToHex(GuiUtils.COLOR_BLUE));
+                """, fontName);
 
         return "<html><head><style>" + style + "</style></head><body>" + htmlContent + "</body></html>";
     }

@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.net.URL;
@@ -30,6 +31,7 @@ public final class GuiUtils {
     public static final Color COLOR_DARK_RED = new Color(148, 0, 0);
 
     // GUI-Elemente
+    private static Color textColor;
     private static Color borderColor;
     private static Color backgroundColor;
     private static Font font;
@@ -49,6 +51,7 @@ public final class GuiUtils {
         FlatLaf.setup(settings.getTheme().isLight() ? getLightMode() : getDarkMode());
 
         // Farben Eigenschaften
+        textColor = UIManager.getColor("Label.foreground");
         borderColor = UIManager.getColor("Component.borderColor");
         backgroundColor = UIManager.getColor("TextArea.background");
 
@@ -106,6 +109,10 @@ public final class GuiUtils {
         UIManager.put("OptionPane.showIcon", true);
         UIManager.put("Dialog.showIcon", true);
         Icons.updateSVGIcons();
+    }
+
+    public static Color getTextColor() {
+        return textColor;
     }
 
     public static Color getBorderColor() {
@@ -180,8 +187,29 @@ public final class GuiUtils {
 
         try {
             desktop.browse(url.toURI());
-        } catch (Exception ex) {
+        } catch (Exception e) {
             logger.error("Unable to open link: " + url);
+        }
+    }
+
+    public static void setToolTipText(JComponent component, String text) {
+        if (component == null) return;
+        component.setToolTipText(text);
+
+        Point mouse = component.getMousePosition();
+        if (mouse != null) {
+            // Swing-Tooltip neu initialisieren
+            MouseEvent mouseEvent = new MouseEvent(
+                    component,
+                    MouseEvent.MOUSE_MOVED,
+                    System.currentTimeMillis(),
+                    0,
+                    mouse.x,
+                    mouse.y,
+                    0,
+                    false
+            );
+            ToolTipManager.sharedInstance().mouseMoved(mouseEvent);
         }
     }
 
@@ -248,7 +276,8 @@ public final class GuiUtils {
         return getRotatedImage(mirrored, workspace.getConfig().getRotation(), imageType);
     }
 
-    private static BufferedImage getMirroredImage(BufferedImage image, boolean mirrorX, boolean mirrorY, int imageType) {
+    private static BufferedImage getMirroredImage(BufferedImage image, boolean mirrorX, boolean mirrorY,
+                                                  int imageType) {
         if (!mirrorX && !mirrorY) return image;
 
         int width = image.getWidth();
