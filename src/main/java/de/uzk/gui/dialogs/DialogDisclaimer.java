@@ -55,7 +55,7 @@ public class DialogDisclaimer {
         int row = 0;
 
         // Untertitel hinzufügen
-        panel.add(getSubtitelLabel(getWord("dialog.disclaimer.subtitle-1")), gbc);
+        panel.add(getSubTitle(getWord("dialog.disclaimer.subtitle-1")), gbc);
 
         row++;
         gbc.gridwidth = 1;
@@ -88,7 +88,7 @@ public class DialogDisclaimer {
         JPanel panel = new JPanel(new BorderLayout(0, 10));
 
         // Untertitel hinzufügen
-        panel.add(getSubtitelLabel(getWord("dialog.disclaimer.subtitle-2")), BorderLayout.NORTH);
+        panel.add(getSubTitle(getWord("dialog.disclaimer.subtitle-2")), BorderLayout.NORTH);
 
         // Disclaimer Text hinzufügen
         SelectableText disclaimerText = new SelectableText(StringUtils.formatInputToHTML(getWord("dialog.disclaimer.text"), "justify", MAX_WIDTH));
@@ -116,13 +116,13 @@ public class DialogDisclaimer {
         panel.add(new JLabel(labelValueText), gbc);
     }
 
-    private JLabel getSubtitelLabel(String text) {
-        JLabel label = new JLabel(StringUtils.wrapHtml(StringUtils.applyAlignment(StringUtils.applyFontSize(
-                text, 125), "center", MAX_WIDTH)));
-        label.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
-        label.setOpaque(true);
-        label.setBackground(GuiUtils.COLOR_BLUE);
-        label.setForeground(Color.WHITE);
-        return label;
+    private SelectableText getSubTitle(String title) {
+        String htmlContent = StringUtils.applyDivAlignment(StringUtils.applyFontSize(title, 125), "center", MAX_WIDTH);
+        SelectableText text = new SelectableText(StringUtils.wrapHtml(htmlContent));
+        text.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
+        text.setOpaque(true);
+        text.setBackground(GuiUtils.COLOR_BLUE);
+        text.setForeground(Color.WHITE);
+        return text;
     }
 }

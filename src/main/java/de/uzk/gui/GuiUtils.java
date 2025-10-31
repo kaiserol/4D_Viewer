@@ -47,8 +47,14 @@ public final class GuiUtils {
 
     public static void updateFlatLaf() {
         FlatLaf.setup(settings.getTheme().isLight() ? getLightMode() : getDarkMode());
+
+        // Farben Eigenschaften
         borderColor = UIManager.getColor("Component.borderColor");
         backgroundColor = UIManager.getColor("TextArea.background");
+
+        // Schriftart Eigenschaft
+        font = UIManager.getFont("defaultFont");
+        updateFontSize(settings.getFontSize());
 
         // Titelleiste auf FlatLaf-Dekoration umstellen
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -100,10 +106,18 @@ public final class GuiUtils {
         UIManager.put("OptionPane.showIcon", true);
         UIManager.put("Dialog.showIcon", true);
         Icons.updateSVGIcons();
+    }
 
-        // Font Eigenschaften
-        font = UIManager.getFont("defaultFont");
-        updateFontSize(settings.getFontSize());
+    public static Color getBorderColor() {
+        return borderColor;
+    }
+
+    public static Color getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public static String getFontName() {
+        return font.getName();
     }
 
     // Diese Methode sollte nur einmal zu Beginn der Anwendung
@@ -160,12 +174,15 @@ public final class GuiUtils {
         }
     }
 
-    public static Color getBorderColor() {
-        return borderColor;
-    }
+    public static void openWebLink(URL url) {
+        if (!Desktop.isDesktopSupported()) return;
+        Desktop desktop = Desktop.getDesktop();
 
-    public static Color getBackgroundColor() {
-        return backgroundColor;
+        try {
+            desktop.browse(url.toURI());
+        } catch (Exception ex) {
+            logger.error("Unable to open link: " + url);
+        }
     }
 
     public static void decreaseFont(Gui gui) {
@@ -214,18 +231,6 @@ public final class GuiUtils {
         logger.info("Changing Language from '" + language + "' to '" + settings.getLanguage() + "'.");
         gui.rebuild();
     }
-
-    public static void openWebLink(URL url) {
-        if (!Desktop.isDesktopSupported()) return;
-        Desktop desktop = Desktop.getDesktop();
-
-        try {
-            desktop.browse(url.toURI());
-        } catch (Exception ex) {
-            logger.error("Unable to open link: " + url);
-        }
-    }
-
 
     public static Graphics2D createHighQualityGraphics2D(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;

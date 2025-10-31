@@ -101,27 +101,26 @@ public class DialogLogViewer {
         for (LogEntry logEntry : logger.getLogs()) {
             logContent.append(logEntry.getFormattedText(true));
         }
-        return getEditorPane(StringUtils.wrapHtmlDocument(logContent.toString()));
+        return getScrollableTextArea(StringUtils.wrapHtml(logContent.toString(), "monospaced"));
     }
 
     private JComponent getMissingImagesPanel() {
         String missingImages = StringUtils.wrapPre(workspace.getMissingImages());
-        return getEditorPane(StringUtils.wrapHtmlDocument(missingImages));
+        return getScrollableTextArea(StringUtils.wrapHtml(missingImages, "monospaced"));
     }
 
     // ==========================================================
     // Hilfsfunktionen
     // ==========================================================
-    private JComponent getEditorPane(String htmlContent) {
+    private JComponent getScrollableTextArea(String htmlContent) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
-        // Editor erstellen
-        SelectableText editor = new SelectableText(htmlContent);
-        editor.setMargin(new Insets(5, 5, 5, 5));
+        // Text in ScrollPane packen
+        SelectableText text = new SelectableText(htmlContent);
+        text.setMargin(new Insets(5, 5, 5, 5));
 
-        // Editor in ScrollPane packen
-        JScrollPane scrollPane = new JScrollPane(editor);
+        JScrollPane scrollPane = new JScrollPane(text);
         panel.add(scrollPane);
         return panel;
     }
