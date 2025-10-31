@@ -18,7 +18,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
-import static de.uzk.Main.logger;
 import static de.uzk.config.LanguageHandler.getWord;
 import static javax.swing.event.HyperlinkEvent.EventType.*;
 
@@ -32,7 +31,7 @@ import static javax.swing.event.HyperlinkEvent.EventType.*;
  *   <li>Wenn sich die Maus über einem Hyperlink befindet und die Command- (bzw. Ctrl-)Taste gedrückt ist,
  *       erscheint der Hand-Cursor (Pointer).</li>
  *   <li>Beim Klicken auf einen Link wird der Standardbrowser über {@link GuiUtils#openWebLink(java.net.URL)} geöffnet.</li>
- *   <li>Zeigt einen Tooltip („Open in browser…“), wenn sich die Maus über einem Link befindet.</li>
+ *   <li>Zeigt einen Tooltip („Open in browser“), wenn sich die Maus über einem Link befindet.</li>
  * </ul>
  */
 public class SelectableText extends JEditorPane implements HyperlinkListener {
@@ -94,7 +93,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         // Globale Tastaturüberwachung aktivieren
         setupGlobalKeyListener();
 
-        // Standard-Link-Styling auf neutral (schwarz) setzen
+        // Standard-Link-Styling setzen
         SwingUtilities.invokeLater(() -> {
             if (getDocument() instanceof HTMLDocument htmlDoc) {
                 StyleSheet styleSheet = htmlDoc.getStyleSheet();
@@ -120,7 +119,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
 
         @Override
         public void paint(Graphics g) {
-            // kein sichtbares Caret
+            // Unsichtbares Caret
         }
     }
 
@@ -135,9 +134,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
 
         @Override
         public void mouseExited(MouseEvent e) {
-            overLink = false;
-            updateCursor();
-            currentLinkElement = null;
+            resetLinkElement();
         }
     }
 
@@ -165,13 +162,12 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
             currentLinkElement = e.getSourceElement();
             updateCursor();
         } else if (e.getEventType().equals(EXITED)) {
-            overLink = false;
-            updateCursor();
-            currentLinkElement = null;
+            resetLinkElement();
         } else if (e.getEventType().equals(ACTIVATED)) {
-            updateCursor();
             if (commandPressed) {
                 GuiUtils.openWebLink(e.getURL());
+                updateCursor();
+                commandPressed = false;
             }
         }
     }
@@ -186,7 +182,6 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     private void setupGlobalKeyListener() {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
             boolean oldValue = commandPressed;
-
             if (e.getID() == KeyEvent.KEY_PRESSED || e.getID() == KeyEvent.KEY_RELEASED) {
                 commandPressed = (e.getModifiersEx() & Shortcut.CTRL_DOWN) != 0;
             }
@@ -195,7 +190,6 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
             if (commandPressed != oldValue) {
                 SwingUtilities.invokeLater(this::updateCursor);
             }
-
             return false;
         });
     }
@@ -221,30 +215,30 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         if (newMode != currentCursorMode) {
             currentCursorMode = newMode;
 
-            SwingUtilities.invokeLater(() -> {
-                switch (newMode) {
-                    case LINK_CTRL_HOVER -> {
-                        applyLinkHoverStyle(true);
-                        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                        GuiUtils.setToolTipText(this, getWord("tooltip.openInBrowser"));
-                    }
-                    case LINK_HOVER -> {
-                        applyLinkHoverStyle(false);
-                        setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-
-                        String tooltipText = String.format("%s (%s %s)",
-                                getWord("tooltip.openInBrowser"),
-                                Shortcut.getModifiersList(Shortcut.CTRL_DOWN).get(0),
-                                getWord("tooltip.click")
-                        );
-                        GuiUtils.setToolTipText(this, tooltipText);
-                    }
-                    default -> {
-                        applyLinkHoverStyle(false);
-                        setTextCursor();
-                    }
+            switch (newMode) {
+                case LINK_CTRL_HOVER -> {
+                    applyLinkHoverStyle(true);
+                    GuiUtils.setCursor(this, Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                    GuiUtils.setToolTipText(this, getWord("tooltip.openInBrowser"));
                 }
-            });
+                case LINK_HOVER -> {
+                    applyLinkHoverStyle(false);
+                    GuiUtils.setCursor(this, Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+
+                    String tooltipText = String.format("%s (%s %s)",
+                            getWord("tooltip.openInBrowser"),
+                            Shortcut.getModifiersList(Shortcut.CTRL_DOWN).get(0),
+                            getWord("tooltip.click")
+                    );
+                    GuiUtils.setToolTipText(this, tooltipText);
+                }
+                default -> setTextCursor();
+            }
+        } else {
+            // Setze den Textcursor, wenn der Text Modus aktiv ist und der falsche Cursor gesetzt wurde
+            if (newMode != CursorMode.TEXT) return;
+            if (getCursor() != Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR)) return;
+            setTextCursor();
         }
     }
 
@@ -259,26 +253,18 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      */
     private void applyLinkHoverStyle(boolean active) {
         if (currentLinkElement == null) return;
+        if (!(getDocument() instanceof HTMLDocument htmlDoc)) return;
 
-        try {
-            if (!(getDocument() instanceof HTMLDocument htmlDoc)) return;
+        int start = currentLinkElement.getStartOffset();
+        int end = currentLinkElement.getEndOffset();
+        int length = Math.max(0, end - start);
 
-            int start = currentLinkElement.getStartOffset();
-            int end = currentLinkElement.getEndOffset();
-            int length = Math.max(0, end - start);
+        SimpleAttributeSet set = new SimpleAttributeSet();
+        Color color = active ? COLOR_ACTIVE_LINK : GuiUtils.getTextColor();
+        StyleConstants.setForeground(set, color);
 
-            SimpleAttributeSet set = new SimpleAttributeSet();
-            Color color = active ? COLOR_ACTIVE_LINK : GuiUtils.getTextColor();
-            StyleConstants.setForeground(set, color);
-
-            // Farbe nur ändern, wenn wirklich sichtbar (EDT!)
-            SwingUtilities.invokeLater(() ->
-                    htmlDoc.setCharacterAttributes(start, length, set, false)
-            );
-
-        } catch (Exception e) {
-            logger.error("Failed to apply link hover style: " + (active ? "active" : "inactive"));
-        }
+        // Farbe ändern
+        SwingUtilities.invokeLater(() -> htmlDoc.setCharacterAttributes(start, length, set, false));
     }
 
     // ==========================================================
@@ -289,7 +275,17 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      * Setzt Standard-Textcursor und entfernt Tooltip
      */
     private void setTextCursor() {
-        setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+        applyLinkHoverStyle(false);
+        GuiUtils.setCursor(this, Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
         GuiUtils.setToolTipText(this, null);
+    }
+
+    /**
+     * Entfernt Hyperlink-Styling.
+     */
+    private void resetLinkElement() {
+        overLink = false;
+        updateCursor();
+        currentLinkElement = null;
     }
 }

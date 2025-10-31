@@ -1,6 +1,5 @@
 package de.uzk.gui.tabs;
 
-import de.uzk.action.ActionHandler;
 import de.uzk.config.Config;
 import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
@@ -16,13 +15,11 @@ import static de.uzk.config.LanguageHandler.getWord;
 
 // TODO: Überarbeite Klasse
 public class TabNavigate extends AreaContainerInteractive<JPanel> {
-    private final ActionHandler actionHandler;
     private JSlider timeSlider;
     private JSlider levelSlider;
 
-    public TabNavigate(Gui gui, ActionHandler actionHandler) {
+    public TabNavigate(Gui gui) {
         super(new JPanel(), gui);
-        this.actionHandler = actionHandler;
         init();
     }
 

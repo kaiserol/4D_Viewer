@@ -1,6 +1,5 @@
 package de.uzk.gui;
 
-import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
 import de.uzk.image.Axis;
 import de.uzk.markers.MarkerMapping;
@@ -20,8 +19,6 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
-    private final ActionHandler actionHandler;
-
     // Bildanzeige
     private JPanel panelView;
     private JPanel panelImage;
@@ -31,9 +28,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     private JScrollBar scrollBarTime;
     private JScrollBar scrollBarLevel;
 
-    public AreaImageViewer(Gui gui, ActionHandler actionHandler) {
+    public AreaImageViewer(Gui gui) {
         super(new JPanel(), gui);
-        this.actionHandler = actionHandler;
         init();
     }
 
@@ -42,8 +38,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         this.container.setLayout(new BorderLayout());
         this.container.addFocusListener(new FocusBorderListener());
         this.container.addMouseListener(new FocusMouseListener());
-        this.container.addMouseWheelListener(this.actionHandler);
-        this.container.addKeyListener(this.actionHandler);
+        this.container.addMouseWheelListener(gui.getActionHandler());
+        this.container.addKeyListener(gui.getActionHandler());
 
         // === 1. Kopfbereich mit Statusinformationen ===
         JPanel statsBarPanel = new AreaStatsBar(this.gui).getContainer();
@@ -138,7 +134,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
 
             // Richtung berechnen: > 0: vorwärts, < 0: rückwärts
             int rotation = newValue - oldValue;
-            actionHandler.scroll(axis, rotation, e.getValueIsAdjusting());
+            gui.getActionHandler().scroll(axis, rotation, e.getValueIsAdjusting());
         });
         scrollBar.setBlockIncrement(1);
         scrollBar.setUnitIncrement(1);

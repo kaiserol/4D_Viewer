@@ -1,11 +1,10 @@
 package de.uzk.gui.tabs;
 
-import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
 import de.uzk.config.Config;
-import de.uzk.utils.ScreenshotHelper;
 import de.uzk.gui.*;
 import de.uzk.utils.NumberUtils;
+import de.uzk.utils.ScreenshotHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,13 +14,11 @@ import static de.uzk.config.LanguageHandler.getWord;
 
 // TODO: Überarbeite Klasse
 public class TabEdit extends AreaContainerInteractive<JPanel> {
-    private final ActionHandler actionHandler;
     private JSpinner degreeSpinner;
     private JLabel screenshots;
 
-    public TabEdit(Gui gui, ActionHandler actionHandler) {
+    public TabEdit(Gui gui) {
         super(new JPanel(), gui);
-        this.actionHandler = actionHandler;
         init();
     }
 
@@ -85,7 +82,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
         // screenshotButton
         JButton screenshotButton = new JButton(getWord("items.edit.takeScreenshot"));
-        screenshotButton.addActionListener(e -> actionHandler.executeAction(ActionType.SHORTCUT_TAKE_SCREENSHOT));
+        screenshotButton.addActionListener(e -> gui.getActionHandler().executeAction(ActionType.SHORTCUT_TAKE_SCREENSHOT));
         this.container.add(screenshotButton, gbc);
     }
 

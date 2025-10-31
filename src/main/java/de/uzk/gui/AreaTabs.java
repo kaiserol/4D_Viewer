@@ -1,6 +1,5 @@
 package de.uzk.gui;
 
-import de.uzk.action.ActionHandler;
 import de.uzk.gui.tabs.TabEdit;
 import de.uzk.gui.tabs.TabMarkers;
 import de.uzk.gui.tabs.TabNavigate;
@@ -12,12 +11,10 @@ import java.awt.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaTabs extends AreaContainerInteractive<JPanel> {
-    private final ActionHandler actionHandler;
     private JTabbedPane tabbedPane;
 
-    public AreaTabs(Gui gui, ActionHandler actionHandler) {
+    public AreaTabs(Gui gui) {
         super(new JPanel(), gui);
-        this.actionHandler = actionHandler;
         init();
     }
 
@@ -27,8 +24,8 @@ public class AreaTabs extends AreaContainerInteractive<JPanel> {
 
         // Tabs hinzufügen
         this.tabbedPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-        this.tabbedPane.add(getWord("items.edit"), new TabEdit(this.gui, this.actionHandler).getContainer());
-        this.tabbedPane.add(getWord("items.nav"), new TabNavigate(this.gui, this.actionHandler).getContainer());
+        this.tabbedPane.add(getWord("items.edit"), new TabEdit(this.gui).getContainer());
+        this.tabbedPane.add(getWord("items.nav"), new TabNavigate(this.gui).getContainer());
         this.tabbedPane.add(getWord("items.markers"), new TabMarkers(this.gui).getContainer());
 
         // Erzwingt Fokus nach Tab-Wechsel

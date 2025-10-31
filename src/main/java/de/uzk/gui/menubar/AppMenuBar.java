@@ -19,10 +19,10 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     private CustomMenuItem itemFontIncrease;
     private CustomMenuItem itemFontRestore;
 
-    public AppMenuBar(Gui gui, ActionHandler actionHandler) {
+    public AppMenuBar(Gui gui) {
         super(new JMenuBar(), gui);
         this.menuBar = new CustomMenuBar(this.container, "MenuBar");
-        init(actionHandler);
+        init(gui.getActionHandler());
     }
 
     private void init(ActionHandler actionHandler) {

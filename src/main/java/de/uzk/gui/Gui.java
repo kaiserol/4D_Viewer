@@ -21,29 +21,36 @@ import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class Gui extends AreaContainerInteractive<JFrame> {
-    // Mindestgröße des Fensters
-    private static final int MIN_WIDTH = 400;
-    private static final int MIN_HEIGHT = 100;
-
-    // Observer Pattern
+    // Observer Listener
     private final List<HandleActionListener> handleActionListeners;
     private final List<ToggleListener> toggleListeners;
     private final List<UpdateImageListener> updateImageListeners;
     private final List<UpdateThemeListener> updateThemeListeners;
     private final List<AppFocusListener> appFocusListeners;
-    private boolean windowInitialized;
+    // ActionHandler
+    private final ActionHandler actionHandler;
 
     // Dialog für das Laden von Bildern
     private final DialogImageLoad dialogImageLoad;
 
+    // Mindestgröße des Fensters
+    private static final int MIN_WIDTH = 400;
+    private static final int MIN_HEIGHT = 100;
+
     public Gui() {
         super(new JFrame(), null);
+
+        // Observer Listener initialisieren
         this.handleActionListeners = new ArrayList<>();
         this.toggleListeners = new ArrayList<>();
         this.updateImageListeners = new ArrayList<>();
         this.updateThemeListeners = new ArrayList<>();
         this.appFocusListeners = new ArrayList<>();
-        this.windowInitialized = false;
+
+        // ActionHandler erstellen
+        this.actionHandler = new ActionHandler(this);
+
+        // Dialog für das Laden von Bildern erstellen
         this.dialogImageLoad = new DialogImageLoad(this.container);
 
         // Gui erstellen
@@ -52,43 +59,21 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     private void build() {
         logger.info("Building UI ...");
-        GuiUtils.updateFlatLaf();
 
-        this.container.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
-        this.container.setIconImage(Icons.APP_IMAGE);
-        this.container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        this.container.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                confirmExitApp();
-            }
-        });
-        // TODO: Werden diese WindowFocusListener auch richtig aufgerufen? (soll nur aufgerufen werden, wenn das Fenster, aber auch alle Dialoge Fokus erhalten / verlieren)
-        this.container.addWindowFocusListener(new WindowAdapter() {
-            @Override
-            public void windowGainedFocus(WindowEvent e) {
-                if (windowInitialized) appGainedFocus();
-                windowInitialized = true;
-            }
+        // Fenster initialisieren
+        initFrame();
 
-            @Override
-            public void windowLostFocus(WindowEvent e) {
-                if (windowInitialized) appLostFocus();
-            }
-        });
-
-        // Inhalt initialisieren
-        initContent();
+        // Menüleiste & Inhalt hinzufügen
+        addMenuBar();
+        addContent();
         updateTheme();
 
         // Image-Files laden
-        // TODO: Jedes Verzeichnis kann seine eigene Config-File haben (dort enthalten ist auch die ImageFileType -> beachten und darauf aufbauen config suchen, wenn nicht vorhanden, dann aktuelle config nehmen), es kann sein dass Verzeichnis (aus der Historie) entweder ungültig ist oder keine Config hat, weil Config gelöscht (Config und markers würde ich in einem ordner = gleichbenannt mit Verzeichnis speichern und daraus dann die config laden...)
-        // TODO: snapshots (soll so heißen anstatt screenshots) screenshot == bildschrim, snap = momentaufnahme, jedes verzeichnis soll einen snapshots ordner haben
         if (!loadImageFiles(history.getLast(), workspace.getConfig().getImageFileType(), true)) {
             toggleOff();
         }
 
-        // Fenster sichtbar machen
+        // Fenster anzeigen
         this.container.pack();
         this.container.setLocationRelativeTo(null);
         this.container.setVisible(true);
@@ -96,17 +81,20 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     public void rebuild() {
         logger.info("Rebuilding UI ...");
-        this.container.getContentPane().removeAll();
 
-        // Verhindert, dass alte UI-Objekte weiter existieren (alte Ereignis-Listener müssen bereinigt werden)
+        // Observer Listener zurücksetzen (alte Ereignis-Listener müssen bereinigt werden)
         this.handleActionListeners.clear();
         this.toggleListeners.clear();
         this.updateImageListeners.clear();
         this.updateThemeListeners.clear();
         this.appFocusListeners.clear();
 
-        // Inhalt initialisieren
-        initContent();
+        // Inhalt entfernen
+        this.container.getContentPane().removeAll();
+
+        // Menüleiste & Inhalt hinzufügen
+        addMenuBar();
+        addContent();
         updateTheme();
 
         // Prüfe, ob Bilder geladen sind
@@ -117,14 +105,39 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.pack();
     }
 
-    private void initContent() {
+    private void initFrame() {
+        GuiUtils.updateFlatLaf();
+        GuiUtils.setImageIcon(this.container);
+
+        this.container.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        this.container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.container.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                confirmExitApp();
+            }
+        });
+        this.container.addWindowFocusListener(new WindowAdapter() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                appGainedFocus();
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                appLostFocus();
+            }
+        });
+    }
+
+    private void addMenuBar() {
+        AppMenuBar menuBar = new AppMenuBar(this);
+        this.container.setJMenuBar(menuBar.getContainer());
+    }
+
+    private void addContent() {
         this.container.setTitle(getWord("app.name"));
         this.container.setLayout(new BorderLayout());
-        ActionHandler actionHandler = new ActionHandler(this);
-
-        // menuBar
-        AppMenuBar menuBar = new AppMenuBar(this, actionHandler);
-        this.container.setJMenuBar(menuBar.getContainer());
 
         // mainPanel
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
@@ -135,8 +148,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         mainPanel.add(directorySelection.getContainer(), BorderLayout.NORTH);
 
         // splitPane (tabs, imageViewer)
-        AreaTabs tabs = new AreaTabs(this, actionHandler);
-        AreaImageViewer imageViewer = new AreaImageViewer(this, actionHandler);
+        AreaTabs tabs = new AreaTabs(this);
+        AreaImageViewer imageViewer = new AreaImageViewer(this);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setOneTouchExpandable(true);
@@ -150,51 +163,11 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.add(mainPanel);
     }
 
-    public boolean loadImageFiles(Path directory, ImageFileType imageFileType, boolean isGuiBeingBuilt) {
-        // Prüfe, ob das Verzeichnis passende Bilder hat
-        LoadingResult result = this.dialogImageLoad.show(directory, imageFileType);
-        switch (result) {
-            case LOADED -> {
-                toggleOn();
-                handleAction(ActionType.ACTION_ADD_MARKER);
-                return true;
-            }
-            case ALREADY_LOADED -> {
-                if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + imageFileType + " " +
-                        getWord("file.directory") + ": '" + directory + "' " +
-                        getWord("optionPane.directory.alreadyLoaded") + ".";
-                JOptionPane.showMessageDialog(
-                        this.container,
-                        message,
-                        getWord("optionPane.title.error"),
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
-            case DIRECTORY_NOT_EXISTING -> {
-                if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directory + "' " +
-                        getWord("optionPane.directory.doesNotExisting") + ".";
-                JOptionPane.showMessageDialog(
-                        this.container,
-                        message,
-                        getWord("optionPane.title.error"),
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
-            case DIRECTORY_HAS_NO_IMAGES -> {
-                if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directory + "' " +
-                        getWord("optionPane.directory.hasNo") + " " + imageFileType.getDescription() + ".";
-                JOptionPane.showMessageDialog(
-                        this.container,
-                        message,
-                        getWord("optionPane.title.error"),
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
-        }
-        return false;
+    // ======================================
+    // Getter und Setter
+    // ======================================
+    public ActionHandler getActionHandler() {
+        return actionHandler;
     }
 
     // ======================================
@@ -221,7 +194,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     // ======================================
-    // Observer Ausführen
+    // Observer Funktionen
     // ======================================
     @Override
     public void handleAction(ActionType actionType) {
@@ -279,11 +252,58 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     // ======================================
-    // Sonstige Methoden
+    // Hilfsfunktionen
     // ======================================
     public void updateUI() {
         this.container.revalidate();
         this.container.repaint();
+    }
+
+    public boolean loadImageFiles(Path directory, ImageFileType imageFileType, boolean isGuiBeingBuilt) {
+        // Prüfe, ob das Verzeichnis passende Bilder hat
+        LoadingResult result = this.dialogImageLoad.show(directory, imageFileType);
+        switch (result) {
+            case LOADED -> {
+                toggleOn();
+                handleAction(ActionType.ACTION_ADD_MARKER);
+                return true;
+            }
+            case ALREADY_LOADED -> {
+                if (isGuiBeingBuilt) return false;
+                String message = getWord("optionPane.directory.the") + " " + imageFileType + " " +
+                        getWord("file.directory") + ": '" + directory + "' " +
+                        getWord("optionPane.directory.alreadyLoaded") + ".";
+                JOptionPane.showMessageDialog(
+                        this.container,
+                        message,
+                        getWord("optionPane.title.error"),
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+            case DIRECTORY_NOT_EXISTING -> {
+                if (isGuiBeingBuilt) return false;
+                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directory + "' " +
+                        getWord("optionPane.directory.doesNotExisting") + ".";
+                JOptionPane.showMessageDialog(
+                        this.container,
+                        message,
+                        getWord("optionPane.title.error"),
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+            case DIRECTORY_HAS_NO_IMAGES -> {
+                if (isGuiBeingBuilt) return false;
+                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directory + "' " +
+                        getWord("optionPane.directory.hasNo") + " " + imageFileType.getDescription() + ".";
+                JOptionPane.showMessageDialog(
+                        this.container,
+                        message,
+                        getWord("optionPane.title.error"),
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+        return false;
     }
 
     public void confirmExitApp() {

@@ -26,14 +26,12 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        // Systemeigenschaften initialisieren
-        GuiUtils.initSystemProperties();
+        // Systemeigenschaften aktualisieren
+        GuiUtils.setSystemProperties();
 
         // Gui erstellen und anzeigen
         SwingUtilities.invokeLater(() -> {
             Gui gui = new Gui();
-
-            // Behandelt macOS Einstellungen
             GuiUtils.initMacOS(gui);
         });
     }

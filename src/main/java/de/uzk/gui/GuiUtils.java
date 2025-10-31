@@ -127,15 +127,8 @@ public final class GuiUtils {
         return font.getName();
     }
 
-    // Diese Methode sollte nur einmal zu Beginn der Anwendung
-    // aufgerufen werden, damit die Einstellungen unter macOS korrekt übernommen werden.
-    // Hinweis: Der App Name bleibt trotz Aktualisierungen nach dem ersten Gui()-Konstruktor Aufruf unverändert.
-    public static void initSystemProperties() {
-        // macOS Eigenschaften
-        if (operationSystem.isMacOS()) {
-            System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("apple.awt.application.name", getWord("app.name"));
-        }
+    public static void setImageIcon(JFrame frame) {
+        frame.setIconImage(Icons.APP_IMAGE);
 
         // App-Icon (plattformübergreifend) setzen
         if (Taskbar.isTaskbarSupported()) {
@@ -145,15 +138,25 @@ public final class GuiUtils {
                 e.printStackTrace();
             }
         }
-        // TODO: name setzen über taskbar app
+    }
+
+    /**
+     * Aktualisiert plattformspezifische Eigenschaften.
+     * Sollte vor Erstellen der GUI aufgerufen werden.
+     */
+    public static void setSystemProperties() {
+        // macOS Eigenschaften
+        if (operationSystem.isMacOS()) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+            System.setProperty("apple.awt.application.name", getWord("app.name"));
+        }
     }
 
     public static void initMacOS(Gui gui) {
-        if (gui == null) return;
-        if (!Desktop.isDesktopSupported() || !operationSystem.isMacOS()) return;
+        if (gui == null || !Desktop.isDesktopSupported() || !operationSystem.isMacOS()) return;
         Desktop desktop = Desktop.getDesktop();
 
-        // Behandelt den Menüeintrag "Über 4D Viewer"
+        // "Über 4D Viewer"
         if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
             desktop.setAboutHandler(e ->
                     JOptionPane.showMessageDialog(null,
@@ -172,7 +175,7 @@ public final class GuiUtils {
             );
         }
 
-        // Behandelt den Shortcut: Cmd+Q (Überschreibt den Quit-Handler)
+        // Cmd+Q abfangen (Quit)
         if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
             desktop.setQuitHandler((QuitEvent e, QuitResponse response) -> {
                 response.cancelQuit();
@@ -198,19 +201,17 @@ public final class GuiUtils {
 
         Point mouse = component.getMousePosition();
         if (mouse != null) {
-            // Swing-Tooltip neu initialisieren
-            MouseEvent mouseEvent = new MouseEvent(
-                    component,
-                    MouseEvent.MOUSE_MOVED,
-                    System.currentTimeMillis(),
-                    0,
-                    mouse.x,
-                    mouse.y,
-                    0,
-                    false
+            MouseEvent mouseEvent = new MouseEvent(component, MouseEvent.MOUSE_MOVED,
+                    System.currentTimeMillis(), 0, mouse.x, mouse.y, 0, false
             );
+            // Swing-Tooltip neu initialisieren
             ToolTipManager.sharedInstance().mouseMoved(mouseEvent);
         }
+    }
+
+    public static void setCursor(JComponent component, Cursor cursor) {
+        if (component == null) return;
+        SwingUtilities.invokeLater(() -> component.setCursor(cursor));
     }
 
     public static void decreaseFont(Gui gui) {
