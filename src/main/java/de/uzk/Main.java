@@ -26,8 +26,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        // Systemeigenschaften aktualisieren
-        GuiUtils.setSystemProperties();
+        // Systemeigenschaften initialisieren
+        GuiUtils.initSystemProperties();
 
         // Gui erstellen und anzeigen
         SwingUtilities.invokeLater(() -> {

@@ -8,16 +8,18 @@ import de.uzk.utils.AppPath;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
-import javax.swing.*;
 import java.nio.file.Path;
-import java.util.Locale;
 
 import static de.uzk.Main.logger;
 
 public class Settings {
-    // MinMax Konstanten
-    public static final int MIN_FONT_SIZE = 8;
-    public static final int MAX_FONT_SIZE = 24;
+    // Einstellungen
+    @JsonUnwrapped
+    private Language language;
+    @JsonUnwrapped
+    private Theme theme;
+    private int fontSize;
+    private boolean confirmExit;
 
     // Default-Konstanten
     private static final Language DEFAULT_LANGUAGE = Language.getSystemDefault();
@@ -25,60 +27,56 @@ public class Settings {
     public static final int DEFAULT_FONT_SIZE = 16;
     private static final boolean DEFAULT_CONFIRM_EXIT = true;
 
-    // Verzeichnisse
-    private static final Path SETTINGS_FILE_NAME = AppPath.VIEWER_HOME_DIRECTORY.resolve("settings.json");
+    // MinMax Konstanten
+    public static final int MIN_FONT_SIZE = 8;
+    public static final int MAX_FONT_SIZE = 24;
 
-    // Einstellungen
-    @JsonUnwrapped
-    private Language language;
-    private Theme theme;
-    private int fontSize;
-    private boolean confirmExit;
+    // Pfad der Einstellungsdatei
+    private static final Path SETTINGS_FILE_NAME = AppPath.VIEWER_HOME_DIRECTORY.resolve("settings.json");
 
     // Nur Konstanten vom primitiven Datentyp können als Default-Werte verwendet werden (inklusive Strings)
     @JsonCreator
     public Settings(
-            @JsonProperty(value = "language") String language,
-            @JsonProperty(value = "theme") String theme,
+            @JsonProperty(value = "language") Language language,
+            @JsonProperty(value = "theme") Theme theme,
             @JsonProperty(value = "fontSize", defaultValue = DEFAULT_FONT_SIZE + "") int fontSize,
             @JsonProperty(value = "confirmExit", defaultValue = DEFAULT_CONFIRM_EXIT + "") boolean confirmExit
     ) {
-        this.setTheme(Theme.fromTheme(theme));
-        this.setLanguage(Language.fromLanguage(language));
+        this.setLanguage(language);
+        this.setTheme(theme);
         this.setFontSize(fontSize);
         this.setConfirmExit(confirmExit);
     }
 
     public Language getLanguage() {
-        return language;
+        return this.language;
     }
 
-    public void setLanguage(Language language) {
-        if (this.language == language) return;
+    public boolean setLanguage(Language language) {
+        if (this.language == language && this.language != null) return false;
         this.language = (language != null) ? language : DEFAULT_LANGUAGE;
-        Locale.setDefault(this.language.getLocale());
-        JComponent.setDefaultLocale(this.language.getLocale());
-        LanguageHandler.load(this.language);
+        LanguageHandler.load(language);
+        return true;
     }
 
     public Theme getTheme() {
         return this.theme;
     }
 
-    public void setTheme(Theme theme) {
+    public boolean setTheme(Theme theme) {
+        if (this.theme == theme && this.theme != null) return false;
         this.theme = (theme != null) ? theme : DEFAULT_THEME;
-    }
-
-    public void toggleTheme() {
-        this.theme = this.theme.toggle();
+        return true;
     }
 
     public int getFontSize() {
         return fontSize;
     }
 
-    public void setFontSize(int fontSize) {
+    public boolean setFontSize(int fontSize) {
+        if (this.fontSize == fontSize) return false;
         this.fontSize = (fontSize >= MIN_FONT_SIZE && fontSize <= MAX_FONT_SIZE) ? fontSize : DEFAULT_FONT_SIZE;
+        return true;
     }
 
     public boolean isConfirmExit() {
@@ -86,6 +84,7 @@ public class Settings {
     }
 
     public void setConfirmExit(boolean confirmExit) {
+        if (this.confirmExit == confirmExit) return;
         this.confirmExit = confirmExit;
     }
 
@@ -112,8 +111,8 @@ public class Settings {
 
     private static Settings getDefault() {
         return new Settings(
-                DEFAULT_LANGUAGE.name(),
-                DEFAULT_THEME.name(),
+                DEFAULT_LANGUAGE,
+                DEFAULT_THEME,
                 DEFAULT_FONT_SIZE,
                 DEFAULT_CONFIRM_EXIT
         );

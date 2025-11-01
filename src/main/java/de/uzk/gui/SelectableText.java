@@ -105,9 +105,9 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         });
     }
 
-    // ==========================================================
+    // ========================================
     // Innere Klassen
-    // ==========================================================
+    // ========================================
 
     /**
      * Unsichtbares, nicht blinkendes Caret
@@ -148,9 +148,9 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         }
     }
 
-    // ==========================================================
+    // ========================================
     // HyperlinkListener
-    // ==========================================================
+    // ========================================
 
     /**
      * Reagiert auf Hyperlink-Ereignisse (ENTERED, EXITED, ACTIVATED).
@@ -172,9 +172,9 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         }
     }
 
-    // ==========================================================
+    // ========================================
     // Tastaturüberwachung
-    // ==========================================================
+    // ========================================
 
     /**
      * Überwacht systemweit, ob Ctrl/Command gedrückt ist
@@ -194,9 +194,9 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         });
     }
 
-    // ==========================================================
+    // ========================================
     // Cursor- und Tooltip-Logik
-    // ==========================================================
+    // ========================================
 
     /**
      * Aktualisiert Cursor, Tooltip und ggf. Link-Farbe nur, wenn sich der Zustand tatsächlich ändert.
@@ -242,9 +242,9 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         }
     }
 
-    // ==========================================================
+    // ========================================
     // HTML Styling
-    // ==========================================================
+    // ========================================
 
     /**
      * Färbt den Hyperlink nur dann ein, wenn Command/Ctrl gedrückt ist.
@@ -267,9 +267,9 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         SwingUtilities.invokeLater(() -> htmlDoc.setCharacterAttributes(start, length, set, false));
     }
 
-    // ==========================================================
+    // ========================================
     // Hilfsmethoden
-    // ==========================================================
+    // ========================================
 
     /**
      * Setzt Standard-Textcursor und entfernt Tooltip

@@ -5,9 +5,12 @@ import de.uzk.action.ActionType;
 import de.uzk.config.Settings;
 import de.uzk.gui.AreaContainerInteractive;
 import de.uzk.gui.Gui;
+import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
+import java.awt.*;
 
+import static de.uzk.Main.operationSystem;
 import static de.uzk.Main.settings;
 import static de.uzk.action.ActionType.*;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -65,10 +68,13 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         menuWindow.add(itemFontDecrease = new CustomMenuItem(getWord("items.window.fontSizeDecrease"), actionHandler, SHORTCUT_FONT_SIZE_DECREASE));
         menuWindow.add(itemFontIncrease = new CustomMenuItem(getWord("items.window.fontSizeIncrease"), actionHandler, SHORTCUT_FONT_SIZE_INCREASE));
         menuWindow.add(itemFontRestore = new CustomMenuItem(getWord("items.window.fontSizeRestore"), actionHandler, SHORTCUT_FONT_SIZE_RESTORE));
-        menuWindow.addSeparator();
         updateFontItems();
 
-        menuWindow.add(new CustomMenuItem(getWord("items.window.openSettings"), actionHandler, SHORTCUT_OPEN_SETTINGS));
+        Desktop desktop = GuiUtils.getDesktopSecure();
+        if (!(operationSystem.isMacOS() && desktop != null && desktop.isSupported(Desktop.Action.APP_PREFERENCES))) {
+            menuWindow.addSeparator();
+            menuWindow.add(new CustomMenuItem(getWord("items.window.openSettings"), actionHandler, SHORTCUT_OPEN_SETTINGS));
+        }
         return menuWindow;
     }
 

@@ -51,9 +51,9 @@ public final class StringUtils {
         return builder.append(rightBorder).toString();
     }
 
-    // ==========================================================
+    // ========================================
     // HTML FORMATIERUNG
-    // ==========================================================
+    // ========================================
 
     /**
      * Richtet den Text in einem &lt;div&gt;-Tag aus.

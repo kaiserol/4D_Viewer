@@ -33,7 +33,6 @@ public class DialogImageLoad implements LoadingImageListener {
     public DialogImageLoad(JFrame frame) {
         this.dialog = new JDialog(frame, true);
         this.dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        this.dialog.setResizable(false);
         this.dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -72,6 +71,7 @@ public class DialogImageLoad implements LoadingImageListener {
 
         // Dialog anzeigen
         this.dialog.pack();
+        this.dialog.setResizable(false);
         this.dialog.setLocationRelativeTo(this.dialog.getOwner());
         this.dialog.setVisible(true);
 
@@ -124,9 +124,9 @@ public class DialogImageLoad implements LoadingImageListener {
         return panel;
     }
 
-    // ==========================================================
+    // ========================================
     // Überschreibungen des LoadingImageListener Interface
-    // ==========================================================
+    // ========================================
     @Override
     public void onLoadingStart() {
         logger.info("Loading Images from '" + workspace.getImageFilesDirectory() + "' ...");
@@ -165,9 +165,9 @@ public class DialogImageLoad implements LoadingImageListener {
         logger.info("Loaded Images: " + imageFiles);
     }
 
-    // ==========================================================
+    // ========================================
     // Hilfsfunktionen
-    // ==========================================================
+    // ========================================
     private JTextField addLabelTextFieldRow(JPanel panel, GridBagConstraints gbc, int row, String labelText) {
         // Label hinzufügen
         gbc.weightx = 0;
@@ -193,9 +193,9 @@ public class DialogImageLoad implements LoadingImageListener {
         this.labelImageFilesCount.setText(String.valueOf(imagesCount));
     }
 
-    // ==========================================================
+    // ========================================
     // Thread Methoden
-    // ==========================================================
+    // ========================================
     private void startThread(Path directory, ImageFileType imageFileType) {
         if (this.thread != null) return;
         this.thread = new Thread(() -> {
@@ -214,6 +214,6 @@ public class DialogImageLoad implements LoadingImageListener {
                 logger.error("Interrupted 'loading images' while waiting for the thread to finish.");
             }
         }
-        dialog.dispose();
+        this.dialog.dispose();
     }
 }

@@ -19,10 +19,9 @@ public class DialogDisclaimer {
     public DialogDisclaimer(JFrame frame) {
         this.dialog = new JDialog(frame, getWord("dialog.disclaimer"), true);
         this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.dialog.setResizable(false);
 
         // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(e -> dialog.dispose(),
+        this.dialog.getRootPane().registerKeyboardAction(e -> this.dialog.dispose(),
                 KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
         );
     }
@@ -40,6 +39,7 @@ public class DialogDisclaimer {
 
         // Dialog anzeigen
         this.dialog.pack();
+        this.dialog.setResizable(false);
         this.dialog.setLocationRelativeTo(this.dialog.getOwner());
         this.dialog.setVisible(true);
     }
@@ -96,9 +96,9 @@ public class DialogDisclaimer {
         return panel;
     }
 
-    // ==========================================================
+    // ========================================
     // Hilfsfunktionen
-    // ==========================================================
+    // ========================================
     private void addLabelRow(JPanel panel, GridBagConstraints gbc, int row, String labelText, String labelValueText) {
         gbc.gridx = 0;
         gbc.gridy = row;

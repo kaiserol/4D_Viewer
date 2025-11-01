@@ -3,6 +3,8 @@ package de.uzk.config;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.util.Arrays;
+
 import static de.uzk.config.LanguageHandler.getWord;
 
 public enum Theme {
@@ -13,35 +15,34 @@ public enum Theme {
         return this == LIGHT_MODE;
     }
 
-    public Theme toggle() {
-        Theme[] values = Theme.values();
-        int i = (ordinal() + 1) % values.length;
-        return values[i];
+    public static Theme getDefault() {
+        return LIGHT_MODE;
+    }
+
+    @JsonValue
+    public String getTheme() {
+        return switch (this) {
+            case DARK_MODE -> "dark";
+            case LIGHT_MODE -> "light";
+        };
     }
 
     @JsonCreator
-    public static Theme fromTheme(String theme) {
-        if (theme != null) {
-            for (Theme t : Theme.values()) {
-                boolean sameName = t.name().equalsIgnoreCase(theme);
-                if (sameName) return t;
+    public static Theme fromTheme(String newTheme) {
+        if (newTheme != null) {
+            for (Theme theme : Theme.values()) {
+                boolean sameName = theme.name().equalsIgnoreCase(newTheme);
+                boolean sameTheme = theme.getTheme().equalsIgnoreCase(newTheme);
+                if (sameName || sameTheme) return theme;
             }
         }
         // Fallback
         return getDefault();
     }
 
-    @JsonValue
-    private String jsonName() { return this.name(); }
-
-    public static Theme getDefault() {
-        return LIGHT_MODE;
-    }
-
-    // TODO: In den Einstellung anders ändern (ComboBox wie Language)
     public static Theme[] sortedValues() {
         Theme[] values = Theme.values();
-        java.util.Arrays.sort(values, (theme1, theme2) -> theme1.toString().compareToIgnoreCase(theme2.toString()));
+        Arrays.sort(values, (theme1, theme2) -> theme1.toString().compareToIgnoreCase(theme2.toString()));
         return values;
     }
 

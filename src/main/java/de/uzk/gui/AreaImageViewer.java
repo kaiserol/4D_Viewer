@@ -154,9 +154,9 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         return panel;
     }
 
-    // ==========================================================
+    // ========================================
     // Überschreibungen
-    // ==========================================================
+    // ========================================
     @Override
     public void handleAction(ActionType actionType) {
         switch (actionType) {
@@ -204,9 +204,9 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         this.panelImage.setBackground(GuiUtils.getBackgroundColor());
     }
 
-    // ==========================================================
+    // ========================================
     // Hilfsfunktionen
-    // ==========================================================
+    // ========================================
     private void updateCurrentImage() {
         // Bild neu laden
         this.currentImage = null;

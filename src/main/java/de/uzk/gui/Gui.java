@@ -163,16 +163,16 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.add(mainPanel);
     }
 
-    // ======================================
+    // ========================================
     // Getter und Setter
-    // ======================================
+    // ========================================
     public ActionHandler getActionHandler() {
         return actionHandler;
     }
 
-    // ======================================
+    // ========================================
     // Observer Registrierung
-    // ======================================
+    // ========================================
     public void registerHandleActionListener(HandleActionListener handleActionListener) {
         this.handleActionListeners.add(handleActionListener);
     }
@@ -193,9 +193,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.appFocusListeners.add(appFocusListener);
     }
 
-    // ======================================
+    // ========================================
     // Observer Funktionen
-    // ======================================
+    // ========================================
     @Override
     public void handleAction(ActionType actionType) {
         // Prüfe, ob der Zeitpunkt angepinnt wurde
@@ -251,9 +251,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         for (AppFocusListener observer : appFocusListeners) observer.appLostFocus();
     }
 
-    // ======================================
+    // ========================================
     // Hilfsfunktionen
-    // ======================================
+    // ========================================
     public void updateUI() {
         this.container.revalidate();
         this.container.repaint();

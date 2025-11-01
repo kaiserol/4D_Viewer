@@ -5,6 +5,7 @@ import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import de.uzk.action.ActionType;
 import de.uzk.config.Language;
+import de.uzk.config.LanguageHandler;
 import de.uzk.config.Settings;
 import de.uzk.config.Theme;
 import de.uzk.utils.NumberUtils;
@@ -18,6 +19,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.util.Locale;
 
 import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -39,6 +41,9 @@ public final class GuiUtils {
     private GuiUtils() {
     }
 
+    // ========================================
+    // Getter
+    // ========================================
     private static FlatLaf getDarkMode() {
         return new FlatMacDarkLaf();
     }
@@ -47,6 +52,127 @@ public final class GuiUtils {
         return new FlatMacLightLaf();
     }
 
+    public static Color getTextColor() {
+        return textColor;
+    }
+
+    public static Color getBorderColor() {
+        return borderColor;
+    }
+
+    public static Color getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public static String getFontName() {
+        return font.getName();
+    }
+
+    public static Desktop getDesktopSecure() {
+        if (!Desktop.isDesktopSupported()) return null;
+        return Desktop.getDesktop();
+    }
+
+    // ========================================
+    // Setter
+    // ========================================
+    public static void setCursor(JComponent component, Cursor cursor) {
+        if (component == null) return;
+        SwingUtilities.invokeLater(() -> component.setCursor(cursor));
+    }
+
+    public static void setImageIcon(JFrame frame) {
+        frame.setIconImage(Icons.APP_IMAGE);
+
+        // App-Icon (plattformübergreifend) setzen
+        if (Taskbar.isTaskbarSupported()) {
+            try {
+                Taskbar.getTaskbar().setIconImage(Icons.APP_IMAGE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void setToolTipText(JComponent component, String text) {
+        if (component == null) return;
+        component.setToolTipText(text);
+
+        Point mouse = component.getMousePosition();
+        if (mouse != null) {
+            MouseEvent mouseEvent = new MouseEvent(component, MouseEvent.MOUSE_MOVED,
+                    System.currentTimeMillis(), 0, mouse.x, mouse.y, 0, false
+            );
+            // Swing-Tooltip neu initialisieren
+            ToolTipManager.sharedInstance().mouseMoved(mouseEvent);
+        }
+    }
+
+    // ========================================
+    // WebLink öffnen
+    // ========================================
+    public static void openWebLink(URL url) {
+        Desktop desktop = getDesktopSecure();
+        if (desktop == null) return;
+
+        try {
+            desktop.browse(url.toURI());
+        } catch (Exception e) {
+            logger.error("Unable to open link: " + url);
+        }
+    }
+
+    // ========================================
+    // Initialsierungen
+    // ========================================
+
+    /**
+     * Initialsiert plattformspezifische Eigenschaften.
+     * Sollte vor Erstellen der GUI aufgerufen werden.
+     */
+    public static void initSystemProperties() {
+        // macOS Eigenschaften
+        if (operationSystem.isMacOS()) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+            System.setProperty("apple.awt.application.name", getWord("app.name"));
+        }
+    }
+
+    public static void initMacOS(Gui gui) {
+        if (gui == null || !operationSystem.isMacOS()) return;
+        Desktop desktop = getDesktopSecure();
+        if (desktop == null) return;
+
+        // TODO: Ersetze durch eine Dialog Klasse (About)
+        // Über 4D Viewer
+        if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
+            desktop.setAboutHandler(e ->
+                    JOptionPane.showMessageDialog(null,
+                            "4D Viewer v2.1\nErstellt von Oliver Kaiser",
+                            "Über 4D Viewer",
+                            JOptionPane.INFORMATION_MESSAGE)
+            );
+        }
+
+        // Einstellungen
+        if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
+            desktop.setPreferencesHandler(e ->
+                    gui.getActionHandler().executeAction(ActionType.SHORTCUT_OPEN_SETTINGS)
+            );
+        }
+
+        // Cmd+Q abfangen (Quit)
+        if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
+            desktop.setQuitHandler((QuitEvent e, QuitResponse response) -> {
+                response.cancelQuit();
+                gui.confirmExitApp();
+            });
+        }
+    }
+
+    // ========================================
+    // Aktualisierungen
+    // ========================================
     public static void updateFlatLaf() {
         FlatLaf.setup(settings.getTheme().isLight() ? getLightMode() : getDarkMode());
 
@@ -57,7 +183,7 @@ public final class GuiUtils {
 
         // Schriftart Eigenschaft
         font = UIManager.getFont("defaultFont");
-        updateFontSize(settings.getFontSize());
+        FlatLaf.updateUI();
 
         // Titelleiste auf FlatLaf-Dekoration umstellen
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -111,154 +237,53 @@ public final class GuiUtils {
         Icons.updateSVGIcons();
     }
 
-    public static Color getTextColor() {
-        return textColor;
+    public static void updateLanguage(Gui gui, Language language) {
+        // Wenn sich die Sprache nicht ändert, abbrechen
+        Language oldLanguage = settings.getLanguage();
+        if (!settings.setLanguage(language)) return;
+
+        // UI aktualisieren
+        logger.info("Changing Language from '" + oldLanguage.getLanguage() + "' to '" + language.getLanguage() + "'.");
+        Locale.setDefault(language.getLocale());
+        JComponent.setDefaultLocale(language.getLocale());
+        gui.rebuild();
     }
 
-    public static Color getBorderColor() {
-        return borderColor;
-    }
+    public static void updateTheme(Gui gui, Theme theme) {
+        // Wenn sich das Farbschema nicht ändert, abbrechen
+        Theme oldTheme = settings.getTheme();
+        if (!settings.setTheme(theme)) return;
 
-    public static Color getBackgroundColor() {
-        return backgroundColor;
-    }
-
-    public static String getFontName() {
-        return font.getName();
-    }
-
-    public static void setImageIcon(JFrame frame) {
-        frame.setIconImage(Icons.APP_IMAGE);
-
-        // App-Icon (plattformübergreifend) setzen
-        if (Taskbar.isTaskbarSupported()) {
-            try {
-                Taskbar.getTaskbar().setIconImage(Icons.APP_IMAGE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Aktualisiert plattformspezifische Eigenschaften.
-     * Sollte vor Erstellen der GUI aufgerufen werden.
-     */
-    public static void setSystemProperties() {
-        // macOS Eigenschaften
-        if (operationSystem.isMacOS()) {
-            System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("apple.awt.application.name", getWord("app.name"));
-        }
-    }
-
-    public static void initMacOS(Gui gui) {
-        if (gui == null || !Desktop.isDesktopSupported() || !operationSystem.isMacOS()) return;
-        Desktop desktop = Desktop.getDesktop();
-
-        // "Über 4D Viewer"
-        if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
-            desktop.setAboutHandler(e ->
-                    JOptionPane.showMessageDialog(null,
-                            "4D Viewer v2.1\nErstellt von Oliver Kaiser",
-                            "Über 4D Viewer",
-                            JOptionPane.INFORMATION_MESSAGE)
-            );
-        }
-
-        // TODO: Füge einen Shortcut hinzu.
-        // TODO: Entferne das passende MenuItem Einstellungen, falls OS = macOS...
-        // Behandelt den Menüeintrag "Einstellungen"
-        if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
-            desktop.setPreferencesHandler(e ->
-                    System.out.println("Preferences Apple")
-            );
-        }
-
-        // Cmd+Q abfangen (Quit)
-        if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
-            desktop.setQuitHandler((QuitEvent e, QuitResponse response) -> {
-                response.cancelQuit();
-                gui.confirmExitApp();
-            });
-        }
-    }
-
-    public static void openWebLink(URL url) {
-        if (!Desktop.isDesktopSupported()) return;
-        Desktop desktop = Desktop.getDesktop();
-
-        try {
-            desktop.browse(url.toURI());
-        } catch (Exception e) {
-            logger.error("Unable to open link: " + url);
-        }
-    }
-
-    public static void setToolTipText(JComponent component, String text) {
-        if (component == null) return;
-        component.setToolTipText(text);
-
-        Point mouse = component.getMousePosition();
-        if (mouse != null) {
-            MouseEvent mouseEvent = new MouseEvent(component, MouseEvent.MOUSE_MOVED,
-                    System.currentTimeMillis(), 0, mouse.x, mouse.y, 0, false
-            );
-            // Swing-Tooltip neu initialisieren
-            ToolTipManager.sharedInstance().mouseMoved(mouseEvent);
-        }
-    }
-
-    public static void setCursor(JComponent component, Cursor cursor) {
-        if (component == null) return;
-        SwingUtilities.invokeLater(() -> component.setCursor(cursor));
-    }
-
-    public static void decreaseFont(Gui gui) {
-        int newFontSize = settings.getFontSize() - 1;
-        if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
-    }
-
-    public static void increaseFont(Gui gui) {
-        int newFontSize = settings.getFontSize() + 1;
-        if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
-    }
-
-    public static void restoreFont(Gui gui) {
-        int newFontSize = Settings.DEFAULT_FONT_SIZE;
-        if (updateFontSize(newFontSize)) gui.handleAction(ActionType.ACTION_UPDATE_FONT);
-    }
-
-    private static boolean updateFontSize(float fontSize) {
-        int newFontSize = (int) fontSize;
-        if (font.getSize() == newFontSize) return false;
-
-        settings.setFontSize(newFontSize);
-        font = font.deriveFont(fontSize);
-        UIManager.put("defaultFont", font);
-        FlatLaf.updateUI();
-        return true;
-    }
-
-    public static void setTheme(Gui gui, Theme theme) {
-        Theme currentTheme = settings.getTheme();
-        if (currentTheme == theme) return;
-        settings.setTheme(theme);
-        logger.info("Changing Theme from '" + currentTheme + "' to '" + settings.getTheme() + "'.");
-
-        // Update UI
+        // UI aktualisieren
+        logger.info("Changing Theme from '" + oldTheme.getTheme() + "' to '" + theme.getTheme() + "'.");
         updateFlatLaf();
         FlatLaf.updateUI();
         gui.updateTheme();
     }
 
-    public static void setLanguage(Gui gui, Language language) {
-        Language currentLanguage = settings.getLanguage();
-        if (currentLanguage == language) return;
+    public static void updateFontSize(Gui gui, int fontSize) {
+        if (fontSize < Settings.MIN_FONT_SIZE || fontSize > Settings.MAX_FONT_SIZE) return;
 
-        settings.setLanguage(language);
-        logger.info("Changing Language from '" + language + "' to '" + settings.getLanguage() + "'.");
-        gui.rebuild();
+        // Wenn sich die Schriftgröße nicht ändert, abbrechen
+        if (!settings.setFontSize(fontSize)) return;
+
+        // UI aktualisieren
+        font = font.deriveFont((float) fontSize);
+        UIManager.put("defaultFont", font);
+        FlatLaf.updateUI();
+        gui.handleAction(ActionType.ACTION_UPDATE_FONT);
+    }
+
+    // ========================================
+    // Bild Bearbeitung & Graphics
+    // ========================================
+    public static double getImageScaleFactor(BufferedImage image, Container container) {
+        int imgWidth = image.getWidth(null);
+        int imgHeight = image.getHeight(null);
+
+        double scaleWidth = (double) container.getWidth() / imgWidth;
+        double scaleHeight = (double) container.getHeight() / imgHeight;
+        return Math.min(scaleWidth, scaleHeight);
     }
 
     public static Graphics2D createHighQualityGraphics2D(Graphics g) {
@@ -277,8 +302,7 @@ public final class GuiUtils {
         return getRotatedImage(mirrored, workspace.getConfig().getRotation(), imageType);
     }
 
-    private static BufferedImage getMirroredImage(BufferedImage image, boolean mirrorX, boolean mirrorY,
-                                                  int imageType) {
+    private static BufferedImage getMirroredImage(BufferedImage image, boolean mirrorX, boolean mirrorY, int imageType) {
         if (!mirrorX && !mirrorY) return image;
 
         int width = image.getWidth();
@@ -321,15 +345,6 @@ public final class GuiUtils {
         return rotatedImage;
     }
 
-    public static double getImageScaleFactor(BufferedImage image, Container container) {
-        int imgWidth = image.getWidth(null);
-        int imgHeight = image.getHeight(null);
-
-        double scaleWidth = (double) container.getWidth() / imgWidth;
-        double scaleHeight = (double) container.getHeight() / imgHeight;
-        return Math.min(scaleWidth, scaleHeight);
-    }
-
     public static void drawCenteredText(Graphics2D g2D, String text, Container container) {
         FontMetrics metrics = g2D.getFontMetrics(g2D.getFont());
         int textWidth = metrics.stringWidth(text);
@@ -340,15 +355,9 @@ public final class GuiUtils {
         g2D.drawString(text, x, y);
     }
 
-    public static boolean valueFitsInRange(Number number, SpinnerNumberModel model) {
-        double minValue = ((Number) model.getMinimum()).doubleValue();
-        double maxValue = ((Number) model.getMaximum()).doubleValue();
-        double stepSize = model.getStepSize().doubleValue();
-        double value = number.doubleValue();
-
-        return NumberUtils.valueFitsInRange(value, minValue, maxValue, stepSize);
-    }
-
+    // ========================================
+    // Hilfsfunktionen
+    // ========================================
     public static void setEnabled(Container container, boolean enabled) {
         if (container == null) return;
 
@@ -368,6 +377,15 @@ public final class GuiUtils {
         else if (container instanceof JMenu menu) return menu.getMenuComponents();
         else if (container instanceof JScrollPane scrollPane) return scrollPane.getViewport().getComponents();
         else return container.getComponents();
+    }
+
+    public static boolean valueFitsInRange(Number number, SpinnerNumberModel model) {
+        double minValue = ((Number) model.getMinimum()).doubleValue();
+        double maxValue = ((Number) model.getMaximum()).doubleValue();
+        double stepSize = model.getStepSize().doubleValue();
+        double value = number.doubleValue();
+
+        return NumberUtils.valueFitsInRange(value, minValue, maxValue, stepSize);
     }
 
     public static void runWithoutAdjustmentEvents(JScrollBar scrollBar, Runnable action) {

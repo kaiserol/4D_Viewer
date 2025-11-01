@@ -1,5 +1,7 @@
 package de.uzk.image;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import de.uzk.utils.StringUtils;
 
 import java.util.Arrays;
@@ -23,6 +25,7 @@ public enum ImageFileType {
         this.extensions = extensions;
     }
 
+    @JsonValue
     public String getType() {
         return this.type;
     }
@@ -43,19 +46,32 @@ public enum ImageFileType {
         return getDescription() + " " + StringUtils.formatArray(formattedExtensions, ", ", '(', ')');
     }
 
-    public static ImageFileType fromExtension(String extension) {
-        if (extension != null) {
+    public static ImageFileType getDefault() {
+        return JPEG;
+    }
+
+    @JsonCreator
+    public static ImageFileType fromType(String newType) {
+        if (newType != null) {
             for (ImageFileType type : ImageFileType.values()) {
-                boolean sameName = type.name().equalsIgnoreCase(extension);
-                boolean hasSameExtension = Arrays.stream(type.extensions).anyMatch(ext -> ext.equalsIgnoreCase(extension));
-                if (sameName || hasSameExtension) return type;
+                boolean sameName = type.name().equalsIgnoreCase(newType);
+                boolean sameType = type.getType().equalsIgnoreCase(newType);
+                if (sameName || sameType) return type;
             }
         }
+        // Fallback
         return getDefault();
     }
 
-    public static ImageFileType getDefault() {
-        return JPEG;
+    public static ImageFileType fromExtension(String extension) {
+        if (extension != null) {
+            for (ImageFileType type : ImageFileType.values()) {
+                boolean hasSameExtension = Arrays.stream(type.extensions).anyMatch(ext -> ext.equalsIgnoreCase(extension));
+                if (hasSameExtension) return type;
+            }
+        }
+        // Fallback
+        return getDefault();
     }
 
     public static ImageFileType[] sortedValues() {

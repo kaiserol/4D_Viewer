@@ -1,5 +1,6 @@
 package de.uzk.action;
 
+import de.uzk.config.Settings;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.dialogs.DialogDisclaimer;
@@ -12,14 +13,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import static de.uzk.Main.settings;
 import static de.uzk.Main.workspace;
 import static de.uzk.action.ActionType.*;
 
 public class ActionHandler extends KeyAdapter implements MouseWheelListener {
-    // Es werden ca. 20 FPS / 13 FPS (bei gedrehten Bildern) erreicht, wenn Bilder durchgescrollt werden
-    private static final long UPDATE_INTERVAL_MS = 50;
-    private static final long LONG_UPLOAD_INTERVAL_MS = 75;
-
     // GUI-Elemente
     private final Gui gui;
     private final DialogDisclaimer dialogDisclaimer;
@@ -29,16 +27,20 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     // Zeitmessung, um Bildwechsel zu takten
     private long lastUpdateTime = 0;
 
+    // Es werden maximal 20 FPS / 13 FPS (bei gedrehten Bildern) erreicht
+    private static final long UPDATE_INTERVAL_MS = 50;
+    private static final long LONG_UPLOAD_INTERVAL_MS = 75;
+
     public ActionHandler(Gui gui) {
         this.gui = gui;
         this.dialogDisclaimer = new DialogDisclaimer(gui.getContainer());
         this.dialogLogViewer = new DialogLogViewer(gui.getContainer());
-        this.dialogSettings = new DialogSettings();
+        this.dialogSettings = new DialogSettings(gui.getContainer());
     }
 
-    // ======================================
+    // ========================================
     // Key Events
-    // ======================================
+    // ========================================
     @Override
     public void keyPressed(KeyEvent e) {
         ActionType actionType = ActionType.fromKeyEvent(e);
@@ -46,9 +48,9 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         navigateImage(actionType);
     }
 
-    // ======================================
+    // ========================================
     // MouseWheel Events
-    // ======================================
+    // ========================================
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         boolean shift = e.isShiftDown();
@@ -90,9 +92,9 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         gui.update(axis);
     }
 
-    // ======================================
+    // ========================================
     // Aktionen aus Tastaturkürzeln
-    // ======================================
+    // ========================================
     public void executeAction(ActionType actionType) {
         if (actionType == null) return;
         switch (actionType) {
@@ -105,9 +107,9 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_TOGGLE_PIN_TIME -> gui.handleAction(SHORTCUT_TOGGLE_PIN_TIME);
 
             // window actions
-            case SHORTCUT_FONT_SIZE_DECREASE -> GuiUtils.decreaseFont(gui);
-            case SHORTCUT_FONT_SIZE_INCREASE -> GuiUtils.increaseFont(gui);
-            case SHORTCUT_FONT_SIZE_RESTORE -> GuiUtils.restoreFont(gui);
+            case SHORTCUT_FONT_SIZE_DECREASE -> GuiUtils.updateFontSize(gui, settings.getFontSize() - 1);
+            case SHORTCUT_FONT_SIZE_INCREASE -> GuiUtils.updateFontSize(gui, settings.getFontSize() + 1);
+            case SHORTCUT_FONT_SIZE_RESTORE -> GuiUtils.updateFontSize(gui, Settings.DEFAULT_FONT_SIZE);
 
             case SHORTCUT_SHOW_DISCLAIMER -> dialogDisclaimer.show();
             case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();

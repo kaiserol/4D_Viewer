@@ -1,6 +1,7 @@
 package de.uzk.config;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -8,9 +9,8 @@ import java.util.Locale;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public enum Language {
-    ENGLISH( "en", "UK"),
+    ENGLISH("en", "UK"),
     GERMAN("de", "DE");
-
 
     private final String language;
     private final Locale locale;
@@ -34,25 +34,25 @@ public enum Language {
         return this.locale;
     }
 
-    @JsonCreator
-    public static Language fromLanguage(String language) {
-        if (language != null) {
-            for (Language lang : Language.values()) {
-                boolean sameName = lang.name().equalsIgnoreCase(language);
-                boolean sameLanguage = lang.getLanguage().equalsIgnoreCase(language);
-                if (sameName || sameLanguage) return lang;
-            }
-        }
-        // Fallback
-        return getDefault();
-    }
-
     public static Language getDefault() {
         return ENGLISH;
     }
 
     public static Language getSystemDefault() {
         return fromLanguage(Locale.getDefault().getLanguage());
+    }
+
+    @JsonCreator
+    public static Language fromLanguage(String newLanguage) {
+        if (newLanguage != null) {
+            for (Language lang : Language.values()) {
+                boolean sameName = lang.name().equalsIgnoreCase(newLanguage);
+                boolean sameLanguage = lang.getLanguage().equalsIgnoreCase(newLanguage);
+                if (sameName || sameLanguage) return lang;
+            }
+        }
+        // Fallback
+        return getDefault();
     }
 
     public static Language[] sortedValues() {

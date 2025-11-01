@@ -29,7 +29,7 @@ public class DialogLogViewer {
         this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(e -> dialog.dispose(),
+        this.dialog.getRootPane().registerKeyboardAction(e -> this.dialog.dispose(),
                 KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
         );
     }
@@ -109,9 +109,9 @@ public class DialogLogViewer {
         return getScrollableTextArea(StringUtils.wrapHtml(missingImages, "monospaced"));
     }
 
-    // ==========================================================
+    // ========================================
     // Hilfsfunktionen
-    // ==========================================================
+    // ========================================
     private JComponent getScrollableTextArea(String htmlContent) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
