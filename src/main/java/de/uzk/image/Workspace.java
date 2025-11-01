@@ -86,17 +86,15 @@ public class Workspace {
     }
 
     private void load(ImageFileType imageFileType) {
-        Path directoryName = this.imageFilesDirectory.getFileName();
-        this.config = Config.load(directoryName);
+        this.config = Config.load();
         this.config.setImageFileType(imageFileType);
-        this.markers = Markers.load(directoryName);
+        this.markers = Markers.load();
     }
 
     public void save() {
         if (isOpen()) {
-            Path directoryName = this.imageFilesDirectory.getFileName();
-            this.config.save(directoryName);
-            this.markers.save(directoryName);
+            this.config.save();
+            this.markers.save();
         }
     }
 
@@ -334,9 +332,9 @@ public class Workspace {
     }
 
     private Path getMissingFile(int time, int level, ImageFile imageFileNameReference) {
-        int timeStrLength = getTimeStr(imageFileNameReference.getName()).length();
-        int levelStrLength = getLevelStr(imageFileNameReference.getName()).length();
-        String extension = getExtension(imageFileNameReference.getName());
+        int timeStrLength = getTimeStr(imageFileNameReference.getFileName()).length();
+        int levelStrLength = getLevelStr(imageFileNameReference.getFileName()).length();
+        String extension = getExtension(imageFileNameReference.getFileName());
 
         // Dynamische Bestandteile erzeugen
         String timeStr = (this.config.getTimeSep() + "%0" + timeStrLength + "d").formatted(time);
@@ -363,7 +361,7 @@ public class Workspace {
                 setImageFile(time, level, imageFile);
                 imagesCount++;
             } else {
-                duplicatedImagesReport.append("- Filename: '").append(imageFile.getName()).append("' (time=").append(time).append(", level=").append(level).append(")").append(StringUtils.NEXT_LINE);
+                duplicatedImagesReport.append("- Filename: '").append(imageFile.getFileName()).append("' (time=").append(time).append(", level=").append(level).append(")").append(StringUtils.NEXT_LINE);
                 duplicatedImagesCount++;
             }
         }
@@ -399,7 +397,7 @@ public class Workspace {
                         imageFile = new ImageFile(getMissingFile(time, level, imageFileReference), time, level);
                         setImageFile(time, level, imageFile);
                     }
-                    missingImagesReport.append("- Filename: '").append(imageFile.getName()).append("' (time=").append(time).append(", level=").append(level).append(")").append(StringUtils.NEXT_LINE);
+                    missingImagesReport.append("- Filename: '").append(imageFile.getFileName()).append("' (time=").append(time).append(", level=").append(level).append(")").append(StringUtils.NEXT_LINE);
                     missingImagesCount++;
                 }
             }
@@ -441,7 +439,7 @@ public class Workspace {
                 sb.append("Expected images:").append(StringUtils.NEXT_LINE);
                 for (int level : missingLevels) {
                     ImageFile imageFile = getImageFile(time, level);
-                    String name = imageFile != null ? imageFile.getName() : "???";
+                    String name = imageFile != null ? imageFile.getFileName() : "???";
                     sb.append(" - '").append(name).append("' (time=").append(time).append(", level=").append(level).append(")").append(StringUtils.NEXT_LINE);
                 }
                 sb.append(StringUtils.NEXT_LINE);

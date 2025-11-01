@@ -176,8 +176,8 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
 
     private void updateDirectoryText() {
         if (workspace.isOpen()) {
-            Path path = workspace.getImageFilesDirectory().resolve(workspace.getImageFile().getName());
-            this.txtFieldDirectory.setText(path.toAbsolutePath().toString());
+            Path path = workspace.getImageFilesDirectory().resolve(workspace.getImageFile().getFileName());
+            this.txtFieldDirectory.setText(path.toString());
         } else {
             this.txtFieldDirectory.setText(null);
         }

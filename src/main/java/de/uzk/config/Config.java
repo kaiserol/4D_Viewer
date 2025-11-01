@@ -4,14 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import de.uzk.image.ImageFileType;
-import de.uzk.utils.AppPath;
-import tools.jackson.databind.ObjectMapper;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import static de.uzk.Main.logger;
+import static de.uzk.utils.AppPath.*;
 
 public class Config {
     // Konfigurationen
@@ -39,9 +36,6 @@ public class Config {
     public static final double MAX_TIME_UNIT = 600;
     public static final double MAX_LEVEL_UNIT = 1000;
     public static final int MAX_ROTATION = 359;
-
-    // Dateiname der Konfiguration
-    private static final String CONFIG_FILE_NAME = "config.json";
 
     // Nur Konstanten vom primitiven Datentyp können als Default-Werte verwendet werden (inklusive Strings)
     @JsonCreator
@@ -137,29 +131,17 @@ public class Config {
         this.rotation = (rotation >= 0 && rotation <= MAX_ROTATION) ? rotation : DEFAULT_ROTATION;
     }
 
-    public void save(Path folderName) {
-        Path location = AppPath.VIEWER_HOME_DIRECTORY.resolve(folderName).resolve(CONFIG_FILE_NAME);
-        logger.info("Loading config under '" + location.toAbsolutePath() + "' ...");
-        try {
-            if (!Files.exists(location)) {
-                Files.createDirectories(location.getParent());
-            }
-            new ObjectMapper().writeValue(location, this);
-        } catch (Exception e) {
-            logger.error("Failed to save config: " + e.getMessage());
-        }
+    public void save() {
+        Path jsonPath = getAppProjectPath(Path.of(CONFIG_FILE_NAME));
+        saveJson(jsonPath, this);
     }
 
-    public static Config load(Path folderName) {
-        Path directory = AppPath.VIEWER_HOME_DIRECTORY.resolve(folderName).resolve(CONFIG_FILE_NAME);
-        logger.info("Loading config from '" + directory.toAbsolutePath() + "' ...");
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(directory, Config.class);
-        } catch (Exception e) {
-            logger.error("Failed to load config: " + e.getMessage());
-        }
-        return getDefault();
+    public static Config load() {
+        Path jsonPath = getAppProjectPath(Path.of(CONFIG_FILE_NAME));
+
+        Object obj = loadJson(jsonPath, Config.class);
+        if (obj instanceof Config config) return config;
+        else return getDefault();
     }
 
     public static Config getDefault() {

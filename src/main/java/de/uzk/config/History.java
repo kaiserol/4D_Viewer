@@ -1,18 +1,14 @@
 package de.uzk.config;
 
-import de.uzk.utils.AppPath;
-
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
-import static de.uzk.Main.logger;
+import static de.uzk.utils.AppPath.*;
 
 public class History {
-    // Pfade
-    private static final Path HISTORY_PATH = AppPath.VIEWER_HOME_DIRECTORY.resolve("history");
+    // Historie
     private final LinkedList<Path> history;
 
     private History(List<Path> history) {
@@ -29,7 +25,7 @@ public class History {
 
     public void add(Path directory) {
         if (directory == null) return;
-        if (directory.toAbsolutePath().toString().trim().isEmpty()) return;
+        if (directory.toString().trim().isEmpty()) return;
 
         // Normalisiere den Pfad für konsistente Vergleiche
         Path normalized = directory.normalize();
@@ -50,22 +46,16 @@ public class History {
     }
 
     public void save() {
-        try {
-            List<String> lines = this.history.stream().map(Path::toString).toList();
-            Files.write(HISTORY_PATH, lines);
-        } catch (IOException e) {
-            logger.error("Failed to save history: " + e.getMessage());
-        }
+        Path filePath = getAppPath(Path.of(HISTORY_FILE_NAME));
+        List<String> lines = this.history.stream().map(Path::toString).toList();
+        saveFile(filePath, lines);
     }
 
     public static History load() {
-        try {
-            List<Path> history = Files.readAllLines(HISTORY_PATH).stream()
-                    .map(Path::of)
-                    .toList();
-            return new History(history);
-        } catch (IOException e) {
-            return new History(null);
-        }
+        Path filePath = getAppPath(Path.of(HISTORY_FILE_NAME));
+
+        List<String> lines = loadFile(filePath);
+        if (lines == null) return new History(null);
+        return new History(lines.stream().map(Path::of).toList());
     }
 }

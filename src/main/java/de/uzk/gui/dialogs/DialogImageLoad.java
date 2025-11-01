@@ -62,7 +62,7 @@ public class DialogImageLoad implements LoadingImageListener {
         // Wenn eine gültige "Datei" übergeben wird, wird ins Elternverzeichnis navigiert,
         // ansonsten wird "directory" beibehalten
         Path changedDirectory = Files.isRegularFile(directory) ? directory.getParent() : directory;
-        this.textFieldDirectoryName.setText(changedDirectory.toAbsolutePath().toString());
+        this.textFieldDirectoryName.setText(changedDirectory.toString());
 
         // Thread starten
         this.thread = null;
@@ -129,7 +129,7 @@ public class DialogImageLoad implements LoadingImageListener {
     // ========================================
     @Override
     public void onLoadingStart() {
-        logger.info("Loading Images from '" + workspace.getImageFilesDirectory() + "' ...");
+        logger.info(String.format("Loading Images files from '%s'", workspace.getImageFilesDirectory()));
     }
 
     @Override

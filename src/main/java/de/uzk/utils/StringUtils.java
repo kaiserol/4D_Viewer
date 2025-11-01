@@ -94,7 +94,7 @@ public final class StringUtils {
      */
     public static String applyFontSize(String text, int percentage) {
         if (percentage < 0 || percentage > 500)
-            throw new IllegalArgumentException("Prozentwert muss zwischen 0 und 500 liegen.");
+            throw new IllegalArgumentException("Percentage value must be between 0 and 500.");
 
         String fontSize = (percentage / 100.0) + "em";
         return String.format("<span style=\"font-size:%s;\">%s</span>", fontSize, text);

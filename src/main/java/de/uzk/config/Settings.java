@@ -3,14 +3,10 @@ package de.uzk.config;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import de.uzk.Main;
-import de.uzk.utils.AppPath;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 
 import java.nio.file.Path;
 
-import static de.uzk.Main.logger;
+import static de.uzk.utils.AppPath.*;
 
 public class Settings {
     // Einstellungen
@@ -30,9 +26,6 @@ public class Settings {
     // MinMax Konstanten
     public static final int MIN_FONT_SIZE = 8;
     public static final int MAX_FONT_SIZE = 24;
-
-    // Pfad der Einstellungsdatei
-    private static final Path SETTINGS_FILE_NAME = AppPath.VIEWER_HOME_DIRECTORY.resolve("settings.json");
 
     // Nur Konstanten vom primitiven Datentyp können als Default-Werte verwendet werden (inklusive Strings)
     @JsonCreator
@@ -89,24 +82,16 @@ public class Settings {
     }
 
     public void save() {
-        logger.info("Saving settings.json ...");
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValue(SETTINGS_FILE_NAME, this);
-        } catch (JacksonException e) {
-            Main.logger.error("Couldn't save settings.json: " + e.getMessage());
-        }
+        Path jsonPath = getAppPath(Path.of(SETTINGS_FILE_NAME));
+        saveJson(jsonPath, this);
     }
 
     public static Settings load() {
-        logger.info("Loading settings.json ...");
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(SETTINGS_FILE_NAME, Settings.class);
-        } catch (JacksonException e) {
-            logger.error("Couldn't load settings.json: " + e.getMessage());
-        }
-        return getDefault();
+        Path jsonPath = getAppPath(Path.of(SETTINGS_FILE_NAME));
+
+        Object obj = loadJson(jsonPath, Settings.class);
+        if (obj instanceof Settings settings) return settings;
+        else return getDefault();
     }
 
     private static Settings getDefault() {

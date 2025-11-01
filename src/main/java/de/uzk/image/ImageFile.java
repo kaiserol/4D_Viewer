@@ -26,7 +26,7 @@ public class ImageFile implements Comparable<ImageFile> {
         return this.path;
     }
 
-    public String getName() {
+    public String getFileName() {
         return this.name;
     }
 

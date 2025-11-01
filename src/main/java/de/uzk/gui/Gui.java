@@ -132,7 +132,10 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     private void addMenuBar() {
         AppMenuBar menuBar = new AppMenuBar(this);
-        this.container.setJMenuBar(menuBar.getContainer());
+
+        Desktop desktop = GuiUtils.getDesktopSecure();
+        if (desktop != null) Desktop.getDesktop().setDefaultMenuBar(menuBar.getContainer());
+        else this.container.setJMenuBar(menuBar.getContainer());
     }
 
     private void addContent() {

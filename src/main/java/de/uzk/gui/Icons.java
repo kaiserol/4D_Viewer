@@ -69,7 +69,7 @@ public final class Icons {
             try {
                 return ImageIO.read(path.toFile());
             } catch (Exception e) {
-                if (showErrorIfNotFound) logger.error("The Image '" + path.toAbsolutePath() + "' could not be loaded.");
+                if (showErrorIfNotFound) logger.error("The Image '" + path + "' could not be loaded.");
             }
         }
         return null;
