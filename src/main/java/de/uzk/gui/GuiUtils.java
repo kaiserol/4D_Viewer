@@ -18,6 +18,9 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 
 import static de.uzk.Main.*;
@@ -175,13 +178,15 @@ public final class GuiUtils {
     public static void updateFlatLaf() {
         FlatLaf.setup(settings.getTheme().isLight() ? getLightMode() : getDarkMode());
 
-        // Farben Eigenschaften
+        // Farben setzen
         textColor = UIManager.getColor("Label.foreground");
         borderColor = UIManager.getColor("Component.borderColor");
         backgroundColor = UIManager.getColor("TextArea.background");
 
-        // Schriftart Eigenschaft
-        font = UIManager.getFont("defaultFont");
+        // Schriftart setzen
+        Font defaultFont = UIManager.getFont("defaultFont");
+        font = defaultFont.deriveFont((float) settings.getFontSize());
+        UIManager.put("defaultFont", font);
         FlatLaf.updateUI();
 
         // Titelleiste auf FlatLaf-Dekoration umstellen
@@ -199,9 +204,15 @@ public final class GuiUtils {
         UIManager.put("ProgressBar.arc", 5);
 
         // TabbedPane Eigenschaften
+        UIManager.put("TabbedPane.background", backgroundColor);
         UIManager.put("TabbedPane.contentSeparatorHeight", 1);
         UIManager.put("TabbedPane.showTabSeparators", true);
-        UIManager.put("TabbedPane.background", backgroundColor);
+        UIManager.put("TabbedPane.tabSeparatorsFullHeight", true);
+        UIManager.put("TabbedPane.tabArc", 0);
+        UIManager.put("TabbedPane.tabSelectionArc", 0);
+        UIManager.put("TabbedPane.tabSelectionHeight", 2);
+        UIManager.put("TabbedPane.underlineColor", COLOR_BLUE);
+        UIManager.put("TabbedPane.inactiveUnderlineColor", settings.getTheme().isLight() ? Color.GRAY : Color.WHITE);
 
         // ScrollBar Eigenschaften
         UIManager.put("Component.arrowType", "chevron");
@@ -270,6 +281,7 @@ public final class GuiUtils {
         font = font.deriveFont((float) fontSize);
         UIManager.put("defaultFont", font);
         FlatLaf.updateUI();
+        gui.updateTheme();
         gui.handleAction(ActionType.ACTION_UPDATE_FONT);
     }
 
@@ -395,5 +407,21 @@ public final class GuiUtils {
         } finally {
             for (AdjustmentListener l : listeners) scrollBar.addAdjustmentListener(l);
         }
+    }
+
+    public static String getAllUIManagerProperties() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== UIManager Properties ===\n");
+
+        // Alle Keys holen und alphabetisch sortieren
+        List<Object> keys = new ArrayList<>(UIManager.getDefaults().keySet());
+        keys.sort(Comparator.comparing(Object::toString, String.CASE_INSENSITIVE_ORDER));
+
+        for (Object key : keys) {
+            Object value = UIManager.get(key).toString().replaceAll("\\n", " ");
+            sb.append(String.format("%-40s : %s%n", key, value));
+        }
+
+        return sb.toString();
     }
 }

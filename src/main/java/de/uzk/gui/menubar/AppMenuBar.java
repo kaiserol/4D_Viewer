@@ -96,6 +96,5 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         itemFontDecrease.getComponent().setEnabled(fontSize != Settings.MIN_FONT_SIZE);
         itemFontIncrease.getComponent().setEnabled(fontSize != Settings.MAX_FONT_SIZE);
         itemFontRestore.getComponent().setEnabled(fontSize != Settings.DEFAULT_FONT_SIZE);
-        gui.updateUI();
     }
 }
