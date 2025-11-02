@@ -17,6 +17,7 @@ import static de.uzk.config.LanguageHandler.getWord;
 import static de.uzk.gui.Icons.*;
 
 public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
+    // MenuBar Elemente
     private final CustomMenuBar menuBar;
     private CustomMenuItem itemFontDecrease;
     private CustomMenuItem itemFontIncrease;

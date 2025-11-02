@@ -35,7 +35,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         this.gui = gui;
         this.dialogDisclaimer = new DialogDisclaimer(gui.getContainer());
         this.dialogLogViewer = new DialogLogViewer(gui.getContainer());
-        this.dialogSettings = new DialogSettings(gui.getContainer());
+        this.dialogSettings = new DialogSettings(gui);
     }
 
     // ========================================
@@ -44,7 +44,6 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     @Override
     public void keyPressed(KeyEvent e) {
         ActionType actionType = ActionType.fromKeyEvent(e);
-        if (actionType == null) return;
         navigateImage(actionType);
     }
 
@@ -59,6 +58,51 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         scroll(axis, rotation, false);
     }
 
+    // ========================================
+    // Aktionen aus Tastaturkürzeln
+    // ========================================
+    public void executeAction(ActionType actionType) {
+        if (actionType == null) return;
+        switch (actionType) {
+            // Bearbeiten Shortcuts
+            case SHORTCUT_TURN_IMAGE_90_LEFT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_LEFT);
+            case SHORTCUT_TURN_IMAGE_90_RIGHT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_RIGHT);
+            case SHORTCUT_TAKE_SCREENSHOT -> gui.handleAction(SHORTCUT_TAKE_SCREENSHOT);
+
+            // Sonstige Shortcuts
+            case SHORTCUT_TOGGLE_PIN_TIME -> gui.handleAction(SHORTCUT_TOGGLE_PIN_TIME);
+
+            // Fenster Shortcuts
+            case SHORTCUT_FONT_SIZE_DECREASE -> GuiUtils.updateFontSize(gui, settings.getFontSize() - 1);
+            case SHORTCUT_FONT_SIZE_INCREASE -> GuiUtils.updateFontSize(gui, settings.getFontSize() + 1);
+            case SHORTCUT_FONT_SIZE_RESTORE -> GuiUtils.updateFontSize(gui, Settings.DEFAULT_FONT_SIZE);
+            case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show();
+
+            // Hilfe Shortcuts
+            case SHORTCUT_SHOW_DISCLAIMER -> dialogDisclaimer.show();
+            case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();
+        }
+    }
+
+    private void navigateImage(ActionType actionType) {
+        if (actionType == null) return;
+        switch (actionType) {
+            // Navigieren Shortcuts
+            case SHORTCUT_GO_TO_FIRST_IMAGE -> scrollToBoundary(Axis.TIME, true);
+            case SHORTCUT_GO_TO_PREV_IMAGE -> scroll(Axis.TIME, -1, false);
+            case SHORTCUT_GO_TO_NEXT_IMAGE -> scroll(Axis.TIME, 1, false);
+            case SHORTCUT_GO_TO_LAST_IMAGE -> scrollToBoundary(Axis.TIME, false);
+
+            case SHORTCUT_GO_TO_FIRST_LEVEL -> scrollToBoundary(Axis.LEVEL, true);
+            case SHORTCUT_GO_TO_PREV_LEVEL -> scroll(Axis.LEVEL, -1, false);
+            case SHORTCUT_GO_TO_NEXT_LEVEL -> scroll(Axis.LEVEL, 1, false);
+            case SHORTCUT_GO_TO_LAST_LEVEL -> scrollToBoundary(Axis.LEVEL, false);
+        }
+    }
+
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
     public void scroll(Axis axis, int rotation, boolean isAdjusting) {
         // Gleiche Logik für Tastatur, Maus und ScrollBar
         if (axis == null || rotation == 0) return;
@@ -90,47 +134,6 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         if (toFirst) workspace.toFirst(axis);
         else workspace.toLast(axis);
         gui.update(axis);
-    }
-
-    // ========================================
-    // Aktionen aus Tastaturkürzeln
-    // ========================================
-    public void executeAction(ActionType actionType) {
-        if (actionType == null) return;
-        switch (actionType) {
-            // edit actions
-            case SHORTCUT_TURN_IMAGE_90_LEFT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_LEFT);
-            case SHORTCUT_TURN_IMAGE_90_RIGHT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_RIGHT);
-            case SHORTCUT_TAKE_SCREENSHOT -> gui.handleAction(SHORTCUT_TAKE_SCREENSHOT);
-
-            // other actions
-            case SHORTCUT_TOGGLE_PIN_TIME -> gui.handleAction(SHORTCUT_TOGGLE_PIN_TIME);
-
-            // window actions
-            case SHORTCUT_FONT_SIZE_DECREASE -> GuiUtils.updateFontSize(gui, settings.getFontSize() - 1);
-            case SHORTCUT_FONT_SIZE_INCREASE -> GuiUtils.updateFontSize(gui, settings.getFontSize() + 1);
-            case SHORTCUT_FONT_SIZE_RESTORE -> GuiUtils.updateFontSize(gui, Settings.DEFAULT_FONT_SIZE);
-
-            case SHORTCUT_SHOW_DISCLAIMER -> dialogDisclaimer.show();
-            case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();
-
-            case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show(gui);
-        }
-    }
-
-    private void navigateImage(ActionType actionType) {
-        switch (actionType) {
-            // navigate actions
-            case SHORTCUT_GO_TO_FIRST_IMAGE -> scrollToBoundary(Axis.TIME, true);
-            case SHORTCUT_GO_TO_PREV_IMAGE -> scroll(Axis.TIME, -1, false);
-            case SHORTCUT_GO_TO_NEXT_IMAGE -> scroll(Axis.TIME, 1, false);
-            case SHORTCUT_GO_TO_LAST_IMAGE -> scrollToBoundary(Axis.TIME, false);
-
-            case SHORTCUT_GO_TO_FIRST_LEVEL -> scrollToBoundary(Axis.LEVEL, true);
-            case SHORTCUT_GO_TO_PREV_LEVEL -> scroll(Axis.LEVEL, -1, false);
-            case SHORTCUT_GO_TO_NEXT_LEVEL -> scroll(Axis.LEVEL, 1, false);
-            case SHORTCUT_GO_TO_LAST_LEVEL -> scrollToBoundary(Axis.LEVEL, false);
-        }
     }
 
     private boolean preventNextUpdate() {

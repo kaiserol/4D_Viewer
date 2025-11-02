@@ -9,25 +9,29 @@ import java.util.Locale;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public enum Language {
-    ENGLISH("en", "UK"),
-    GERMAN("de", "DE");
+    ENGLISH("English", "en", "UK"),
+    GERMAN("German", "de", "DE");
 
-    private final String language;
+    // ========================================
+    // Enum Deklaration
+    // ========================================
+    private final String value;
     private final Locale locale;
 
-    Language(String language, String country) {
-        if (language == null) throw new NullPointerException("Language is null.");
+    Language(String value, String shortForm, String country) {
+        if (value == null) throw new NullPointerException("Value is null.");
+        if (shortForm == null) throw new NullPointerException("Shortform is null.");
         if (country == null) throw new NullPointerException("Country is null.");
-        this.language = language;
+        this.value = value;
         this.locale = new Locale.Builder()
-                .setLanguage(language)
+                .setLanguage(shortForm)
                 .setRegion(country)
                 .build();
     }
 
     @JsonValue
-    public String getLanguage() {
-        return this.language;
+    public String getValue() {
+        return this.value;
     }
 
     public Locale getLocale() {
@@ -45,10 +49,10 @@ public enum Language {
     @JsonCreator
     public static Language fromLanguage(String newLanguage) {
         if (newLanguage != null) {
-            for (Language lang : Language.values()) {
-                boolean sameName = lang.name().equalsIgnoreCase(newLanguage);
-                boolean sameLanguage = lang.getLanguage().equalsIgnoreCase(newLanguage);
-                if (sameName || sameLanguage) return lang;
+            for (Language language : Language.values()) {
+                boolean sameName = language.name().equalsIgnoreCase(newLanguage);
+                boolean sameValue = language.getValue().equalsIgnoreCase(newLanguage);
+                if (sameName || sameValue) return language;
             }
         }
         // Fallback
@@ -57,7 +61,7 @@ public enum Language {
 
     public static Language[] sortedValues() {
         Language[] values = Language.values();
-        Arrays.sort(values, (lang1, lang2) -> lang1.toString().compareToIgnoreCase(lang2.toString()));
+        Arrays.sort(values, (language1, language2) -> language1.toString().compareToIgnoreCase(language2.toString()));
         return values;
     }
 

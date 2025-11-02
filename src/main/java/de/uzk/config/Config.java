@@ -2,7 +2,6 @@ package de.uzk.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import de.uzk.image.ImageFileType;
 
 import java.nio.file.Path;
@@ -12,7 +11,6 @@ import static de.uzk.utils.AppPath.*;
 
 public class Config {
     // Konfigurationen
-    @JsonUnwrapped
     private ImageFileType imageFileType;
     private String timeSep;
     private String levelSep;
@@ -23,31 +21,30 @@ public class Config {
     private int rotation;
 
     // Default-Konstanten
-    private static final ImageFileType DEFAULT_IMAGE_FILE_TYPE = ImageFileType.getDefault();
-    private static final String DEFAULT_TIME_SEP = "X";
-    private static final String DEFAULT_LEVEL_SEP = "L";
-    private static final double DEFAULT_TIME_UNIT = 30.0;
-    private static final double DEFAULT_LEVEL_UNIT = 1.0;
-    private static final boolean DEFAULT_MIRROR_X = false;
-    private static final boolean DEFAULT_MIRROR_Y = false;
-    private static final int DEFAULT_ROTATION = 0;
+    public static final ImageFileType DEFAULT_IMAGE_FILE_TYPE = ImageFileType.getDefault();
+    public static final String DEFAULT_TIME_SEP = "X";
+    public static final String DEFAULT_LEVEL_SEP = "L";
+    public static final double DEFAULT_TIME_UNIT = 30.0;
+    public static final double DEFAULT_LEVEL_UNIT = 1.0;
+    public static final boolean DEFAULT_MIRROR_X = false;
+    public static final boolean DEFAULT_MIRROR_Y = false;
+    public static final int DEFAULT_ROTATION = 0;
 
     // MinMax Konstanten
     public static final double MAX_TIME_UNIT = 600;
     public static final double MAX_LEVEL_UNIT = 1000;
     public static final int MAX_ROTATION = 359;
 
-    // Nur Konstanten vom primitiven Datentyp können als Default-Werte verwendet werden (inklusive Strings)
     @JsonCreator
     public Config(
-            @JsonProperty(value = "imageFileType") ImageFileType imageFileType,
-            @JsonProperty(value = "timeSep", defaultValue = DEFAULT_TIME_SEP) String timeSep,
-            @JsonProperty(value = "levelSep", defaultValue = DEFAULT_LEVEL_SEP) String levelSep,
-            @JsonProperty(value = "timeUnit", defaultValue = DEFAULT_TIME_UNIT + "") double timeUnit,
-            @JsonProperty(value = "levelUnit", defaultValue = DEFAULT_LEVEL_UNIT + "") double levelUnit,
-            @JsonProperty(value = "mirrorX", defaultValue = DEFAULT_MIRROR_X + "") boolean mirrorX,
-            @JsonProperty(value = "mirrorY", defaultValue = DEFAULT_MIRROR_Y + "") boolean mirrorY,
-            @JsonProperty(value = "rotation", defaultValue = DEFAULT_ROTATION + "") int rotation
+            @JsonProperty("imageFileType") ImageFileType imageFileType,
+            @JsonProperty("timeSep") String timeSep,
+            @JsonProperty("levelSep") String levelSep,
+            @JsonProperty("timeUnit") double timeUnit,
+            @JsonProperty("levelUnit") double levelUnit,
+            @JsonProperty("mirrorX") boolean mirrorX,
+            @JsonProperty("mirrorY") boolean mirrorY,
+            @JsonProperty("rotation") int rotation
     ) {
         this.setImageFileType(imageFileType);
         this.setTimeSep(timeSep);

@@ -24,8 +24,8 @@ public class LogEntryHandler {
         return logEntry;
     }
 
-    public void warning(String message) {
-        log(WARNING, message);
+    public void debug(String message) {
+        log(DEBUG, message);
     }
 
     public void info(String message) {
@@ -34,6 +34,10 @@ public class LogEntryHandler {
 
     public void error(String message) {
         log(ERROR, message);
+    }
+
+    public void warning(String message) {
+        log(WARNING, message);
     }
 
     public void logException(Exception e) {

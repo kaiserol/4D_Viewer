@@ -33,7 +33,7 @@ public class ScreenshotHelper {
         int count = getNextScreenshotIndex(date);
         String newFileName = "%s(%02d)_%s".formatted(date, count, fileName);
         Path filePath = directory.resolve(newFileName);
-        logger.info(String.format("Saving snapshot to '%s'", filePath));
+        logger.info(String.format("Saving snapshot '%s'", filePath));
 
         try {
             // Bild bearbeiten und speichern
@@ -41,7 +41,7 @@ public class ScreenshotHelper {
             ImageIO.write(editedImage, workspace.getConfig().getImageFileType().getType(), filePath.toFile());
             return true;
         } catch (IOException e) {
-            logger.error(String.format("Failed saving snapshot to '%s'", filePath));
+            logger.error(String.format("Failed saving snapshot '%s'", filePath));
         }
         return false;
     }
@@ -67,7 +67,7 @@ public class ScreenshotHelper {
                 }
             }
         } catch (IOException e) {
-            logger.error(String.format("Failed getting next snapshot index in '%s'", directory));
+            logger.error(String.format("Failed getting next snapshot index in the directory '%s'", directory));
         }
         return index;
     }
@@ -88,7 +88,7 @@ public class ScreenshotHelper {
                 if (fileName.matches(fileNamePattern)) count++;
             }
         } catch (IOException e) {
-            logger.error(String.format("Failed getting snapshot count in '%s'", directory));
+            logger.error(String.format("Failed getting snapshot count in the directory '%s'", directory));
         }
         return count;
     }

@@ -13,6 +13,7 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogLogViewer {
+    // GUI-Elemente
     private final JDialog dialog;
     private JTabbedPane tabs;
 
@@ -110,7 +111,7 @@ public class DialogLogViewer {
     }
 
     // ========================================
-    // Hilfsfunktionen
+    // Hilfsmethoden
     // ========================================
     private JComponent getScrollableTextArea(String htmlContent) {
         JPanel panel = new JPanel(new BorderLayout());

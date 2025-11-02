@@ -2,7 +2,6 @@ package de.uzk.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import java.nio.file.Path;
 
@@ -10,30 +9,27 @@ import static de.uzk.utils.AppPath.*;
 
 public class Settings {
     // Einstellungen
-    @JsonUnwrapped
     private Language language;
-    @JsonUnwrapped
     private Theme theme;
     private int fontSize;
     private boolean confirmExit;
 
     // Default-Konstanten
-    private static final Language DEFAULT_LANGUAGE = Language.getSystemDefault();
-    private static final Theme DEFAULT_THEME = Theme.getDefault();
+    public static final Language DEFAULT_LANGUAGE = Language.getSystemDefault();
+    public static final Theme DEFAULT_THEME = Theme.getDefault();
     public static final int DEFAULT_FONT_SIZE = 16;
-    private static final boolean DEFAULT_CONFIRM_EXIT = true;
+    public static final boolean DEFAULT_CONFIRM_EXIT = true;
 
     // MinMax Konstanten
     public static final int MIN_FONT_SIZE = 8;
     public static final int MAX_FONT_SIZE = 24;
 
-    // Nur Konstanten vom primitiven Datentyp können als Default-Werte verwendet werden (inklusive Strings)
     @JsonCreator
     public Settings(
-            @JsonProperty(value = "language") Language language,
-            @JsonProperty(value = "theme") Theme theme,
-            @JsonProperty(value = "fontSize", defaultValue = DEFAULT_FONT_SIZE + "") int fontSize,
-            @JsonProperty(value = "confirmExit", defaultValue = DEFAULT_CONFIRM_EXIT + "") boolean confirmExit
+            @JsonProperty("language") Language language,
+            @JsonProperty("theme") Theme theme,
+            @JsonProperty("fontSize") int fontSize,
+            @JsonProperty("confirmExit") boolean confirmExit
     ) {
         this.setLanguage(language);
         this.setTheme(theme);

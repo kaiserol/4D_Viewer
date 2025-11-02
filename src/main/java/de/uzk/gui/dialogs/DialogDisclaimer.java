@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogDisclaimer {
+    // GUI-Elemente
     private final JDialog dialog;
 
     // Maximale Dialogbreite
@@ -97,7 +98,7 @@ public class DialogDisclaimer {
     }
 
     // ========================================
-    // Hilfsfunktionen
+    // Hilfsmethoden
     // ========================================
     private void addLabelRow(JPanel panel, GridBagConstraints gbc, int row, String labelText, String labelValueText) {
         gbc.gridx = 0;

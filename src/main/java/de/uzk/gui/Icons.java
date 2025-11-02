@@ -16,12 +16,12 @@ import static de.uzk.Main.logger;
 import static de.uzk.Main.settings;
 
 public final class Icons {
-    // edit icons
+    // Bearbeiten Icons
     public static final FlatSVGIcon ICON_ARROW_LEFT_TURN = loadResourceSVG("images/icons_edit/arrow_left_turn.svg");
     public static final FlatSVGIcon ICON_ARROW_RIGHT_TURN = loadResourceSVG("images/icons_edit/arrow_right_turn.svg");
     public static final FlatSVGIcon ICON_DELETE = loadResourceSVG("images/icons_edit/delete.svg");
 
-    // navigate icons
+    // Navigieren Icons
     public static final FlatSVGIcon ICON_ARROW_LEFT_START = loadResourceSVG("images/icons_nav/arrow_left_start.svg");
     public static final FlatSVGIcon ICON_ARROW_LEFT = loadResourceSVG("images/icons_nav/arrow_left.svg");
     public static final FlatSVGIcon ICON_ARROW_RIGHT = loadResourceSVG("images/icons_nav/arrow_right.svg");
@@ -32,19 +32,19 @@ public final class Icons {
     public static final FlatSVGIcon ICON_ARROW_DOWN = loadResourceSVG("images/icons_nav/arrow_down.svg");
     public static final FlatSVGIcon ICON_ARROW_DOWN_END = loadResourceSVG("images/icons_nav/arrow_down_end.svg");
 
-    // other icons
+    // Sonstige Icons
     public static final FlatSVGIcon ICON_PIN = loadResourceSVG("images/icons/pin.svg");
 
-    // App Image
+    // App Icon
     public static final Image APP_IMAGE = Objects.requireNonNull(loadResourceSVG("images/4D.svg")).getImage();
 
     // Icons Arrays
     private static final FlatSVGIcon[] ICONS_COLOR_BLUE = {
-            // other icons
+            // Sonstige Icons
             ICON_PIN,
     };
     private static final FlatSVGIcon[] ICONS_COLOR_ON_THEME_SWITCH = {
-            // navigate icons
+            // Navigieren Icons
             ICON_ARROW_LEFT_START,
             ICON_ARROW_LEFT,
             ICON_ARROW_RIGHT,
@@ -55,7 +55,7 @@ public final class Icons {
             ICON_ARROW_DOWN,
             ICON_ARROW_DOWN_END,
 
-            // edit icons
+            // Bearbeiten Icons
             ICON_ARROW_LEFT_TURN,
             ICON_ARROW_RIGHT_TURN,
             ICON_DELETE,
@@ -69,7 +69,9 @@ public final class Icons {
             try {
                 return ImageIO.read(path.toFile());
             } catch (Exception e) {
-                if (showErrorIfNotFound) logger.error("The Image '" + path + "' could not be loaded.");
+                if (showErrorIfNotFound) {
+                    logger.error(String.format("Failed loading image '%s'", path));
+                }
             }
         }
         return null;
@@ -84,7 +86,7 @@ public final class Icons {
             InputStream svgStream = svgUrl.openStream();
             return new FlatSVGIcon(svgStream);
         } catch (IOException e) {
-            logger.error("The Image '" + svgNameCleanedFileSeps + "' could not be loaded.");
+            logger.error(String.format("Failed loading SVG ressource '%s'", svgNameCleanedFileSeps));
             return null;
         }
     }

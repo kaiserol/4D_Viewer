@@ -5,7 +5,6 @@ import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import de.uzk.action.ActionType;
 import de.uzk.config.Language;
-import de.uzk.config.LanguageHandler;
 import de.uzk.config.Settings;
 import de.uzk.config.Theme;
 import de.uzk.utils.NumberUtils;
@@ -32,7 +31,7 @@ public final class GuiUtils {
     public static final Color COLOR_RED = new Color(255, 86, 86);
     public static final Color COLOR_DARK_RED = new Color(148, 0, 0);
 
-    // GUI-Elemente
+    // Eigenschaften
     private static Color textColor;
     private static Color borderColor;
     private static Color backgroundColor;
@@ -118,7 +117,7 @@ public final class GuiUtils {
         try {
             desktop.browse(url.toURI());
         } catch (Exception e) {
-            logger.error("Unable to open link: " + url);
+            logger.error(String.format("Failed opening web link '%s'", url));
         }
     }
 
@@ -243,7 +242,7 @@ public final class GuiUtils {
         if (!settings.setLanguage(language)) return;
 
         // UI aktualisieren
-        logger.info("Changing Language from '" + oldLanguage.getLanguage() + "' to '" + language.getLanguage() + "'.");
+        logger.info(String.format("Updating Language from '%s' to '%s'", oldLanguage.getValue(), language.getValue()));
         Locale.setDefault(language.getLocale());
         JComponent.setDefaultLocale(language.getLocale());
         gui.rebuild();
@@ -255,7 +254,7 @@ public final class GuiUtils {
         if (!settings.setTheme(theme)) return;
 
         // UI aktualisieren
-        logger.info("Changing Theme from '" + oldTheme.getTheme() + "' to '" + theme.getTheme() + "'.");
+        logger.info(String.format("Updating Theme from '%s' to '%s'", oldTheme.getValue(), theme.getValue()));
         updateFlatLaf();
         FlatLaf.updateUI();
         gui.updateTheme();
@@ -356,7 +355,7 @@ public final class GuiUtils {
     }
 
     // ========================================
-    // Hilfsfunktionen
+    // Hilfsmethoden
     // ========================================
     public static void setEnabled(Container container, boolean enabled) {
         if (container == null) return;

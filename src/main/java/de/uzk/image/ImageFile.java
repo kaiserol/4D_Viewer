@@ -13,11 +13,10 @@ public class ImageFile implements Comparable<ImageFile> {
 
     public ImageFile(Path path, int time, int level) {
         if (path == null) throw new NullPointerException("Path is null.");
-        this.path = path;
-        this.name = path.getFileName().toString();
-
         if (time < 0) throw new IllegalArgumentException("Time must be greater than 0.");
         if (level < 0) throw new IllegalArgumentException("Level must be greater than 0.");
+        this.path = path;
+        this.name = path.getFileName().toString();
         this.time = time;
         this.level = level;
     }

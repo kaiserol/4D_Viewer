@@ -16,9 +16,9 @@ import static de.uzk.Main.settings;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogSettings {
-    private final JDialog dialog;
-
     // GUI-Elemente
+    private final JDialog dialog;
+    private final Gui gui;
     private JComboBox<Language> selectLanguage;
     private JComboBox<Theme> selectTheme;
     private JSpinner fontSizeSpinner;
@@ -30,9 +30,10 @@ public class DialogSettings {
     private int oldFontSize;
     private boolean oldConfirmExit;
 
-    public DialogSettings(JFrame frame) {
-        this.dialog = new JDialog(frame, getWord("dialog.settings"), true);
+    public DialogSettings(Gui gui) {
+        this.dialog = new JDialog(gui.getContainer(), getWord("dialog.settings"), true);
         this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        this.gui = gui;
 
         // ESC schließt Dialog
         this.dialog.getRootPane().registerKeyboardAction(e -> dialog.dispose(),
@@ -40,7 +41,7 @@ public class DialogSettings {
         );
     }
 
-    public void show(Gui gui) {
+    public void show() {
         // Wenn Dialog bereits offen ist → in den Vordergrund bringen
         if (this.dialog.isVisible()) {
             this.dialog.toFront();
@@ -65,7 +66,7 @@ public class DialogSettings {
 
         JButton okButton = new JButton(getWord("button.ok"));
         okButton.addActionListener(e -> {
-            applySettings(gui);
+            applySettings();
             this.dialog.dispose();
         });
         buttonPanel.add(okButton);
@@ -102,7 +103,7 @@ public class DialogSettings {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-        // Abschnitt: Erscheinungsbild hinzufügen
+        // 1. Abschnitt: Erscheinungsbild hinzufügen
         gbc.insets = new Insets(0, 0, 0, 100);
         panel.add(getBoldSectionLabel("dialog.settings.appearance"), gbc);
 
@@ -138,7 +139,7 @@ public class DialogSettings {
         this.fontSizeSpinner = new JSpinner(new SpinnerNumberModel(this.oldFontSize, Settings.MIN_FONT_SIZE, Settings.MAX_FONT_SIZE, 1));
         panel.add(this.fontSizeSpinner, gbc);
 
-        // Abschnitt: Fenster-Verhalten hinzufügen
+        // 2. Abschnitt: Fenster-Verhalten hinzufügen
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.gridwidth = 2;
@@ -182,10 +183,10 @@ public class DialogSettings {
         this.checkConfirmExit.addActionListener(e -> checkChanges.run());
     }
 
-    private void applySettings(Gui gui) {
-        GuiUtils.updateLanguage(gui, (Language) this.selectLanguage.getSelectedItem());
-        GuiUtils.updateTheme(gui, (Theme) this.selectTheme.getSelectedItem());
-        GuiUtils.updateFontSize(gui, (int) this.fontSizeSpinner.getValue());
+    private void applySettings() {
+        GuiUtils.updateLanguage(this.gui, (Language) this.selectLanguage.getSelectedItem());
+        GuiUtils.updateTheme(this.gui, (Theme) this.selectTheme.getSelectedItem());
+        GuiUtils.updateFontSize(this.gui, (int) this.fontSizeSpinner.getValue());
         settings.setConfirmExit(this.checkConfirmExit.isSelected());
     }
 }

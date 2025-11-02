@@ -15,6 +15,7 @@ import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
+    // GUI-Elemente
     private JTextField txtFieldDirectory;
     private JButton clearImagesButton;
 
@@ -61,6 +62,9 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         } else this.container.requestFocusInWindow();
     }
 
+    // ========================================
+    // Dateiauswahl Methoden
+    // ========================================
     private void openFileChooser() {
         JFileChooser fileChooser = getFileChooser();
 
@@ -157,6 +161,9 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         return ImageFileType.fromExtension(firstExtension);
     }
 
+    // ========================================
+    // Observer Methoden
+    // ========================================
     @Override
     public void toggleOn() {
         this.clearImagesButton.setEnabled(true);
@@ -174,6 +181,9 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         updateDirectoryText();
     }
 
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
     private void updateDirectoryText() {
         if (workspace.isOpen()) {
             Path path = workspace.getImageFilesDirectory().resolve(workspace.getImageFile().getFileName());

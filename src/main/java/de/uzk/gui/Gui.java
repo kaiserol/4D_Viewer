@@ -21,17 +21,16 @@ import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class Gui extends AreaContainerInteractive<JFrame> {
+    // GUI-Elemente
+    private final ActionHandler actionHandler;
+    private final DialogImageLoad dialogImageLoad;
+
     // Observer Listener
     private final List<HandleActionListener> handleActionListeners;
     private final List<ToggleListener> toggleListeners;
     private final List<UpdateImageListener> updateImageListeners;
     private final List<UpdateThemeListener> updateThemeListeners;
     private final List<AppFocusListener> appFocusListeners;
-    // ActionHandler
-    private final ActionHandler actionHandler;
-
-    // Dialog für das Laden von Bildern
-    private final DialogImageLoad dialogImageLoad;
 
     // Mindestgröße des Fensters
     private static final int MIN_WIDTH = 400;
@@ -132,10 +131,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     private void addMenuBar() {
         AppMenuBar menuBar = new AppMenuBar(this);
-
-        Desktop desktop = GuiUtils.getDesktopSecure();
-        if (desktop != null) Desktop.getDesktop().setDefaultMenuBar(menuBar.getContainer());
-        else this.container.setJMenuBar(menuBar.getContainer());
+        this.container.setJMenuBar(menuBar.getContainer());
     }
 
     private void addContent() {
@@ -197,7 +193,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     // ========================================
-    // Observer Funktionen
+    // Observer Methoden
     // ========================================
     @Override
     public void handleAction(ActionType actionType) {
@@ -255,7 +251,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     // ========================================
-    // Hilfsfunktionen
+    // Hilfsmethoden
     // ========================================
     public void updateUI() {
         this.container.revalidate();
@@ -274,7 +270,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             case ALREADY_LOADED -> {
                 if (isGuiBeingBuilt) return false;
                 String message = getWord("optionPane.directory.the") + " " + imageFileType + " " +
-                        getWord("file.directory") + ": '" + directory + "' " +
+                        getWord("file.directory") + " '" + directory + "' " +
                         getWord("optionPane.directory.alreadyLoaded") + ".";
                 JOptionPane.showMessageDialog(
                         this.container,
@@ -285,7 +281,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             }
             case DIRECTORY_NOT_EXISTING -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directory + "' " +
+                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + " '" + directory + "' " +
                         getWord("optionPane.directory.doesNotExisting") + ".";
                 JOptionPane.showMessageDialog(
                         this.container,
@@ -296,7 +292,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             }
             case DIRECTORY_HAS_NO_IMAGES -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + ": '" + directory + "' " +
+                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + " '" + directory + "' " +
                         getWord("optionPane.directory.hasNo") + " " + imageFileType.getDescription() + ".";
                 JOptionPane.showMessageDialog(
                         this.container,

@@ -1,13 +1,13 @@
 package de.uzk.image;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.*;
 import de.uzk.utils.StringUtils;
 
 import java.util.Arrays;
 
 import static de.uzk.config.LanguageHandler.getWord;
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ImageFileType {
     GIF("GIF", "gif"),
     JPEG("JPEG", "jpg", "jpeg"),
@@ -25,7 +25,6 @@ public enum ImageFileType {
         this.extensions = extensions;
     }
 
-    @JsonValue
     public String getType() {
         return this.type;
     }
@@ -34,10 +33,12 @@ public enum ImageFileType {
         return Arrays.copyOf(this.extensions, this.extensions.length);
     }
 
+    @JsonIgnore
     public String getDescription() {
         return this.type + "-" + getWord("file.images");
     }
 
+    @JsonIgnore
     public String getFullDescription() {
         String[] formattedExtensions = Arrays.stream(this.extensions).
                 map(ext -> "*." + ext).
@@ -51,7 +52,7 @@ public enum ImageFileType {
     }
 
     @JsonCreator
-    public static ImageFileType fromType(String newType) {
+    public static ImageFileType fromType(@JsonProperty("type") String newType) {
         if (newType != null) {
             for (ImageFileType type : ImageFileType.values()) {
                 boolean sameName = type.name().equalsIgnoreCase(newType);

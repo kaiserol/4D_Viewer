@@ -17,9 +17,7 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogImageLoad implements LoadingImageListener {
-    // Für einen schönen Ladeeffekt SLEEP_TIME_NANOS > 0 setzen
-    // (1 Millisekunde = 1_000_000 Nanos)
-    private static final int SLEEP_TIME_NANOS = 0;
+    // GUI-Elemente
     private final JDialog dialog;
     private JTextField textFieldFileName;
     private JTextField textFieldDirectoryName;
@@ -29,6 +27,9 @@ public class DialogImageLoad implements LoadingImageListener {
     // Thread
     private Thread thread;
     private LoadingResult result;
+
+    // Für einen schönen Ladeeffekt SLEEP_TIME_NANOS > 0 setzen (1 Millisekunde = 1_000_000 Nanos)
+    private static final int SLEEP_TIME_NANOS = 0;
 
     public DialogImageLoad(JFrame frame) {
         this.dialog = new JDialog(frame, true);
@@ -125,11 +126,11 @@ public class DialogImageLoad implements LoadingImageListener {
     }
 
     // ========================================
-    // Überschreibungen des LoadingImageListener Interface
+    // LoadingImageListener Methoden
     // ========================================
     @Override
     public void onLoadingStart() {
-        logger.info(String.format("Loading Images files from '%s'", workspace.getImageFilesDirectory()));
+        logger.info(String.format("Loading images from the directory '%s'", workspace.getImageFilesDirectory()));
     }
 
     @Override
@@ -162,11 +163,11 @@ public class DialogImageLoad implements LoadingImageListener {
 
     @Override
     public void onLoadingComplete(int imageFiles) {
-        logger.info("Loaded Images: " + imageFiles);
+        logger.info("Loaded images: " + imageFiles);
     }
 
     // ========================================
-    // Hilfsfunktionen
+    // Hilfsmethoden
     // ========================================
     private JTextField addLabelTextFieldRow(JPanel panel, GridBagConstraints gbc, int row, String labelText) {
         // Label hinzufügen
@@ -211,7 +212,7 @@ public class DialogImageLoad implements LoadingImageListener {
             try {
                 this.thread.join();
             } catch (InterruptedException e) {
-                logger.error("Interrupted 'loading images' while waiting for the thread to finish.");
+                logger.error("Failed to join loading images thread");
             }
         }
         this.dialog.dispose();

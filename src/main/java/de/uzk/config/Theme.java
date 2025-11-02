@@ -15,16 +15,16 @@ public enum Theme {
         return this == LIGHT_MODE;
     }
 
-    public static Theme getDefault() {
-        return LIGHT_MODE;
+    @JsonValue
+    public String getValue() {
+        return switch (this) {
+            case DARK_MODE -> "Dark";
+            case LIGHT_MODE -> "Light";
+        };
     }
 
-    @JsonValue
-    public String getTheme() {
-        return switch (this) {
-            case DARK_MODE -> "dark";
-            case LIGHT_MODE -> "light";
-        };
+    public static Theme getDefault() {
+        return LIGHT_MODE;
     }
 
     @JsonCreator
@@ -32,8 +32,8 @@ public enum Theme {
         if (newTheme != null) {
             for (Theme theme : Theme.values()) {
                 boolean sameName = theme.name().equalsIgnoreCase(newTheme);
-                boolean sameTheme = theme.getTheme().equalsIgnoreCase(newTheme);
-                if (sameName || sameTheme) return theme;
+                boolean sameValue = theme.getValue().equalsIgnoreCase(newTheme);
+                if (sameName || sameValue) return theme;
             }
         }
         // Fallback

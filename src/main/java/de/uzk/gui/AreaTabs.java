@@ -11,6 +11,7 @@ import java.awt.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaTabs extends AreaContainerInteractive<JPanel> {
+    // GUI-Elemente
     private JTabbedPane tabbedPane;
 
     public AreaTabs(Gui gui) {
@@ -33,6 +34,9 @@ public class AreaTabs extends AreaContainerInteractive<JPanel> {
         this.container.add(this.tabbedPane, BorderLayout.CENTER);
     }
 
+    // ========================================
+    // Observer Methoden
+    // ========================================
     @Override
     public void updateTheme() {
         Border emptyBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);

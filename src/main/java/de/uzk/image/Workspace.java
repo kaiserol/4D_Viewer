@@ -20,14 +20,11 @@ public class Workspace {
     private Path imageFilesDirectory;
     private Config config;
     private Markers markers;
-
     private ImageFile[][] matrix;
     private ImageFile imageFile;
     private int maxTime;
     private int maxLevel;
     private int missingImagesCount;
-
-    // Pin-Zeiten
     private final List<Integer> pinTimes;
 
     public Workspace() {
@@ -367,7 +364,7 @@ public class Workspace {
         }
 
         if (duplicatedImagesCount > 0) {
-            String tempText = (duplicatedImagesCount > 1 ? "Images are" : "Image is");
+            String tempText = (duplicatedImagesCount > 1 ? "images are" : "image is");
             String headerText = duplicatedImagesCount + " " + tempText + " duplicated:" + StringUtils.NEXT_LINE;
             logger.warning(headerText + duplicatedImagesReport);
         }
@@ -404,13 +401,13 @@ public class Workspace {
         }
 
         if (missingImagesCount > this.missingImagesCount) {
-            String tempText = (missingImagesCount > 1 ? "Images are" : "Image is");
+            String tempText = (missingImagesCount > 1 ? "images are" : "image is");
             String headerText = missingImagesCount + " " + tempText + " missing:" + StringUtils.NEXT_LINE;
             logger.warning(headerText + missingImagesReport);
         } else if (missingImagesCount < this.missingImagesCount) {
             // Es wurden einige Bilder wieder hergestellt
             int imageFiles = (this.maxTime + 1) * (this.maxLevel + 1) - missingImagesCount;
-            logger.info("Some Missing Images were restored." + StringUtils.NEXT_LINE + "Loaded Images: " + imageFiles);
+            logger.info("Some missing images were restored." + StringUtils.NEXT_LINE + "Loaded images: " + imageFiles);
         }
         this.missingImagesCount = missingImagesCount;
     }
@@ -434,9 +431,9 @@ public class Workspace {
             if (!missingLevels.isEmpty()) {
                 String timeStr = StringUtils.wrapBold("--- Time: " + time + " ---");
                 sb.append(timeStr).append(StringUtils.NEXT_LINE);
-                sb.append("Missing levels: ").append(missingLevels).append(StringUtils.NEXT_LINE);
+                sb.append("Missing Levels: ").append(missingLevels).append(StringUtils.NEXT_LINE);
 
-                sb.append("Expected images:").append(StringUtils.NEXT_LINE);
+                sb.append("Expected Images:").append(StringUtils.NEXT_LINE);
                 for (int level : missingLevels) {
                     ImageFile imageFile = getImageFile(time, level);
                     String name = imageFile != null ? imageFile.getFileName() : "???";

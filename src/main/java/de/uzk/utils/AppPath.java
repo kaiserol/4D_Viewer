@@ -48,7 +48,7 @@ public class AppPath {
                     case SNAPSHOTS_DIRECTORY_NAME -> "snapshots";
                     default -> directory.getFileName().toString();
                 };
-                logger.error(String.format("Failed to create %s directory '%s'", directoryName, directory));
+                logger.error(String.format("Failed creating %s directory '%s'", directoryName, directory));
             }
         }
     }
@@ -59,7 +59,7 @@ public class AppPath {
     }
 
     public static Path getAppProjectPath(Path path) {
-        if (workspace.getImageFilesDirectory() == null) throw new IllegalStateException("The image files directory is null.");
+        if (workspace.getImageFilesDirectory() == null) throw new NullPointerException("The image files directory is null.");
 
         Path appDirectory = USER_HOME_DIRECTORY.resolve(APP_DIRECTORY_NAME);
         Path projectDirectory = workspace.getImageFilesDirectory().getFileName();
@@ -71,7 +71,7 @@ public class AppPath {
         String fileBaseName = getFileBaseName(jsonPath.getFileName());
 
         createIfNotExist(directory);
-        logger.info(String.format("Saving %s file to '%s'", fileBaseName, jsonPath));
+        logger.info(String.format("Saving %s file '%s'", fileBaseName, jsonPath));
 
         try {
             // Benutzerdefinierte Einrückungen mit Printer erstellen
@@ -80,7 +80,7 @@ public class AppPath {
             // Datei schreiben
             mapper.writerWithDefaultPrettyPrinter().writeValue(jsonPath, object);
         } catch (Exception e) {
-            logger.error(String.format("Failed saving %s file to '%s'", fileBaseName, jsonPath));
+            logger.error(String.format("Failed saving %s file '%s'", fileBaseName, jsonPath));
         }
     }
 
@@ -89,12 +89,12 @@ public class AppPath {
         String fileBaseName = getFileBaseName(filePath.getFileName());
 
         createIfNotExist(directory);
-        logger.info(String.format("Saving %s file to '%s'", fileBaseName, filePath));
+        logger.info(String.format("Saving %s file '%s'", fileBaseName, filePath));
 
         try {
             Files.write(filePath, lines);
         } catch (Exception e) {
-            logger.error(String.format("Failed saving %s file to '%s'", fileBaseName, filePath));
+            logger.error(String.format("Failed saving %s file '%s'", fileBaseName, filePath));
         }
     }
 
@@ -103,12 +103,12 @@ public class AppPath {
 
         try {
             if (Files.exists(jsonPath)) {
-                logger.info(String.format("Loading %s file from '%s'", fileBaseName, jsonPath));
+                logger.info(String.format("Loading %s file '%s'", fileBaseName, jsonPath));
                 ObjectMapper mapper = new ObjectMapper();
                 return mapper.readValue(jsonPath.toFile(), clazz);
             }
         } catch (Exception e) {
-            logger.error(String.format("Failed loading %s file from '%s'", fileBaseName, jsonPath));
+            logger.error(String.format("Failed loading %s file '%s'", fileBaseName, jsonPath));
         }
         return null;
     }
@@ -118,11 +118,11 @@ public class AppPath {
 
         try {
             if (Files.exists(filePath)) {
-                logger.info(String.format("Loading %s file from '%s'", fileBaseName, filePath));
+                logger.info(String.format("Loading %s file '%s'", fileBaseName, filePath));
                 return Files.readAllLines(filePath);
             }
         } catch (Exception e) {
-            logger.error(String.format("Failed loading %s file from '%s'", fileBaseName, filePath));
+            logger.error(String.format("Failed loading %s file '%s'", fileBaseName, filePath));
         }
         return null;
     }

@@ -10,6 +10,7 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
+    // GUI-Elemente
     private JLabel labelTime;
     private JLabel labelLevel;
     private JLabel labelTimeLevel;
@@ -42,6 +43,9 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
         this.container.add(panelTimeLevel, BorderLayout.SOUTH);
     }
 
+    // ========================================
+    // Observer Methoden
+    // ========================================
     @Override
     public void toggleOn() {
         updateTime();
@@ -72,6 +76,9 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
         this.labelTimeLevel.setBackground(backgroundColor);
     }
 
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
     private void updateTime() {
         int time =  (int) (workspace.getTime() * workspace.getConfig().getTimeUnit());
         int seconds = time % 60;

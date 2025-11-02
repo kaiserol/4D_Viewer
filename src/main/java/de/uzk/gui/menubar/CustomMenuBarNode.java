@@ -8,13 +8,13 @@ public abstract sealed class CustomMenuBarNode permits CustomMenu, CustomMenuIte
     private final String text;
 
     public CustomMenuBarNode(JComponent component, String text) {
-        this.component = this.getComponent(component);
-        this.text = this.setText(text);
-    }
-
-    private JComponent getComponent(JComponent component) {
         if (component == null) throw new NullPointerException("Component is null.");
-        return component;
+        if (text == null) throw new NullPointerException("Text is null.");
+        this.component = component;
+        this.text = text;
+        if (this.component instanceof JMenuItem item) {
+            item.setText(text);
+        }
     }
 
     public JComponent getComponent() {
@@ -22,11 +22,6 @@ public abstract sealed class CustomMenuBarNode permits CustomMenu, CustomMenuIte
     }
 
     public String getText() {
-        return text;
-    }
-
-    private String setText(String text) {
-        if (this.component instanceof JMenuItem item) item.setText(text);
         return text;
     }
 

@@ -19,12 +19,10 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
-    // Bildanzeige
+    // GUI-Elemente
     private JPanel panelView;
     private JPanel panelImage;
     private BufferedImage currentImage;
-
-    // GUI-Elemente
     private JScrollBar scrollBarTime;
     private JScrollBar scrollBarLevel;
 
@@ -41,11 +39,11 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         this.container.addMouseWheelListener(gui.getActionHandler());
         this.container.addKeyListener(gui.getActionHandler());
 
-        // === 1. Kopfbereich mit Statusinformationen ===
+        // 1. Kopfbereich mit Statusinformationen hinzufügen
         JPanel statsBarPanel = new AreaStatsBar(this.gui).getContainer();
         this.container.add(statsBarPanel, BorderLayout.NORTH);
 
-        // === 2. Bildbereich mit Scrollbars ===
+        // 2. Bildbereich mit Scrollbars hinzufügen
         this.panelView = new JPanel(new BorderLayout());
         this.panelImage = initImagePanel();
         this.scrollBarTime = initScrollBar(Adjustable.HORIZONTAL, Axis.TIME);
@@ -58,69 +56,6 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
 
         this.container.add(this.panelView, BorderLayout.CENTER);
         this.container.setMinimumSize(new Dimension(scrollBarWidth * 3, scrollBarWidth * 3));
-    }
-
-    // Listener für Fokusänderungen
-    private class FocusBorderListener implements FocusListener {
-        @Override
-        public void focusGained(FocusEvent e) {
-            setFocusBorder(true);
-        }
-
-        @Override
-        public void focusLost(FocusEvent e) {
-            setFocusBorder(false);
-        }
-    }
-
-    // Listener für Fokusaktivierung
-    private class FocusMouseListener extends MouseAdapter {
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            if (!container.isFocusOwner()) container.requestFocusInWindow();
-        }
-    }
-
-    // Färbt den Rahmen bei Fokus
-    private void setFocusBorder(boolean focus) {
-        Color borderColor = focus ? GuiUtils.COLOR_BLUE : GuiUtils.getBorderColor();
-        this.container.setBorder(BorderFactory.createLineBorder(borderColor));
-        this.panelView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
-    }
-
-    // Erstellt das Panel mit Bildanzeige
-    private JPanel initImagePanel() {
-        return new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                paintImage(g);
-            }
-        };
-    }
-
-    // Zeichnet das aktuelle Bild und Marker
-    private void paintImage(Graphics g) {
-        Graphics2D g2D = GuiUtils.createHighQualityGraphics2D(g);
-        if (this.currentImage != null) {
-            double scale = GuiUtils.getImageScaleFactor(this.currentImage, this.panelImage);
-            int width = (int) (this.currentImage.getWidth() * scale);
-            int height = (int) (this.currentImage.getHeight() * scale);
-            int x = (this.panelImage.getWidth() - width) / 2;
-            int y = (this.panelImage.getHeight() - height) / 2;
-            g2D.drawImage(this.currentImage, x, y, width, height, null);
-
-            // Zeichnet Marker
-            List<MarkerMapping> marker = workspace.getMarkers().getAllMarkers();
-            for (MarkerMapping m : marker) {
-                if (!m.shouldRender(workspace.getTime())) continue;
-                m.getMarker().draw(g2D, new Rectangle(x, y, width, height), scale);
-            }
-        } else {
-            // Fehlermeldung wird angezeigt, wenn das aktuelle Bild nicht geladen werden kann (weil es nicht existiert)
-            String text = workspace.isOpen() ? getWord("placeholder.imageCouldNotLoad") : "";
-            GuiUtils.drawCenteredText(g2D, text, this.panelImage);
-        }
     }
 
     private JScrollBar initScrollBar(int orientation, Axis axis) {
@@ -155,7 +90,71 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     }
 
     // ========================================
-    // Überschreibungen
+    // Innere Klassen
+    // ========================================
+
+    // Listener für Fokusänderungen
+    private class FocusBorderListener implements FocusListener {
+        @Override
+        public void focusGained(FocusEvent e) {
+            setFocusBorder(true);
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            setFocusBorder(false);
+        }
+    }
+
+    // Listener für Fokusaktivierung
+    private class FocusMouseListener extends MouseAdapter {
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if (!container.isFocusOwner()) container.requestFocusInWindow();
+        }
+    }
+
+    // ========================================
+    // Bild zeichnen
+    // ========================================
+
+    // Erstellt das Panel mit Bildanzeige
+    private JPanel initImagePanel() {
+        return new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                paintImage(g);
+            }
+        };
+    }
+
+    // Zeichnet das aktuelle Bild und Marker
+    private void paintImage(Graphics g) {
+        Graphics2D g2D = GuiUtils.createHighQualityGraphics2D(g);
+        if (this.currentImage != null) {
+            double scale = GuiUtils.getImageScaleFactor(this.currentImage, this.panelImage);
+            int width = (int) (this.currentImage.getWidth() * scale);
+            int height = (int) (this.currentImage.getHeight() * scale);
+            int x = (this.panelImage.getWidth() - width) / 2;
+            int y = (this.panelImage.getHeight() - height) / 2;
+            g2D.drawImage(this.currentImage, x, y, width, height, null);
+
+            // Zeichnet Marker
+            List<MarkerMapping> marker = workspace.getMarkers().getAllMarkers();
+            for (MarkerMapping m : marker) {
+                if (!m.shouldRender(workspace.getTime())) continue;
+                m.getMarker().draw(g2D, new Rectangle(x, y, width, height), scale);
+            }
+        } else {
+            // Eine Fehlermeldung wird angezeigt, wenn das aktuelle Bild nicht geladen werden kann (weil es nicht existiert)
+            String text = workspace.getImageFilesDirectory() != null ? getWord("placeholder.imageCouldNotLoad") : "";
+            GuiUtils.drawCenteredText(g2D, text, this.panelImage);
+        }
+    }
+
+    // ========================================
+    // Observer Methoden
     // ========================================
     @Override
     public void handleAction(ActionType actionType) {
@@ -205,8 +204,16 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     }
 
     // ========================================
-    // Hilfsfunktionen
+    // Hilfsmethoden
     // ========================================
+
+    // Färbt den Rahmen bei Fokus
+    private void setFocusBorder(boolean focus) {
+        Color borderColor = focus ? GuiUtils.COLOR_BLUE : GuiUtils.getBorderColor();
+        this.container.setBorder(BorderFactory.createLineBorder(borderColor));
+        this.panelView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
+    }
+
     private void updateCurrentImage() {
         // Bild neu laden
         this.currentImage = null;

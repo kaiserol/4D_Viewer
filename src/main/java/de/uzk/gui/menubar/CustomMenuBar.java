@@ -41,21 +41,6 @@ public final class CustomMenuBar {
         for (CustomMenu menu : menus) add(menu);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder();
-        if (name != null && !name.isBlank()) {
-            result.append(name).append(":").append(StringUtils.NEXT_LINE);
-        }
-
-        if (menus != null) {
-            for (CustomMenu menu : menus) {
-                appendNode(result, menu, 0);
-            }
-        }
-        return result.toString();
-    }
-
     private void appendNode(StringBuilder result, CustomMenuBarNode node, int depth) {
         final String indent = "  ".repeat(Math.max(0, depth));
 
@@ -75,5 +60,20 @@ public final class CustomMenuBar {
             // Fallback für unbekannte Knoten
             result.append(indent).append(node.getText()).append(StringUtils.NEXT_LINE);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        if (name != null && !name.isBlank()) {
+            result.append(name).append(":").append(StringUtils.NEXT_LINE);
+        }
+
+        if (menus != null) {
+            for (CustomMenu menu : menus) {
+                appendNode(result, menu, 0);
+            }
+        }
+        return result.toString();
     }
 }

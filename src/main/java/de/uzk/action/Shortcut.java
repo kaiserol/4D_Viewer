@@ -52,10 +52,10 @@ public class Shortcut {
     }
 
     public String getKeyText() {
-        // 1. Add Modifiers (in logical order)
+        // 1. Modifiers in logischer Reihenfolge hinzufügen
         List<String> keyCharList = getModifiersList(modifiers);
 
-        // 2. Add Keycode (if not modifier)
+        // 2. Keycodes hinzufügen (wenn KeyCode kein Modifier ist)
         String keyText = KeyEvent.getKeyText(extendedKeyCode);
         if (!keyCharList.contains(keyText)) {
             String errorCode = "keyCode: ";
