@@ -15,7 +15,7 @@ Entwickelt in **Java**, speziell für **mikroskopische und biologische Anwendung
   - Farbe, Größe und Position sind frei wählbar
   - Automatischer Export/Import von Annotationen
 - **Unterstützte Formate**: GIF, JPEG, PNG, TIFF
-- **Internationalisierung**: Deutsch und Englisch; umschaltbar zur Laufzeit
+- **Internationalisierung**: Deutsch und Englisch
 - **Projektdaten**:\
   *Verzeichnis*: {Benutzerverzeichnis}/.4D_Viewer/{Bilderverzeichnis}/
     - *annotations.json* – projektbezogene Annotationen aus der UI
