@@ -175,10 +175,11 @@ Ziel ist es, eine stabile, nutzerfreundliche und erweiterbare Plattform zur 4D-V
 ## 🤝 Beitragende
 
 Ein großes Dankeschön an alle Entwickler, Tester und Nutzer, die dieses Projekt mitgestalten!
->„Ich glaube, das Projekt macht dir genauso viel Spaß wie mir – und wir sind auf dem richtigen Weg.“\
+>„Ich glaube, das Projekt macht dir genauso viel Spaß wie mir – und wir sind auf dem richtigen Weg.“
+> 
 > ~ Olaf Bossinger
 
 ## 🔐 Lizenz
 
-Dieses Projekt ist unter der **[Lizenzname hinzufügen]** lizenziert. \
-Details siehe [Lizenzdate](LINK-ZUR-LIZENZ) **[Link hinzufügen]**
+Dieses Projekt steht unter der [Apache License 2.0](LICENSE).  
+Copyright (c) 2025 Oliver Kaiser.

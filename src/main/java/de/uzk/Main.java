@@ -10,6 +10,20 @@ import de.uzk.utils.OperatingSystem;
 
 import javax.swing.*;
 
+/*
+ * Copyright 2025 Oliver Kaiser
+ *
+ * Lizenziert unter der Apache License, Version 2.0 (die "Lizenz");
+ * Sie dürfen diese Datei nur im Einklang mit der Lizenz verwenden.
+ * Eine Kopie der Lizenz erhalten Sie unter:
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Sofern nicht gesetzlich vorgeschrieben oder schriftlich vereinbart,
+ * wird die Software unter dieser Lizenz "wie besehen" bereitgestellt,
+ * ohne jegliche ausdrückliche oder stillschweigende Gewährleistung.
+ * Einzelheiten finden Sie in der Lizenz.
+ */
 public class Main {
     public static final LogEntryHandler logger;
     public static final OperatingSystem operationSystem;
