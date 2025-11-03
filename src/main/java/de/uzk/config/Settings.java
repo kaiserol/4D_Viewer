@@ -17,12 +17,12 @@ public class Settings {
     // Default-Konstanten
     public static final Language DEFAULT_LANGUAGE = Language.getSystemDefault();
     public static final Theme DEFAULT_THEME = Theme.getDefault();
-    public static final int DEFAULT_FONT_SIZE = 16;
+    public static final int DEFAULT_FONT_SIZE = 14;
     public static final boolean DEFAULT_CONFIRM_EXIT = true;
 
     // MinMax Konstanten
     public static final int MIN_FONT_SIZE = 8;
-    public static final int MAX_FONT_SIZE = 24;
+    public static final int MAX_FONT_SIZE = 20;
 
     @JsonCreator
     public Settings(

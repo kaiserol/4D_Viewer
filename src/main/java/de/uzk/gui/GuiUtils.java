@@ -3,6 +3,7 @@ package de.uzk.gui;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import com.formdev.flatlaf.util.ColorFunctions;
 import de.uzk.action.ActionType;
 import de.uzk.config.Language;
 import de.uzk.config.Settings;
@@ -35,7 +36,8 @@ public final class GuiUtils {
     public static final Color COLOR_RED = new Color(255, 86, 86);
     public static final Color COLOR_DARK_RED = new Color(148, 0, 0);
 
-    // Eigenschaften
+    // Inse
+    // Farben & Schriftart
     private static Color textColor;
     private static Color borderColor;
     private static Color backgroundColor;
@@ -92,7 +94,7 @@ public final class GuiUtils {
             try {
                 Taskbar.getTaskbar().setIconImage(Icons.APP_IMAGE);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Failed setting taskbar icon");
             }
         }
     }
@@ -126,11 +128,11 @@ public final class GuiUtils {
     }
 
     // ========================================
-    // Initialsierungen
+    // Initialisierungen
     // ========================================
 
     /**
-     * Initialsiert plattformspezifische Eigenschaften.
+     * Initialisiert plattformspezifische Eigenschaften.
      * Sollte vor Erstellen der GUI aufgerufen werden.
      */
     public static void initSystemProperties() {
@@ -177,75 +179,190 @@ public final class GuiUtils {
     // Aktualisierungen
     // ========================================
     public static void updateFlatLaf() {
+        // Setup Theme
         FlatLaf.setup(settings.getTheme().isLight() ? getLightMode() : getDarkMode());
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        JDialog.setDefaultLookAndFeelDecorated(true);
 
-        // Farben setzen
+        // Farben und Schriftart
+        updateBaseColorsAndFont();
+
+        int arc = 999;
+        Insets defaultInsets = new Insets(5, 10, 5, 10);
+        String arrowType = "chevron"; // Pfeil-Form: caret, chevron, triangle
+
+        // Komponenten-Konfigurationen
+        setupMisc(arc, defaultInsets, arrowType);
+        setupComboBox(arc, defaultInsets, arrowType);
+        setupSpinner(arc, defaultInsets, arrowType);
+        setupTabbedPane(arc, arrowType);
+        setupScrollBar(arc);
+        setupSplitPane();
+
+        // UI aktualisieren
+        FlatLaf.updateUI();
+        Icons.updateSVGIcons();
+    }
+
+    private static void updateBaseColorsAndFont() {
         textColor = UIManager.getColor("Label.foreground");
         borderColor = UIManager.getColor("Component.borderColor");
         backgroundColor = UIManager.getColor("TextArea.background");
 
-        // Schriftart setzen
         Font defaultFont = UIManager.getFont("defaultFont");
         font = defaultFont.deriveFont((float) settings.getFontSize());
         UIManager.put("defaultFont", font);
-        FlatLaf.updateUI();
+    }
 
-        // Titelleiste auf FlatLaf-Dekoration umstellen
-        JFrame.setDefaultLookAndFeelDecorated(true);
-        JDialog.setDefaultLookAndFeelDecorated(true);
+    private static void setupMisc(int arc, Insets padding, String arrowType) {
+        // Komponente
+        UIManager.put("Component.arrowType", arrowType);
+        UIManager.put("Component.hideMnemonics", false);
+        UIManager.put("Component.arc", arc);
 
-        // Focus Eigenschaften
-        UIManager.put("Component.focusWidth", 0);
-        UIManager.put("Component.innerFocusWidth", 0);
+        // Icon
+        UIManager.put("Dialog.showIcon", true);
+        UIManager.put("OptionPane.showIcon", true);
 
-        // Rounded Elemente Eigenschaften
-        UIManager.put("Button.arc", 5);
-        UIManager.put("Component.arc", 5);
-        UIManager.put("TextComponent.arc", 5);
-        UIManager.put("ProgressBar.arc", 5);
+        // Button
+        UIManager.put("Button.arc", arc);
+        UIManager.put("Button.margin", padding);
 
-        // TabbedPane Eigenschaften
-        UIManager.put("TabbedPane.background", backgroundColor);
-        UIManager.put("TabbedPane.contentSeparatorHeight", 1);
-        UIManager.put("TabbedPane.showTabSeparators", true);
-        UIManager.put("TabbedPane.tabSeparatorsFullHeight", true);
+        // Checkbox
+        UIManager.put("CheckBox.arc", arc);
+        UIManager.put("CheckBox.margin", new Insets(0, 0, 0, 0));
+
+        // Textfeld
+        UIManager.put("TextComponent.arc", arc);
+        UIManager.put("TextField.arc", arc);
+        UIManager.put("TextArea.margin", padding);
+        UIManager.put("TextField.margin", padding);
+        UIManager.put("TextPane.margin", padding);
+
+        // Sonstige Komponenten
+        UIManager.put("List.selectionArc", arc);
+        UIManager.put("MenuItem.selectionArc", arc);
+        UIManager.put("ProgressBar.arc", arc);
+        UIManager.put("TitlePane.buttonArc", arc);
+        UIManager.put("ToolBar.hoverButtonGroupArc", arc);
+        UIManager.put("Tree.selectionArc", arc);
+    }
+
+    private static void setupComboBox(int arc, Insets padding, String arrowType) {
+        Color arrowColor = Color.LIGHT_GRAY;
+        Color textFieldBg = UIManager.getColor("TextField.background");
+        Color defaultButtonBg = UIManager.getColor("Button.default.background");
+
+        UIManager.put("ComboBox.arc", arc);
+        UIManager.put("ComboBox.buttonArc", arc);
+        UIManager.put("ComboBox.selectionArc", arc);
+        UIManager.put("ComboBox.buttonStyle", "button");
+        UIManager.put("ComboBox.padding", padding);
+
+        // Pfeilfarben
+        UIManager.put("ComboBox.buttonArrowType", arrowType);
+        UIManager.put("ComboBox.buttonArrowColor", applyColorAdjustment(arrowColor, 0.0f, false));
+        UIManager.put("ComboBox.buttonHoverArrowColor", applyColorAdjustment(arrowColor, 0.1f, true));
+        UIManager.put("ComboBox.buttonPressedArrowColor", applyColorAdjustment(arrowColor, 0.3f, true));
+
+        // Hintergrundfarbe
+        UIManager.put("ComboBox.background", textFieldBg);
+        UIManager.put("ComboBox.popupBackground", textFieldBg);
+        UIManager.put("ComboBox.buttonBackground", defaultButtonBg);
+        UIManager.put("ComboBox.buttonSeparatorColor", defaultButtonBg);
+        UIManager.put("ComboBox.buttonEditableBackground", defaultButtonBg);
+    }
+
+    private static void setupSpinner(int arc, Insets padding, String arrowType) {
+        Color arrowColor = Color.LIGHT_GRAY;
+        Color textFieldBg = UIManager.getColor("TextField.background");
+        Color defaultButtonBg = UIManager.getColor("Button.default.background");
+
+        UIManager.put("Spinner.arc", arc);
+        UIManager.put("Spinner.buttonArc", arc);
+        UIManager.put("Spinner.selectionArc", arc);
+        UIManager.put("Spinner.buttonStyle", "roundRect");
+        UIManager.put("Spinner.padding", padding);
+
+        // Pfeilfarben
+        UIManager.put("Spinner.buttonArrowType", arrowType);
+        UIManager.put("Spinner.buttonArrowColor", applyColorAdjustment(arrowColor, 0.0f, false));
+        UIManager.put("Spinner.buttonHoverArrowColor", applyColorAdjustment(arrowColor, 0.1f, true));
+        UIManager.put("Spinner.buttonPressedArrowColor", applyColorAdjustment(arrowColor, 0.3f, true));
+
+        // Hintergrundfarbe
+        UIManager.put("Spinner.background", textFieldBg);
+        UIManager.put("Spinner.buttonBackground", defaultButtonBg);
+        UIManager.put("Spinner.buttonSeparatorColor", defaultButtonBg);
+    }
+
+    private static void setupTabbedPane(int arc, String arrowType) {
+        UIManager.put("TabbedPane.buttonArc ", arc);
+        UIManager.put("TabbedPane.closeArc", arc);
         UIManager.put("TabbedPane.tabArc", 0);
         UIManager.put("TabbedPane.tabSelectionArc", 0);
         UIManager.put("TabbedPane.tabSelectionHeight", 2);
+        UIManager.put("TabbedPane.showTabSeparators", false);
+        UIManager.put("TabbedPane.arrowType", arrowType);
+
+        // Linienfarbe
         UIManager.put("TabbedPane.underlineColor", COLOR_BLUE);
         UIManager.put("TabbedPane.inactiveUnderlineColor", settings.getTheme().isLight() ? Color.GRAY : Color.WHITE);
 
-        // ScrollBar Eigenschaften
-        UIManager.put("Component.arrowType", "chevron");
-        UIManager.put("ScrollBar.showButtons", true);
-        UIManager.put("ScrollBar.trackArc", 999);
-        UIManager.put("ScrollBar.thumbArc", 999);
-        UIManager.put("ScrollBar.width", 10);
+        // Scroll-Eigenschaften
+        UIManager.put("TabbedPane.tabsPopupPolicy", "never");
+        UIManager.put("TabbedPane.scrollButtonsPolicy", "asNeeded");
+    }
 
+    private static void setupScrollBar(int arc) {
+        Color trackColor = UIManager.getColor("ScrollBar.background");
+        Color thumbColor = COLOR_BLUE;
+
+        UIManager.put("ScrollBar.trackArc", arc);
+        UIManager.put("ScrollBar.thumbArc", arc);
+        UIManager.put("ScrollBar.width", 10);
         UIManager.put("ScrollBar.trackInsets", new Insets(0, 0, 0, 0));
         UIManager.put("ScrollBar.thumbInsets", BorderFactory.createEmptyBorder());
+        UIManager.put("ScrollBar.showButtons", true);
 
-        Color trackColor = UIManager.getColor("ScrollBar.background");
+        // Hinter- und Vordergrundfarbe
         UIManager.put("ScrollBar.track", trackColor);
         UIManager.put("ScrollBar.hoverTrackColor", trackColor);
-
-        Color thumbColor = COLOR_BLUE;
         UIManager.put("ScrollBar.thumb", thumbColor);
         UIManager.put("ScrollBar.hoverThumbColor", thumbColor.darker());
         UIManager.put("ScrollBar.pressedThumbColor", thumbColor.darker());
+    }
 
-        // SplitPane Eigenschaften
+    private static void setupSplitPane() {
+        Color arrowColor = UIManager.getColor("Label.foreground");
+
         UIManager.put("SplitPaneDivider.gripDotCount", 0);
         UIManager.put("SplitPaneDivider.gripDotSize", 3);
         UIManager.put("SplitPaneDivider.gripGap", 3);
         UIManager.put("SplitPane.dividerSize", 10);
         UIManager.put("SplitPane.supportsOneTouchButtons", true);
 
-        // Mnemonics/Icons Eigenschaften
-        UIManager.put("Component.hideMnemonics", false);
-        UIManager.put("OptionPane.showIcon", true);
-        UIManager.put("Dialog.showIcon", true);
-        Icons.updateSVGIcons();
+        // Pfeilfarben
+        boolean isLight = settings.getTheme().isLight();
+        UIManager.put("SplitPaneDivider.oneTouchArrowColor", applyColorAdjustment(arrowColor, 0.3f, isLight));
+        UIManager.put("SplitPaneDivider.oneTouchHoverArrowColor", applyColorAdjustment(arrowColor, 0.2f, isLight));
+        UIManager.put("SplitPaneDivider.oneTouchPressedArrowColor", applyColorAdjustment(arrowColor, 0.0f, !isLight));
+    }
+
+    public static String getAllUIManagerProperties() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== UIManager Properties ===\n");
+
+        // Alle Keys holen und alphabetisch sortieren
+        List<Object> keys = new ArrayList<>(UIManager.getDefaults().keySet());
+        keys.sort(Comparator.comparing(Object::toString, String.CASE_INSENSITIVE_ORDER));
+
+        for (Object key : keys) {
+            Object value = UIManager.get(key).toString().replaceAll("\\n", " ");
+            sb.append(String.format("%-40s : %s%n", key, value));
+        }
+
+        return sb.toString();
     }
 
     public static void updateLanguage(Gui gui, Language language) {
@@ -267,8 +384,8 @@ public final class GuiUtils {
 
         // UI aktualisieren
         logger.info(String.format("Updating Theme from '%s' to '%s'", oldTheme.getValue(), theme.getValue()));
-        updateFlatLaf();
         FlatLaf.updateUI();
+        updateFlatLaf();
         gui.updateTheme();
     }
 
@@ -306,15 +423,6 @@ public final class GuiUtils {
         return g2d;
     }
 
-    public static BufferedImage getEditedImage(BufferedImage image, boolean transparentBackground, List<Marker> appliedMarkers) {
-        int imageType = transparentBackground ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
-
-        // Spiegelung & Rotation
-        BufferedImage marked = getMarkedImage(image, appliedMarkers, imageType);
-        BufferedImage mirrored = getMirroredImage(marked, workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), imageType);
-        return getRotatedImage(mirrored, workspace.getConfig().getRotation(), imageType);
-    }
-
     public static BufferedImage makeBackgroundOpaque(BufferedImage image) {
         BufferedImage opaqueBackground = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = createHighQualityGraphics2D(opaqueBackground.getGraphics());
@@ -323,52 +431,55 @@ public final class GuiUtils {
         return opaqueBackground;
     }
 
-    private static BufferedImage getMarkedImage(BufferedImage image, List<Marker> appliedMarkers, int imageType) {
+    public static BufferedImage getEditedImage(BufferedImage image, boolean transparentBackground, List<Marker> appliedMarkers) {
+        int imageType = transparentBackground ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
 
+        // Markierungen, Spiegelung & Rotation
+        BufferedImage marked = getMarkedImage(image, imageType, appliedMarkers);
+        BufferedImage mirrored = getMirroredImage(marked, imageType, workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY());
+        return getRotatedImage(mirrored, imageType, workspace.getConfig().getRotation());
+    }
+
+    private static BufferedImage getMarkedImage(BufferedImage image, int imageType, List<Marker> appliedMarkers) {
+        if (appliedMarkers == null || appliedMarkers.isEmpty()) return image;
         int width = image.getWidth();
         int height = image.getHeight();
 
         BufferedImage markedImage = new BufferedImage(image.getWidth(), image.getHeight(), imageType);
         Graphics2D g2d = createHighQualityGraphics2D(markedImage.getGraphics());
         g2d.drawImage(image, 0, 0, null);
-        for(Marker marker : appliedMarkers) {
+        for (Marker marker : appliedMarkers) {
             marker.draw(g2d, new Rectangle(0, 0, width, height), 1.0);
 
         }
         g2d.dispose();
         return markedImage;
-
-
     }
 
-
-    private static BufferedImage getMirroredImage(BufferedImage image, boolean mirrorX, boolean mirrorY, int imageType) {
+    private static BufferedImage getMirroredImage(BufferedImage image, int imageType, boolean mirrorX, boolean mirrorY) {
         if (!mirrorX && !mirrorY) return image;
-
         int width = image.getWidth();
         int height = image.getHeight();
+
         BufferedImage mirroredImage = new BufferedImage(width, height, imageType);
         Graphics2D g2d = createHighQualityGraphics2D(mirroredImage.getGraphics());
 
         AffineTransform at = new AffineTransform();
         at.scale(mirrorX ? -1 : 1, mirrorY ? -1 : 1);
         at.translate(mirrorX ? -width : 0, mirrorY ? -height : 0);
-
         g2d.drawImage(image, at, null);
         g2d.dispose();
         return mirroredImage;
     }
 
-    private static BufferedImage getRotatedImage(BufferedImage image, int rotation, int imageType) {
+    private static BufferedImage getRotatedImage(BufferedImage image, int imageType, int rotation) {
         if (rotation % 360 == 0) return image;
-
         int width = image.getWidth();
         int height = image.getHeight();
 
         double radians = Math.toRadians(rotation);
         double sin = Math.abs(Math.sin(radians));
         double cos = Math.abs(Math.cos(radians));
-
         int newWidth = (int) Math.floor(width * cos + height * sin);
         int newHeight = (int) Math.floor(height * cos + width * sin);
 
@@ -381,7 +492,6 @@ public final class GuiUtils {
         at.rotate(radians, width / 2.0, height / 2.0);
         g2d.drawRenderedImage(image, at);
         g2d.dispose();
-
         return rotatedImage;
     }
 
@@ -398,6 +508,16 @@ public final class GuiUtils {
     // ========================================
     // Hilfsmethoden
     // ========================================
+    private static Color applyColorAdjustment(Color color, float factor, boolean lighten) {
+        if (color == null) throw new NullPointerException("Color is null.");
+        if (factor < 0) throw new IllegalArgumentException("Factor must be greater than or equal to 0.");
+        if (factor > 1) throw new IllegalArgumentException("Factor must be less than or equal to 1.");
+        if (factor == 0) return color;
+
+        if (lighten) return ColorFunctions.lighten(color, factor);
+        else return ColorFunctions.darken(color, factor);
+    }
+
     public static void setEnabled(Container container, boolean enabled) {
         if (container == null) return;
 
@@ -409,7 +529,7 @@ public final class GuiUtils {
         }
     }
 
-    private static Component[] getComponents(Container container) {
+    public static Component[] getComponents(Container container) {
         if (container == null) return new Component[0];
         else if (container instanceof JWindow window) return window.getOwnedWindows();
         else if (container instanceof JFrame frame) return frame.getContentPane().getComponents();
@@ -417,6 +537,26 @@ public final class GuiUtils {
         else if (container instanceof JMenu menu) return menu.getMenuComponents();
         else if (container instanceof JScrollPane scrollPane) return scrollPane.getViewport().getComponents();
         else return container.getComponents();
+    }
+
+    public static void makeComponentsSameSize(JPanel buttonPanel, Class<? extends Component> clazz) {
+        int maxWidth = 0;
+
+        // Maximale Breite bestimmen
+        for (Component comp : buttonPanel.getComponents()) {
+            if (comp.getClass().equals(clazz)) {
+                Dimension pref = comp.getPreferredSize();
+                maxWidth = Math.max(maxWidth, pref.width);
+            }
+        }
+
+        // Einheitliche Größe setzen
+        for (Component comp : buttonPanel.getComponents()) {
+            if (comp.getClass().equals(clazz)) {
+                Dimension size = comp.getPreferredSize();
+                comp.setPreferredSize(new Dimension(maxWidth, size.height));
+            }
+        }
     }
 
     public static boolean valueFitsInRange(Number number, SpinnerNumberModel model) {
@@ -436,21 +576,5 @@ public final class GuiUtils {
         } finally {
             for (AdjustmentListener l : listeners) scrollBar.addAdjustmentListener(l);
         }
-    }
-
-    public static String getAllUIManagerProperties() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("=== UIManager Properties ===\n");
-
-        // Alle Keys holen und alphabetisch sortieren
-        List<Object> keys = new ArrayList<>(UIManager.getDefaults().keySet());
-        keys.sort(Comparator.comparing(Object::toString, String.CASE_INSENSITIVE_ORDER));
-
-        for (Object key : keys) {
-            Object value = UIManager.get(key).toString().replaceAll("\\n", " ");
-            sb.append(String.format("%-40s : %s%n", key, value));
-        }
-
-        return sb.toString();
     }
 }

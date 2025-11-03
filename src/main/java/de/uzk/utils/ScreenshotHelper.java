@@ -37,8 +37,8 @@ public class ScreenshotHelper {
         logger.info(String.format("Saving snapshot '%s'", filePath));
 
         try {
-              image = GuiUtils.makeBackgroundOpaque(image);
-              ImageIO.write(image, workspace.getConfig().getImageFileType().getType(), filePath.toFile());
+            BufferedImage newImage = GuiUtils.makeBackgroundOpaque(image);
+            ImageIO.write(newImage, workspace.getConfig().getImageFileType().getType(), filePath.toFile());
             return true;
         } catch (IOException e) {
             logger.error(String.format("Failed saving snapshot '%s'", filePath));
@@ -73,7 +73,7 @@ public class ScreenshotHelper {
     }
 
     public static int getScreenshotCount() {
-        if(!workspace.isOpen())  return 0; // Muss zuerst geprüft werden, da sonst NullPointerException
+        if (!workspace.isOpen()) return 0; // Muss zuerst geprüft werden, da sonst NullPointerException
         Path directory = getAppProjectPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
 
         int count = 0;
@@ -87,13 +87,13 @@ public class ScreenshotHelper {
                 // Prüfe, ob der Dateiname dem Muster entspricht
                 if (fileName.matches(fileNamePattern)) count++;
             }
-        }catch(NoSuchFileException e) {
+        } catch (NoSuchFileException e) {
             // Per se kein Fehler, z.B. bei erstmals geöffneten Workspaces
             logger.info(String.format("Directory '%s' doesn't exist yet, creating it...", directory));
             try {
                 Files.createDirectories(directory);
             } catch (IOException io) {
-                logger.error(String.format("Failed to initialize snapshot directory '%s'", directory));
+                logger.error(String.format("Failed initializing snapshot directory '%s'", directory));
             }
         } catch (IOException e) {
             logger.error(String.format("Failed getting snapshot count in the directory '%s'", directory));

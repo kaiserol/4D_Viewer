@@ -70,6 +70,7 @@ public class DialogSettings {
             this.dialog.dispose();
         });
         buttonPanel.add(okButton);
+        GuiUtils.makeComponentsSameSize(buttonPanel, JButton.class);
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout(10, 10));

@@ -71,6 +71,20 @@ public final class StringUtils {
     }
 
     /**
+     * Richtet den Text in einem &lt;div&gt;-Tag aus.
+     *
+     * @param text     der auszurichtende Text
+     * @param align    Textausrichtung (z.&nbsp;B. "left", "center", "right", "justify")
+     * @return HTML-String mit entsprechendem Stil
+     */
+    public static String applyDivAlignment(String text, String align) {
+        return String.format(
+                "<div style=\"text-align:%s;\">%s</div>",
+                align, text
+        );
+    }
+
+    /**
      * Umgibt den Text mit einem &lt;span&gt;-Tag, der eine Schriftfarbe definiert.
      *
      * @param text  der anzuzeigende Text

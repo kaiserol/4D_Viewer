@@ -25,7 +25,7 @@ public enum ActionType {
     SHORTCUT_GO_TO_NEXT_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_DOWN)),
     SHORTCUT_GO_TO_LAST_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_DOWN, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
 
-    // Annotationen Shortcuts
+    // Markierungen Shortcuts
     ACTION_ADD_MARKER,
     ACTION_REMOVE_MARKER,
 

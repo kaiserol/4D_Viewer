@@ -138,9 +138,9 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
             int height = (int) (this.currentImage.getHeight() * scale);
             int x = (this.panelImage.getWidth() - width) / 2;
             int y = (this.panelImage.getHeight() - height) / 2;
+
+            // Bild zeichnen
             g2D.drawImage(this.currentImage, x, y, width, height, null);
-
-
         } else {
             // Eine Fehlermeldung wird angezeigt, wenn das aktuelle Bild nicht geladen werden kann (weil es nicht existiert)
             String text = workspace.getImageFilesDirectory() != null ? getWord("placeholder.imageCouldNotLoad") : "";
@@ -195,7 +195,6 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     @Override
     public void updateTheme() {
         setFocusBorder(this.container.isFocusOwner());
-        this.panelImage.setBackground(GuiUtils.getBackgroundColor());
     }
 
     // ========================================

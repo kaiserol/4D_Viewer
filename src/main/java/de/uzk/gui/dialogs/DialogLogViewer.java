@@ -1,5 +1,6 @@
 package de.uzk.gui.dialogs;
 
+import de.uzk.gui.GuiUtils;
 import de.uzk.gui.SelectableText;
 import de.uzk.logger.LogEntry;
 import de.uzk.utils.StringUtils;
@@ -102,23 +103,25 @@ public class DialogLogViewer {
         for (LogEntry logEntry : logger.getLogs()) {
             logContent.append(logEntry.getFormattedText(true));
         }
-        return getScrollableTextArea(StringUtils.wrapHtml(logContent.toString(), "monospaced"));
+        return getScrollableText(StringUtils.wrapHtml(logContent.toString(), "monospaced"));
     }
 
     private JComponent getMissingImagesPanel() {
         String missingImages = StringUtils.wrapPre(workspace.getMissingImages());
-        return getScrollableTextArea(StringUtils.wrapHtml(missingImages, "monospaced"));
+        return getScrollableText(StringUtils.wrapHtml(missingImages, "monospaced"));
     }
 
     // ========================================
     // Hilfsmethoden
     // ========================================
-    private JComponent getScrollableTextArea(String htmlContent) {
+    private JComponent getScrollableText(String htmlContent) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
         // Text in ScrollPane packen
         SelectableText text = new SelectableText(htmlContent);
+        text.setOpaque(true);
+        text.setBackground(GuiUtils.getBackgroundColor());
         text.setMargin(new Insets(5, 5, 5, 5));
 
         JScrollPane scrollPane = new JScrollPane(text);

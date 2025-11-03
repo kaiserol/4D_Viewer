@@ -8,24 +8,29 @@ Entwickelt in **Java**, speziell für **mikroskopische und biologische Anwendung
 - **Visualisierung von 4D-Bilddaten**: (3D-Raum + Zeit) mit flüssiger Navigation
 - **Interaktive Steuerung**: Maus und Tastatur mit Shortcuts
 - **Bildbearbeitung**: 
-  - horizontale/vertikale Spiegelung
-  - Rotation in definierten Schritten
-- **Annotationen**:
+  - Horizontale/Vertikale Spiegelung
+  - Rotation
+- **Markierungen**:
   - Formen: Ellipse und Rechteck
   - Farbe, Größe und Position sind frei wählbar
-  - Automatischer Export/Import von Annotationen
+  - Automatisches Laden/Speichern von Markierungen
 - **Unterstützte Formate**: GIF, JPEG, PNG, TIFF
-- **Internationalisierung**: Deutsch und Englisch
+- **Internationalisierung**: Deutsch/Englisch
 - **Projektdaten**:\
-  *Verzeichnis*: {Benutzerverzeichnis}/.4D_Viewer/{Bilderverzeichnis}/
-    - *annotations.json* – projektbezogene Annotationen aus der UI
-    - *config.json* – projektbezogene Konfigurationen (Dateityp, Zeit-/Ebenen-Trenner, Zeit-/Ebenen-Einheit,
+  Verzeichnis → {Benutzerverzeichnis}/.4D_Viewer/{Bilderverzeichnis}
+    - *config.json*: projektbezogene Konfigurationen (Dateityp, Zeit-/Ebenen-Trenner, Zeit-/Ebenen-Einheit,
       Bildspiegelung X/Y, Bildrotation)
-    - *snapshots/ (Ordner)* – Ablage für erzeugte Momentaufnahmen
+    - *markers.json*: projektbezogene Markierungen aus der UI
+    - *snapshots/ (Ordner)*: Ablage für erzeugte Momentaufnahmen
+
 - **Einstellungen**:\
-  *Verzeichnis*: {Benutzerverzeichnis}/.4D_Viewer/
-    - *history.txt* – Liste der zuletzt verwendeten Bildverzeichnisse
-    - *settings.json* – Benutzereinstellungen (Sprache, Theme, Schriftgröße, Shortcuts)
+  Verzeichnis → {Benutzerverzeichnis}/.4D_Viewer/
+    - *history.txt*: Liste der zuletzt verwendeten Bildverzeichnisse
+    - *settings.json*: Benutzereinstellungen (Sprache, Theme, Schriftgröße, Shortcuts)
+
+## 📸 Screenshots
+
+![Beispielbild](images/beispiel.png) **[Demo-GIFs, Screenshots und Beispiele hinzufügen]**
 
 ## 📂 Projektstruktur
 4d_viewer/\
@@ -34,6 +39,70 @@ Entwickelt in **Java**, speziell für **mikroskopische und biologische Anwendung
 ├── *pom.xml* – Maven Build-Konfiguration\
 ├── *README.md* – Projektdokumentation\
 └── *.gitignore* – Git Ignore-Regeln
+
+## 🧩 Installation & Ausführung
+1. **Repository klonen**
+
+    Die Anwendung kann aus dem GitLab-Repository heruntergeladen werden. Anschließend ins Projektverzeichnis wechseln:
+    ```bash
+    git clone https://gitlab.git.nrw/okaiser1/4d_viewer.git
+    cd 4d_viewer
+    ```
+
+2. **Abhängigkeiten installieren & Build erstellen**
+
+    Die Anwendung wird mit Maven verwaltet. Der folgende Befehl installiert alle benötigten Abhängigkeiten, bereinigt alte Builds und erzeugt anschließend eine ausführbare JAR-Datei im Ordner `target/`:
+    ```bash
+    mvn clean install && rm target/original-*.jar
+    ```
+
+3. **Anwendung starten**
+
+    Die Anwendung kann entweder direkt über Maven ausgeführt oder über die erzeugte JAR-Datei gestartet werden:<br><br>
+    **Option A: Direkt über Maven**
+    ```bash
+    mvn exec:java
+    ```
+    
+    **Option B: Über die JAR-Datei**
+    ```bash
+    java -jar target/*.jar
+    ```
+
+## ⚙️ Nützliche Hinweise & Troubleshooting
+
+### Java-Version prüfen
+
+- Stellen Sie sicher, dass Java 20 korrekt installiert ist. Die Ausgabe sollte entsprechend lauten:
+    ```bash
+    java -version
+    ```
+
+- Beispielsausgabe:
+    ```bash
+    openjdk version "20.0.2" 2023-06-14
+    ```
+
+Falls eine andere Version angezeigt wird, muss ggf. das JAVA_HOME angepasst oder eine passende JDK-Version installiert werden.
+
+### Wichtige Maven-Befehle
+
+| Befehl                    | Zweck                              |
+|---------------------------|------------------------------------|
+| `mvn clean install`       | Projekt bereinigen und neu bauen   |
+| `mvn compile`             | Kompilieren des Projekts   	       |
+| `mvn dependency:resolve`  | Nur Abhängigkeiten aktualisieren   |
+| `mvn test`                | Tests ausführen	                   |
+
+### Hinweise für IntelliJ IDEA
+
+1. Öffne das Projektverzeichnis (4d_viewer) in IntelliJ.\
+   (Alternativ: `Project Structure...`)
+2. Wähle als Project SDK: JDK 20
+3. IntelliJ erkennt automatisch das Maven-Projekt und lädt alle Abhängigkeiten.
+4. Zum Starten:
+   - Wähle im Menü Run → Run 'Main' oder
+   - Erstelle eine Run-Konfiguration mit dem Main-Class-Pfad (z. B. de.uzk.Main).
 
 ## 🔧 Entwicklung
 
@@ -55,65 +124,26 @@ Entwickelt in **Java**, speziell für **mikroskopische und biologische Anwendung
 | org.jetbrains:annotations                        | 26.0.2  | Annotationen für statische Analysen                          |
 | org.junit.jupiter:junit-jupiter                  | 6.0.0   | Test-Framework (JUnit 5)                                     |
 
-
-### Installation
-1. **Repository klonen**
-   ```bash
-   git clone https://gitlab.git.nrw/okaiser1/4d_viewer.git
-   cd 4d_viewer
-   ```
-2. **Abhängigkeiten installieren**\
-   Eine ausführbare JAR-Datei wird im Ordner *target/* erzeugt.
-   ```bash
-   mvn clean install && rm target/original-*.jar
-   ```
-3. **Projekt starten**\
-   Falls in der pom.xml Datei konfiguriert:
-   ```bash
-   mvn exec:java
-   ```
-
-   Alternativ über die erzeugte JAR:
-   ```bash
-   java -jar target/*.jar
-   ```
-
-### Nützliche Hinweise
-- Java-Version prüfen (Sollte Java 20 melden):
-  ```bash
-  java -version
-  ```
-
-- Typische Maven-Befehle:
-    - Kompilieren: `mvn compile`
-    - Tests: `mvn test`
-- IntelliJ:
-    - JDK 20 als Projekt-SDK wählen, dann App über Run starten.
-
-## 📗 Dokumentation
-
-- [Benutzeranleitung](LINK-ZUR-BENUTZERANLEITUNG) **[Link hinzufügen]**
-- [API-Dokumentation](LINK-ZUR-API-DOKUMENTATION) **[Link hinzufügen]**
-
-## 📸 Screenshots
-
-![Beispielbild](images/example.png) **[Demo-GIFs, Screenshots und Beispiele hinzufügen]**
-
 ## 🗺️ Roadmap
 
+### Version 2.0
 - [x] Umstieg auf FlatLaf (Neues Erscheinungsbild)
+- [x] Optimierung der Ladezeit und des Ladedialogs von Bildern
 - [x] Bildbearbeitung (Spiegelung und Rotation) hinzugefügt
 - [x] Erweiterung um Menüleiste
 - [x] Erweiterung um Shortcuts
+
+### Version 2.1
 - [x] Internationalisierung (DE/EN)
-- [x] Optimierung der Ladezeit und des Ladedialogs von Bildern
 - [x] Modularisierung des Codes
-- [ ] Erweiterung um Reiter "Markierungen"
-- [ ] Neue Features beim Reiter "Bearbeiten"
+- [x] Erweiterung um Markierungen
+- [x] Erweiterung um Einstellungen und Projektdateien
+- [x] Erweiterung um App- und Projektverzeichnis
+- [x] Veränderung des UI Aussehens (Abgerundete Ecken bei Komponenten)
+- [ ] Neue Features beim Reiter "Bearbeiten" hinzugefügt
     - [ ] Helligkeit-, Kontrast-Regler
     - [ ] Zoom und Crop-Funktion
-- [ ] Neue Features beim Reiter "Navigieren"
-- [ ] Weitere Performance-Optimierungen
+- [ ] Neue Features beim Reiter "Navigieren" hinzugefügt
 
 ## 📊 Projektstatus
 

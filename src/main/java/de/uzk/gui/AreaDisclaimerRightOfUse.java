@@ -1,5 +1,7 @@
 package de.uzk.gui;
 
+import de.uzk.utils.StringUtils;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -14,8 +16,9 @@ public class AreaDisclaimerRightOfUse extends AreaContainerInteractive<JPanel> {
     private void init() {
         this.container.setLayout(new BorderLayout());
 
-        JLabel useRightLabel = new JLabel(getWord("dialog.disclaimer.rightOfUse"));
-        useRightLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.container.add(useRightLabel);
+        String rightOfUse = getWord("dialog.disclaimer.rightOfUse");
+        String htmlContent = StringUtils.wrapHtml(StringUtils.applyDivAlignment(rightOfUse, "center"));
+        SelectableText text = new SelectableText(htmlContent);
+        this.container.add(text);
     }
 }

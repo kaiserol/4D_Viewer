@@ -69,13 +69,6 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
         updateTimeLevel();
     }
 
-    @Override
-    public void updateTheme() {
-        Color backgroundColor = GuiUtils.getBackgroundColor();
-        this.container.setBackground(backgroundColor);
-        this.labelTimeLevel.setBackground(backgroundColor);
-    }
-
     // ========================================
     // Hilfsmethoden
     // ========================================

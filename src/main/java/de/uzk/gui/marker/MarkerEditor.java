@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
@@ -20,14 +21,16 @@ public class MarkerEditor extends Container {
     private final Marker marker;
     private final MarkerPreview preview;
     private final java.util.List<Runnable> onUpdate = new ArrayList<>();
+    private final JColorChooser colorChooser;
 
-    public  MarkerEditor(ImageFile onto) {
+    public MarkerEditor(ImageFile onto) {
         this(onto, new Marker());
     }
 
     public MarkerEditor(ImageFile onto, Marker marker) {
         this.marker = marker;
         this.preview = new MarkerPreview(Icons.loadImage(onto.getPath(), true), marker, this);
+        this.colorChooser = new JColorChooser();
         init();
     }
 
@@ -66,14 +69,7 @@ public class MarkerEditor extends Container {
         gbc.ipadx = 30;
         JButton color = new JButton("");
         color.setBackground(this.marker.getColor());
-        color.addActionListener(a -> {
-            Color newColor = JColorChooser.showDialog(null, getWord("dialog.markers.color"), this.marker.getColor());
-            if (newColor != null) {
-                color.setBackground(newColor);
-                this.marker.setColor(newColor);
-                this.preview.repaint();
-            }
-        });
+        color.addActionListener(a -> openColorChooserDialog(color));
         this.add(color, gbc);
 
         gbc.setPos(1, 2);
@@ -120,6 +116,22 @@ public class MarkerEditor extends Container {
         gbc.setSizeAndWeight(1, 4, 0.7, 1.0);
         this.add(this.preview, gbc);
 
+    }
+
+    private void openColorChooserDialog(JButton color) {
+        this.colorChooser.setColor(color.getBackground());
+        ActionListener okListener = e -> {
+            Color selected = this.colorChooser.getColor();
+            color.setBackground(selected);
+            this.marker.setColor(selected);
+            this.preview.repaint();
+        };
+
+        // Dialog anzeigen
+        JDialog dialog = JColorChooser.createDialog(this, getWord("dialog.markers.color"),
+                true, this.colorChooser, okListener, null
+        );
+        dialog.setVisible(true);
     }
 
     void changed() {

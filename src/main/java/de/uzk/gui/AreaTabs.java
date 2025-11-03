@@ -41,17 +41,14 @@ public class AreaTabs extends AreaContainerInteractive<JPanel> {
     public void updateTheme() {
         Border emptyBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         Color borderColor = GuiUtils.getBorderColor();
-        Color backgroundColor = GuiUtils.getBackgroundColor();
 
-        // TabbedPane Farbe aktualisieren
+        // TabbedPane BOrder aktualisieren
         this.container.setBorder(BorderFactory.createLineBorder(borderColor));
-        this.container.setBackground(backgroundColor);
 
-        // Tabs Panels Farben aktualisieren
+        // Tabs Border aktualisieren
         for (int i = 0; i < this.tabbedPane.getTabCount(); i++) {
             if (this.tabbedPane.getComponentAt(i) instanceof JPanel panel) {
                 panel.setBorder(emptyBorder);
-                panel.setBackground(backgroundColor);
             }
         }
     }

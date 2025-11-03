@@ -19,6 +19,9 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
     private JTextField txtFieldDirectory;
     private JButton clearImagesButton;
 
+    // Button-Margin
+    private final Insets buttonMargin = new Insets(5, 5, 5, 5);
+
     public AreaDirectorySelection(Gui gui) {
         super(new JPanel(), gui);
         init();
@@ -27,19 +30,26 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
     private void init() {
         this.container.setLayout(new BorderLayout(10, 0));
 
-        // clearImagesButton
+        // "Bilder entfernen"-Button hinzufügen
         this.clearImagesButton = new JButton(Icons.ICON_DELETE);
         this.clearImagesButton.addActionListener(a -> clearImages());
+        this.clearImagesButton.setMargin(buttonMargin);
         GuiUtils.setToolTipText(this.clearImagesButton, getWord("tooltip.clearImages"));
-        this.container.add(this.clearImagesButton, BorderLayout.WEST);
 
-        // txtFieldDirectory
+        // ButtonBar hinzufügen (Verändert das Aussehen der Buttons)
+        JToolBar buttonBar = new JToolBar();
+        buttonBar.setFloatable(false);
+        buttonBar.setRollover(true);
+        buttonBar.add(this.clearImagesButton);
+        this.container.add(buttonBar, BorderLayout.WEST);
+
+        // "Verzeichnis Pfad"-Textfeld hinzufügen
         this.txtFieldDirectory = new JTextField();
         this.txtFieldDirectory.setEditable(false);
         this.txtFieldDirectory.putClientProperty("JTextField.placeholderText", getWord("placeholder.imageDirectory"));
         this.container.add(this.txtFieldDirectory, BorderLayout.CENTER);
 
-        // btnChooseDirectory
+        // "Verzeichnis Auswählen"-Button hinzufügen
         JButton btnChooseDirectory = new JButton(getWord("button.chooseDirectory"));
         btnChooseDirectory.addActionListener(a -> openFileChooser());
         this.container.add(btnChooseDirectory, BorderLayout.EAST);
@@ -94,6 +104,7 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.putClientProperty("FileChooser.readOnly", Boolean.TRUE);
+        resetButtonsMarginRecursively(fileChooser);
 
         // Dialogtitel setzen
         setFileChooserTitel(fileChooser);
@@ -104,6 +115,19 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         // Inhalt hinzufügen (Zeit-Trenner, Ebenen-Trenner)
         addFileChooserContent(fileChooser);
         return fileChooser;
+    }
+
+    private void resetButtonsMarginRecursively(Component comp) {
+        if (comp instanceof AbstractButton button) {
+            // Nur Buttons ohne Text (also IconButtons) zurücksetzen
+            if (button.getText() == null || button.getText().isEmpty()) button.setMargin(buttonMargin);
+        }
+
+        if (comp instanceof Container innerContainer) {
+            for (Component child : GuiUtils.getComponents(innerContainer)) {
+                resetButtonsMarginRecursively(child);
+            }
+        }
     }
 
     private void setFileChooserTitel(JFileChooser fileChooser) {
