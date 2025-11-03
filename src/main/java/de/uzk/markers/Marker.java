@@ -142,7 +142,7 @@ public class Marker {
         metrics = to.getFontMetrics();
         int width = metrics.stringWidth(this.label);
         int height = metrics.getHeight();
-        to.fillRect(x, y - metrics.getAscent(), width , height );
+        to.fillRect(x, y, width , height );
 
         double brightness = NumberUtils.calculatePerceivedBrightness(this.color);
         if (brightness > 186) {
@@ -151,7 +151,7 @@ public class Marker {
             to.setColor(Color.WHITE);
         }
 
-        to.drawString(this.label, x, y);
+        to.drawString(this.label, x, y + metrics.getAscent());
     }
 
     private Rectangle getActualBounds(Rectangle imageBounds, double scale) {

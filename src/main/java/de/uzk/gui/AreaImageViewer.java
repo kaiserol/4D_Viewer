@@ -154,7 +154,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     @Override
     public void handleAction(ActionType actionType) {
         switch (actionType) {
-            case ACTION_EDIT_IMAGE -> updateCurrentImage();
+            case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> updateCurrentImage();
             case SHORTCUT_TAKE_SCREENSHOT -> {
                 if (ScreenshotHelper.saveScreenshot(this.currentImage)) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER);

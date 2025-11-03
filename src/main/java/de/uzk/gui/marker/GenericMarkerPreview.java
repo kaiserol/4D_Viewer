@@ -1,5 +1,6 @@
 package de.uzk.gui.marker;
 
+import de.uzk.config.Theme;
 import de.uzk.gui.GuiUtils;
 import de.uzk.markers.MarkerShape;
 
@@ -9,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 
+import static de.uzk.Main.settings;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class GenericMarkerPreview extends JComponent implements MouseListener {
@@ -28,7 +30,7 @@ public class GenericMarkerPreview extends JComponent implements MouseListener {
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         if(hovering) {
-            g2d.setColor(Color.LIGHT_GRAY);
+            g2d.setColor(settings.getTheme() == Theme.LIGHT_MODE ? Color.LIGHT_GRAY : Color.DARK_GRAY);
             g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
         }
         g2d.setColor(this.markerColor);
@@ -50,6 +52,11 @@ public class GenericMarkerPreview extends JComponent implements MouseListener {
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(100,100);
+    }
+
+    @Override
+    public Dimension getMinimumSize() {
+        return getPreferredSize();
     }
 
     public void setOnClick(Runnable onClick) {
