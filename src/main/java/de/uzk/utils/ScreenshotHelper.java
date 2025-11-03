@@ -4,6 +4,7 @@ import de.uzk.gui.GuiUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -73,8 +74,8 @@ public class ScreenshotHelper {
     }
 
     public static int getScreenshotCount() {
+        if(!workspace.isOpen())  return 0; // Muss zuerst geprüft werden, da sonst NullPointerException
         Path directory = getAppProjectPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
-        if (!Files.exists(directory) || !workspace.isOpen()) return 0;
 
         int count = 0;
         try (DirectoryStream<Path> filePaths = Files.newDirectoryStream(directory)) {
@@ -87,6 +88,9 @@ public class ScreenshotHelper {
                 // Prüfe, ob der Dateiname dem Muster entspricht
                 if (fileName.matches(fileNamePattern)) count++;
             }
+        }catch(FileNotFoundException e) {
+            // Per se kein Fehler, z.B. bei erstmals geöffneten Workspaces
+            logger.info(String.format("Directory '%s' doesn't exist yet", directory));
         } catch (IOException e) {
             logger.error(String.format("Failed getting snapshot count in the directory '%s'", directory));
         }
