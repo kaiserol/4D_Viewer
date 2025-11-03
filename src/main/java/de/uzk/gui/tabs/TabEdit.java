@@ -17,6 +17,8 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     // GUI-Elemente
     private JSpinner degreeSpinner;
     private JLabel screenshots;
+    private JCheckBox mirrorXBox;
+    private JCheckBox mirrorYBox;
 
     public TabEdit(Gui gui) {
         super(new JPanel(), gui);
@@ -31,7 +33,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         gbc.setHorizontal(2, 0);
 
         // mirrorXBox
-        JCheckBox mirrorXBox = new JCheckBox(getWord("items.edit.mirrorHor"));
+        this.mirrorXBox = new JCheckBox(getWord("items.edit.mirrorHor"));
         mirrorXBox.setFocusable(false);
         initCheckBox(mirrorXBox, true);
         this.container.add(mirrorXBox, gbc);
@@ -40,7 +42,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         gbc.setPos(0, 1);
 
         // mirrorYBox
-        JCheckBox mirrorYBox = new JCheckBox(getWord("items.edit.mirrorVert"));
+        this.mirrorYBox = new JCheckBox(getWord("items.edit.mirrorVert"));
         mirrorYBox.setFocusable(false);
         initCheckBox(mirrorYBox, false);
         this.container.add(mirrorYBox, gbc);
@@ -91,11 +93,11 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         boolean startValue =  (isMirrorXBox ? workspace.getConfig().isMirrorX() : workspace.getConfig().isMirrorY());
         checkBox.setSelected(startValue);
         checkBox.addItemListener(e -> {
-//            if (GuiUtils.isEnabled(checkBox)) {
-//                if (isMirrorXBox) imageFileHandler.setImageMirrorX(checkBox.isSelected());
-//                else imageFileHandler.setImageMirrorY(checkBox.isSelected());
-//                gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
-//            }
+                if(this.container.isEnabled()) {
+                    if (isMirrorXBox) workspace.getConfig().setMirrorX(checkBox.isSelected());
+                    else workspace.getConfig().setMirrorY(checkBox.isSelected());
+                    gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
+                }
         });
     }
 
@@ -107,10 +109,10 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         else setRotationInImageHandler(spinner);
 
         spinner.addChangeListener(e -> {
-
+            if(this.container.isEnabled()) {
                 setRotationInImageHandler(spinner);
                 gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
-
+            }
         });
         return spinner;
     }
@@ -134,7 +136,14 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     @Override
     public void toggleOn() {
         GuiUtils.setEnabled(this.container, true);
+        updateValues();
         updateScreenshotCounter();
+    }
+
+    private void updateValues() {
+        this.degreeSpinner.setValue(workspace.getConfig().getRotation());
+        this.mirrorXBox.setSelected(workspace.getConfig().isMirrorX());
+        this.mirrorYBox.setSelected(workspace.getConfig().isMirrorY());
     }
 
     @Override

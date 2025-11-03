@@ -18,6 +18,8 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
     // GUI-Elemente
     private JSlider timeSlider;
     private JSlider levelSlider;
+    private JSpinner timeUnitSpinner;
+    private JSpinner levelUnitSpinner;
 
     public TabNavigate(Gui gui) {
         super(new JPanel(), gui);
@@ -39,7 +41,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
 
         // timeSpinner
         SpinnerNumberModel timeSpinnerModel = new SpinnerNumberModel(30, 1, Config.MAX_TIME_UNIT, 0.1);
-        JSpinner timeUnitSpinner = getUnitSpinner(timeSpinnerModel, Axis.TIME);
+        this.timeUnitSpinner = getUnitSpinner(timeSpinnerModel, Axis.TIME);
         this.container.add(timeUnitSpinner, gbc);
 
         // gbc
@@ -55,10 +57,11 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
 
         // timeSlider
         this.timeSlider = getSlider(Axis.TIME);
-        this.container.add(this.timeSlider, gbc);
+        // TODO: Diese Slider tun zur Zeit nichts
+        // this.container.add(this.timeSlider, gbc);
 
         // gbc
-        gbc.setPosAndInsets(0, 3, 15, 0, 5, 15);
+        gbc.setPosAndInsets(0, 2, 15, 0, 5, 15);
         gbc.weightx = 0;
 
         // levelLabel
@@ -66,15 +69,15 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         this.container.add(levelLabel, gbc);
 
         // gbc
-        gbc.setPosAndInsets(0, 4, 0, 0, 0, 15);
+        gbc.setPosAndInsets(0, 3, 0, 0, 0, 15);
 
         // timeSpinner
         SpinnerNumberModel levelSpinnerModel = new SpinnerNumberModel(1, 0.1, Config.MAX_LEVEL_UNIT, 0.1);
-        JSpinner levelUnitSpinner = getUnitSpinner(levelSpinnerModel, Axis.LEVEL);
+        this.levelUnitSpinner = getUnitSpinner(levelSpinnerModel, Axis.LEVEL);
         this.container.add(levelUnitSpinner, gbc);
 
         // gbc
-        gbc.setPosAndInsets(1, 4, 0, 0, 0, 0);
+        gbc.setPosAndInsets(1, 3, 0, 0, 0, 0);
         gbc.weightx = 1;
 
         // timeUnitLabel
@@ -88,7 +91,8 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
 
         // levelSlider
         this.levelSlider = getSlider(Axis.LEVEL);
-        this.container.add(this.levelSlider, gbc);
+        // TODO: Diese Slider tun zur Zeit nichts
+        // this.container.add(this.levelSlider, gbc);
     }
 
     public JSpinner getUnitSpinner(SpinnerNumberModel spinnerModel, Axis axis) {
@@ -106,9 +110,9 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
 
 
         spinner.addChangeListener(e -> {
-//            if (GuiUtils.isEnabled(spinner)) {
-//                updateUnitValue(spinner, isTime);
-//            }
+            if (spinner.isEnabled()) {
+                updateUnitValue(spinner, axis);
+            }
         });
         return spinner;
     }
@@ -124,13 +128,12 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
     private JSlider getSlider(Axis axis) {
         JSlider slider = new JSlider(SwingConstants.HORIZONTAL);
 
-        boolean isShift = axis == Axis.TIME;
         slider.addChangeListener(e -> {
-//            if (GuiUtils.isEnabled(slider)) {
-//                int value = slider.getValue();
-//                boolean isAdjusting = slider.getValueIsAdjusting();
-//                update(slider, axis, value, isAdjusting);
-//            }
+            if (slider.isEnabled()) {
+                int value = slider.getValue();
+                boolean isAdjusting = slider.getValueIsAdjusting();
+                update(slider, axis, value, isAdjusting);
+            }
         });
         slider.setPaintLabels(true);
         slider.setSnapToTicks(true);
@@ -159,6 +162,8 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         GuiUtils.setEnabled(this.container, true);
         updateSliderValuesSecretly(timeSlider, workspace.getTime(), workspace.getMaxTime());
         updateSliderValuesSecretly(levelSlider, workspace.getLevel(), workspace.getMaxLevel());
+        this.timeUnitSpinner.setValue(workspace.getConfig().getTimeUnit());
+        this.levelUnitSpinner.setValue(workspace.getConfig().getLevelUnit());
     }
 
     @Override
@@ -166,6 +171,8 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         GuiUtils.setEnabled(this.container, false);
         updateSliderValuesSecretly(timeSlider, 0, 0);
         updateSliderValuesSecretly(levelSlider, 0, 0);
+        this.timeUnitSpinner.setValue(workspace.getConfig().getTimeUnit());
+        this.levelUnitSpinner.setValue(workspace.getConfig().getLevelUnit());
     }
 
     @Override
