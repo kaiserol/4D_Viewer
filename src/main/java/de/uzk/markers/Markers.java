@@ -50,6 +50,10 @@ public class Markers {
         } else return new Markers();
     }
 
+    public List<Marker> getMarkersForImage(int image) {
+        return this.markers.stream().filter(m -> m.shouldRender(image)).map(MarkerMapping::getMarker).toList();
+    }
+
     //Helferklasse, die ungültige Marker zu nulls macht, die herausgefiltert werden können
     private static class NullInvalidMarkers extends StdDeserializer<MarkerMapping> {
         public NullInvalidMarkers() {

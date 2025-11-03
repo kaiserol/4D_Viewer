@@ -2,7 +2,7 @@ package de.uzk.gui;
 
 import de.uzk.action.ActionType;
 import de.uzk.image.Axis;
-import de.uzk.markers.MarkerMapping;
+import de.uzk.markers.Marker;
 import de.uzk.utils.ScreenshotHelper;
 
 import javax.swing.*;
@@ -140,12 +140,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
             int y = (this.panelImage.getHeight() - height) / 2;
             g2D.drawImage(this.currentImage, x, y, width, height, null);
 
-            // Zeichnet Marker
-            List<MarkerMapping> marker = workspace.getMarkers().getAllMarkers();
-            for (MarkerMapping m : marker) {
-                if (!m.shouldRender(workspace.getTime())) continue;
-                m.getMarker().draw(g2D, new Rectangle(x, y, width, height), scale);
-            }
+
         } else {
             // Eine Fehlermeldung wird angezeigt, wenn das aktuelle Bild nicht geladen werden kann (weil es nicht existiert)
             String text = workspace.getImageFilesDirectory() != null ? getWord("placeholder.imageCouldNotLoad") : "";
@@ -220,7 +215,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         if (workspace.isOpen()) {
             Path imagePath = workspace.getImageFile().getPath();
             BufferedImage originalImage = Icons.loadImage(imagePath, false);
-            if (originalImage != null) this.currentImage = GuiUtils.getEditedImage(originalImage, true);
+            List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
+            if (originalImage != null) this.currentImage = GuiUtils.getEditedImage(originalImage, true, markers);
         }
 
         // Bild zeichnen

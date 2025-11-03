@@ -7,6 +7,7 @@ import de.uzk.action.ActionType;
 import de.uzk.config.Language;
 import de.uzk.config.Settings;
 import de.uzk.config.Theme;
+import de.uzk.markers.Marker;
 import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
@@ -305,13 +306,41 @@ public final class GuiUtils {
         return g2d;
     }
 
-    public static BufferedImage getEditedImage(BufferedImage image, boolean transparentBackground) {
+    public static BufferedImage getEditedImage(BufferedImage image, boolean transparentBackground, List<Marker> appliedMarkers) {
         int imageType = transparentBackground ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
 
         // Spiegelung & Rotation
-        BufferedImage mirrored = getMirroredImage(image, workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), imageType);
+        BufferedImage marked = getMarkedImage(image, appliedMarkers, imageType);
+        BufferedImage mirrored = getMirroredImage(marked, workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), imageType);
         return getRotatedImage(mirrored, workspace.getConfig().getRotation(), imageType);
     }
+
+    public static BufferedImage makeBackgroundOpaque(BufferedImage image) {
+        BufferedImage opaqueBackground = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = createHighQualityGraphics2D(opaqueBackground.getGraphics());
+        g2d.drawImage(image, 0, 0, null);
+        g2d.dispose();
+        return opaqueBackground;
+    }
+
+    private static BufferedImage getMarkedImage(BufferedImage image, List<Marker> appliedMarkers, int imageType) {
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        BufferedImage markedImage = new BufferedImage(image.getWidth(), image.getHeight(), imageType);
+        Graphics2D g2d = createHighQualityGraphics2D(markedImage.getGraphics());
+        g2d.drawImage(image, 0, 0, null);
+        for(Marker marker : appliedMarkers) {
+            marker.draw(g2d, new Rectangle(0, 0, width, height), 1.0);
+
+        }
+        g2d.dispose();
+        return markedImage;
+
+
+    }
+
 
     private static BufferedImage getMirroredImage(BufferedImage image, boolean mirrorX, boolean mirrorY, int imageType) {
         if (!mirrorX && !mirrorY) return image;

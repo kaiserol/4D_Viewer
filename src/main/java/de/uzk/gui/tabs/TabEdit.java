@@ -107,10 +107,10 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         else setRotationInImageHandler(spinner);
 
         spinner.addChangeListener(e -> {
-//            if (GuiUtils.isEnabled(spinner)) {
-//                setRotationInImageHandler(spinner);
-//                gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
-//            }
+
+                setRotationInImageHandler(spinner);
+                gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
+
         });
         return spinner;
     }

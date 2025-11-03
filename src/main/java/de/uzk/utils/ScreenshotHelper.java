@@ -4,10 +4,10 @@ import de.uzk.gui.GuiUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -37,9 +37,8 @@ public class ScreenshotHelper {
         logger.info(String.format("Saving snapshot '%s'", filePath));
 
         try {
-            // Bild bearbeiten und speichern
-            BufferedImage editedImage = GuiUtils.getEditedImage(image, false);
-            ImageIO.write(editedImage, workspace.getConfig().getImageFileType().getType(), filePath.toFile());
+              image = GuiUtils.makeBackgroundOpaque(image);
+              ImageIO.write(image, workspace.getConfig().getImageFileType().getType(), filePath.toFile());
             return true;
         } catch (IOException e) {
             logger.error(String.format("Failed saving snapshot '%s'", filePath));
@@ -88,9 +87,14 @@ public class ScreenshotHelper {
                 // Prüfe, ob der Dateiname dem Muster entspricht
                 if (fileName.matches(fileNamePattern)) count++;
             }
-        }catch(FileNotFoundException e) {
+        }catch(NoSuchFileException e) {
             // Per se kein Fehler, z.B. bei erstmals geöffneten Workspaces
-            logger.info(String.format("Directory '%s' doesn't exist yet", directory));
+            logger.info(String.format("Directory '%s' doesn't exist yet, creating it...", directory));
+            try {
+                Files.createDirectories(directory);
+            } catch (IOException io) {
+                logger.error(String.format("Failed to initialize snapshot directory '%s'", directory));
+            }
         } catch (IOException e) {
             logger.error(String.format("Failed getting snapshot count in the directory '%s'", directory));
         }

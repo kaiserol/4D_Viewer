@@ -122,24 +122,27 @@ public class Marker {
 
         };
 
-
-        Color prevColor = to.getColor();
-        Stroke prevStroke = to.getStroke();
+        to = (Graphics2D) to.create();
 
         to.setColor(this.color);
         to.setStroke(new BasicStroke(LINE_WIDTH * (float) scaleFactor));
+
+
         to.draw(finalShape);
+
         this.drawName(to, actualBounds.x, actualBounds.y);
 
-        to.setColor(prevColor);
-        to.setStroke(prevStroke);
+
     }
 
     private void drawName(Graphics2D to, int x, int y) {
+
         FontMetrics metrics = to.getFontMetrics();
+        to.setFont(metrics.getFont().deriveFont(metrics.getFont().getSize() * 1.5f));
+        metrics = to.getFontMetrics();
         int width = metrics.stringWidth(this.label);
         int height = metrics.getHeight();
-        to.fillRect(x, y - metrics.getAscent(), width, height);
+        to.fillRect(x, y - metrics.getAscent(), width , height );
 
         double brightness = NumberUtils.calculatePerceivedBrightness(this.color);
         if (brightness > 186) {
