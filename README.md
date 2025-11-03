@@ -30,7 +30,25 @@ Entwickelt in **Java**, speziell für **mikroskopische und biologische Anwendung
 
 ## 📸 Screenshots
 
-![Beispielbild](images/beispiel.png) **[Demo-GIFs, Screenshots und Beispiele hinzufügen]**
+### Helles Farbschema
+
+Das helle Farbschema bietet eine klare, freundliche und kontrastreiche Oberfläche. Ideal für gut beleuchtete Arbeitsumgebungen oder Nutzer, die eine klassische, helle Darstellung bevorzugen.
+
+![App LightMode](screenshots/App_LightMode.png)
+
+### Dunkles Farbschema
+
+Das dunkle Farbschema sorgt für eine angenehme Darstellung bei geringer Umgebungshelligkeit. Es schafft eine moderne, elegante Atmosphäre.
+
+![App DarkMode](screenshots/App_DarkMode.png)
+
+### Einstellungen
+
+Im Einstellungsfenster lassen sich Anzeigeoptionen anpassen. Hier können individuelle Präferenzen festgelegt werden – etwa die Sprache, das Farbschema, die Schriftgröße …
+
+![Window Settings](screenshots/Window_Settings.png)
+
+**[Weitere Demo-GIFs, Screenshots und Beispiele hinzufügen]**
 
 ## 📂 Projektstruktur
 4d_viewer/\
@@ -120,30 +138,34 @@ Falls eine andere Version angezeigt wird, muss ggf. das JAVA_HOME angepasst oder
 | tools.jackson.core:jackson-databinding           | 3.0.1   | ObjectMapper für POJO ↔ JSON (inkl. Serializer/Deserializer) |
 | com.formdev:flatlaf                              | 3.6     | Modernes Look & Feel für Swing                               |
 | com.formdev:flatlaf-extras                       | 3.6     | Erweiterungen für FlatLaf                                    |
-| javax.swing                                      | -       | Standard-GUI-Toolkit (Java SE)                               |
 | org.jetbrains:annotations                        | 26.0.2  | Annotationen für statische Analysen                          |
 | org.junit.jupiter:junit-jupiter                  | 6.0.0   | Test-Framework (JUnit 5)                                     |
 
 ## 🗺️ Roadmap
 
 ### Version 2.0
-- [x] Umstieg auf FlatLaf (Neues Erscheinungsbild)
-- [x] Optimierung der Ladezeit und des Ladedialogs von Bildern
-- [x] Bildbearbeitung (Spiegelung und Rotation) hinzugefügt
-- [x] Erweiterung um Menüleiste
-- [x] Erweiterung um Shortcuts
+
+- [x] **Umstieg auf FlatLaf** – neues, modernes Erscheinungsbild
+- [x] **Bildbearbeitung erweitert** – Funktionen für Spiegelung und Rotation hinzugefügt
+- [x] **Optimierung der Ladezeit** und des Ladedialogs für Bilder
+- [x] **Menüleiste** integriert
+- [x] **Tastenkombinationen (Shortcuts)** hinzugefügt
 
 ### Version 2.1
-- [x] Internationalisierung (DE/EN)
-- [x] Modularisierung des Codes
-- [x] Erweiterung um Markierungen
-- [x] Erweiterung um Einstellungen und Projektdateien
-- [x] Erweiterung um App- und Projektverzeichnis
-- [x] Veränderung des UI Aussehens (Abgerundete Ecken bei Komponenten)
-- [ ] Neue Features beim Reiter "Bearbeiten" hinzugefügt
-    - [ ] Helligkeit-, Kontrast-Regler
-    - [ ] Zoom und Crop-Funktion
-- [ ] Neue Features beim Reiter "Navigieren" hinzugefügt
+
+- [x] **Internationalisierung** (Deutsch / Englisch) implementiert
+- [x] **Code modularisiert** zur besseren Wartbarkeit und Erweiterbarkeit
+- [x] **Markierungsfunktion** ergänzt
+- [x] **Einstellungsverwaltung** hinzugefügt (Einstellungen werden im Appverzeichnis abgespeichert)
+- [x] **Automatische Projektspeicherungen** hinzugefügt (Konfigurationen & Markierungen werden in Projektverzeichnissen abgespeichert)
+- [x] **UI-Design überarbeitet** – Komponenten jetzt mit abgerundeten Ecken
+
+### Neue Funktionen in Arbeit
+
+- [ ] Reiter „Bearbeiten“ erweitert um:
+    - [ ] Helligkeits- und Kontrastregler
+    - [ ] Zoom- und Zuschneidefunktion (Crop)
+- [ ] Reiter „Navigieren“ um neue Navigations-Features ergänzen
 
 ## 📊 Projektstatus
 

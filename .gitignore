@@ -1,9 +1,9 @@
 ### Project ###
-screenshots/
 snapshots/
+history.*
+settings.*
 config.*
 markers.*
-settings.*
 
 ### pCloud Sync ###
 .DS_Store
