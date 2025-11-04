@@ -58,7 +58,7 @@ public class AppPath {
         return homeDirectory.resolve(path);
     }
 
-    public static Path getAppProjectPath(Path path) {
+    public static Path getProjectPath(Path path) {
         if (workspace.getImageFilesDirectory() == null) throw new NullPointerException("The image files directory is null.");
 
         Path appDirectory = USER_HOME_DIRECTORY.resolve(APP_DIRECTORY_NAME);

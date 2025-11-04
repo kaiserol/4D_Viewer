@@ -115,12 +115,18 @@ public class DialogLogViewer {
     // Hilfsmethoden
     // ========================================
     private JComponent getScrollableText(String htmlContent) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+
         // Text in ScrollPane packen
         SelectableText text = new SelectableText(htmlContent);
         text.setOpaque(true);
         text.setBackground(GuiUtils.getBackgroundColor());
         text.setMargin(new Insets(5, 5, 5, 5));
-        return new JScrollPane(text);
+
+        JScrollPane scrollPane = new JScrollPane(text);
+        panel.add(scrollPane);
+        return panel;
     }
 
     private JScrollPane getScrollPane(JTabbedPane tabbedPane, int tabIndex) {
