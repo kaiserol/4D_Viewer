@@ -9,6 +9,7 @@ import de.uzk.config.Language;
 import de.uzk.config.Settings;
 import de.uzk.config.Theme;
 import de.uzk.markers.Marker;
+import de.uzk.markers.MarkerMapping;
 import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
@@ -423,25 +424,9 @@ public final class GuiUtils {
         return g2d;
     }
 
-    public static BufferedImage getEditedImageOld(BufferedImage image, boolean transparentBackground, List<Marker> appliedMarkers) {
-        int imageType = transparentBackground ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
-
-
-        BufferedImage marked = getMarkedImage(image, imageType, appliedMarkers);
-        BufferedImage mirrored = getMirroredImage(marked, imageType, workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY());
-        BufferedImage rotated = getRotatedImage(mirrored, imageType, workspace.getConfig().getRotation());
-
-        return getZoomedImage(rotated, workspace.getConfig().getZoom(), imageType);
-    }
-
     public static BufferedImage getEditedImage(BufferedImage image, boolean transparentBackground, List<Marker> appliedMarkers) {
         int imageType = transparentBackground ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
-
-
-        BufferedImage marked = getMarkedImage(image, imageType, appliedMarkers);
-
-        return transformImage(marked, imageType, workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), workspace.getConfig().getZoom());
-
+             return transformImage(image, imageType, workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), workspace.getConfig().getZoom(), appliedMarkers);
     }
 
     public static BufferedImage makeBackgroundOpaque(BufferedImage image) {
@@ -451,8 +436,6 @@ public final class GuiUtils {
         g2d.dispose();
         return opaqueBackground;
     }
-
-
 
     private static BufferedImage getMarkedImage(BufferedImage image, int imageType, List<Marker> appliedMarkers) {
         if (appliedMarkers == null || appliedMarkers.isEmpty()) return image;
@@ -470,65 +453,9 @@ public final class GuiUtils {
         return markedImage;
     }
 
-    private static BufferedImage getMirroredImage(BufferedImage image, int imageType, boolean mirrorX, boolean mirrorY) {
-        if (!mirrorX && !mirrorY) return image;
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        BufferedImage mirroredImage = new BufferedImage(width, height, imageType);
-        Graphics2D g2d = createHighQualityGraphics2D(mirroredImage.getGraphics());
-
-        AffineTransform at = new AffineTransform();
-        at.scale(mirrorX ? -1 : 1, mirrorY ? -1 : 1);
-        at.translate(mirrorX ? -width : 0, mirrorY ? -height : 0);
-        g2d.drawImage(image, at, null);
-        g2d.dispose();
-        return mirroredImage;
-    }
-
-    private static BufferedImage getRotatedImage(BufferedImage image, int imageType, int rotation) {
-        if (rotation % 360 == 0) return image;
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        double radians = Math.toRadians(rotation);
-        double sin = Math.abs(Math.sin(radians));
-        double cos = Math.abs(Math.cos(radians));
-        int newWidth = (int) Math.floor(width * cos + height * sin);
-        int newHeight = (int) Math.floor(height * cos + width * sin);
-
-        BufferedImage rotatedImage = new BufferedImage(newWidth, newHeight, imageType);
-        Graphics2D g2d = createHighQualityGraphics2D(rotatedImage.getGraphics());
-
-        // Zentrieren & rotieren
-        AffineTransform at = new AffineTransform();
-        at.translate((newWidth - width) / 2.0, (newHeight - height) / 2.0);
-        at.rotate(radians, width / 2.0, height / 2.0);
-        g2d.drawRenderedImage(image, at);
-        g2d.dispose();
-        return rotatedImage;
-    }
-
-    private static BufferedImage getZoomedImage(BufferedImage image, int zoom, int imageType) {
-        if(zoom == 100) return image;
-        double zoomPercentage = zoom / 100.0;
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        int insetX = (width - image.getWidth()) / 2;
-        int insetY = (height - image.getHeight()) / 2;
-
-        BufferedImage zoomedImage = new BufferedImage(width, height, imageType);
-
-        Graphics2D g2d = createHighQualityGraphics2D(zoomedImage.getGraphics());
-        g2d.scale(zoomPercentage, zoomPercentage);
-        g2d.drawImage(image, -insetX, -insetY, null);
-        g2d.dispose();
-        return zoomedImage;
-    }
-
-    public static BufferedImage transformImage(BufferedImage image, int imageType, int rotation, boolean mirrorX, boolean mirrorY, int zoom) {
-        if(zoom == 100 && !mirrorX && !mirrorY && rotation % 360 == 0) return image;
+    public static BufferedImage transformImage(BufferedImage image, int imageType, int rotation, boolean mirrorX, boolean mirrorY, int zoom, List<Marker> appliedMarkers) {
+        if(appliedMarkers == null) appliedMarkers = new ArrayList<>();
+        if(zoom == 100 && !mirrorX && !mirrorY && rotation % 360 == 0 && appliedMarkers.isEmpty()) return image;
 
         int width = image.getWidth();
         int height = image.getHeight();
@@ -542,7 +469,7 @@ public final class GuiUtils {
 
         BufferedImage transformedImage = new BufferedImage(newWidth, newHeight, imageType);
 
-        Graphics2D g2d = (Graphics2D) transformedImage.getGraphics();
+        Graphics2D g2d = createHighQualityGraphics2D(transformedImage.getGraphics());
         AffineTransform at = new AffineTransform();
         // Mirror
         at.scale(mirrorX ? -1 : 1, mirrorY ? -1 : 1);
@@ -555,7 +482,14 @@ public final class GuiUtils {
         // Zoom
         at.scale(zoomPercentage, zoomPercentage);
 
-        g2d.drawRenderedImage(image, at);
+        g2d.transform(at);
+
+        g2d.drawRenderedImage(image, null);
+
+        for(Marker marker: appliedMarkers) {
+            marker.draw(g2d, new Rectangle(0, 0, newWidth, newHeight), 1.0);
+        }
+
         g2d.dispose();
 
         return transformedImage;

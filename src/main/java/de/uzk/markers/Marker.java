@@ -7,6 +7,7 @@ import de.uzk.utils.NumberUtils;
 import de.uzk.utils.StringUtils;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 
 public class Marker {
@@ -126,6 +127,29 @@ public class Marker {
 
         to.setColor(this.color);
         to.setStroke(new BasicStroke(LINE_WIDTH * (float) scaleFactor));
+
+
+        to.draw(finalShape);
+
+        this.drawName(to, actualBounds.x, actualBounds.y);
+
+
+    }
+
+    public void drawWithTransform(Graphics2D to, Rectangle imageArea, double scaleFactor, AffineTransform at) {
+        Rectangle actualBounds = this.getActualBounds(imageArea, scaleFactor);
+        Shape finalShape = switch (this.shape) {
+            case RECTANGLE -> actualBounds;
+            case ELLIPSE ->
+                    new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
+
+        };
+
+        to = (Graphics2D) to.create();
+        to.transform(at);
+        to.setColor(this.color);
+        to.setStroke(new BasicStroke(LINE_WIDTH * (float) scaleFactor));
+
 
 
         to.draw(finalShape);
