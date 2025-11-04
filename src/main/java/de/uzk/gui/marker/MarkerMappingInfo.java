@@ -26,11 +26,12 @@ public class MarkerMappingInfo extends JPanel {
         this.mapping = mapping;
         init();
     }
+    @Override
+    public Dimension getMaximumSize() {
+        return getMinimumSize();
+    }
 
     private void init() {
-        this.setPreferredSize(new Dimension(150, 120));
-        this.setMinimumSize(new Dimension(150, 120));
-        this.setMaximumSize(new Dimension(500, 120));
         this.setBorder(BorderFactory.createLineBorder(GuiUtils.getBorderColor()));
         this.setLayout(new GridBagLayout());
 
@@ -82,8 +83,8 @@ public class MarkerMappingInfo extends JPanel {
 
 
         c.setPos(2, 0);
-        c.setInsets(0,10,10,0);
-        c.anchor = GridBagConstraints.FIRST_LINE_END;
+        c.setInsets(10,10,10,0);
+        c.anchor = GridBagConstraints.CENTER;
         c.setSizeAndWeight(1,3,0.1,1);
         this.add(getEditButton(), c);
 
