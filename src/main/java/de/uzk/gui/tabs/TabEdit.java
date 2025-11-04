@@ -64,6 +64,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         JLabel degreeLabel = new JLabel(getWord("items.edit.rotateImage"));
         this.container.add(degreeLabel, gbc);
 
+        gbc.anchor = GridBagConstraints.FIRST_LINE_END;
         gbc.setPosAndInsets(0, 3, 0, 0, 0, 15);
         SpinnerNumberModel zoomSpinnerModel = new SpinnerNumberModel(workspace.getConfig().getZoom(), 50, 500, 10);
         this.zoomSpinner = new JSpinner(zoomSpinnerModel);
@@ -78,9 +79,11 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         });
         this.container.add(zoomSpinner, gbc);
 
-        gbc.setPos(2, 3);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.setPosAndInsets(2, 3, 10, 0, 0, 0);
         JLabel zoomLabel = new JLabel("Zoom percentage: "); //TODO Übersetzungen hinzufügen
         this.container.add(zoomLabel, gbc);
+
 
         gbc.setHorizontal(1, 1);
         // gbc
