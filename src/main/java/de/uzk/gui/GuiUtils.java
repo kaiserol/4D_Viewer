@@ -429,30 +429,6 @@ public final class GuiUtils {
              return transformImage(image, imageType, workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), workspace.getConfig().getZoom(), appliedMarkers);
     }
 
-    public static BufferedImage makeBackgroundOpaque(BufferedImage image) {
-        BufferedImage opaqueBackground = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = createHighQualityGraphics2D(opaqueBackground.getGraphics());
-        g2d.drawImage(image, 0, 0, null);
-        g2d.dispose();
-        return opaqueBackground;
-    }
-
-    private static BufferedImage getMarkedImage(BufferedImage image, int imageType, List<Marker> appliedMarkers) {
-        if (appliedMarkers == null || appliedMarkers.isEmpty()) return image;
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        BufferedImage markedImage = new BufferedImage(image.getWidth(), image.getHeight(), imageType);
-        Graphics2D g2d = createHighQualityGraphics2D(markedImage.getGraphics());
-        g2d.drawImage(image, 0, 0, null);
-        for (Marker marker : appliedMarkers) {
-            marker.draw(g2d, new Rectangle(0, 0, width, height), 1.0);
-
-        }
-        g2d.dispose();
-        return markedImage;
-    }
-
     public static BufferedImage transformImage(BufferedImage image, int imageType, int rotation, boolean mirrorX, boolean mirrorY, int zoom, List<Marker> appliedMarkers) {
         if(appliedMarkers == null) appliedMarkers = new ArrayList<>();
         if(zoom == 100 && !mirrorX && !mirrorY && rotation % 360 == 0 && appliedMarkers.isEmpty()) return image;
@@ -471,16 +447,21 @@ public final class GuiUtils {
 
         Graphics2D g2d = createHighQualityGraphics2D(transformedImage.getGraphics());
         AffineTransform at = new AffineTransform();
+
+
+
         // Mirror
         at.scale(mirrorX ? -1 : 1, mirrorY ? -1 : 1);
         at.translate(mirrorX ? -width : 0, mirrorY ? -height : 0);
+
+
+        // Zoom
+        at.scale(zoomPercentage, zoomPercentage);
 
         // Rotate
         at.translate((newWidth - width) / 2.0, (newHeight - height) / 2.0);
         at.rotate(radians, width / 2.0, height / 2.0);
 
-        // Zoom
-        at.scale(zoomPercentage, zoomPercentage);
 
         g2d.transform(at);
 

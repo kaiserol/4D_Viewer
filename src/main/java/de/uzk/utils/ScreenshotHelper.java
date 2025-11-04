@@ -37,8 +37,7 @@ public class ScreenshotHelper {
         logger.info(String.format("Saving snapshot '%s'", filePath));
 
         try {
-            BufferedImage newImage = GuiUtils.makeBackgroundOpaque(image);
-            ImageIO.write(newImage, workspace.getConfig().getImageFileType().getType(), filePath.toFile());
+            ImageIO.write(image, workspace.getConfig().getImageFileType().getType(), filePath.toFile());
             return true;
         } catch (IOException e) {
             logger.error(String.format("Failed saving snapshot '%s'", filePath));

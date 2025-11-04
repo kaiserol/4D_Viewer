@@ -7,10 +7,7 @@ import de.uzk.utils.ScreenshotHelper;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.List;
@@ -19,16 +16,19 @@ import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
+public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements MouseMotionListener  {
     // GUI-Elemente
     private JPanel panelView;
     private JPanel panelImage;
     private BufferedImage currentImage;
     private JScrollBar scrollBarTime;
     private JScrollBar scrollBarLevel;
+    private int insetX;
+    private int insetY;
 
     public AreaImageViewer(Gui gui) {
         super(new JPanel(), gui);
+
         init();
     }
 
@@ -39,6 +39,10 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         this.container.addMouseListener(new FocusMouseListener());
         this.container.addMouseWheelListener(gui.getActionHandler());
         this.container.addKeyListener(gui.getActionHandler());
+
+        DragListener dl = new DragListener();
+        this.container.addMouseListener(dl);
+        this.container.addMouseMotionListener(dl);
 
         // 1. Kopfbereich mit Statusinformationen hinzufügen
         JPanel statsBarPanel = new AreaStatsBar(this.gui).getContainer();
@@ -90,6 +94,17 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         return panel;
     }
 
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        this.insetX = e.getX();
+        this.insetY = e.getY();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+    }
+
     // ========================================
     // Innere Klassen
     // ========================================
@@ -112,6 +127,29 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         @Override
         public void mouseReleased(MouseEvent e) {
             if (!container.isFocusOwner()) container.requestFocusInWindow();
+        }
+    }
+
+    private class DragListener extends MouseAdapter {
+        private Point start;
+        @Override
+        public void mousePressed(MouseEvent e) {
+            this.start = e.getPoint();
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            super.mouseDragged(e);
+            if(this.start != null) {
+                insetX = this.start.x -e.getX() ;
+                insetY = this.start.y -e.getY();
+                container.repaint();
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            this.start = null;
         }
     }
 
@@ -141,7 +179,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
             int y = (this.panelImage.getHeight() - height) / 2;
 
             // Bild zeichnen
-            g2D.drawImage(this.currentImage, x, y, width, height, null);
+            g2D.drawImage(this.currentImage, x - this.insetX, y - this.insetY, width, height, null);
         } else {
             // Eine Fehlermeldung wird angezeigt, wenn das aktuelle Bild nicht geladen werden kann (weil es nicht existiert)
             String text = workspace.getImageFilesDirectory() != null ? getWord("placeholder.imageCouldNotLoad") : "";
@@ -157,7 +195,9 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         switch (actionType) {
             case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> updateCurrentImage();
             case SHORTCUT_TAKE_SCREENSHOT -> {
-                if (ScreenshotHelper.saveScreenshot(this.currentImage)) {
+                BufferedImage screenshot = new BufferedImage(this.getContainer().getWidth(), this.getContainer().getHeight(), BufferedImage.TYPE_INT_RGB);
+                this.paintImage(screenshot.getGraphics());
+                if (ScreenshotHelper.saveScreenshot(screenshot)) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER);
                 }
             }
@@ -173,6 +213,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         setScrollBarValues(this.scrollBarTime, workspace.getTime(), workspace.getMaxTime());
         setScrollBarValues(this.scrollBarLevel, workspace.getLevel(), workspace.getMaxLevel());
     }
+
+
 
     @Override
     public void toggleOff() {
@@ -197,6 +239,9 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     public void updateTheme() {
         setFocusBorder(this.container.hasFocus());
     }
+
+
+
 
     // ========================================
     // Hilfsmethoden
