@@ -35,7 +35,7 @@ dem [Semantic Versioning](https://semver.org/).
 - **Code modularisiert** zur besseren Wartbarkeit und Erweiterbarkeit (Klassen feiner voneinander in Pakete abgegrenzt)
 - **Tooltips** und kontextsensitive Hilfe deutlich verbessert
 
-## [2.0] - 2023-11-23
+## [2.0] - 23.11.2023
 
 ### Hinzugefügt
 
@@ -56,7 +56,7 @@ dem [Semantic Versioning](https://semver.org/).
 
 - **Unterstütztes Format**: LWF
 
-## [1.3] - 2017-02-13
+## [1.3] - 13.02.2017
 
 ### Übernommene Basisversion
 

@@ -17,20 +17,20 @@ import static de.uzk.Main.settings;
 
 public final class Icons {
     // Bearbeiten Icons
-    public static final FlatSVGIcon ICON_ARROW_LEFT_TURN = loadResourceSVG("images/icons_edit/arrow_left_turn.svg");
-    public static final FlatSVGIcon ICON_ARROW_RIGHT_TURN = loadResourceSVG("images/icons_edit/arrow_right_turn.svg");
-    public static final FlatSVGIcon ICON_DELETE = loadResourceSVG("images/icons_edit/delete.svg");
+    public static final FlatSVGIcon ICON_ARROW_LEFT_TURN = loadResourceSVG("images/icons/arrow_left_turn.svg");
+    public static final FlatSVGIcon ICON_ARROW_RIGHT_TURN = loadResourceSVG("images/icons/arrow_right_turn.svg");
+    public static final FlatSVGIcon ICON_DELETE = loadResourceSVG("images/icons/delete.svg");
 
     // Navigieren Icons
-    public static final FlatSVGIcon ICON_ARROW_LEFT_START = loadResourceSVG("images/icons_nav/arrow_left_start.svg");
-    public static final FlatSVGIcon ICON_ARROW_LEFT = loadResourceSVG("images/icons_nav/arrow_left.svg");
-    public static final FlatSVGIcon ICON_ARROW_RIGHT = loadResourceSVG("images/icons_nav/arrow_right.svg");
-    public static final FlatSVGIcon ICON_ARROW_RIGHT_END = loadResourceSVG("images/icons_nav/arrow_right_end.svg");
+    public static final FlatSVGIcon ICON_ARROW_LEFT_START = loadResourceSVG("images/icons/arrow_left_start.svg");
+    public static final FlatSVGIcon ICON_ARROW_LEFT = loadResourceSVG("images/icons/arrow_left.svg");
+    public static final FlatSVGIcon ICON_ARROW_RIGHT = loadResourceSVG("images/icons/arrow_right.svg");
+    public static final FlatSVGIcon ICON_ARROW_RIGHT_END = loadResourceSVG("images/icons/arrow_right_end.svg");
 
-    public static final FlatSVGIcon ICON_ARROW_UP_START = loadResourceSVG("images/icons_nav/arrow_up_start.svg");
-    public static final FlatSVGIcon ICON_ARROW_UP = loadResourceSVG("images/icons_nav/arrow_up.svg");
-    public static final FlatSVGIcon ICON_ARROW_DOWN = loadResourceSVG("images/icons_nav/arrow_down.svg");
-    public static final FlatSVGIcon ICON_ARROW_DOWN_END = loadResourceSVG("images/icons_nav/arrow_down_end.svg");
+    public static final FlatSVGIcon ICON_ARROW_UP_START = loadResourceSVG("images/icons/arrow_up_start.svg");
+    public static final FlatSVGIcon ICON_ARROW_UP = loadResourceSVG("images/icons/arrow_up.svg");
+    public static final FlatSVGIcon ICON_ARROW_DOWN = loadResourceSVG("images/icons/arrow_down.svg");
+    public static final FlatSVGIcon ICON_ARROW_DOWN_END = loadResourceSVG("images/icons/arrow_down_end.svg");
 
     // Sonstige Icons
     public static final FlatSVGIcon ICON_PIN = loadResourceSVG("images/icons/pin.svg");
