@@ -223,7 +223,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
                 }
                 case LINK_HOVER -> {
                     applyLinkHoverStyle(false);
-                    GuiUtils.setCursor(this, Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+                    GuiUtils.setCursor(this, Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
                     String tooltipText = String.format("%s (%s %s)",
                             getWord("tooltip.openInBrowser"),

@@ -194,7 +194,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
 
     @Override
     public void updateTheme() {
-        setFocusBorder(this.container.isFocusOwner());
+        setFocusBorder(this.container.hasFocus());
     }
 
     // ========================================
