@@ -16,9 +16,11 @@ import static de.uzk.config.LanguageHandler.getWord;
 public class TabEdit extends AreaContainerInteractive<JPanel> {
     // GUI-Elemente
     private JSpinner degreeSpinner;
+    private JSpinner zoomSpinner;
     private JLabel screenshots;
     private JCheckBox mirrorXBox;
     private JCheckBox mirrorYBox;
+
 
     public TabEdit(Gui gui) {
         super(new JPanel(), gui);
@@ -48,7 +50,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         this.container.add(mirrorYBox, gbc);
 
         // gbc
-        gbc.setPosAndInsets(0, 2, 0, 0, 10, 15);
+        gbc.setPosAndInsets(0, 2, 0, 0, 0, 15);
 
         // Create a SpinnerModel for numeric values
         CyclingSpinnerNumberModel degreeSpinnerModel = new CyclingSpinnerNumberModel(0, 0, Config.MAX_ROTATION, 1);
@@ -56,13 +58,31 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         this.container.add(this.degreeSpinner, gbc);
 
         // gbc
-        gbc.setPosAndInsets(2, 2, 0, 0, 10, 0);
-        gbc.setHorizontal(1, 1);
+        gbc.setPosAndInsets(2, 2, 0, 0, 0, 0);
 
         // degreeLabel
         JLabel degreeLabel = new JLabel(getWord("items.edit.rotateImage"));
         this.container.add(degreeLabel, gbc);
 
+        gbc.setPosAndInsets(0, 3, 0, 0, 0, 15);
+        SpinnerNumberModel zoomSpinnerModel = new SpinnerNumberModel(workspace.getConfig().getZoom(), 50, 500, 10);
+        this.zoomSpinner = new JSpinner(zoomSpinnerModel);
+        this.zoomSpinner.addChangeListener(e -> {
+            if(zoomSpinner.isEnabled()) {
+                int newValue = zoomSpinnerModel.getNumber().intValue();
+                if (newValue != workspace.getConfig().getZoom()) {
+                    workspace.getConfig().setZoom(newValue);
+                    gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
+                }
+            }
+        });
+        this.container.add(zoomSpinner, gbc);
+
+        gbc.setPos(2, 3);
+        JLabel zoomLabel = new JLabel("Zoom percentage: "); //TODO Übersetzungen hinzufügen
+        this.container.add(zoomLabel, gbc);
+
+        gbc.setHorizontal(1, 1);
         // gbc
         gbc.setPosAndInsets(0, 3, 0, 0, 10, 10);
         gbc.setSizeAndWeight(1, 1, 0, 1);
@@ -144,6 +164,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         this.degreeSpinner.setValue(workspace.getConfig().getRotation());
         this.mirrorXBox.setSelected(workspace.getConfig().isMirrorX());
         this.mirrorYBox.setSelected(workspace.getConfig().isMirrorY());
+        this.zoomSpinner.setValue(workspace.getConfig().getZoom());
     }
 
     @Override

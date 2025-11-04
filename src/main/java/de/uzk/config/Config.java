@@ -19,6 +19,7 @@ public class Config {
     private boolean mirrorX;
     private boolean mirrorY;
     private int rotation;
+    private int zoom;
 
     // Default-Konstanten
     public static final ImageFileType DEFAULT_IMAGE_FILE_TYPE = ImageFileType.getDefault();
@@ -29,6 +30,7 @@ public class Config {
     public static final boolean DEFAULT_MIRROR_X = false;
     public static final boolean DEFAULT_MIRROR_Y = false;
     public static final int DEFAULT_ROTATION = 0;
+    private static final int DEFAULT_ZOOM = 100;
 
     // MinMax Konstanten
     public static final double MAX_TIME_UNIT = 600;
@@ -44,7 +46,8 @@ public class Config {
             @JsonProperty("levelUnit") double levelUnit,
             @JsonProperty("mirrorX") boolean mirrorX,
             @JsonProperty("mirrorY") boolean mirrorY,
-            @JsonProperty("rotation") int rotation
+            @JsonProperty("rotation") int rotation,
+            @JsonProperty("zoom") int zoom
     ) {
         this.setImageFileType(imageFileType);
         this.setTimeSep(timeSep);
@@ -54,6 +57,7 @@ public class Config {
         this.setMirrorX(mirrorX);
         this.setMirrorY(mirrorY);
         this.setRotation(rotation);
+        this.setZoom(zoom);
     }
 
     public ImageFileType getImageFileType() {
@@ -150,7 +154,20 @@ public class Config {
                 DEFAULT_LEVEL_UNIT,
                 DEFAULT_MIRROR_X,
                 DEFAULT_MIRROR_Y,
-                DEFAULT_ROTATION
+                DEFAULT_ROTATION,
+                DEFAULT_ZOOM
         );
+    }
+
+    public int getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(int zoom) {
+        if(50 <= zoom && zoom <= 500) {
+            this.zoom = zoom;
+        } else {
+            this.zoom = DEFAULT_ZOOM;
+        }
     }
 }
