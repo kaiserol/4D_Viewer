@@ -423,15 +423,26 @@ public final class GuiUtils {
         return g2d;
     }
 
-    public static BufferedImage getEditedImage(BufferedImage image, boolean transparentBackground, List<Marker> appliedMarkers) {
+    public static BufferedImage getEditedImageOld(BufferedImage image, boolean transparentBackground, List<Marker> appliedMarkers) {
         int imageType = transparentBackground ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
 
-        // Spiegelung & Rotation
+
         BufferedImage marked = getMarkedImage(image, imageType, appliedMarkers);
         BufferedImage mirrored = getMirroredImage(marked, imageType, workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY());
         BufferedImage rotated = getRotatedImage(mirrored, imageType, workspace.getConfig().getRotation());
 
-        return getZoomedImage(rotated, workspace.getConfig().getZoom(), imageType);}
+        return getZoomedImage(rotated, workspace.getConfig().getZoom(), imageType);
+    }
+
+    public static BufferedImage getEditedImage(BufferedImage image, boolean transparentBackground, List<Marker> appliedMarkers) {
+        int imageType = transparentBackground ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
+
+
+        BufferedImage marked = getMarkedImage(image, imageType, appliedMarkers);
+
+        return transformImage(marked, imageType, workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), workspace.getConfig().getZoom());
+
+    }
 
     public static BufferedImage makeBackgroundOpaque(BufferedImage image) {
         BufferedImage opaqueBackground = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -509,11 +520,45 @@ public final class GuiUtils {
 
         BufferedImage zoomedImage = new BufferedImage(width, height, imageType);
 
-        Graphics2D g2d = (Graphics2D) zoomedImage.getGraphics();
+        Graphics2D g2d = createHighQualityGraphics2D(zoomedImage.getGraphics());
         g2d.scale(zoomPercentage, zoomPercentage);
         g2d.drawImage(image, -insetX, -insetY, null);
         g2d.dispose();
         return zoomedImage;
+    }
+
+    public static BufferedImage transformImage(BufferedImage image, int imageType, int rotation, boolean mirrorX, boolean mirrorY, int zoom) {
+        if(zoom == 100 && !mirrorX && !mirrorY && rotation % 360 == 0) return image;
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+        double radians = Math.toRadians(rotation);
+        double sin = Math.abs(Math.sin(radians));
+        double cos = Math.abs(Math.cos(radians));
+        int newWidth = (int) Math.floor(width * cos + height * sin);
+        int newHeight = (int) Math.floor(height * cos + width * sin);
+        double zoomPercentage = zoom / 100.0;
+
+
+        BufferedImage transformedImage = new BufferedImage(newWidth, newHeight, imageType);
+
+        Graphics2D g2d = (Graphics2D) transformedImage.getGraphics();
+        AffineTransform at = new AffineTransform();
+        // Mirror
+        at.scale(mirrorX ? -1 : 1, mirrorY ? -1 : 1);
+        at.translate(mirrorX ? -width : 0, mirrorY ? -height : 0);
+
+        // Rotate
+        at.translate((newWidth - width) / 2.0, (newHeight - height) / 2.0);
+        at.rotate(radians, width / 2.0, height / 2.0);
+
+        // Zoom
+        at.scale(zoomPercentage, zoomPercentage);
+
+        g2d.drawRenderedImage(image, at);
+        g2d.dispose();
+
+        return transformedImage;
     }
 
     public static void drawCenteredText(Graphics2D g2D, String text, Container container) {
