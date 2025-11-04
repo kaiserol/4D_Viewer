@@ -24,7 +24,7 @@ Projektbeschreibung:
 Der 4D Viewer ist ein leistungsstarkes, intuitives und erweiterbares Tool
 zur Visualisierung, Analyse und Bearbeitung von vierdimensionalen Bilddaten.
 Besonders geeignet für mikroskopische und biologische Anwendungen
-(z. B. Embryonenanalyse).
+(z. B. Embryonenanalyse).
 
 ------------------------------------------------------------
 Namensnennung / Verwendungshinweise:
@@ -63,6 +63,7 @@ Especially designed for microscopic and biological applications
 ------------------------------------------------------------
 Attribution / Usage Requirements:
 - Retain this NOTICE file in any redistribution of the Work.
-- When using or modifying this project, include a reference to:
-  "4D Viewer by Oliver Kaiser – licensed under Apache License 2.0"
-  in documentation, about dialogs, or credits.
+- When using or modifying this project, the following notice must be included
+  in documentation, about dialogs, or credits:
+
+  “4D Viewer by Oliver Kaiser – licensed under the Apache License 2.0”

@@ -1,182 +1,174 @@
 # 4D Viewer
 
-Ein leistungsstarkes, intuitives und erweiterbares Tool zur **Visualisierung, Analyse und Bearbeitung von vierdimensionalen Bilddaten**.
-Entwickelt in **Java**, speziell für **mikroskopische und biologische Anwendungen** (z. B. Embryonenanalyse), bietet der 4D Viewer eine moderne Oberfläche und flexible Bildmanipulation.
+Ein leistungsstarkes, intuitives und erweiterbares Tool zur
+**Visualisierung, Analyse und Bearbeitung von vierdimensionalen Bilddaten**.
+Entwickelt in **Java**, speziell für **mikroskopische und biologische Anwendungen**
+(z. B. Embryonenanalyse), bietet der 4D Viewer eine moderne Oberfläche, performante
+Darstellung und flexible Bildmanipulation.
 
 ## 🚀 Funktionsübersicht
 
-- **Visualisierung von 4D-Bilddaten**: (3D-Raum + Zeit) mit flüssiger Navigation
-- **Interaktive Steuerung**: Maus und Tastatur mit Shortcuts
-- **Bildbearbeitung**: 
-  - Horizontale/Vertikale Spiegelung
-  - Rotation
+- **Visualisierung von 4D-Bilddaten** (3D-Raum + Zeit) mit flüssiger Navigation
+- **Interaktive Steuerung** über Maus und Tastatur (inkl. Shortcuts)
+- **Bildbearbeitung**:
+    - Horizontale/Vertikale Spiegelung
+    - Rotation
 - **Markierungen**:
-  - Formen: Ellipse und Rechteck
-  - Farbe, Größe und Position sind frei wählbar
-  - Automatisches Laden/Speichern von Markierungen
+    - Formen: Ellipse und Rechteck
+    - Farbe, Größe und Position frei wählbar
 - **Unterstützte Formate**: GIF, JPEG, PNG, TIFF
-- **Internationalisierung**: Deutsch/Englisch
-- **Projektdaten**:\
-  Verzeichnis → {Benutzerverzeichnis}/.4D_Viewer/{Bilderverzeichnis}
-    - *config.json*: projektbezogene Konfigurationen (Dateityp, Zeit-/Ebenen-Trenner, Zeit-/Ebenen-Einheit,
-      Bildspiegelung X/Y, Bildrotation)
-    - *markers.json*: projektbezogene Markierungen aus der UI
-    - *snapshots/ (Ordner)*: Ablage für erzeugte Momentaufnahmen
-
-- **Einstellungen**:\
-  Verzeichnis → {Benutzerverzeichnis}/.4D_Viewer/
-    - *history.txt*: Liste der zuletzt verwendeten Bildverzeichnisse
-    - *settings.json*: Benutzereinstellungen (Sprache, Theme, Schriftgröße, Shortcuts)
-
-## 📸 Screenshots
-
-### Helles Farbschema
-
-Das helle Farbschema bietet eine klare, freundliche und kontrastreiche Oberfläche. Ideal für gut beleuchtete Arbeitsumgebungen oder Nutzer, die eine klassische, helle Darstellung bevorzugen.
-
-![App LightMode](screenshots/App_LightMode.png)
-
-### Dunkles Farbschema
-
-Das dunkle Farbschema sorgt für eine angenehme Darstellung bei geringer Umgebungshelligkeit. Es schafft eine moderne, elegante Atmosphäre.
-
-![App DarkMode](screenshots/App_DarkMode.png)
-
-### Einstellungen
-
-Im Einstellungsfenster lassen sich Anzeigeoptionen anpassen. Hier können individuelle Präferenzen festgelegt werden – etwa die Sprache, das Farbschema, die Schriftgröße …
-
-![Window Settings](screenshots/Window_Settings.png)
-
-**[ Weitere Demo-GIFs, Screenshots und Beispiele hinzufügen]**
-
-## 📂 Projektstruktur
-4d_viewer/\
-├── *images/* – Ablage für Test-Bilder\
-├── *src/* – Source-Code des Projekts\
-├── *pom.xml* – Maven Build-Konfiguration\
-├── *README.md* – Projektdokumentation\
-└── *.gitignore* – Git Ignore-Regeln
+- **Internationalisierung**: Deutsch / Englisch
+- **App-Verzeichnis**:\
+  `{Benutzerverzeichnis}/.4D_Viewer/`
+    - _history.txt_: Verlauf der zuletzt geöffneten Projekte
+    - _settings.json_: Benutzereinstellungen (Sprache, Theme, Schriftgröße, Shortcuts)
+- **Projekt-Verzeichnis**:\
+  `{Benutzerverzeichnis}/.4D_Viewer/{Bilderverzeichnis}`
+    - _config.json_: projektbezogene Konfigurationen (Einheiten, Spiegelung, Rotation, Zoom)
+    - _markers.json_: gespeicherte Markierungen aus der UI
+    - _snapshots/_: Ablage für Momentaufnahmen
 
 ## 🧩 Installation & Ausführung
-1. **Repository klonen**
 
-    Das Projekt kann aus dem GitLab-Repository heruntergeladen werden. Anschließend sollten Sie ins Projektverzeichnis wechseln:
+1. **Repository klonen**
     ```bash
     git clone https://gitlab.git.nrw/okaiser1/4d_viewer.git
     cd 4d_viewer
     ```
 
-2. **Abhängigkeiten installieren & Build erstellen**
-
-    Das Projekt wird mit Maven verwaltet. Der folgende Befehl installiert alle benötigten Abhängigkeiten, bereinigt alte Builds und erzeugt anschließend eine ausführbare JAR-Datei im Ordner `target/`:
+2. **Abhängigkeiten installieren & Build erzeugen**
     ```bash
     mvn clean install && rm target/original-*.jar
     ```
 
 3. **Anwendung starten**
 
-    Die Anwendung kann entweder direkt über Maven ausgeführt oder über die erzeugte JAR-Datei gestartet werden:<br><br>
-    **Option A: Direkt über Maven**
-    ```bash
-    mvn exec:java
-    ```
-    
-    **Option B: Über die JAR-Datei**
+   _Option A – Über die erzeugte JAR-Datei_
     ```bash
     java -jar target/*.jar
     ```
 
-## ⚙️ Nützliche Hinweise & Troubleshooting
+   _Option B – Direkt über Maven_
+    ```bash
+    mvn exec:java
+    ```
+
+## ⚙️ Troubleshooting & Entwicklungsumgebung
 
 ### Java-Version prüfen
 
-- Stellen Sie sicher, dass Java 20 korrekt installiert ist. Die Ausgabe sollte entsprechend lauten:
+- Prüfen Sie, ob Java 20 installiert ist:
     ```bash
     java -version
     ```
-
 - Beispielsausgabe:
     ```bash
     openjdk version "20.0.2" 2023-06-14
     ```
 
-Falls eine andere Version angezeigt wird, muss ggf. das JAVA_HOME angepasst oder eine passende JDK-Version installiert werden.
+Falls eine andere Version angezeigt wird, ggf. `JAVA_HOME` anpassen oder eine passende JDK-Version installieren.
 
 ### Wichtige Maven-Befehle
 
-| Befehl                    | Zweck                              |
-|---------------------------|------------------------------------|
-| `mvn clean install`       | Projekt bereinigen und neu bauen   |
-| `mvn compile`             | Kompilieren des Projekts   	       |
-| `mvn dependency:resolve`  | Nur Abhängigkeiten aktualisieren   |
-| `mvn test`                | Tests ausführen	                   |
+| Befehl                   | Zweck                            |
+|--------------------------|----------------------------------|
+| `mvn clean install`      | Projekt bereinigen und neu bauen |
+| `mvn compile`            | Kompilieren des Projekts         |
+| `mvn dependency:resolve` | Nur Abhängigkeiten aktualisieren |
+| `mvn test`               | Tests ausführen                  |
 
 ### Hinweise für IntelliJ IDEA
 
-1. Öffne das Projektverzeichnis (4d_viewer) in IntelliJ.\
-   (Alternativ: `Project Structure...`)
-2. Wähle als Project SDK: JDK 20
-3. IntelliJ erkennt automatisch das Maven-Projekt und lädt alle Abhängigkeiten.
+1. Projekt öffnen → `4d_viewer/`
+2. Project SDK auswählen: **JDK 20**
+3. IntelliJ erkennt automatisch das Maven-Projekt
 4. Zum Starten:
-   - Wähle im Menü Run → Run 'Main' oder
-   - Erstelle eine Run-Konfiguration mit dem Main-Class-Pfad (z. B. de.uzk.Main).
+    - Menü: *Run → Run 'Main'*
+    - oder eigene Run-Konfiguration mit Main-Class (z. B. `de.uzk.Main`)
+
+## 📂 Projektstruktur
+
+```
+4d_viewer/
+├── .idea/                  # IntelliJ-Projektkonfiguration
+├── images/                 # Beispiel- und Testbilder
+├── java_executables/       # Kompilierte Java-Programme (.jar)
+├── screenshots/            # Screenshots für Dokumentation und Tests
+├── src/
+│   ├── main/
+│   │   ├── java/           # Java-Quellcode
+│   │   └── resources/      # Ressourcen (Bilder, META-INF, Sprachendateien)
+│   └── test/
+│       └── java/           # Testklassen
+│
+├── .editorconfig           # Definiert einheitliche Formatierungsregeln für den Quellcode
+├── .gitignore              # Regeln für nicht zu versionierende Dateien
+├── 4d_viewer.iml           # IntelliJ IDEA-Projektdatei
+├── CHANGELOG.md            # Dokumentation der Änderungen
+├── CONTRIBUTING.md         # Hinweise zu Beitragenden
+├── LICENSE                 # Lizenzbedingungen
+├── NOTICE                  # Urheberrechtshinweise
+├── pom.xml                 # Maven-Build-Konfiguration
+└── README.md               # Projektbeschreibung, Setup- und Nutzungshinweise
+```
+
+## 📸 Screenshots
+
+### Helles Farbschema
+
+![App LightMode](src/main/resources/images/screenshots/App_LightMode.png)
+
+### Dunkles Farbschema
+
+![App DarkMode](src/main/resources/images/screenshots/App_DarkMode.png)
+
+### Einstellungen
+
+Im Einstellungsfenster lassen sich Anzeigeoptionen individuell anpassen.
+
+![Window Settings](src/main/resources/images/screenshots/Window_Settings.png)
+
+_(Weitere Demo-GIFs, Screenshots und Beispiele folgen)_
 
 ## 🔧 Entwicklung
 
 ### Technologien
 
-- IDE: IntelliJ IDEA (Community / Ultimate)
-- Sprache: Java 20 (OpenJDK)
-- Build-Tool: Apache Maven 3.9.11
+- **IDE:** IntelliJ IDEA (Community / Ultimate)
+- **Sprache:** Java 20 (OpenJDK)
+- **Build-Tool:** Apache Maven 3.9.11
 
 ### Abhängigkeiten (Auszug)
-| Bibliothek                                       | Version | Zweck / Beschreibung                                         |
-|--------------------------------------------------|---------|--------------------------------------------------------------|
-| com.fasterxml.jackson.core:jackson-annotations   | 2.20    | Annotationen zur Steuerung von JSON-(De-)Serialisierung      |
-| tools.jackson.core:jackson-core                  | 3.0.1   | JSON Parser/Generator                                        |
-| tools.jackson.core:jackson-databinding           | 3.0.1   | ObjectMapper für POJO ↔ JSON (inkl. Serializer/Deserializer) |
-| com.formdev:flatlaf                              | 3.6     | Modernes Look & Feel für Swing                               |
-| com.formdev:flatlaf-extras                       | 3.6     | Erweiterungen für FlatLaf                                    |
-| org.jetbrains:annotations                        | 26.0.2  | Annotationen für statische Analysen                          |
-| org.junit.jupiter:junit-jupiter                  | 6.0.0   | Test-Framework (JUnit 5)                                     |
 
-## 🗺️ Roadmap
-
-### Version 2.0
-
-- [x] **Umstieg auf FlatLaf** – neues, modernes Erscheinungsbild
-- [x] **Bildbearbeitung erweitert** – Funktionen für Spiegelung und Rotation hinzugefügt
-- [x] **Optimierung der Ladezeit** und des Ladedialogs für Bilder
-- [x] **Menüleiste** integriert
-- [x] **Tastenkombinationen (Shortcuts)** hinzugefügt
-
-### Version 2.1
-
-- [x] **Internationalisierung** (Deutsch / Englisch) implementiert
-- [x] **Code modularisiert** zur besseren Wartbarkeit und Erweiterbarkeit
-- [x] **Markierungsfunktion** ergänzt
-- [x] **Einstellungsverwaltung** hinzugefügt (Einstellungen werden im Appverzeichnis abgespeichert)
-- [x] **Automatische Projektspeicherungen** hinzugefügt (Konfigurationen & Markierungen werden in Projektverzeichnissen abgespeichert)
-- [x] **UI-Design überarbeitet** – Komponenten jetzt mit abgerundeten Ecken
-
-### Neue Funktionen in Arbeit
-
-- [ ] Reiter „Bearbeiten“ erweitert um:
-    - [ ] Helligkeits- und Kontrastregler
-    - [ ] Zoom- und Zuschneidefunktion (Crop)
-- [ ] Reiter „Navigieren“ um neue Navigations-Features ergänzen
+| Bibliothek                                       | Version | Zweck                               |
+|--------------------------------------------------|---------|-------------------------------------|
+| `com.fasterxml.jackson.core:jackson-annotations` | 2.20    | JSON-(De-)Serialisierung            |
+| `tools.jackson.core:jackson-core`                | 3.0.1   | JSON Parser/Generator               |
+| `tools.jackson.core:jackson-databinding`         | 3.0.1   | Objektabbildung (POJO ↔ JSON)       |
+| `com.formdev:flatlaf`                            | 3.6     | Modernes Look & Feel für Swing      |
+| `com.formdev:flatlaf-extras`                     | 3.6     | Erweiterungen für FlatLaf           |
+| `org.jetbrains:annotations`                      | 26.0.2  | Annotationen für statische Analysen |
+| `org.junit.jupiter:junit-jupiter`                | 6.0.0   | Test-Framework (JUnit 6)            |
 
 ## 📊 Projektstatus
 
 Das Projekt befindet sich aktuell in **aktiver Entwicklung**.
 Ziel ist es, eine stabile, nutzerfreundliche und erweiterbare Plattform zur 4D-Visualisierung zu schaffen.
 
+## 🗂️ CHANGELOG & NOTICE
+
+[CHANGELOG.md](CHANGELOG.md): Dokumentiert alle wichtigen Änderungen und Versionen.
+Empfohlen beim Update oder bei neuen Releases zu prüfen.
+
+[NOTICE](NOTICE): Enthält rechtliche Hinweise und Copyright-Informationen.
+Sollte in Weiterverteilungen oder Veröffentlichungen beigelegt werden, wie in der Apache 2.0 Lizenz empfohlen.
+
 ## 🤝 Beitragende
 
-Ein großes Dankeschön an **alle Entwickler, Tester und Nutzer**, die dieses Projekt mitgestalten! Eine detaillierte Übersicht über alle Mitwirkenden, ihre Rollen und die jeweiligen Versionen finden Sie in der [CONTRIBUTING.md](CONTRIBUTING.md)-Datei.
+Ein großes Dankeschön an **alle Entwickler, Tester und Nutzer**, die dieses Projekt mitgestalten!
+Eine detaillierte Übersicht über alle Beitragende finden Sie in der [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 🔐 Lizenz
 
-Dieses Projekt steht unter der [Apache License 2.0](LICENSE).  
-Copyright (c) 2025 Oliver Kaiser.
+Dieses Projekt steht unter der [Apache License 2.0](LICENSE).
+Copyright © 2025 Oliver Kaiser.

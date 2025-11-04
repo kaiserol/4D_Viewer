@@ -73,7 +73,7 @@ public class DialogDisclaimer {
         gbc.insets.top = 5;
         addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app.version_2_0.developer"));
         addLabelRow(panel, gbc, row++, getWord("app.advisors"), getWord("app.version_2_0.advisor-1"));
-        addLabelRow(panel, gbc, row++, "", getWord("app.version_2_0.advisor-2"));
+        addLabelRow(panel, gbc, row++, null, getWord("app.version_2_0.advisor-2"));
 
         // Version hinzufügen
         gbc.insets.top = 20;

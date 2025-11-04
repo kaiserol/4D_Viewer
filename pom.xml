@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.uzk</groupId>
-    <artifactId>4D_Viewer</artifactId>
+    <artifactId>4d_viewer</artifactId>
     <version>2.1</version>
-    <name>4D Viewer</name>
+    <name>4D_Viewer_v2_1</name>
 
     <properties>
         <java.version>20</java.version>
@@ -65,7 +65,24 @@
 
     <build>
         <!-- Der Name der fertigen Datei -->
-        <finalName>${project.artifactId}-${project.version}</finalName>
+        <finalName>${project.name}</finalName>
+
+        <!-- Ressourcen: auch LICENSE & Co einbinden -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.basedir}</directory>
+                <includes>
+                    <include>LICENSE</include>
+                    <include>NOTICE</include>
+                    <include>README.md</include>
+                    <include>CHANGELOG.md</include>
+                </includes>
+                <targetPath>META-INF</targetPath>
+            </resource>
+        </resources>
 
         <plugins>
             <!-- Wichtig, damit 'mvn exec:java' funktioniert -->
@@ -111,7 +128,8 @@
 
                             <!-- Manifest: Main-Klasse -->
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>de.uzk.Main</mainClass>
                                 </transformer>
                             </transformers>

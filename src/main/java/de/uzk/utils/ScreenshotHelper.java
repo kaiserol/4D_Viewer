@@ -1,7 +1,5 @@
 package de.uzk.utils;
 
-import de.uzk.gui.GuiUtils;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -87,7 +85,7 @@ public class ScreenshotHelper {
                 if (fileName.matches(fileNamePattern)) count++;
             }
         } catch (NoSuchFileException e) {
-            // Per se kein Fehler, z.B. bei erstmals geöffneten Workspaces
+            // Per se kein Fehler, z. B. bei erstmals geöffneten Workspaces
             logger.info(String.format("Directory '%s' doesn't exist yet, creating it...", directory));
             try {
                 Files.createDirectories(directory);

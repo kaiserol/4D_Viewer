@@ -9,7 +9,6 @@ import de.uzk.config.Language;
 import de.uzk.config.Settings;
 import de.uzk.config.Theme;
 import de.uzk.markers.Marker;
-import de.uzk.markers.MarkerMapping;
 import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
