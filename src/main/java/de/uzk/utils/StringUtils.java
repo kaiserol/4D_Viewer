@@ -216,7 +216,19 @@ public final class StringUtils {
         for (String word : words) {
             // Hyperlink-Erkennung (http/https)
             if (word.matches("https?://\\S+")) {
-                builder.append(wrapA(word, word));
+                // Trenne Link von allen abschließenden Satzzeichen
+                int endIndex = word.length();
+                while (endIndex > 0 && ".!?;,:()[][]{}".indexOf(word.charAt(endIndex - 1)) != -1) {
+                    endIndex--;
+                }
+
+                // Den eigentlichen Link einbetten
+                String link = word.substring(0, endIndex);
+                builder.append(wrapA(link, link));
+
+                // Satzzeichen am Ende wieder anhängen
+                String punctuation = word.substring(endIndex);
+                builder.append(punctuation);
             } else {
                 builder.append(word);
             }

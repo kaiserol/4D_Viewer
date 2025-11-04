@@ -63,24 +63,26 @@ public class DialogDisclaimer {
 
         // Version 1.0 hinzufügen
         gbc.insets.top = 10;
-        addLabelRow(panel, gbc, row++, getWord("app.version") + "-1.0:", getWord("app-v1.0.date"));
+        addLabelRow(panel, gbc, row++, getWord("app.version") + "-1.0", getWord("app-v1.0.date"));
         gbc.insets.top = 5;
-        addLabelRow(panel, gbc, row++, getWord("app.developer") + ":", getWord("app-v1.0.developer"));
+        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app-v1.0.developer"));
 
         // Version 2.0 hinzufügen
         gbc.insets.top = 20;
-        addLabelRow(panel, gbc, row++, getWord("app.version") + "-2.0:", getWord("app-v2.0.date"));
+        addLabelRow(panel, gbc, row++, getWord("app.version") + "-2.0", getWord("app-v2.0.date"));
         gbc.insets.top = 5;
-        addLabelRow(panel, gbc, row++, getWord("app.developer") + ":", getWord("app-v2.0.developer"));
-        addLabelRow(panel, gbc, row++, getWord("app.co-producer") + ":", getWord("app-v2.0.co-producer"));
+        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app-v2.0.developer"));
+        addLabelRow(panel, gbc, row++, getWord("app.advisors"), getWord("app-v2.0.advisor-1"));
+        addLabelRow(panel, gbc, row++, "", getWord("app-v2.0.advisor-2"));
 
         // Version 2.1 hinzufügen
         gbc.insets.top = 20;
-        addLabelRow(panel, gbc, row++, getWord("app.version") + "-2.1:", getWord("app-v2.1.date"));
+        addLabelRow(panel, gbc, row++, getWord("app.version") + "-2.1", getWord("app-v2.1.date"));
         gbc.insets.top = 5;
-        addLabelRow(panel, gbc, row++, getWord("app.developer") + ":", getWord("app-v2.1.developer"));
-        addLabelRow(panel, gbc, row++, "", getWord("app-v2.1.developer-2"));
-        addLabelRow(panel, gbc, row, getWord("app.co-producer") + ":", getWord("app-v2.1.co-producer"));
+        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app-v2.1.developer-1"));
+        addLabelRow(panel, gbc, row++, null, getWord("app-v2.1.developer-2"));
+        addLabelRow(panel, gbc, row++, getWord("app.advisors"), getWord("app-v2.1.advisor-1"));
+        addLabelRow(panel, gbc, row, null, getWord("app-v2.1.advisor-2"));
 
         return panel;
     }
@@ -105,16 +107,16 @@ public class DialogDisclaimer {
         gbc.gridy = row;
         gbc.insets.left = 0;
         gbc.insets.right = 5;
-        gbc.weightx = 1;
-        JLabel label = new JLabel(StringUtils.wrapHtml(StringUtils.wrapBold(labelText)));
+        gbc.weightx = 0;
+        JLabel label = new JLabel(StringUtils.wrapHtml(StringUtils.wrapBold(labelText) + ":"));
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, gbc);
+        if (labelText != null && !labelText.isEmpty()) panel.add(label, gbc);
 
         gbc.gridx = 1;
         gbc.insets.left = 5;
         gbc.insets.right = 0;
-        gbc.weightx = 0.65;
-        panel.add(new JLabel(labelValueText), gbc);
+        gbc.weightx = 1;
+        panel.add(new JLabel(StringUtils.wrapHtml(labelValueText)), gbc);
     }
 
     private SelectableText getSubTitle(String title) {

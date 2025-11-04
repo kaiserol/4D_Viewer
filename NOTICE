@@ -1,29 +1,30 @@
-CyberMetrics Toolkit
+4D Viewer
 Copyright © 2025 Oliver Kaiser
 
 ------------------------------------------------------------
 DEUTSCH
 ------------------------------------------------------------
 
-Lizenziert unter der Apache License, Version 2.0 (die „Lizenz“);
+Lizenziert unter der Apache License, Version 2.0 (die "Lizenz");
 Sie dürfen diese Datei nur im Einklang mit der Lizenz verwenden.
 Eine Kopie der Lizenz erhalten Sie unter:
 
     http://www.apache.org/licenses/LICENSE-2.0
 
-Sofern nicht durch geltendes Recht vorgeschrieben oder schriftlich
-vereinbart, wird die unter dieser Lizenz bereitgestellte Software
-„wie besehen“ verteilt, ohne jegliche ausdrückliche oder stillschweigende
-Gewährleistungen oder Bedingungen. Weitere Details finden Sie in der Lizenz.
+Sofern nicht gesetzlich vorgeschrieben oder schriftlich vereinbart,
+wird die Software unter dieser Lizenz "wie besehen" bereitgestellt,
+ohne jegliche ausdrückliche oder stillschweigende Gewährleistung.
+Weitere Details finden Sie in der Lizenz.
 
 ------------------------------------------------------------
 Dieses Produkt enthält Software, entwickelt von:
 Oliver Kaiser (https://github.com/kaiserol)
 
 Projektbeschreibung:
-Der CyberMetrics Toolkit ist ein Open-Source-Framework zur Analyse,
-Überwachung und Visualisierung sicherheitsrelevanter sowie
-leistungsbezogener Metriken in verteilten Systemen.
+Der 4D Viewer ist ein leistungsstarkes, intuitives und erweiterbares Tool
+zur Visualisierung, Analyse und Bearbeitung von vierdimensionalen Bilddaten.
+Besonders geeignet für mikroskopische und biologische Anwendungen
+(z. B. Embryonenanalyse).
 
 ------------------------------------------------------------
 Namensnennung / Verwendungshinweise:
@@ -31,7 +32,7 @@ Namensnennung / Verwendungshinweise:
 - Bei Verwendung oder Modifikation dieses Projekts ist folgender Hinweis
   in Dokumentationen, Info-Dialogen oder „Über“-Bereichen aufzunehmen:
 
-  „CyberMetrics Toolkit von Oliver Kaiser – lizenziert unter der Apache License 2.0“
+  „4D Viewer von Oliver Kaiser – lizenziert unter der Apache License 2.0“
 
 ------------------------------------------------------------
 ENGLISH
@@ -54,13 +55,14 @@ This product includes software developed by:
 Oliver Kaiser (https://github.com/kaiserol)
 
 Project description:
-CyberMetrics Toolkit is an open-source framework for analyzing,
-monitoring, and visualizing security-related and performance metrics
-across distributed systems.
+4D Viewer is a powerful, intuitive, and extensible tool for
+visualizing, analyzing, and editing four-dimensional image data.
+Especially designed for microscopic and biological applications
+(e.g., embryo analysis).
 
 ------------------------------------------------------------
 Attribution / Usage Requirements:
 - Retain this NOTICE file in any redistribution of the Work.
 - When using or modifying this project, include a reference to:
-  "CyberMetrics Toolkit by Oliver Kaiser – licensed under Apache License 2.0"
+  "4D Viewer by Oliver Kaiser – licensed under Apache License 2.0"
   in documentation, about dialogs, or credits.

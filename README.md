@@ -1,4 +1,4 @@
-# 4D_Viewer
+# 4D Viewer
 
 Ein leistungsstarkes, intuitives und erweiterbares Tool zur **Visualisierung, Analyse und Bearbeitung von vierdimensionalen Bilddaten**.
 Entwickelt in **Java**, speziell für **mikroskopische und biologische Anwendungen** (z. B. Embryonenanalyse), bietet der 4D Viewer eine moderne Oberfläche und flexible Bildmanipulation.
@@ -48,7 +48,7 @@ Im Einstellungsfenster lassen sich Anzeigeoptionen anpassen. Hier können indivi
 
 ![Window Settings](screenshots/Window_Settings.png)
 
-**[Weitere Demo-GIFs, Screenshots und Beispiele hinzufügen]**
+**[ Weitere Demo-GIFs, Screenshots und Beispiele hinzufügen]**
 
 ## 📂 Projektstruktur
 4d_viewer/\
@@ -61,7 +61,7 @@ Im Einstellungsfenster lassen sich Anzeigeoptionen anpassen. Hier können indivi
 ## 🧩 Installation & Ausführung
 1. **Repository klonen**
 
-    Die Anwendung kann aus dem GitLab-Repository heruntergeladen werden. Anschließend ins Projektverzeichnis wechseln:
+    Das Projekt kann aus dem GitLab-Repository heruntergeladen werden. Anschließend sollten Sie ins Projektverzeichnis wechseln:
     ```bash
     git clone https://gitlab.git.nrw/okaiser1/4d_viewer.git
     cd 4d_viewer
@@ -69,7 +69,7 @@ Im Einstellungsfenster lassen sich Anzeigeoptionen anpassen. Hier können indivi
 
 2. **Abhängigkeiten installieren & Build erstellen**
 
-    Die Anwendung wird mit Maven verwaltet. Der folgende Befehl installiert alle benötigten Abhängigkeiten, bereinigt alte Builds und erzeugt anschließend eine ausführbare JAR-Datei im Ordner `target/`:
+    Das Projekt wird mit Maven verwaltet. Der folgende Befehl installiert alle benötigten Abhängigkeiten, bereinigt alte Builds und erzeugt anschließend eine ausführbare JAR-Datei im Ordner `target/`:
     ```bash
     mvn clean install && rm target/original-*.jar
     ```
@@ -174,10 +174,7 @@ Ziel ist es, eine stabile, nutzerfreundliche und erweiterbare Plattform zur 4D-V
 
 ## 🤝 Beitragende
 
-Ein großes Dankeschön an alle Entwickler, Tester und Nutzer, die dieses Projekt mitgestalten!
->„Ich glaube, das Projekt macht dir genauso viel Spaß wie mir – und wir sind auf dem richtigen Weg.“
-> 
-> ~ Olaf Bossinger
+Ein großes Dankeschön an **alle Entwickler, Tester und Nutzer**, die dieses Projekt mitgestalten! Eine detaillierte Übersicht über alle Mitwirkenden, ihre Rollen und die jeweiligen Versionen finden Sie in der [CONTRIBUTING.md](CONTRIBUTING.md)-Datei.
 
 ## 🔐 Lizenz
 
