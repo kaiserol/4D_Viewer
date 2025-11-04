@@ -133,12 +133,12 @@ public class Config {
     }
 
     public void save() {
-        Path jsonPath = getAppProjectPath(Path.of(CONFIG_FILE_NAME));
+        Path jsonPath = getProjectPath(Path.of(CONFIG_FILE_NAME));
         saveJson(jsonPath, this);
     }
 
     public static Config load() {
-        Path jsonPath = getAppProjectPath(Path.of(CONFIG_FILE_NAME));
+        Path jsonPath = getProjectPath(Path.of(CONFIG_FILE_NAME));
 
         Object obj = loadJson(jsonPath, Config.class);
         if (obj instanceof Config config) return config;

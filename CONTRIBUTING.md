@@ -4,18 +4,18 @@ Dieses Projekt wird von mehreren Personen entwickelt, getestet und genutzt. Wir 
 
 ## Hauptbeitragende
 
-| Name               | Rolle / Beitrag                      | Version(en) | Datum                   |
-|--------------------|--------------------------------------|-------------|-------------------------|
-| **Sascha Zur**     | Ideengeber, Originalversion erstellt | v1.0        | 17.02.2013              |
-| **Olaf Bossinger** | Nutzer & UX-Feedback                 | v2.0 – v2.1 | 24.08.2023 – 04.11.2025 |
-| **Peter Heger**    | Ausbilder zum MATSE an der Uni Köln  | v2.0 – v2.1 | 24.08.2023 – 04.11.2025 |
-| **Oliver Kaiser**  | Hauptentwickler, v2.0 und v2.1       | v2.0 – v2.1 | 24.08.2023 – 04.11.2025 |
-| **Lion Rexhepi**   | Mitentwickler, v2.1                  | v2.1        | 06.10.2025 - 04.11.2025 |
+| Name               | Rolle / Beitrag                      | Version(en)       | Datum                   |
+|--------------------|--------------------------------------|-------------------|-------------------------|
+| **Sascha Zur**     | Ideengeber, Originalversion erstellt | Version 1.3       | 17.02.2013              |
+| **Olaf Bossinger** | Nutzer & UX-Feedback                 | Version 2.0 – 2.1 | 24.08.2023 – 04.11.2025 |
+| **Peter Heger**    | Ausbilder zum MATSE an der Uni Köln  | Version 2.0 – 2.1 | 24.08.2023 – 04.11.2025 |
+| **Oliver Kaiser**  | Hauptentwickler (Versionen: 2.*)     | Version 2.0 – 2.1 | 24.08.2023 – 04.11.2025 |
+| **Lion Rexhepi**   | Mitentwickler (ab Version 2.1)       | Version 2.1       | 06.10.2025 - 04.11.2025 |
 
 
 ## Hinweise
 
-- **Sascha Zur** lieferte die ursprüngliche Idee und erstellte die erste Version (v1.0), die als Vorlage für die spätere Entwicklung durch Oliver Kaiser diente.
+- **Sascha Zur** lieferte die ursprüngliche Idee und erstellte die erste Version (v1.3), die als Vorlage für die spätere Entwicklung durch Oliver Kaiser diente.
 - **Olaf Bossinger** und **Peter Heger** übernahmen ab Version 2.0 beratende Rollen in der Softwareentwicklung. Peter unterstützte insbesondere in seiner Ausbilderrolle, während Olaf als Nutzerberater wertvolles UX-Feedback einbrachte.
 - **Lion Rexhepi** leistete ab Version 2.1 Entwicklungsbeiträge, insbesondere im Bereich modularer Code-Architektur und Implementierung neuer Features.
 

@@ -61,28 +61,28 @@ public class DialogDisclaimer {
         row++;
         gbc.gridwidth = 1;
 
-        // Version 1.0 hinzufügen
+        // Version hinzufügen
         gbc.insets.top = 10;
-        addLabelRow(panel, gbc, row++, getWord("app.version") + "-1.0", getWord("app-v1.0.date"));
+        addLabelRow(panel, gbc, row++, getWord("app.version-1.3"), getWord("app.version_1_3.date"));
         gbc.insets.top = 5;
-        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app-v1.0.developer"));
+        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app.version-1.3.developer"));
 
-        // Version 2.0 hinzufügen
+        // Version hinzufügen
         gbc.insets.top = 20;
-        addLabelRow(panel, gbc, row++, getWord("app.version") + "-2.0", getWord("app-v2.0.date"));
+        addLabelRow(panel, gbc, row++, getWord("app.version_2_0") , getWord("app.version_2_0.date"));
         gbc.insets.top = 5;
-        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app-v2.0.developer"));
-        addLabelRow(panel, gbc, row++, getWord("app.advisors"), getWord("app-v2.0.advisor-1"));
-        addLabelRow(panel, gbc, row++, "", getWord("app-v2.0.advisor-2"));
+        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app.version_2_0.developer"));
+        addLabelRow(panel, gbc, row++, getWord("app.advisors"), getWord("app.version_2_0.advisor-1"));
+        addLabelRow(panel, gbc, row++, "", getWord("app.version_2_0.advisor-2"));
 
-        // Version 2.1 hinzufügen
+        // Version hinzufügen
         gbc.insets.top = 20;
-        addLabelRow(panel, gbc, row++, getWord("app.version") + "-2.1", getWord("app-v2.1.date"));
+        addLabelRow(panel, gbc, row++, getWord("app.version_2_1"), getWord("app.version_2_1.date"));
         gbc.insets.top = 5;
-        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app-v2.1.developer-1"));
-        addLabelRow(panel, gbc, row++, null, getWord("app-v2.1.developer-2"));
-        addLabelRow(panel, gbc, row++, getWord("app.advisors"), getWord("app-v2.1.advisor-1"));
-        addLabelRow(panel, gbc, row, null, getWord("app-v2.1.advisor-2"));
+        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app.version_2_1.developer-1"));
+        addLabelRow(panel, gbc, row++, null, getWord("app.version_2_1.developer-2"));
+        addLabelRow(panel, gbc, row++, getWord("app.advisors"), getWord("app.version_2_1.advisor-1"));
+        addLabelRow(panel, gbc, row, null, getWord("app.version_2_1.advisor-2"));
 
         return panel;
     }

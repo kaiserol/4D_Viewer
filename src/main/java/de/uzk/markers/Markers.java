@@ -36,12 +36,12 @@ public class Markers {
     }
 
     public void save() {
-        Path jsonPath = getAppProjectPath(Path.of(MARKERS_FILE_NAME));
+        Path jsonPath = getProjectPath(Path.of(MARKERS_FILE_NAME));
         saveJson(jsonPath, this);
     }
 
     public static Markers load() {
-        Path jsonPath = getAppProjectPath(Path.of(MARKERS_FILE_NAME));
+        Path jsonPath = getProjectPath(Path.of(MARKERS_FILE_NAME));
 
         Object obj = loadJson(jsonPath, Markers.class);
         if (obj instanceof Markers markers) {

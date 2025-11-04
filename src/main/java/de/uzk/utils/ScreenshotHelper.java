@@ -16,7 +16,7 @@ import java.util.Date;
 import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
 import static de.uzk.utils.AppPath.SNAPSHOTS_DIRECTORY_NAME;
-import static de.uzk.utils.AppPath.getAppProjectPath;
+import static de.uzk.utils.AppPath.getProjectPath;
 
 public class ScreenshotHelper {
     // Format und Pattern
@@ -25,7 +25,7 @@ public class ScreenshotHelper {
 
     public static boolean saveScreenshot(BufferedImage image) {
         if (image == null || !workspace.isOpen()) return false;
-        Path directory = getAppProjectPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
+        Path directory = getProjectPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
         String fileName = workspace.getImageFile().getFileName();
         AppPath.createIfNotExist(directory);
 
@@ -46,7 +46,7 @@ public class ScreenshotHelper {
     }
 
     private static int getNextScreenshotIndex(String date) {
-        Path directory = getAppProjectPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
+        Path directory = getProjectPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
         if (!Files.exists(directory)) return 1;
 
         int index = 1;
@@ -73,7 +73,7 @@ public class ScreenshotHelper {
 
     public static int getScreenshotCount() {
         if (!workspace.isOpen()) return 0; // Muss zuerst geprüft werden, da sonst NullPointerException
-        Path directory = getAppProjectPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
+        Path directory = getProjectPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
 
         int count = 0;
         try (DirectoryStream<Path> filePaths = Files.newDirectoryStream(directory)) {
