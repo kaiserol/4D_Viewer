@@ -46,7 +46,7 @@ public class Main {
         // Gui erstellen und anzeigen
         SwingUtilities.invokeLater(() -> {
             Gui gui = new Gui();
-            GuiUtils.initMacOS(gui);
+            GuiUtils.initDesktopHandlers(gui);
         });
     }
 }

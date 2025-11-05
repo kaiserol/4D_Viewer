@@ -156,9 +156,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         splitPane.add(imageViewer.getContainer());
         mainPanel.add(splitPane, BorderLayout.CENTER);
 
-        // disclaimerRightOfUse
-        AreaDisclaimerRightOfUse disclaimerRightOfUse = new AreaDisclaimerRightOfUse(this);
-        mainPanel.add(disclaimerRightOfUse.getContainer(), BorderLayout.SOUTH);
+        // Panel zum Container hinzufügen
         this.container.add(mainPanel);
     }
 

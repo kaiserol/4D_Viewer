@@ -7,7 +7,10 @@ import de.uzk.utils.StringUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import static de.uzk.Main.settings;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogDisclaimer {
@@ -23,7 +26,7 @@ public class DialogDisclaimer {
 
         // ESC schließt Dialog
         this.dialog.getRootPane().registerKeyboardAction(e -> this.dialog.dispose(),
-                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
         );
     }
 
@@ -34,8 +37,8 @@ public class DialogDisclaimer {
         // Inhalte hinzufügen
         JPanel panel = new JPanel(new BorderLayout(0, 20));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        panel.add(createContributorsPanel(), BorderLayout.CENTER); // Mitwirkende und Versionen
-        panel.add(createDisclaimerPanel(), BorderLayout.SOUTH); // Disclaimer Text
+        panel.add(createRightOfUsePanel(), BorderLayout.CENTER); // Right of Use
+        panel.add(createDisclaimerPanel(), BorderLayout.SOUTH); // Liability Exclusion
         this.dialog.add(panel, BorderLayout.EAST);
 
         // Dialog anzeigen
@@ -57,33 +60,54 @@ public class DialogDisclaimer {
 
         // Untertitel hinzufügen
         panel.add(getSubTitle(getWord("dialog.disclaimer.subtitle-1")), gbc);
+        row++;
+        panel.add(getSubTitle(getWord("dialog.disclaimer.text-1")), gbc);
 
         row++;
         gbc.gridwidth = 1;
 
         // Version hinzufügen
         gbc.insets.top = 10;
-        addLabelRow(panel, gbc, row++, getWord("app.version-1.3"), getWord("app.version_1_3.date"));
+        addInfoRow(panel, gbc, row++, getWord("app.version_1"), String.format(getWord("app.version_1.date"), getWord("date.unknown")));
         gbc.insets.top = 5;
-        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app.version-1.3.developer"));
+        addInfoRow(panel, gbc, row++, getWord("app.developer"), getWord("app.version_1.developer"));
+        addInfoRow(panel, gbc, row++, getWord("app.contributors"), getWord("app.version_1.contributor"));
 
         // Version hinzufügen
         gbc.insets.top = 20;
-        addLabelRow(panel, gbc, row++, getWord("app.version_2_0") , getWord("app.version_2_0.date"));
+        addInfoRow(panel, gbc, row++, getWord("app.version_2_0"), getWord("app.version_2_0.date"));
         gbc.insets.top = 5;
-        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app.version_2_0.developer"));
-        addLabelRow(panel, gbc, row++, getWord("app.advisors"), getWord("app.version_2_0.advisor-1"));
-        addLabelRow(panel, gbc, row++, null, getWord("app.version_2_0.advisor-2"));
+        addInfoRow(panel, gbc, row++, getWord("app.developer"), getWord("app.version_2_0.developer"));
+        addInfoRow(panel, gbc, row++, getWord("app.contributors"), getWord("app.version_2_0.contributor-1"));
+        addInfoRow(panel, gbc, row++, null, getWord("app.version_2_0.contributor-2"));
 
         // Version hinzufügen
         gbc.insets.top = 20;
-        addLabelRow(panel, gbc, row++, getWord("app.version_2_1"), getWord("app.version_2_1.date"));
+        addInfoRow(panel, gbc, row++, getWord("app.version_2_1"), String.format(getWord("app.version_2_1.date"), getWord("date.today")));
         gbc.insets.top = 5;
-        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app.version_2_1.developer-1"));
-        addLabelRow(panel, gbc, row++, null, getWord("app.version_2_1.developer-2"));
-        addLabelRow(panel, gbc, row++, getWord("app.advisors"), getWord("app.version_2_1.advisor-1"));
-        addLabelRow(panel, gbc, row, null, getWord("app.version_2_1.advisor-2"));
+        addInfoRow(panel, gbc, row++, getWord("app.developer"), getWord("app.version_2_1.developer-1"));
+        addInfoRow(panel, gbc, row++, null, getWord("app.version_2_1.developer-2"));
+        addInfoRow(panel, gbc, row++, getWord("app.contributors"), getWord("app.version_2_1.contributor-1"));
+        addInfoRow(panel, gbc, row, null, getWord("app.version_2_1.contributor-2"));
 
+        return panel;
+    }
+
+    private JPanel createRightOfUsePanel() {
+        JPanel panel = new JPanel(new BorderLayout(0, 10));
+
+        // Untertitel hinzufügen
+        panel.add(getSubTitle(getWord("dialog.disclaimer.subtitle-1")), BorderLayout.NORTH);
+
+        // Text hinzufügen (Rechtlicher Hinweis)
+        SelectableText rightOfUseText = new SelectableText(
+            StringUtils.wrapHtmlWithLinks(
+                getWord("dialog.disclaimer.text-1"),
+                "justify",
+                MAX_WIDTH
+            )
+        );
+        panel.add(rightOfUseText, BorderLayout.CENTER);
         return panel;
     }
 
@@ -93,8 +117,13 @@ public class DialogDisclaimer {
         // Untertitel hinzufügen
         panel.add(getSubTitle(getWord("dialog.disclaimer.subtitle-2")), BorderLayout.NORTH);
 
-        // Disclaimer Text hinzufügen
-        SelectableText disclaimerText = new SelectableText(StringUtils.formatInputToHTML(getWord("dialog.disclaimer.text"), "justify", MAX_WIDTH));
+        // Text hinzufügen
+        SelectableText disclaimerText = new SelectableText(
+            StringUtils.wrapHtmlWithLinks(
+                getWord("dialog.disclaimer.text-2"),
+                "justify",
+                MAX_WIDTH
+            ));
         panel.add(disclaimerText, BorderLayout.CENTER);
         return panel;
     }
@@ -102,12 +131,13 @@ public class DialogDisclaimer {
     // ========================================
     // Hilfsmethoden
     // ========================================
-    private void addLabelRow(JPanel panel, GridBagConstraints gbc, int row, String labelText, String labelValueText) {
+    private void addInfoRow(JPanel panel, GridBagConstraints gbc, int row, String labelText, String valueText) {
         gbc.gridx = 0;
         gbc.gridy = row;
         gbc.insets.left = 0;
         gbc.insets.right = 5;
         gbc.weightx = 0;
+
         JLabel label = new JLabel(StringUtils.wrapHtml(StringUtils.wrapBold(labelText) + ":"));
         label.setHorizontalAlignment(SwingConstants.RIGHT);
         if (labelText != null && !labelText.isEmpty()) panel.add(label, gbc);
@@ -116,7 +146,28 @@ public class DialogDisclaimer {
         gbc.insets.left = 5;
         gbc.insets.right = 0;
         gbc.weightx = 1;
-        panel.add(new JLabel(StringUtils.wrapHtml(labelValueText)), gbc);
+
+        // Formatierungslogik für valueText
+        String formattedValue;
+        if (valueText == null || valueText.isEmpty()) {
+            formattedValue = "";
+        } else {
+            // Pattern für runde Klammern
+            Pattern p = Pattern.compile("\\((.*)\\)\\s*$");
+            Matcher m = p.matcher(valueText);
+
+            if (m.find()) {
+                int start = m.start();
+                String normalPart = valueText.substring(0, start).trim();
+                String specialPart = valueText.substring(start).trim();
+
+                Color lighterColor = GuiUtils.adjustColor(GuiUtils.getTextColor(), 0.3f, settings.getTheme().isLight());
+                formattedValue = normalPart + " " + StringUtils.applyColor(specialPart, lighterColor);
+            } else {
+                formattedValue = valueText;
+            }
+        }
+        panel.add(new JLabel(StringUtils.wrapHtml(formattedValue)), gbc);
     }
 
     private SelectableText getSubTitle(String title) {

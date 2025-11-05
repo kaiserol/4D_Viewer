@@ -2,7 +2,6 @@ package de.uzk.utils;
 
 import de.uzk.gui.GuiUtils;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
@@ -203,7 +202,7 @@ public final class StringUtils {
      * @param maxWidth maximale Breite in Pixeln
      * @return HTML-formatierter Text
      */
-    public static String formatInputToHTML(String text, String align, int maxWidth) {
+    public static String wrapHtmlWithLinks(String text, String align, int maxWidth) {
         if (text == null || text.isEmpty()) return "";
 
         String[] words = text.replace("\r\n", "<br>")
