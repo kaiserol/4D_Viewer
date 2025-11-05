@@ -1,4 +1,4 @@
-package de.uzk.gui.devtools;
+package de.uzk.devtools;
 
 import org.jetbrains.annotations.NotNull;
 
