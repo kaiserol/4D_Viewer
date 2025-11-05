@@ -12,7 +12,6 @@ import java.awt.*;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-// TODO: Überarbeite Klasse
 public class TabEdit extends AreaContainerInteractive<JPanel> {
     // GUI-Elemente
     private JSpinner degreeSpinner;
