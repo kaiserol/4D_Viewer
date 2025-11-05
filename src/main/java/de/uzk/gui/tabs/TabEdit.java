@@ -12,11 +12,12 @@ import java.awt.*;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-// TODO: Überarbeite Klasse
 public class TabEdit extends AreaContainerInteractive<JPanel> {
     // GUI-Elemente
     private JSpinner degreeSpinner;
-    private JSpinner zoomSpinner;
+    private JSlider zoomSlider;
+    private JSlider contrastSlider;
+    private JSlider brightnessSlider;
     private JLabel screenshots;
     private JCheckBox mirrorXBox;
     private JCheckBox mirrorYBox;
@@ -65,29 +66,67 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         this.container.add(degreeLabel, gbc);
 
         gbc.anchor = GridBagConstraints.FIRST_LINE_END;
-        gbc.setPosAndInsets(0, 3, 0, 0, 0, 15);
-        SpinnerNumberModel zoomSpinnerModel = new SpinnerNumberModel(workspace.getConfig().getZoom(), 50, 500, 10);
-        this.zoomSpinner = new JSpinner(zoomSpinnerModel);
-        this.zoomSpinner.addChangeListener(e -> {
-            if(zoomSpinner.isEnabled()) {
-                int newValue = zoomSpinnerModel.getNumber().intValue();
+        gbc.setPosAndInsets(1, 3, 10, 25, 0, 0);
+        BoundedRangeModel zoomSliderModel = new DefaultBoundedRangeModel(workspace.getConfig().getZoom(), 0, Config.MIN_ZOOM, Config.MAX_ZOOM);
+        this.zoomSlider = new JSlider(zoomSliderModel);
+        this.zoomSlider.addChangeListener(e -> {
+            if(zoomSlider.isEnabled()) {
+                int newValue = zoomSliderModel.getValue();
                 if (newValue != workspace.getConfig().getZoom()) {
                     workspace.getConfig().setZoom(newValue);
                     gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
                 }
             }
         });
-        this.container.add(zoomSpinner, gbc);
+        this.container.add(zoomSlider, gbc);
 
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.setPosAndInsets(2, 3, 10, 0, 0, 0);
-        JLabel zoomLabel = new JLabel("Zoom percentage: "); //TODO Übersetzungen hinzufügen
+        gbc.setPosAndInsets(0, 3, 10, 0, 0, 0);
+        JLabel zoomLabel = new JLabel(getWord("items.edit.zoom"));
         this.container.add(zoomLabel, gbc);
 
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.setPosAndInsets(1, 4, 10, 25, 0, 0);
+        BoundedRangeModel contrastSliderModel = new DefaultBoundedRangeModel(workspace.getConfig().getContrast(), 0, Config.MIN_CONTRAST, Config.MAX_CONTRAST);
+        this.contrastSlider = new JSlider(contrastSliderModel);
+        this.contrastSlider.addChangeListener(e -> {
+            if(contrastSlider.isEnabled()) {
+                int newValue = contrastSliderModel.getValue();
+                if (newValue != workspace.getConfig().getContrast()) {
+                    workspace.getConfig().setContrast(newValue);
+                    gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
+                }
+            }
+        });
+        this.container.add(contrastSlider, gbc);
+
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.setPosAndInsets(0, 4, 10, 0, 0, 0);
+        JLabel contrastLabel = new JLabel(getWord("items.edit.contrast"));
+        this.container.add(contrastLabel, gbc);
+
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.setPosAndInsets(1, 5, 10, 25, 0, 0);
+        BoundedRangeModel brightnessSliderModel = new DefaultBoundedRangeModel(workspace.getConfig().getBrightness(), 0, Config.MIN_BRIGHTNESS, Config.MAX_BRIGHTNESS);
+        this.brightnessSlider = new JSlider(brightnessSliderModel);
+        this.brightnessSlider.addChangeListener(e -> {
+            if(brightnessSlider.isEnabled()) {
+                int newValue = brightnessSliderModel.getValue();
+                if (newValue != workspace.getConfig().getBrightness()) {
+                    workspace.getConfig().setBrightness(newValue);
+                    gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
+                }
+            }
+        });
+        this.container.add(brightnessSlider, gbc);
+
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.setPosAndInsets(0, 5, 10, 0, 0, 0);
+        JLabel brightnessLabel = new JLabel(getWord("items.edit.brightness"));
+        this.container.add(brightnessLabel, gbc);
 
         gbc.setHorizontal(1, 1);
         // gbc
-        gbc.setPosAndInsets(0, 3, 0, 0, 10, 10);
+        gbc.setPosAndInsets(0, 6, 0, 0, 10, 10);
         gbc.setSizeAndWeight(1, 1, 0, 1);
         gbc.anchor = GridBagConstraints.SOUTHWEST;
 
@@ -96,14 +135,14 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         this.container.add(screenshotNumberLabel, gbc);
 
         // gbc
-        gbc.setPosAndInsets(1, 3, 0, 0, 10, 15);
+        gbc.setPosAndInsets(1, 6, 0, 0, 10, 15);
 
         // screenshotLabel
         this.screenshots = new JLabel();
         this.container.add(this.screenshots, gbc);
 
         // gbc
-        gbc.setPosAndInsets(0, 4, 0, 0, 0, 0);
+        gbc.setPosAndInsets(0, 7, 0, 0, 0, 0);
         gbc.setSizeAndWeight(3, 1, 1, 0);
 
         // screenshotButton
@@ -167,7 +206,9 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         this.degreeSpinner.setValue(workspace.getConfig().getRotation());
         this.mirrorXBox.setSelected(workspace.getConfig().isMirrorX());
         this.mirrorYBox.setSelected(workspace.getConfig().isMirrorY());
-        this.zoomSpinner.setValue(workspace.getConfig().getZoom());
+        this.zoomSlider.setValue(workspace.getConfig().getZoom());
+        this.contrastSlider.setValue(workspace.getConfig().getContrast());
+        this.brightnessSlider.setValue(workspace.getConfig().getBrightness());
     }
 
     @Override

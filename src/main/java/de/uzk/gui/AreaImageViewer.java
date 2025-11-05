@@ -172,7 +172,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
     private void paintImage(Graphics g) {
         Graphics2D g2D = GuiUtils.createHighQualityGraphics2D(g);
         if (this.currentImage != null) {
-            double scale = GuiUtils.getImageScaleFactor(this.currentImage, this.panelImage);
+            double zoomPercentage = workspace.getConfig().getZoom() / 100.0;
+            double scale = GuiUtils.getImageScaleFactor(this.currentImage, this.panelImage) * zoomPercentage;
             int width = (int) (this.currentImage.getWidth() * scale);
             int height = (int) (this.currentImage.getHeight() * scale);
             int x = (this.panelImage.getWidth() - width) / 2;
