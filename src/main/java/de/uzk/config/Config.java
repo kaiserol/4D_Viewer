@@ -20,6 +20,8 @@ public class Config {
     private boolean mirrorY;
     private int rotation;
     private int zoom;
+    private int contrast;
+    private int brightness;
 
     // Default-Konstanten
     public static final ImageFileType DEFAULT_IMAGE_FILE_TYPE = ImageFileType.getDefault();
@@ -31,23 +33,33 @@ public class Config {
     public static final boolean DEFAULT_MIRROR_Y = false;
     public static final int DEFAULT_ROTATION = 0;
     private static final int DEFAULT_ZOOM = 100;
+    private static final int DEFAULT_CONTRAST = 100;
+    private static final int DEFAULT_BRIGHTNESS = 100;
 
     // MinMax Konstanten
     public static final double MAX_TIME_UNIT = 600;
     public static final double MAX_LEVEL_UNIT = 1000;
     public static final int MAX_ROTATION = 359;
+    public static final int MIN_CONTRAST = 1;
+    public static final int MAX_CONTRAST = 200;
+    public static final int MIN_BRIGHTNESS = 1;
+    public static final int MAX_BRIGHTNESS = 200;
+    public static final int MIN_ZOOM = 50;
+    public static final int MAX_ZOOM = 200;
 
     @JsonCreator
     public Config(
-            @JsonProperty("imageFileType") ImageFileType imageFileType,
-            @JsonProperty("timeSep") String timeSep,
-            @JsonProperty("levelSep") String levelSep,
-            @JsonProperty("timeUnit") double timeUnit,
-            @JsonProperty("levelUnit") double levelUnit,
-            @JsonProperty("mirrorX") boolean mirrorX,
-            @JsonProperty("mirrorY") boolean mirrorY,
-            @JsonProperty("rotation") int rotation,
-            @JsonProperty("zoom") int zoom
+        @JsonProperty("imageFileType") ImageFileType imageFileType,
+        @JsonProperty("timeSep") String timeSep,
+        @JsonProperty("levelSep") String levelSep,
+        @JsonProperty("timeUnit") double timeUnit,
+        @JsonProperty("levelUnit") double levelUnit,
+        @JsonProperty("mirrorX") boolean mirrorX,
+        @JsonProperty("mirrorY") boolean mirrorY,
+        @JsonProperty("rotation") int rotation,
+        @JsonProperty("zoom") int zoom,
+        @JsonProperty("contrast") int contrast,
+        @JsonProperty("brightness") int brightness
     ) {
         this.setImageFileType(imageFileType);
         this.setTimeSep(timeSep);
@@ -58,6 +70,8 @@ public class Config {
         this.setMirrorY(mirrorY);
         this.setRotation(rotation);
         this.setZoom(zoom);
+        this.setContrast(contrast);
+        this.setBrightness(brightness);
     }
 
     public ImageFileType getImageFileType() {
@@ -155,7 +169,9 @@ public class Config {
                 DEFAULT_MIRROR_X,
                 DEFAULT_MIRROR_Y,
                 DEFAULT_ROTATION,
-                DEFAULT_ZOOM
+                DEFAULT_ZOOM,
+                DEFAULT_CONTRAST,
+                DEFAULT_BRIGHTNESS
         );
     }
 
@@ -164,10 +180,32 @@ public class Config {
     }
 
     public void setZoom(int zoom) {
-        if(50 <= zoom && zoom <= 500) {
+        if(MIN_ZOOM <= zoom && zoom <= MAX_ZOOM) {
             this.zoom = zoom;
         } else {
             this.zoom = DEFAULT_ZOOM;
+        }
+    }
+
+    public int getContrast() {
+        return contrast;
+    }
+
+    public void setContrast(int contrast) {
+        if(MIN_CONTRAST <= contrast && contrast <= MAX_CONTRAST) {
+            this.contrast = contrast;
+        } else {
+            this.contrast = DEFAULT_CONTRAST;
+        }
+    }
+
+    public int getBrightness() {
+        return brightness;
+    }
+
+    public void setBrightness(int brightness) {
+        if(MIN_BRIGHTNESS <= brightness && brightness <= MAX_BRIGHTNESS) {
+            this.brightness = brightness;
         }
     }
 }

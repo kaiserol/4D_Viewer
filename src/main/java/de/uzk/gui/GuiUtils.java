@@ -19,6 +19,7 @@ import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -425,12 +426,20 @@ public final class GuiUtils {
 
     public static BufferedImage getEditedImage(BufferedImage image, boolean transparentBackground, List<Marker> appliedMarkers) {
         int imageType = transparentBackground ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
-             return transformImage(image, imageType, workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), workspace.getConfig().getZoom(), appliedMarkers);
+        float offset = 128 * ( (workspace.getConfig().getBrightness() - 100) / 100f);
+        System.out.printf("Brightness %d creates offset %f%n", workspace.getConfig().getBrightness(), offset);
+        float scale = workspace.getConfig().getContrast() / 100f;
+
+        BufferedImage transformed =  transformImage(image, imageType, workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), appliedMarkers);
+
+        new RescaleOp(scale, offset, null).filter(transformed, transformed);
+
+        return transformed;
     }
 
-    public static BufferedImage transformImage(BufferedImage image, int imageType, int rotation, boolean mirrorX, boolean mirrorY, int zoom, List<Marker> appliedMarkers) {
+    public static BufferedImage transformImage(BufferedImage image, int imageType, int rotation, boolean mirrorX, boolean mirrorY, List<Marker> appliedMarkers) {
         if(appliedMarkers == null) appliedMarkers = new ArrayList<>();
-        if(zoom == 100 && !mirrorX && !mirrorY && rotation % 360 == 0 && appliedMarkers.isEmpty()) return image;
+        if( !mirrorX && !mirrorY && rotation % 360 == 0 && appliedMarkers.isEmpty()) return image;
 
         int width = image.getWidth();
         int height = image.getHeight();
@@ -439,7 +448,6 @@ public final class GuiUtils {
         double cos = Math.abs(Math.cos(radians));
         int newWidth = (int) Math.floor(width * cos + height * sin);
         int newHeight = (int) Math.floor(height * cos + width * sin);
-        double zoomPercentage = zoom / 100.0;
 
 
         BufferedImage transformedImage = new BufferedImage(newWidth, newHeight, imageType);
@@ -454,15 +462,14 @@ public final class GuiUtils {
         at.translate(mirrorX ? -width : 0, mirrorY ? -height : 0);
 
 
-        // Zoom
-        at.scale(zoomPercentage, zoomPercentage);
-
         // Rotate
         at.translate((newWidth - width) / 2.0, (newHeight - height) / 2.0);
         at.rotate(radians, width / 2.0, height / 2.0);
 
 
         g2d.transform(at);
+
+
 
         g2d.drawRenderedImage(image, null);
 
@@ -471,6 +478,8 @@ public final class GuiUtils {
         }
 
         g2d.dispose();
+
+
 
         return transformedImage;
     }
