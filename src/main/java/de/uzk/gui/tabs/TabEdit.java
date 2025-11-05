@@ -82,7 +82,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         this.container.add(zoomSlider, gbc);
 
         gbc.setPosAndInsets(0, 3, 10, 0, 0, 0);
-        JLabel zoomLabel = new JLabel("Zoom percentage: "); //TODO Übersetzungen hinzufügen
+        JLabel zoomLabel = new JLabel(getWord("items.edit.zoom"));
         this.container.add(zoomLabel, gbc);
 
         gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -102,7 +102,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.setPosAndInsets(0, 4, 10, 0, 0, 0);
-        JLabel contrastLabel = new JLabel("Contrast "); //TODO Übersetzungen hinzufügen
+        JLabel contrastLabel = new JLabel(getWord("items.edit.contrast"));
         this.container.add(contrastLabel, gbc);
 
         gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -122,7 +122,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.setPosAndInsets(0, 5, 10, 0, 0, 0);
-        JLabel brightnessLabel = new JLabel("Brightness "); //TODO Übersetzungen hinzufügen
+        JLabel brightnessLabel = new JLabel(getWord("items.edit.brightness"));
         this.container.add(brightnessLabel, gbc);
 
         gbc.setHorizontal(1, 1);
