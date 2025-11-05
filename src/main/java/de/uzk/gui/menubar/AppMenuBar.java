@@ -81,6 +81,7 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     private CustomMenu getMenuHelp(ActionHandler actionHandler) {
         CustomMenu menuHelp = new CustomMenu(getWord("items.help"));
         menuHelp.add(new CustomMenuItem(getWord("items.help.showDisclaimer"), actionHandler, SHORTCUT_SHOW_DISCLAIMER));
+        menuHelp.add(new CustomMenuItem(getWord("items.help.showVersions"), actionHandler, SHORTCUT_SHOW_VERSIONS));
         menuHelp.add(new CustomMenuItem(getWord("items.help.showLogViewer"), actionHandler, SHORTCUT_SHOW_LOG_VIEWER));
         return menuHelp;
     }
