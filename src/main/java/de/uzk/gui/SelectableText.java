@@ -80,6 +80,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         setText(htmlContent);
         setEditable(false);
         setOpaque(false);
+        setMargin(new Insets(0, 0, 0, 0));
 
         // Unsichtbares Caret (kein blinkender Balken)
         setCaret(new NoBlinkCaret());

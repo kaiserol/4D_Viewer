@@ -107,7 +107,7 @@ public final class GuiUtils {
         Point mouse = component.getMousePosition();
         if (mouse != null) {
             MouseEvent mouseEvent = new MouseEvent(component, MouseEvent.MOUSE_MOVED,
-                    System.currentTimeMillis(), 0, mouse.x, mouse.y, 0, false
+                System.currentTimeMillis(), 0, mouse.x, mouse.y, 0, false
             );
             // Swing-Tooltip neu initialisieren
             ToolTipManager.sharedInstance().mouseMoved(mouseEvent);
@@ -144,26 +144,25 @@ public final class GuiUtils {
         }
     }
 
-    public static void initMacOS(Gui gui) {
-        if (gui == null || !operationSystem.isMacOS()) return;
+    public static void initDesktopHandlers(Gui gui) {
         Desktop desktop = getDesktopSecure();
-        if (desktop == null) return;
+        if (gui == null || desktop == null) return;
 
         // TODO: Ersetze durch eine Dialog Klasse (About)
         // Über 4D Viewer
         if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
             desktop.setAboutHandler(e ->
-                    JOptionPane.showMessageDialog(null,
-                            "4D Viewer v2.1\nErstellt von Oliver Kaiser",
-                            "Über 4D Viewer",
-                            JOptionPane.INFORMATION_MESSAGE)
+                JOptionPane.showMessageDialog(null,
+                    "4D Viewer v2.1\nErstellt von Oliver Kaiser",
+                    "Über 4D Viewer",
+                    JOptionPane.INFORMATION_MESSAGE)
             );
         }
 
         // Einstellungen
         if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
             desktop.setPreferencesHandler(e ->
-                    gui.getActionHandler().executeAction(ActionType.SHORTCUT_OPEN_SETTINGS)
+                gui.getActionHandler().executeAction(ActionType.SHORTCUT_OPEN_SETTINGS)
             );
         }
 
@@ -262,9 +261,9 @@ public final class GuiUtils {
 
         // Pfeilfarben
         UIManager.put("ComboBox.buttonArrowType", arrowType);
-        UIManager.put("ComboBox.buttonArrowColor", applyColorAdjustment(arrowColor, 0.0f, false));
-        UIManager.put("ComboBox.buttonHoverArrowColor", applyColorAdjustment(arrowColor, 0.1f, true));
-        UIManager.put("ComboBox.buttonPressedArrowColor", applyColorAdjustment(arrowColor, 0.3f, true));
+        UIManager.put("ComboBox.buttonArrowColor", adjustColor(arrowColor, 0.0f, false));
+        UIManager.put("ComboBox.buttonHoverArrowColor", adjustColor(arrowColor, 0.1f, true));
+        UIManager.put("ComboBox.buttonPressedArrowColor", adjustColor(arrowColor, 0.3f, true));
 
         // Hintergrundfarbe
         UIManager.put("ComboBox.background", textFieldBg);
@@ -287,9 +286,9 @@ public final class GuiUtils {
 
         // Pfeilfarben
         UIManager.put("Spinner.buttonArrowType", arrowType);
-        UIManager.put("Spinner.buttonArrowColor", applyColorAdjustment(arrowColor, 0.0f, false));
-        UIManager.put("Spinner.buttonHoverArrowColor", applyColorAdjustment(arrowColor, 0.1f, true));
-        UIManager.put("Spinner.buttonPressedArrowColor", applyColorAdjustment(arrowColor, 0.3f, true));
+        UIManager.put("Spinner.buttonArrowColor", adjustColor(arrowColor, 0.0f, false));
+        UIManager.put("Spinner.buttonHoverArrowColor", adjustColor(arrowColor, 0.1f, true));
+        UIManager.put("Spinner.buttonPressedArrowColor", adjustColor(arrowColor, 0.3f, true));
 
         // Hintergrundfarbe
         UIManager.put("Spinner.background", textFieldBg);
@@ -345,9 +344,9 @@ public final class GuiUtils {
 
         // Pfeilfarben
         boolean isLight = settings.getTheme().isLight();
-        UIManager.put("SplitPaneDivider.oneTouchArrowColor", applyColorAdjustment(arrowColor, 0.3f, isLight));
-        UIManager.put("SplitPaneDivider.oneTouchHoverArrowColor", applyColorAdjustment(arrowColor, 0.2f, isLight));
-        UIManager.put("SplitPaneDivider.oneTouchPressedArrowColor", applyColorAdjustment(arrowColor, 0.0f, !isLight));
+        UIManager.put("SplitPaneDivider.oneTouchArrowColor", adjustColor(arrowColor, 0.3f, isLight));
+        UIManager.put("SplitPaneDivider.oneTouchHoverArrowColor", adjustColor(arrowColor, 0.2f, isLight));
+        UIManager.put("SplitPaneDivider.oneTouchPressedArrowColor", adjustColor(arrowColor, 0.0f, !isLight));
     }
 
     public static String getAllUIManagerProperties() {
@@ -456,7 +455,6 @@ public final class GuiUtils {
         AffineTransform at = new AffineTransform();
 
 
-
         // Mirror
         at.scale(mirrorX ? -1 : 1, mirrorY ? -1 : 1);
         at.translate(mirrorX ? -width : 0, mirrorY ? -height : 0);
@@ -469,17 +467,13 @@ public final class GuiUtils {
 
         g2d.transform(at);
 
-
-
         g2d.drawRenderedImage(image, null);
 
-        for(Marker marker: appliedMarkers) {
+        for (Marker marker : appliedMarkers) {
             marker.draw(g2d, new Rectangle(0, 0, newWidth, newHeight), 1.0);
         }
 
         g2d.dispose();
-
-
 
         return transformedImage;
     }
@@ -497,7 +491,7 @@ public final class GuiUtils {
     // ========================================
     // Hilfsmethoden
     // ========================================
-    private static Color applyColorAdjustment(Color color, float factor, boolean lighten) {
+    public static Color adjustColor(Color color, float factor, boolean lighten) {
         if (color == null) throw new NullPointerException("Color is null.");
         if (factor < 0) throw new IllegalArgumentException("Factor must be greater than or equal to 0.");
         if (factor > 1) throw new IllegalArgumentException("Factor must be less than or equal to 1.");

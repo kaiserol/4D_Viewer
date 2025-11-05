@@ -10,7 +10,6 @@ import de.uzk.gui.GuiUtils;
 import javax.swing.*;
 import java.awt.*;
 
-import static de.uzk.Main.operationSystem;
 import static de.uzk.Main.settings;
 import static de.uzk.action.ActionType.*;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -72,7 +71,7 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         updateFontItems();
 
         Desktop desktop = GuiUtils.getDesktopSecure();
-        if (!(operationSystem.isMacOS() && desktop != null && desktop.isSupported(Desktop.Action.APP_PREFERENCES))) {
+        if (!(desktop != null && desktop.isSupported(Desktop.Action.APP_PREFERENCES))) {
             menuWindow.addSeparator();
             menuWindow.add(new CustomMenuItem(getWord("items.window.openSettings"), actionHandler, SHORTCUT_OPEN_SETTINGS));
         }
@@ -82,6 +81,7 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     private CustomMenu getMenuHelp(ActionHandler actionHandler) {
         CustomMenu menuHelp = new CustomMenu(getWord("items.help"));
         menuHelp.add(new CustomMenuItem(getWord("items.help.showDisclaimer"), actionHandler, SHORTCUT_SHOW_DISCLAIMER));
+        menuHelp.add(new CustomMenuItem(getWord("items.help.showVersions"), actionHandler, SHORTCUT_SHOW_VERSIONS));
         menuHelp.add(new CustomMenuItem(getWord("items.help.showLogViewer"), actionHandler, SHORTCUT_SHOW_LOG_VIEWER));
         return menuHelp;
     }

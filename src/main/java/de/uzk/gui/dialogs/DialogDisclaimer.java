@@ -23,7 +23,7 @@ public class DialogDisclaimer {
 
         // ESC schließt Dialog
         this.dialog.getRootPane().registerKeyboardAction(e -> this.dialog.dispose(),
-                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
         );
     }
 
@@ -34,9 +34,9 @@ public class DialogDisclaimer {
         // Inhalte hinzufügen
         JPanel panel = new JPanel(new BorderLayout(0, 20));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        panel.add(createContributorsPanel(), BorderLayout.CENTER); // Mitwirkende und Versionen
-        panel.add(createDisclaimerPanel(), BorderLayout.SOUTH); // Disclaimer Text
-        this.dialog.add(panel, BorderLayout.EAST);
+        panel.add(createRightOfUsePanel(), BorderLayout.CENTER);
+        panel.add(createLiabilityExclusionPanel(), BorderLayout.SOUTH);
+        this.dialog.add(panel, BorderLayout.CENTER);
 
         // Dialog anzeigen
         this.dialog.pack();
@@ -45,56 +45,37 @@ public class DialogDisclaimer {
         this.dialog.setVisible(true);
     }
 
-    private JPanel createContributorsPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-
-        // Layout Manager
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridwidth = 2;
-        int row = 0;
+    private JPanel createRightOfUsePanel() {
+        JPanel panel = new JPanel(new BorderLayout(0, 10));
 
         // Untertitel hinzufügen
-        panel.add(getSubTitle(getWord("dialog.disclaimer.subtitle-1")), gbc);
+        panel.add(getSubTitle(getWord("dialog.disclaimer.subtitle-1")), BorderLayout.NORTH);
 
-        row++;
-        gbc.gridwidth = 1;
-
-        // Version hinzufügen
-        gbc.insets.top = 10;
-        addLabelRow(panel, gbc, row++, getWord("app.version-1.3"), getWord("app.version_1_3.date"));
-        gbc.insets.top = 5;
-        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app.version-1.3.developer"));
-
-        // Version hinzufügen
-        gbc.insets.top = 20;
-        addLabelRow(panel, gbc, row++, getWord("app.version_2_0") , getWord("app.version_2_0.date"));
-        gbc.insets.top = 5;
-        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app.version_2_0.developer"));
-        addLabelRow(panel, gbc, row++, getWord("app.advisors"), getWord("app.version_2_0.advisor-1"));
-        addLabelRow(panel, gbc, row++, null, getWord("app.version_2_0.advisor-2"));
-
-        // Version hinzufügen
-        gbc.insets.top = 20;
-        addLabelRow(panel, gbc, row++, getWord("app.version_2_1"), getWord("app.version_2_1.date"));
-        gbc.insets.top = 5;
-        addLabelRow(panel, gbc, row++, getWord("app.developer"), getWord("app.version_2_1.developer-1"));
-        addLabelRow(panel, gbc, row++, null, getWord("app.version_2_1.developer-2"));
-        addLabelRow(panel, gbc, row++, getWord("app.advisors"), getWord("app.version_2_1.advisor-1"));
-        addLabelRow(panel, gbc, row, null, getWord("app.version_2_1.advisor-2"));
-
+        // Text hinzufügen (Rechtlicher Hinweis)
+        SelectableText rightOfUseText = new SelectableText(
+            StringUtils.wrapHtmlWithLinks(
+                getWord("dialog.disclaimer.text-1"),
+                "justify",
+                MAX_WIDTH
+            )
+        );
+        panel.add(rightOfUseText, BorderLayout.CENTER);
         return panel;
     }
 
-    private JPanel createDisclaimerPanel() {
+    private JPanel createLiabilityExclusionPanel() {
         JPanel panel = new JPanel(new BorderLayout(0, 10));
 
         // Untertitel hinzufügen
         panel.add(getSubTitle(getWord("dialog.disclaimer.subtitle-2")), BorderLayout.NORTH);
 
-        // Disclaimer Text hinzufügen
-        SelectableText disclaimerText = new SelectableText(StringUtils.formatInputToHTML(getWord("dialog.disclaimer.text"), "justify", MAX_WIDTH));
+        // Text hinzufügen
+        SelectableText disclaimerText = new SelectableText(
+            StringUtils.wrapHtmlWithLinks(
+                getWord("dialog.disclaimer.text-2"),
+                "justify",
+                MAX_WIDTH
+            ));
         panel.add(disclaimerText, BorderLayout.CENTER);
         return panel;
     }
@@ -102,23 +83,6 @@ public class DialogDisclaimer {
     // ========================================
     // Hilfsmethoden
     // ========================================
-    private void addLabelRow(JPanel panel, GridBagConstraints gbc, int row, String labelText, String labelValueText) {
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        gbc.insets.left = 0;
-        gbc.insets.right = 5;
-        gbc.weightx = 0;
-        JLabel label = new JLabel(StringUtils.wrapHtml(StringUtils.wrapBold(labelText) + ":"));
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        if (labelText != null && !labelText.isEmpty()) panel.add(label, gbc);
-
-        gbc.gridx = 1;
-        gbc.insets.left = 5;
-        gbc.insets.right = 0;
-        gbc.weightx = 1;
-        panel.add(new JLabel(StringUtils.wrapHtml(labelValueText)), gbc);
-    }
-
     private SelectableText getSubTitle(String title) {
         String htmlContent = StringUtils.applyDivAlignment(StringUtils.applyFontSize(title, 125), "center", MAX_WIDTH);
         SelectableText subTitleText = new SelectableText(StringUtils.wrapHtml(htmlContent));

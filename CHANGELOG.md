@@ -56,7 +56,7 @@ dem [Semantic Versioning](https://semver.org/).
 
 - **Unterstütztes Format**: LWF
 
-## [1.3] - 13.02.2017
+## [1.3] - 17.02.2013
 
 ### Übernommene Basisversion
 

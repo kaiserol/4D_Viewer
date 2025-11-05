@@ -45,7 +45,8 @@ public enum ActionType {
 
     // Hilfe Shortcuts
     SHORTCUT_SHOW_DISCLAIMER(new Shortcut(KeyEvent.VK_F1)),
-    SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F2));
+    SHORTCUT_SHOW_VERSIONS(new Shortcut(KeyEvent.VK_F2)),
+    SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F3));
 
     // ========================================
     // Enum Deklaration

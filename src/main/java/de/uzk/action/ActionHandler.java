@@ -6,6 +6,7 @@ import de.uzk.gui.GuiUtils;
 import de.uzk.gui.dialogs.DialogDisclaimer;
 import de.uzk.gui.dialogs.DialogLogViewer;
 import de.uzk.gui.dialogs.DialogSettings;
+import de.uzk.gui.dialogs.DialogVersions;
 import de.uzk.image.Axis;
 
 import java.awt.event.KeyAdapter;
@@ -21,6 +22,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     // GUI-Elemente
     private final Gui gui;
     private final DialogDisclaimer dialogDisclaimer;
+    private final DialogVersions dialogVersions;
     private final DialogLogViewer dialogLogViewer;
     private final DialogSettings dialogSettings;
 
@@ -34,6 +36,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     public ActionHandler(Gui gui) {
         this.gui = gui;
         this.dialogDisclaimer = new DialogDisclaimer(gui.getContainer());
+        this.dialogVersions = new DialogVersions(gui.getContainer());
         this.dialogLogViewer = new DialogLogViewer(gui.getContainer());
         this.dialogSettings = new DialogSettings(gui);
     }
@@ -80,6 +83,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
 
             // Hilfe Shortcuts
             case SHORTCUT_SHOW_DISCLAIMER -> dialogDisclaimer.show();
+            case SHORTCUT_SHOW_VERSIONS -> dialogVersions.show();
             case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();
         }
     }

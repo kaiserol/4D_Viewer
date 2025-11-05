@@ -155,20 +155,20 @@ _(Weitere Demo-GIFs, Screenshots und Beispiele folgen)_
 Das Projekt befindet sich aktuell in **aktiver Entwicklung**.
 Ziel ist es, eine stabile, nutzerfreundliche und erweiterbare Plattform zur 4D-Visualisierung zu schaffen.
 
-## 🗂️ CHANGELOG & NOTICE
+## 🗂️ Änderungsprotokoll
 
-[CHANGELOG.md](CHANGELOG.md): Dokumentiert alle wichtigen Änderungen und Versionen.
-Empfohlen beim Update oder bei neuen Releases zu prüfen.
+Die Datei [CHANGELOG.md](CHANGELOG.md) dokumentiert alle wichtigen Änderungen, Neuerungen und Versionen des Projekts.
+Es wird empfohlen, diese Datei bei Updates oder neuen Releases zu prüfen, um über aktuelle Anpassungen und Verbesserungen zu informieren.
 
-[NOTICE](NOTICE): Enthält rechtliche Hinweise und Copyright-Informationen.
-Sollte in Weiterverteilungen oder Veröffentlichungen beigelegt werden, wie in der Apache 2.0 Lizenz empfohlen.
+## 🔐 Lizenz & rechtliche Hinweise
+
+Dieses Projekt steht unter der [Apache License 2.0](LICENSE)<br><br>
+Bitte beachten Sie, dass die Datei [NOTICE](NOTICE) Teil der Lizenzanforderungen ist und zusammen mit der Software
+verteilt werden muss.<br><br>
+Copyright © 2025\
+Oliver Kaiser
 
 ## 🤝 Beitragende
 
 Ein großes Dankeschön an **alle Entwickler, Tester und Nutzer**, die dieses Projekt mitgestalten!
 Eine detaillierte Übersicht über alle Beitragende finden Sie in der [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## 🔐 Lizenz
-
-Dieses Projekt steht unter der [Apache License 2.0](LICENSE).
-Copyright © 2025 Oliver Kaiser.
