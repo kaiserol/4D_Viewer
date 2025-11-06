@@ -47,7 +47,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     @Override
     public void keyPressed(KeyEvent e) {
         ActionType actionType = ActionType.fromKeyEvent(e);
-        navigateImage(actionType);
+        executeAction(actionType);
     }
 
     // ========================================
@@ -85,12 +85,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_SHOW_DISCLAIMER -> dialogDisclaimer.show();
             case SHORTCUT_SHOW_VERSIONS -> dialogVersions.show();
             case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();
-        }
-    }
 
-    private void navigateImage(ActionType actionType) {
-        if (actionType == null) return;
-        switch (actionType) {
             // Navigieren Shortcuts
             case SHORTCUT_GO_TO_FIRST_IMAGE -> scrollToBoundary(Axis.TIME, true);
             case SHORTCUT_GO_TO_PREV_IMAGE -> scroll(Axis.TIME, -1, false);
@@ -101,8 +96,11 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_GO_TO_PREV_LEVEL -> scroll(Axis.LEVEL, -1, false);
             case SHORTCUT_GO_TO_NEXT_LEVEL -> scroll(Axis.LEVEL, 1, false);
             case SHORTCUT_GO_TO_LAST_LEVEL -> scrollToBoundary(Axis.LEVEL, false);
+
         }
     }
+
+
 
     // ========================================
     // Hilfsmethoden
