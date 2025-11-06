@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import de.uzk.image.ImageFileType;
 
 import java.nio.file.Path;
-import java.util.Objects;
 
 import static de.uzk.utils.PathManager.*;
 
@@ -24,28 +23,31 @@ public class Config {
     private int brightness;
 
     // Default-Konstanten
-    public static final ImageFileType DEFAULT_IMAGE_FILE_TYPE = ImageFileType.getDefault();
-    public static final String DEFAULT_TIME_SEP = "X";
-    public static final String DEFAULT_LEVEL_SEP = "L";
-    public static final double DEFAULT_TIME_UNIT = 30.0;
-    public static final double DEFAULT_LEVEL_UNIT = 1.0;
-    public static final boolean DEFAULT_MIRROR_X = false;
-    public static final boolean DEFAULT_MIRROR_Y = false;
-    public static final int DEFAULT_ROTATION = 0;
+    private static final ImageFileType DEFAULT_IMAGE_FILE_TYPE = ImageFileType.getDefault();
+    private static final String DEFAULT_TIME_SEP = "X";
+    private static final String DEFAULT_LEVEL_SEP = "L";
+    private static final double DEFAULT_TIME_UNIT = 30.0;
+    private static final double DEFAULT_LEVEL_UNIT = 1.0;
+    private static final boolean DEFAULT_MIRROR_X = false;
+    private static final boolean DEFAULT_MIRROR_Y = false;
+    private static final int DEFAULT_ROTATION = 0;
     private static final int DEFAULT_ZOOM = 100;
     private static final int DEFAULT_CONTRAST = 100;
     private static final int DEFAULT_BRIGHTNESS = 100;
 
     // MinMax Konstanten
+    public static final double MIN_TIME_UNIT = 1;
     public static final double MAX_TIME_UNIT = 600;
+    public static final double MIN_LEVEL_UNIT = 0.1;
     public static final double MAX_LEVEL_UNIT = 1000;
+    public static final int MIN_ROTATION = 0;
     public static final int MAX_ROTATION = 359;
+    public static final int MIN_ZOOM = 50;
+    public static final int MAX_ZOOM = 200;
     public static final int MIN_CONTRAST = 1;
     public static final int MAX_CONTRAST = 200;
     public static final int MIN_BRIGHTNESS = 1;
     public static final int MAX_BRIGHTNESS = 200;
-    public static final int MIN_ZOOM = 50;
-    public static final int MAX_ZOOM = 200;
 
     @JsonCreator
     public Config(
@@ -79,8 +81,13 @@ public class Config {
     }
 
     public void setImageFileType(ImageFileType imageFileType) {
-        if (this.imageFileType == imageFileType && this.imageFileType != null) return;
-        this.imageFileType = (imageFileType != null) ? imageFileType : DEFAULT_IMAGE_FILE_TYPE;
+        if (imageFileType != null) {
+            this.imageFileType = imageFileType;
+        } else {
+            // Setzt den Defaultwert, wenn der Wert null ist
+            if (this.imageFileType != null) return;
+            this.imageFileType = DEFAULT_IMAGE_FILE_TYPE;
+        }
     }
 
     public String getTimeSep() {
@@ -88,8 +95,13 @@ public class Config {
     }
 
     public void setTimeSep(String timeSep) {
-        if (Objects.equals(this.timeSep, timeSep) && this.timeSep != null) return;
-        this.timeSep = (timeSep != null && !timeSep.isBlank()) ? timeSep : DEFAULT_TIME_SEP;
+        if (timeSep != null && !timeSep.isBlank()) {
+            this.timeSep = timeSep;
+        } else {
+            // Setzt den Defaultwert, wenn der Wert null ist
+            if (this.timeSep != null) return;
+            this.timeSep = DEFAULT_TIME_SEP;
+        }
     }
 
     public String getLevelSep() {
@@ -97,8 +109,13 @@ public class Config {
     }
 
     public void setLevelSep(String levelSep) {
-        if (Objects.equals(this.levelSep, levelSep) && this.levelSep != null) return;
-        this.levelSep = (levelSep != null && !levelSep.isBlank()) ? levelSep : DEFAULT_LEVEL_SEP;
+        if (levelSep != null && !levelSep.isBlank()) {
+            this.levelSep = levelSep;
+        } else {
+            // Setzt den Defaultwert, wenn der Wert null ist
+            if (this.levelSep != null) return;
+            this.levelSep = DEFAULT_LEVEL_SEP;
+        }
     }
 
     public double getTimeUnit() {
@@ -106,8 +123,13 @@ public class Config {
     }
 
     public void setTimeUnit(double timeUnit) {
-        if (this.timeUnit == timeUnit) return;
-        this.timeUnit = (timeUnit >= 0 && timeUnit <= MAX_TIME_UNIT) ? timeUnit : DEFAULT_TIME_UNIT;
+        if (MIN_TIME_UNIT <= timeUnit && timeUnit <= MAX_TIME_UNIT) {
+            this.timeUnit = timeUnit;
+        } else {
+            // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
+            if (MIN_TIME_UNIT <= this.timeUnit && this.timeUnit <= MAX_TIME_UNIT) return;
+            this.timeUnit = DEFAULT_TIME_UNIT;
+        }
     }
 
     public double getLevelUnit() {
@@ -115,8 +137,13 @@ public class Config {
     }
 
     public void setLevelUnit(double levelUnit) {
-        if (this.levelUnit == levelUnit) return;
-        this.levelUnit = (levelUnit >= 0 && levelUnit <= MAX_LEVEL_UNIT) ? levelUnit : DEFAULT_LEVEL_UNIT;
+        if (MIN_LEVEL_UNIT <= levelUnit && levelUnit <= MAX_LEVEL_UNIT) {
+            this.levelUnit = levelUnit;
+        } else {
+            // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
+            if (MIN_LEVEL_UNIT <= this.levelUnit && this.levelUnit <= MAX_LEVEL_UNIT) return;
+            this.levelUnit = DEFAULT_LEVEL_UNIT;
+        }
     }
 
     public boolean isMirrorX() {
@@ -124,7 +151,6 @@ public class Config {
     }
 
     public void setMirrorX(boolean mirrorX) {
-        if (this.mirrorX == mirrorX) return;
         this.mirrorX = mirrorX;
     }
 
@@ -133,7 +159,6 @@ public class Config {
     }
 
     public void setMirrorY(boolean mirrorY) {
-        if (this.mirrorY == mirrorY) return;
         this.mirrorY = mirrorY;
     }
 
@@ -142,37 +167,13 @@ public class Config {
     }
 
     public void setRotation(int rotation) {
-        if (this.rotation == rotation) return;
-        this.rotation = (rotation >= 0 && rotation <= MAX_ROTATION) ? rotation : DEFAULT_ROTATION;
-    }
-
-    public void save() {
-        Path jsonFile = resolveInAppProjectsPath(Path.of(CONFIG_FILE_NAME));
-        saveJson(jsonFile, this);
-    }
-
-    public static Config load() {
-        Path jsonFile = resolveInAppProjectsPath(Path.of(CONFIG_FILE_NAME));
-
-        Object obj = loadJson(jsonFile, Config.class);
-        if (obj instanceof Config config) return config;
-        else return getDefault();
-    }
-
-    public static Config getDefault() {
-        return new Config(
-                DEFAULT_IMAGE_FILE_TYPE,
-                DEFAULT_TIME_SEP,
-                DEFAULT_LEVEL_SEP,
-                DEFAULT_TIME_UNIT,
-                DEFAULT_LEVEL_UNIT,
-                DEFAULT_MIRROR_X,
-                DEFAULT_MIRROR_Y,
-                DEFAULT_ROTATION,
-                DEFAULT_ZOOM,
-                DEFAULT_CONTRAST,
-                DEFAULT_BRIGHTNESS
-        );
+        if (MIN_ROTATION <= rotation && rotation <= MAX_ROTATION) {
+            this.rotation = rotation;
+        } else {
+            // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
+            if (MIN_ROTATION <= this.rotation && this.rotation <= MAX_ROTATION) return;
+            this.rotation = DEFAULT_ROTATION;
+        }
     }
 
     public int getZoom() {
@@ -180,9 +181,11 @@ public class Config {
     }
 
     public void setZoom(int zoom) {
-        if(MIN_ZOOM <= zoom && zoom <= MAX_ZOOM) {
+        if (MIN_ZOOM <= zoom && zoom <= MAX_ZOOM) {
             this.zoom = zoom;
         } else {
+            // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
+            if (MIN_ZOOM <= this.zoom && this.zoom <= MAX_ZOOM) return;
             this.zoom = DEFAULT_ZOOM;
         }
     }
@@ -192,9 +195,11 @@ public class Config {
     }
 
     public void setContrast(int contrast) {
-        if(MIN_CONTRAST <= contrast && contrast <= MAX_CONTRAST) {
+        if (MIN_CONTRAST <= contrast && contrast <= MAX_CONTRAST) {
             this.contrast = contrast;
         } else {
+            // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
+            if (MIN_CONTRAST <= this.contrast && this.contrast <= MAX_CONTRAST) return;
             this.contrast = DEFAULT_CONTRAST;
         }
     }
@@ -204,8 +209,41 @@ public class Config {
     }
 
     public void setBrightness(int brightness) {
-        if(MIN_BRIGHTNESS <= brightness && brightness <= MAX_BRIGHTNESS) {
+        if (MIN_BRIGHTNESS <= brightness && brightness <= MAX_BRIGHTNESS) {
             this.brightness = brightness;
+        } else {
+            // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
+            if (MIN_BRIGHTNESS <= this.brightness && this.brightness <= MAX_BRIGHTNESS) return;
+            this.brightness = DEFAULT_BRIGHTNESS;
         }
+    }
+
+    public void save() {
+        Path file = resolveProjectPath(CONFIG_FILE_NAME);
+        saveFile(file, this);
+    }
+
+    public static Config load() {
+        Path file = resolveProjectPath(CONFIG_FILE_NAME);
+
+        Object object = loadFile(file, Config.class);
+        if (object instanceof Config config) return config;
+        else return getDefault();
+    }
+
+    public static Config getDefault() {
+        return new Config(
+            DEFAULT_IMAGE_FILE_TYPE,
+            DEFAULT_TIME_SEP,
+            DEFAULT_LEVEL_SEP,
+            DEFAULT_TIME_UNIT,
+            DEFAULT_LEVEL_UNIT,
+            DEFAULT_MIRROR_X,
+            DEFAULT_MIRROR_Y,
+            DEFAULT_ROTATION,
+            DEFAULT_ZOOM,
+            DEFAULT_CONTRAST,
+            DEFAULT_BRIGHTNESS
+        );
     }
 }

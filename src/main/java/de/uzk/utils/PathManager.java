@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 
 import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
@@ -30,133 +31,120 @@ import static de.uzk.Main.workspace;
  */
 public final class PathManager {
 
-    // Systemverzeichnisse
+    // Systemverzeichnisse Pfade
     public static final Path USER_WORKING_DIRECTORY = Path.of(System.getProperty("user.dir"));
     public static final Path USER_HOME_DIRECTORY = Path.of(System.getProperty("user.home"));
 
-    // Programmverzeichnisse
+    // Ressourcenverzeichnis Pfad
     public static final Path RESOURCES_DIRECTORY = Paths.get("src/main/resources");
 
     // Ordner- und Dateinamen im Ressourcenverzeichnis
     public static final String PROPERTIES_FILE_NAME_PATTERN = "*.properties";
 
-    // Ordner- und Dateinamen im App-Verzeichnis
-    public static final String APP_DIRECTORY_NAME = "4D_Viewer";
-    public static final String CONFIG_DIRECTORY_NAME = ".config";
-    public static final String PROJECTS_DIRECTORY_NAME = "projects";
-    public static final String SETTINGS_FILE_NAME = "settings.json";
-    public static final String HISTORY_FILE_NAME = "history.txt";
+    // Ordner und Dateinamen im App-Verzeichnis
+    private static final Path APP_DIRECTORY = Path.of("4D_Viewer");
+    private static final Path CONFIG_DIRECTORY = Path.of(".config");
+    private static final Path PROJECTS_DIRECTORY = Path.of("projects");
+
+    public static final Path SETTINGS_FILE_NAME = Path.of("settings.json");
+    public static final Path HISTORY_FILE_NAME = Path.of("history.txt");
 
     // Ordner- und Dateinamen im Projekte-Verzeichnis
-    public static final String SNAPSHOTS_DIRECTORY_NAME = "snapshots";
-    public static final String CONFIG_FILE_NAME = "config.json";
-    public static final String MARKERS_FILE_NAME = "markers.json";
+    public static final Path SNAPSHOTS_DIRECTORY = Path.of("snapshots");
+
+    public static final Path CONFIG_FILE_NAME = Path.of("config.json");
+    public static final Path MARKERS_FILE_NAME = Path.of("markers.json");
 
     // Statische Initialisierung
     static {
         Path appDirectory = getAppRoot();
         createIfNotExist(appDirectory);
-        createIfNotExist(appDirectory.resolve(CONFIG_DIRECTORY_NAME));
-        createIfNotExist(appDirectory.resolve(PROJECTS_DIRECTORY_NAME));
+        createIfNotExist(appDirectory.resolve(CONFIG_DIRECTORY));
+        createIfNotExist(appDirectory.resolve(PROJECTS_DIRECTORY));
     }
 
     // ========================================
-    // Pfad Getter
+    // Pfad Erstellungsmethoden
     // ========================================
     private static Path getAppRoot() {
-        return USER_HOME_DIRECTORY.resolve(APP_DIRECTORY_NAME);
+        return USER_HOME_DIRECTORY.resolve(APP_DIRECTORY);
     }
 
-    private static Path getAppConfigPath() {
-        return getAppRoot().resolve(CONFIG_DIRECTORY_NAME);
+    private static Path getConfigPath() {
+        return getAppRoot().resolve(CONFIG_DIRECTORY);
     }
 
-    private static Path getAppProjectsPath() {
-        return getAppRoot().resolve(PROJECTS_DIRECTORY_NAME);
+    private static Path getProjectsPath() {
+        return getAppRoot().resolve(PROJECTS_DIRECTORY);
     }
 
-    public static Path resolveInAppConfigPath(Path relativePath) {
-        return getAppConfigPath().resolve(relativePath);
+    public static Path resolveConfigPath(Path relativePath) {
+        return getConfigPath().resolve(relativePath);
     }
 
-    public static Path resolveInAppProjectsPath(Path relativePath) {
+    public static Path resolveProjectPath(Path relativePath) {
         if (workspace.getImageFilesDirectory() == null) {
             throw new NullPointerException("The image files directory is null.");
         }
 
         // Erstelle ein Projektverzeichnis, falls es noch nicht existiert
         Path projectName = workspace.getImageFilesDirectory().getFileName();
-        Path projectPath = getAppProjectsPath().resolve(projectName);
+        Path projectPath = getProjectsPath().resolve(projectName);
         createIfNotExist(projectPath);
 
         return projectPath.resolve(relativePath);
     }
 
     // ========================================
-    // Speichern Methoden
+    // Speichern Methode
     // ========================================
-    public static void saveJson(Path jsonFile, Object object) {
-        Path directory = jsonFile.getParent();
-        String fileBaseName = getFileBaseName(jsonFile.getFileName());
-
-        createIfNotExist(directory);
-        logger.info(String.format("Saving %s file '%s'", fileBaseName, jsonFile));
-
-        try {
-            // Benutzerdefinierte Einrückungen mit Printer erstellen
-            ObjectMapper mapper = new ObjectMapper();
-
-            // Datei schreiben
-            mapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, object);
-        } catch (Exception e) {
-            logger.error(String.format("Failed saving %s file '%s'", fileBaseName, jsonFile));
-        }
-    }
-
-    public static void saveFile(Path file, List<String> lines) {
+    public static void saveFile(Path file, Object data) {
         Path directory = file.getParent();
         String fileBaseName = getFileBaseName(file.getFileName());
 
         createIfNotExist(directory);
-        logger.info(String.format("Saving %s file '%s'", fileBaseName, file));
+        logger.info(String.format("Saving %s file '%s'", fileBaseName, file.toAbsolutePath()));
 
         try {
-            Files.write(file, lines);
-        } catch (Exception e) {
-            logger.error(String.format("Failed saving %s file '%s'", fileBaseName, file));
-        }
-    }
-
-    // ========================================
-    // Laden Methoden
-    // ========================================
-    public static Object loadJson(Path jsonFile, Class<?> clazz) {
-        String fileBaseName = getFileBaseName(jsonFile.getFileName());
-
-        try {
-            if (Files.exists(jsonFile)) {
-                logger.info(String.format("Loading %s file '%s'", fileBaseName, jsonFile));
+            if (file.toString().endsWith(".json")) {
+                // JSON-Datei
                 ObjectMapper mapper = new ObjectMapper();
-                return mapper.readValue(jsonFile.toFile(), clazz);
+                mapper.writerWithDefaultPrettyPrinter().writeValue(file.toFile(), data);
+            } else if (data instanceof List<?> lines) {
+                // Textdatei
+                Files.write(file, lines.stream()
+                    .map(Object::toString)
+                    .toList());
+            } else {
+                throw new IllegalArgumentException("Unsupported data type for file: " + file);
             }
         } catch (Exception e) {
-            logger.error(String.format("Failed loading %s file '%s'", fileBaseName, jsonFile));
+            logger.error(String.format("Failed saving %s file '%s'", fileBaseName, file.toAbsolutePath()));
         }
-        return null;
     }
 
-    public static List<String> loadFile(Path file) {
+    // ========================================
+    // Laden Methode
+    // ========================================
+    public static Object loadFile(Path file, Class<?> clazz) {
+        if (!Files.exists(file)) return null;
+
         String fileBaseName = getFileBaseName(file.getFileName());
+        logger.info(String.format("Loading %s file '%s'", fileBaseName, file.toAbsolutePath()));
 
         try {
-            if (Files.exists(file)) {
-                logger.info(String.format("Loading %s file '%s'", fileBaseName, file));
+            if (file.toString().endsWith(".json")) {
+                // JSON-Datei laden
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(file.toFile(), clazz);
+            } else {
+                // Textdatei laden
                 return Files.readAllLines(file);
             }
         } catch (Exception e) {
-            logger.error(String.format("Failed loading %s file '%s'", fileBaseName, file));
+            logger.error(String.format("Failed loading %s file '%s'", fileBaseName, file.toAbsolutePath()));
+            return null;
         }
-        return null;
     }
 
     // ========================================
@@ -164,22 +152,28 @@ public final class PathManager {
     // ========================================
     public static void createIfNotExist(Path directory) {
         if (!Files.exists(directory)) {
+            String directoryIdentifier = getDirectoryIdentifier(directory);
             try {
+                logger.info(String.format("Creating %s directory '%s'", directoryIdentifier, directory.toAbsolutePath()));
                 Files.createDirectories(directory);
             } catch (IOException e) {
-                String directoryName = switch (directory.getFileName().toString()) {
-                    case APP_DIRECTORY_NAME -> "app";
-                    case CONFIG_DIRECTORY_NAME -> "config";
-                    case PROJECTS_DIRECTORY_NAME -> "projects";
-                    case SNAPSHOTS_DIRECTORY_NAME -> "snapshots";
-                    default -> directory.getFileName().toString();
-                };
-                logger.error(String.format("Failed creating %s directory '%s'", directoryName, directory));
+                logger.error(String.format("Failed creating %s directory '%s'", directoryIdentifier, directory.toAbsolutePath()));
             }
         }
     }
 
-    public static String getFileBaseName(Path file) {
+    private static String getDirectoryIdentifier(Path directory) {
+        String directoryName = directory.getFileName().toString();
+
+        if (directoryName.equals(APP_DIRECTORY.getFileName().toString())) return "app";
+        else if (directoryName.equals(CONFIG_DIRECTORY.getFileName().toString())) return "config";
+        else if (directoryName.equals(PROJECTS_DIRECTORY.getFileName().toString())) return "projects";
+        else if (directoryName.equals(SNAPSHOTS_DIRECTORY.getFileName().toString())) return "snapshots";
+        else if (Objects.equals(workspace.getImageFilesDirectory(), directory)) return "project";
+        return directoryName;
+    }
+
+    private static String getFileBaseName(Path file) {
         String fileName = file.getFileName().toString();
         int dotIndex = fileName.lastIndexOf('.');
         return (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);

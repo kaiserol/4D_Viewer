@@ -46,16 +46,23 @@ public class History {
     }
 
     public void save() {
-        Path file = resolveInAppConfigPath(Path.of(HISTORY_FILE_NAME));
+        Path file = resolveConfigPath(HISTORY_FILE_NAME);
         List<String> lines = this.history.stream().map(Path::toString).toList();
         saveFile(file, lines);
     }
 
     public static History load() {
-        Path file = resolveInAppConfigPath(Path.of(HISTORY_FILE_NAME));
+        Path file = resolveConfigPath(HISTORY_FILE_NAME);
 
-        List<String> lines = loadFile(file);
-        if (lines == null) return new History(null);
-        return new History(lines.stream().map(Path::of).toList());
+        Object object = loadFile(file, History.class);
+        if (object instanceof List<?> list) {
+            List<Path> lines = list.stream().map(line -> Path.of(line == null ? "" : String.valueOf(line))).toList();
+            return new History(lines);
+        }
+        return getDefault();
+    }
+
+    public static History getDefault() {
+        return new History(null);
     }
 }

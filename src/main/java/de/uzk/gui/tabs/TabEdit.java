@@ -55,7 +55,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         gbc.setPosAndInsets(0, 2, 0, 0, 0, 15);
 
         // Create a SpinnerModel for numeric values
-        CyclingSpinnerNumberModel degreeSpinnerModel = new CyclingSpinnerNumberModel(0, 0, Config.MAX_ROTATION, 1);
+        CyclingSpinnerNumberModel degreeSpinnerModel = new CyclingSpinnerNumberModel(0, Config.MIN_ROTATION, Config.MAX_ROTATION, 1);
         this.degreeSpinner = getDegreeSpinner(degreeSpinnerModel);
         this.container.add(this.degreeSpinner, gbc);
 
