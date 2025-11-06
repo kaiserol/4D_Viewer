@@ -50,7 +50,7 @@ public class PropertiesSorter {
             trimEmptyEdges(sortedLines);
 
             // Wenn Datei bereits sortiert → überspringen
-            if (originalLines.equals(sortedLines)) {
+            if (Objects.equals(originalLines, sortedLines)) {
                 System.out.printf("⏭️ File ‘%s’ is already sorted.%n%n", file);
                 continue;
             }
@@ -242,13 +242,16 @@ public class PropertiesSorter {
         Scanner scanner = new Scanner(System.in);
         String input;
 
+        String YES = "YES";
+        String NO = "NO";
+        String YES_NO = YES + "/" + NO;
         while (true) {
-            String normalizedQuestion = question == null || !question.isBlank() ? question + " (yes/no): " : "yes/no: ";
+            String normalizedQuestion = question == null || !question.isBlank() ? (question + " (" + YES_NO + "): ") : YES_NO + ": ";
             System.out.print(normalizedQuestion);
-            input = scanner.nextLine().trim().toLowerCase();
+            input = scanner.nextLine().trim().toUpperCase();
 
-            if (input.equals("yes")) return true;
-            if (input.equals("no")) return false;
+            if (Objects.equals(input, YES)) return true;
+            if (Objects.equals(input, NO)) return false;
         }
     }
 

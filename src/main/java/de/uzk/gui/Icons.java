@@ -95,7 +95,7 @@ public final class Icons {
         for (FlatSVGIcon svgIcon : ICONS_COLOR_BLUE) {
             // Tausche Farben aus
             updateSVGIconsColor(svgIcon, new FlatSVGIcon.ColorFilter(color -> {
-                if (color.equals(Color.BLACK)) return GuiUtils.COLOR_BLUE;
+                if (Objects.equals(color, Color.BLACK)) return GuiUtils.COLOR_BLUE;
                 else return color;
             }));
         }
@@ -103,7 +103,7 @@ public final class Icons {
         for (FlatSVGIcon svgIcon : ICONS_COLOR_ON_THEME_SWITCH) {
             // Tausche Farben aus
             updateSVGIconsColor(svgIcon, new FlatSVGIcon.ColorFilter(color -> {
-                if (color.equals(Color.BLACK)) return settings.getTheme().isLight() ? Color.GRAY : Color.WHITE;
+                if (Objects.equals(color, Color.BLACK)) return settings.getTheme().isLight() ? Color.GRAY : Color.WHITE;
                 return color;
             }));
         }

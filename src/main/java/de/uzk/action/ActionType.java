@@ -97,7 +97,7 @@ public enum ActionType {
         if (e != null) {
             for (ActionType actionType : ActionType.values()) {
                 for (Shortcut shortcut : actionType.getShortcuts()) {
-                    boolean sameShortcut = shortcut.equals(new Shortcut(e));
+                    boolean sameShortcut = Objects.equals(shortcut, new Shortcut(e));
                     boolean sameID = actionType.getKeyEventType().getID() == e.getID();
                     if (sameShortcut && sameID) return actionType;
                 }

@@ -21,10 +21,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
 
 import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -527,7 +525,7 @@ public final class GuiUtils {
 
         // Maximale Breite bestimmen
         for (Component comp : buttonPanel.getComponents()) {
-            if (comp.getClass().equals(clazz)) {
+            if (Objects.equals(comp.getClass(), clazz)) {
                 Dimension pref = comp.getPreferredSize();
                 maxWidth = Math.max(maxWidth, pref.width);
             }
@@ -535,7 +533,7 @@ public final class GuiUtils {
 
         // Einheitliche Größe setzen
         for (Component comp : buttonPanel.getComponents()) {
-            if (comp.getClass().equals(clazz)) {
+            if (Objects.equals(comp.getClass(), clazz)) {
                 Dimension size = comp.getPreferredSize();
                 comp.setPreferredSize(new Dimension(maxWidth, size.height));
             }

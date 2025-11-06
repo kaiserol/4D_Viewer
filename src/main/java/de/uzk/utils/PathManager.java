@@ -100,9 +100,9 @@ public final class PathManager {
     // ========================================
     public static void saveFile(Path file, Object data) {
         Path directory = file.getParent();
-        String fileBaseName = getFileBaseName(file.getFileName());
-
         createIfNotExist(directory);
+
+        String fileBaseName = getFileBaseName(file.getFileName());
         logger.info(String.format("Saving %s file '%s'", fileBaseName, file.toAbsolutePath()));
 
         try {
@@ -165,11 +165,17 @@ public final class PathManager {
     private static String getDirectoryIdentifier(Path directory) {
         String directoryName = directory.getFileName().toString();
 
-        if (directoryName.equals(APP_DIRECTORY.getFileName().toString())) return "app";
-        else if (directoryName.equals(CONFIG_DIRECTORY.getFileName().toString())) return "config";
-        else if (directoryName.equals(PROJECTS_DIRECTORY.getFileName().toString())) return "projects";
-        else if (directoryName.equals(SNAPSHOTS_DIRECTORY.getFileName().toString())) return "snapshots";
-        else if (Objects.equals(workspace.getImageFilesDirectory(), directory)) return "project";
+        if (Objects.equals(directoryName, APP_DIRECTORY.getFileName().toString())) return "app";
+        else if (Objects.equals(directoryName, CONFIG_DIRECTORY.getFileName().toString())) return "config";
+        else if (Objects.equals(directoryName, PROJECTS_DIRECTORY.getFileName().toString())) return "projects";
+        else if (Objects.equals(directoryName, SNAPSHOTS_DIRECTORY.getFileName().toString())) return "snapshots";
+        else {
+            if (workspace.getImageFilesDirectory() != null) {
+                String workspaceDirectoryName = workspace.getImageFilesDirectory().getFileName().toString();
+                if (Objects.equals(directoryName, workspaceDirectoryName)) return "project";
+            }
+        }
+
         return directoryName;
     }
 

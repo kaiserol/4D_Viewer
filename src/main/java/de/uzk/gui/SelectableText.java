@@ -17,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.Objects;
 
 import static de.uzk.config.LanguageHandler.getWord;
 import static javax.swing.event.HyperlinkEvent.EventType.*;
@@ -158,13 +159,13 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      */
     @Override
     public void hyperlinkUpdate(HyperlinkEvent e) {
-        if (e.getEventType().equals(ENTERED)) {
+        if (Objects.equals(e.getEventType(), ENTERED)) {
             overLink = true;
             currentLinkElement = e.getSourceElement();
             updateCursor();
-        } else if (e.getEventType().equals(EXITED)) {
+        } else if (Objects.equals(e.getEventType(), EXITED)) {
             resetLinkElement();
-        } else if (e.getEventType().equals(ACTIVATED)) {
+        } else if (Objects.equals(e.getEventType(), ACTIVATED)) {
             if (commandPressed) {
                 GuiUtils.openWebLink(e.getURL());
                 updateCursor();
