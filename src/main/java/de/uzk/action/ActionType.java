@@ -33,12 +33,9 @@ public enum ActionType {
     SHORTCUT_TOGGLE_PIN_TIME(new Shortcut(KeyEvent.VK_P, Shortcut.CTRL_DOWN)),
 
     // Fenster Shortcuts
-    SHORTCUT_FONT_SIZE_DECREASE(new Shortcut(KeyEvent.VK_MINUS, Shortcut.CTRL_DOWN),
-            new Shortcut(KeyEvent.VK_SUBTRACT, Shortcut.CTRL_DOWN)),
-    SHORTCUT_FONT_SIZE_INCREASE(new Shortcut(KeyEvent.VK_PLUS, Shortcut.CTRL_DOWN),
-            new Shortcut(KeyEvent.VK_ADD, Shortcut.CTRL_DOWN)),
-    SHORTCUT_FONT_SIZE_RESTORE(new Shortcut(KeyEvent.VK_0, Shortcut.CTRL_DOWN),
-            new Shortcut(KeyEvent.VK_EQUALS, Shortcut.CTRL_DOWN)),
+    SHORTCUT_FONT_SIZE_DECREASE(new Shortcut(KeyEvent.VK_MINUS, Shortcut.CTRL_DOWN), new Shortcut(KeyEvent.VK_SUBTRACT, Shortcut.CTRL_DOWN)),
+    SHORTCUT_FONT_SIZE_INCREASE(new Shortcut(KeyEvent.VK_PLUS, Shortcut.CTRL_DOWN), new Shortcut(KeyEvent.VK_ADD, Shortcut.CTRL_DOWN)),
+    SHORTCUT_FONT_SIZE_RESTORE(new Shortcut(KeyEvent.VK_0, Shortcut.CTRL_DOWN), new Shortcut(KeyEvent.VK_EQUALS, Shortcut.CTRL_DOWN)),
     SHORTCUT_OPEN_SETTINGS(new Shortcut(KeyEvent.VK_COMMA, Shortcut.CTRL_DOWN)),
 
     ACTION_UPDATE_FONT,
@@ -47,6 +44,25 @@ public enum ActionType {
     SHORTCUT_SHOW_DISCLAIMER(new Shortcut(KeyEvent.VK_F1)),
     SHORTCUT_SHOW_VERSIONS(new Shortcut(KeyEvent.VK_F2)),
     SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F3));
+
+    /**
+     * Mögliche KeyEvents
+     */
+    public enum KeyEventType {
+        NONE(-1),
+        PRESSED(KeyEvent.KEY_PRESSED),
+        RELEASED(KeyEvent.KEY_RELEASED);
+
+        private final int id;
+
+        KeyEventType(int id) {
+            this.id = id;
+        }
+
+        public int getID() {
+            return id;
+        }
+    }
 
     // ========================================
     // Enum Deklaration
