@@ -5,7 +5,6 @@ import de.uzk.gui.GuiUtils;
 import de.uzk.gui.Icons;
 import de.uzk.image.Axis;
 import de.uzk.image.ImageFileType;
-import de.uzk.utils.AppPath;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -16,6 +15,7 @@ import java.nio.file.Path;
 
 import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
+import static de.uzk.utils.PathManager.USER_WORKING_DIRECTORY;
 
 public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
     // GUI-Elemente
@@ -83,7 +83,7 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
 
         // Startverzeichnis wählen
         if (history.isEmpty()) {
-            Path startDirectory = AppPath.USER_WORKING_DIRECTORY;
+            Path startDirectory = USER_WORKING_DIRECTORY;
             if (Files.isDirectory(startDirectory)) fileChooser.setCurrentDirectory(startDirectory.toFile());
         } else {
             fileChooser.setSelectedFile(history.getLast().toFile());

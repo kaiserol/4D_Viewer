@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.uzk.utils.AppPath.*;
+import static de.uzk.utils.PathManager.*;
 
 public class Markers {
     @JsonGetter("markers")
@@ -36,14 +36,14 @@ public class Markers {
     }
 
     public void save() {
-        Path jsonPath = getProjectPath(Path.of(MARKERS_FILE_NAME));
-        saveJson(jsonPath, this);
+        Path jsonFile = resolveInAppProjectsPath(Path.of(MARKERS_FILE_NAME));
+        saveJson(jsonFile, this);
     }
 
     public static Markers load() {
-        Path jsonPath = getProjectPath(Path.of(MARKERS_FILE_NAME));
+        Path jsonFile = resolveInAppProjectsPath(Path.of(MARKERS_FILE_NAME));
 
-        Object obj = loadJson(jsonPath, Markers.class);
+        Object obj = loadJson(jsonFile, Markers.class);
         if (obj instanceof Markers markers) {
             markers.markers.removeIf(m -> m == null || m.getMarker() == null);
             return markers;

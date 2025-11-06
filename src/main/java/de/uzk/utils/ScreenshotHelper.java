@@ -16,8 +16,8 @@ import java.util.Date;
 
 import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
-import static de.uzk.utils.AppPath.SNAPSHOTS_DIRECTORY_NAME;
-import static de.uzk.utils.AppPath.getProjectPath;
+import static de.uzk.utils.PathManager.SNAPSHOTS_DIRECTORY_NAME;
+import static de.uzk.utils.PathManager.resolveInAppProjectsPath;
 
 public class ScreenshotHelper {
     // Format und Pattern
@@ -26,9 +26,7 @@ public class ScreenshotHelper {
 
     public static boolean saveScreenshot(BufferedImage image) {
         if (image == null || !workspace.isOpen()) return false;
-        Path directory = getProjectPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
-        String fileName = workspace.getImageFile().getFileName();
-        AppPath.createIfNotExist(directory);
+        Path directory = resolveInAppProjectsPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
 
         ScreenshotCropper cropper = new ScreenshotCropper(image);
         int option = JOptionPane.showConfirmDialog(null, cropper, "Crop Image", JOptionPane.OK_CANCEL_OPTION);
@@ -37,6 +35,7 @@ public class ScreenshotHelper {
         image = cropper.getCroppedImage();
 
         // Dateiname bauen
+        String fileName = workspace.getImageFile().getFileName();
         String date = DATE_FORMAT.format(new Date());
         int count = getNextScreenshotIndex(date);
         String newFileName = "%s(%02d)_%s".formatted(date, count, fileName);
@@ -53,8 +52,8 @@ public class ScreenshotHelper {
     }
 
     private static int getNextScreenshotIndex(String date) {
-        Path directory = getProjectPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
-        if (!Files.exists(directory)) return 1;
+        Path directory = resolveInAppProjectsPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
+        if (!Files.isDirectory(directory)) return 1;
 
         int index = 1;
         try (DirectoryStream<Path> filePaths = Files.newDirectoryStream(directory)) {
@@ -80,7 +79,7 @@ public class ScreenshotHelper {
 
     public static int getScreenshotCount() {
         if (!workspace.isOpen()) return 0; // Muss zuerst geprüft werden, da sonst NullPointerException
-        Path directory = getProjectPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
+        Path directory = resolveInAppProjectsPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
 
         int count = 0;
         try (DirectoryStream<Path> filePaths = Files.newDirectoryStream(directory)) {
@@ -95,12 +94,8 @@ public class ScreenshotHelper {
             }
         } catch (NoSuchFileException e) {
             // Per se kein Fehler, z. B. bei erstmals geöffneten Workspaces
-            logger.info(String.format("Directory '%s' doesn't exist yet, creating it...", directory));
-            try {
-                Files.createDirectories(directory);
-            } catch (IOException io) {
-                logger.error(String.format("Failed initializing snapshot directory '%s'", directory));
-            }
+            logger.info(String.format("The snapshots directory '%s' does not exist yet, creating it...", directory));
+            PathManager.createIfNotExist(directory);
         } catch (IOException e) {
             logger.error(String.format("Failed getting snapshot count in the directory '%s'", directory));
         }

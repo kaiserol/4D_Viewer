@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.nio.file.Path;
 
-import static de.uzk.utils.AppPath.*;
+import static de.uzk.utils.PathManager.*;
 
 public class Settings {
     // Einstellungen
@@ -78,14 +78,14 @@ public class Settings {
     }
 
     public void save() {
-        Path jsonPath = getAppPath(Path.of(SETTINGS_FILE_NAME));
-        saveJson(jsonPath, this);
+        Path jsonFile = resolveInAppConfigPath(Path.of(SETTINGS_FILE_NAME));
+        saveJson(jsonFile, this);
     }
 
     public static Settings load() {
-        Path jsonPath = getAppPath(Path.of(SETTINGS_FILE_NAME));
+        Path jsonFile = resolveInAppConfigPath(Path.of(SETTINGS_FILE_NAME));
 
-        Object obj = loadJson(jsonPath, Settings.class);
+        Object obj = loadJson(jsonFile, Settings.class);
         if (obj instanceof Settings settings) return settings;
         else return getDefault();
     }

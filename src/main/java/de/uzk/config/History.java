@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
-import static de.uzk.utils.AppPath.*;
+import static de.uzk.utils.PathManager.*;
 
 public class History {
     // Historie
@@ -46,15 +46,15 @@ public class History {
     }
 
     public void save() {
-        Path filePath = getAppPath(Path.of(HISTORY_FILE_NAME));
+        Path file = resolveInAppConfigPath(Path.of(HISTORY_FILE_NAME));
         List<String> lines = this.history.stream().map(Path::toString).toList();
-        saveFile(filePath, lines);
+        saveFile(file, lines);
     }
 
     public static History load() {
-        Path filePath = getAppPath(Path.of(HISTORY_FILE_NAME));
+        Path file = resolveInAppConfigPath(Path.of(HISTORY_FILE_NAME));
 
-        List<String> lines = loadFile(filePath);
+        List<String> lines = loadFile(file);
         if (lines == null) return new History(null);
         return new History(lines.stream().map(Path::of).toList());
     }

@@ -7,7 +7,7 @@ import de.uzk.image.ImageFileType;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import static de.uzk.utils.AppPath.*;
+import static de.uzk.utils.PathManager.*;
 
 public class Config {
     // Konfigurationen
@@ -147,14 +147,14 @@ public class Config {
     }
 
     public void save() {
-        Path jsonPath = getProjectPath(Path.of(CONFIG_FILE_NAME));
-        saveJson(jsonPath, this);
+        Path jsonFile = resolveInAppProjectsPath(Path.of(CONFIG_FILE_NAME));
+        saveJson(jsonFile, this);
     }
 
     public static Config load() {
-        Path jsonPath = getProjectPath(Path.of(CONFIG_FILE_NAME));
+        Path jsonFile = resolveInAppProjectsPath(Path.of(CONFIG_FILE_NAME));
 
-        Object obj = loadJson(jsonPath, Config.class);
+        Object obj = loadJson(jsonFile, Config.class);
         if (obj instanceof Config config) return config;
         else return getDefault();
     }
