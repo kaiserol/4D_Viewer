@@ -6,7 +6,7 @@ import de.uzk.gui.GuiUtils;
 import de.uzk.gui.Icons;
 import de.uzk.image.Axis;
 import de.uzk.markers.Marker;
-import de.uzk.utils.ScreenshotHelper;
+import de.uzk.utils.SnapshotHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -200,7 +200,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
             case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> updateCurrentImage();
             case SHORTCUT_TAKE_SCREENSHOT -> {
 
-                if (ScreenshotHelper.saveScreenshot(this.currentImage)) {
+                if (SnapshotHelper.saveSnapshot(this.currentImage)) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER);
                 }
             }
