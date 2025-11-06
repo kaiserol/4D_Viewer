@@ -40,6 +40,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     private static final int MIN_WIDTH = 400;
     private static final int MIN_HEIGHT = 100;
 
+    private boolean hasUnsavedChanges;
+
     public Gui() {
         super(new JFrame(), null);
 
@@ -58,6 +60,23 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
         // Gui erstellen
         build();
+
+        this.registerConfigSaved();
+    }
+
+    public void registerUnsavedChange() {
+        if(!this.hasUnsavedChanges) {
+            this.container.setTitle(this.container.getTitle() + "*");
+        }
+
+        this.hasUnsavedChanges = true;
+    }
+
+    public void registerConfigSaved() {
+        if(this.hasUnsavedChanges) {
+            this.container.setTitle(this.container.getTitle().replace("*", ""));
+        }
+        this.hasUnsavedChanges = false;
     }
 
     private void build() {
@@ -201,6 +220,12 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     public void handleAction(ActionType actionType) {
         // Prüfe, ob der Zeitpunkt angepinnt wurde
         if (actionType == ActionType.SHORTCUT_TOGGLE_PIN_TIME) workspace.togglePinTime();
+
+        switch(actionType) {
+            case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> {
+                this.registerUnsavedChange();
+            }
+        }
 
         // Observer ausführen
         for (HandleActionListener observer : handleActionListeners) observer.handleAction(actionType);

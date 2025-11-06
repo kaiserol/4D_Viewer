@@ -51,6 +51,13 @@ public class History {
         saveFile(file, lines);
     }
 
+    public List<Path> getLast(int n) {
+        n = Math.min(n, this.history.size());
+        int size = this.history.size();
+
+        return this.history.subList(size-n, size );
+    }
+
     public static History load() {
         Path file = resolveInAppConfigPath(Path.of(HISTORY_FILE_NAME));
 

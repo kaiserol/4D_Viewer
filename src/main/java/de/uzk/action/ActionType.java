@@ -25,6 +25,11 @@ public enum ActionType {
     SHORTCUT_GO_TO_NEXT_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_DOWN)),
     SHORTCUT_GO_TO_LAST_LEVEL(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_DOWN, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
 
+    //Projekte Shortcuts
+    SHORTCUT_OPEN_RECENT(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_O, Shortcut.CTRL_DOWN)),
+    SHORTCUT_OPEN_FOLDER(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_O, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
+    SHORTCUT_SAVE_CONFIG(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_S, Shortcut.CTRL_DOWN)),
+    SHORTCUT_CLOSE_PROJECT(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_BACK_SPACE, Shortcut.CTRL_DOWN)),
     // Markierungen Shortcuts
     ACTION_ADD_MARKER,
     ACTION_REMOVE_MARKER,

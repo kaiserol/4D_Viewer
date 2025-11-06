@@ -97,6 +97,14 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_GO_TO_NEXT_LEVEL -> scroll(Axis.LEVEL, 1, false);
             case SHORTCUT_GO_TO_LAST_LEVEL -> scrollToBoundary(Axis.LEVEL, false);
 
+            // Projekte Shortcuts
+            case SHORTCUT_OPEN_RECENT -> gui.handleAction(SHORTCUT_OPEN_RECENT);
+            case SHORTCUT_OPEN_FOLDER -> gui.handleAction(SHORTCUT_OPEN_FOLDER);
+            case SHORTCUT_SAVE_CONFIG -> {
+                workspace.getConfig().save();
+                gui.registerConfigSaved();
+            }
+            case SHORTCUT_CLOSE_PROJECT -> gui.handleAction(SHORTCUT_CLOSE_PROJECT);
         }
     }
 

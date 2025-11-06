@@ -9,7 +9,9 @@ import de.uzk.gui.GuiUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.nio.file.Path;
 
+import static de.uzk.Main.history;
 import static de.uzk.Main.settings;
 import static de.uzk.action.ActionType.*;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -29,10 +31,24 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     }
 
     private void init(ActionHandler actionHandler) {
+        this.menuBar.add(getMenuProjects(actionHandler));
         this.menuBar.add(getMenuEdit(actionHandler));
         this.menuBar.add(getMenuNavigate(actionHandler));
         this.menuBar.add(getMenuWindow(actionHandler));
         this.menuBar.add(getMenuHelp(actionHandler));
+    }
+
+    private CustomMenu getMenuProjects(ActionHandler actionHandler) {
+        CustomMenu menuProjects = new CustomMenu("Projects");
+
+        menuProjects.add(new CustomMenuItem("Open Recent Project...", null, actionHandler, SHORTCUT_OPEN_RECENT));
+        menuProjects.add(new CustomMenuItem("Open Project", null, actionHandler, SHORTCUT_OPEN_FOLDER));
+        menuProjects.addSeparator();
+        menuProjects.add(new CustomMenuItem("Save current Project", null, actionHandler, SHORTCUT_SAVE_CONFIG));
+        menuProjects.add(new CustomMenuItem("Close Project", null, actionHandler, SHORTCUT_CLOSE_PROJECT));
+
+
+        return menuProjects;
     }
 
     private CustomMenu getMenuEdit(ActionHandler actionHandler) {
