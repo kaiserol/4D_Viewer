@@ -3,7 +3,7 @@ package de.uzk.gui.menubar;
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
 import de.uzk.config.Settings;
-import de.uzk.gui.AreaContainerInteractive;
+import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 

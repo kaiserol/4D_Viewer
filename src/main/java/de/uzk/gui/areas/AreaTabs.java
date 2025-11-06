@@ -1,5 +1,7 @@
-package de.uzk.gui;
+package de.uzk.gui.areas;
 
+import de.uzk.gui.Gui;
+import de.uzk.gui.GuiUtils;
 import de.uzk.gui.tabs.TabEdit;
 import de.uzk.gui.tabs.TabMarkers;
 import de.uzk.gui.tabs.TabNavigate;

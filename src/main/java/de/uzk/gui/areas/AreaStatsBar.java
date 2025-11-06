@@ -1,5 +1,6 @@
-package de.uzk.gui;
+package de.uzk.gui.areas;
 
+import de.uzk.gui.Gui;
 import de.uzk.image.Axis;
 import de.uzk.utils.StringUtils;
 

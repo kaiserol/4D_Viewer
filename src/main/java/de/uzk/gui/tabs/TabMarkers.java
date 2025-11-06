@@ -1,7 +1,7 @@
 package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionType;
-import de.uzk.gui.AreaContainerInteractive;
+import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.marker.MarkerEditor;

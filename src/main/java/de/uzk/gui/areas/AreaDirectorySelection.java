@@ -1,5 +1,8 @@
-package de.uzk.gui;
+package de.uzk.gui.areas;
 
+import de.uzk.gui.Gui;
+import de.uzk.gui.GuiUtils;
+import de.uzk.gui.Icons;
 import de.uzk.image.Axis;
 import de.uzk.image.ImageFileType;
 import de.uzk.utils.AppPath;

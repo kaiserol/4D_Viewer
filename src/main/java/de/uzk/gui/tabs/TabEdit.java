@@ -3,6 +3,7 @@ package de.uzk.gui.tabs;
 import de.uzk.action.ActionType;
 import de.uzk.config.Config;
 import de.uzk.gui.*;
+import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.utils.NumberUtils;
 import de.uzk.utils.ScreenshotHelper;
 
