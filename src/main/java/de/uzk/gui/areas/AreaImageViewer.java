@@ -199,9 +199,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
         switch (actionType) {
             case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> updateCurrentImage();
             case SHORTCUT_TAKE_SCREENSHOT -> {
-                BufferedImage screenshot = new BufferedImage(this.getContainer().getWidth(), this.getContainer().getHeight(), BufferedImage.TYPE_INT_RGB);
-                this.paintImage(screenshot.getGraphics());
-                if (ScreenshotHelper.saveScreenshot(screenshot)) {
+
+                if (ScreenshotHelper.saveScreenshot(this.currentImage)) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER);
                 }
             }
