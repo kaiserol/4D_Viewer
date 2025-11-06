@@ -5,7 +5,7 @@ import de.uzk.config.Config;
 import de.uzk.gui.*;
 import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.utils.NumberUtils;
-import de.uzk.utils.ScreenshotHelper;
+import de.uzk.utils.SnapshotHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -224,6 +224,6 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     }
 
     private void updateScreenshotCounter() {
-        this.screenshots.setText(String.valueOf(ScreenshotHelper.getScreenshotCount()));
+        this.screenshots.setText(String.valueOf(SnapshotHelper.getSnapshotsCount()));
     }
 }
