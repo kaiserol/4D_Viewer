@@ -1,6 +1,9 @@
 package de.uzk.utils;
 
+import de.uzk.gui.ScreenshotCropper;
+
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -26,6 +29,12 @@ public class ScreenshotHelper {
         Path directory = getProjectPath(Path.of(SNAPSHOTS_DIRECTORY_NAME));
         String fileName = workspace.getImageFile().getFileName();
         AppPath.createIfNotExist(directory);
+
+        ScreenshotCropper cropper = new ScreenshotCropper(image);
+        int option = JOptionPane.showConfirmDialog(null, cropper, "Crop Image", JOptionPane.OK_CANCEL_OPTION);
+        if(option != JOptionPane.OK_OPTION) return false;
+
+        image = cropper.getCroppedImage();
 
         // Dateiname bauen
         String date = DATE_FORMAT.format(new Date());
