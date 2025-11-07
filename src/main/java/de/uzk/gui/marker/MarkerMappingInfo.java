@@ -94,7 +94,7 @@ public class MarkerMappingInfo extends JPanel {
         GenericMarkerPreview edit = new GenericMarkerPreview(this.mapping.getMarker().getShape(), this.mapping.getMarker().getColor());
         edit.setOnClick(() -> {
 
-            MarkerEditor initial = new MarkerEditor(workspace.getImageFile(), new Marker(this.mapping.getMarker()));
+            MarkerEditor initial = new MarkerEditor(workspace.getCurrentImageFile(), new Marker(this.mapping.getMarker()));
             int option = JOptionPane.showConfirmDialog(
                     null,
                     initial,

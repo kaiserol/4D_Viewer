@@ -29,7 +29,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
 
         JButton add = new JButton(getWord("items.markers.addMarker"));
         add.addActionListener(e -> {
-            MarkerEditor initial = new MarkerEditor(workspace.getImageFile());
+            MarkerEditor initial = new MarkerEditor(workspace.getCurrentImageFile());
             int option = JOptionPane.showConfirmDialog(
                     null,
                     initial,

@@ -22,10 +22,11 @@ public class Workspace {
     private Config config;
     private Markers markers;
     private ImageFile[][] matrix;
-    private ImageFile imageFile;
+    private ImageFile currentImageFile;
+    private int time;
+    private int level;
     private int maxTime;
     private int maxLevel;
-    private int missingImagesCount;
     private final List<Integer> pinTimes;
 
     public Workspace() {
@@ -67,58 +68,60 @@ public class Workspace {
         return this.matrix != null;
     }
 
-    public ImageFile getImageFile() {
-        return this.imageFile;
+    public ImageFile getCurrentImageFile() {
+        return this.currentImageFile;
     }
 
     ImageFile getImageFile(int time, int level) {
         return this.matrix[time][level];
     }
 
+    private void setCurrentImageFile(int time, int level) {
+        this.currentImageFile = getImageFile(time, level);
+        this.time = currentImageFile.getTime();
+        this.level = currentImageFile.getLevel();
+    }
+
     void setImageFile(int time, int level, ImageFile imageFile) {
         this.matrix[time][level] = imageFile;
+    }
+
+    public int getTime() {
+        return this.time;
+    }
+
+    public void setTime(int time) {
+        if (!isOpen() || isTimeInvalid(time)) return;
+        setCurrentImageFile(time, this.currentImageFile.getLevel());
+    }
+
+    private boolean isTimeInvalid(int time) {
+        if (time >= 0 && time <= this.maxTime) return false;
+        logger.error("Invalid Time: " + time);
+        return true;
+    }
+
+    public int getLevel() {
+        return this.level;
+    }
+
+    public void setLevel(int level) {
+        if (!isOpen() || isLevelInvalid(level)) return;
+        setCurrentImageFile(this.currentImageFile.getTime(), level);
+    }
+
+    private boolean isLevelInvalid(int level) {
+        if (level >= 0 && level <= this.maxLevel) return false;
+        logger.error("Invalid Level: " + level);
+        return true;
     }
 
     public int getMaxTime() {
         return this.maxTime;
     }
 
-    public int getTime() {
-        return isOpen() ? this.imageFile.getTime() : 0;
-    }
-
-    public void setTime(int time) {
-        if (isOpen() && checkTime(time)) {
-            ImageFile imageFile = getImageFile(time, this.imageFile.getLevel());
-            if (imageFile != null) this.imageFile = imageFile;
-        }
-    }
-
-    private boolean checkTime(int time) {
-        if (time >= 0 && time <= this.maxTime) return true;
-        logger.error("Invalid Time: " + time);
-        return false;
-    }
-
     public int getMaxLevel() {
         return this.maxLevel;
-    }
-
-    public int getLevel() {
-        return isOpen() ? this.imageFile.getLevel() : 0;
-    }
-
-    public void setLevel(int level) {
-        if (isOpen() && checkLevel(level)) {
-            ImageFile imageFile = getImageFile(this.imageFile.getTime(), level);
-            if (imageFile != null) this.imageFile = imageFile;
-        }
-    }
-
-    private boolean checkLevel(int level) {
-        if (level >= 0 && level <= this.maxLevel) return true;
-        logger.error("Invalid Level: " + level);
-        return false;
     }
 
     public List<Integer> getPinTimes() {
@@ -126,16 +129,63 @@ public class Workspace {
     }
 
     public boolean isPinned(int time) {
-        if (!isOpen() && !checkTime(time)) return false;
+        if (!isOpen() && isTimeInvalid(time)) return false;
         return this.pinTimes.contains(time);
     }
 
     public void togglePinTime() {
         if (!isOpen()) return;
 
-        int time = this.imageFile.getTime();
+        int time = this.currentImageFile.getTime();
         if (isPinned(time)) this.pinTimes.remove(time);
         else this.pinTimes.add(time);
+    }
+
+    // ========================================
+    // Navigieren Methoden
+    // ========================================
+    public void toFirst(Axis axis) {
+        if (!isOpen()) return;
+        switch (axis) {
+            case TIME -> setCurrentImageFile(0, this.currentImageFile.getLevel());
+            case LEVEL -> setCurrentImageFile(this.currentImageFile.getTime(), 0);
+        }
+    }
+
+    public void toLast(Axis axis) {
+        if (!isOpen()) return;
+        switch (axis) {
+            case TIME -> setCurrentImageFile(this.maxTime, this.currentImageFile.getLevel());
+            case LEVEL -> setCurrentImageFile(this.currentImageFile.getTime(), this.maxLevel);
+        }
+    }
+
+    public void prev(Axis axis) {
+        if (!isOpen()) return;
+        switch (axis) {
+            case TIME -> {
+                int prevTime = Math.max(0, this.currentImageFile.getTime() - 1);
+                setCurrentImageFile(prevTime, this.currentImageFile.getLevel());
+            }
+            case LEVEL -> {
+                int prevLevel = Math.max(0, this.currentImageFile.getLevel() - 1);
+                setCurrentImageFile(this.currentImageFile.getTime(), prevLevel);
+            }
+        }
+    }
+
+    public void next(Axis axis) {
+        if (!isOpen()) return;
+        switch (axis) {
+            case TIME -> {
+                int nextTime = Math.min(this.maxTime, this.currentImageFile.getTime() + 1);
+                setCurrentImageFile(nextTime, this.currentImageFile.getLevel());
+            }
+            case LEVEL -> {
+                int nextLevel = Math.min(this.maxLevel, this.currentImageFile.getLevel() + 1);
+                setCurrentImageFile(this.currentImageFile.getTime(), nextLevel);
+            }
+        }
     }
 
     // ========================================
@@ -149,58 +199,12 @@ public class Workspace {
         }
 
         this.matrix = null;
-        this.imageFile = null;
+        this.currentImageFile = null;
+        this.time = 0;
+        this.level = 0;
         this.maxLevel = 0;
         this.maxTime = 0;
-        this.missingImagesCount = 0;
         this.pinTimes.clear();
-    }
-
-    // ========================================
-    // Navigieren Methoden
-    // ========================================
-    public void toFirst(Axis axis) {
-        if (!isOpen()) return;
-        switch (axis) {
-            case TIME -> this.imageFile = getImageFile(0, this.imageFile.getLevel());
-            case LEVEL -> this.imageFile = getImageFile(this.imageFile.getTime(), 0);
-        }
-    }
-
-    public void toLast(Axis axis) {
-        if (!isOpen()) return;
-        switch (axis) {
-            case TIME -> this.imageFile = getImageFile(this.maxTime, this.imageFile.getLevel());
-            case LEVEL -> this.imageFile = getImageFile(this.imageFile.getTime(), this.maxLevel);
-        }
-    }
-
-    public void prev(Axis axis) {
-        if (!isOpen()) return;
-        switch (axis) {
-            case TIME -> {
-                int prevTime = Math.max(0, this.imageFile.getTime() - 1);
-                this.imageFile = getImageFile(prevTime, this.imageFile.getLevel());
-            }
-            case LEVEL -> {
-                int prevLevel = Math.max(0, this.imageFile.getLevel() - 1);
-                this.imageFile = getImageFile(this.imageFile.getTime(), prevLevel);
-            }
-        }
-    }
-
-    public void next(Axis axis) {
-        if (!isOpen()) return;
-        switch (axis) {
-            case TIME -> {
-                int nextTime = Math.min(this.maxTime, this.imageFile.getTime() + 1);
-                this.imageFile = getImageFile(nextTime, this.imageFile.getLevel());
-            }
-            case LEVEL -> {
-                int nextLevel = Math.min(this.maxLevel, this.imageFile.getLevel() + 1);
-                this.imageFile = getImageFile(this.imageFile.getTime(), nextLevel);
-            }
-        }
     }
 
     // ========================================
@@ -311,7 +315,7 @@ public class Workspace {
 
         // Erstelle die Matrix und setze imageFile auf (time=0, level=0)
         int imagesCount = createMatrix(imageFiles);
-        this.imageFile = getImageFile(0, 0);
+        setCurrentImageFile(0, 0);
 
         progress.onLoadingComplete(imagesCount);
         return true;

@@ -52,7 +52,7 @@ public class AreaImageDirectoryPath extends AreaContainerInteractive<JPanel> {
     // ========================================
     private void updateDirectoryText() {
         if (workspace.isOpen()) {
-            Path imagePath = workspace.getImageFile().getFilePath();
+            Path imagePath = workspace.getCurrentImageFile().getFilePath();
             this.txtFieldDirectory.setText(imagePath.toAbsolutePath().toString());
         } else {
             this.txtFieldDirectory.setText(null);

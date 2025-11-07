@@ -79,7 +79,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_OPEN_RECENT -> ProjectsHelper.openRecents(gui);
             case SHORTCUT_CLOSE_PROJECT -> ProjectsHelper.clearImages(gui);
             case SHORTCUT_SAVE_PROJECT -> {
-                workspace.getConfig().save();
+                workspace.save();
                 gui.registerConfigSaved();
             }
 

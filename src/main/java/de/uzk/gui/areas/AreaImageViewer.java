@@ -258,7 +258,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
         // Bild neu laden
         this.currentImage = null;
         if (workspace.isOpen()) {
-            Path imagePath = workspace.getImageFile().getFilePath();
+            Path imagePath = workspace.getCurrentImageFile().getFilePath();
             BufferedImage originalImage = Icons.loadImage(imagePath, false);
             List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
             if (originalImage != null) {

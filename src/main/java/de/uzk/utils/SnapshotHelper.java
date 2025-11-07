@@ -82,7 +82,7 @@ public class SnapshotHelper {
         String formattedDate = DATE_FORMAT.format(new Date());
         int count = getNextSnapshotIndex(directory, formattedDate);
 
-        String imageFileName = workspace.getImageFile().getFileName();
+        String imageFileName = workspace.getCurrentImageFile().getFileName();
         String snapshotFileName = "%s(%02d)_%s".formatted(formattedDate, count, imageFileName);
         return directory.resolve(snapshotFileName);
     }
