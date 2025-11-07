@@ -6,7 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
-public class ScreenshotCropper extends JPanel {
+public class SnapshotCropper extends JPanel {
     private final BufferedImage image;
 
     private int x;
@@ -14,7 +14,7 @@ public class ScreenshotCropper extends JPanel {
     private int width;
     private int height;
 
-    public ScreenshotCropper(BufferedImage image) {
+    public SnapshotCropper(BufferedImage image) {
         this.image = image;
         this.width = image.getWidth();
         this.height = image.getHeight();

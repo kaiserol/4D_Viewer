@@ -1,6 +1,6 @@
 package de.uzk.utils;
 
-import de.uzk.gui.ScreenshotCropper;
+import de.uzk.gui.SnapshotCropper;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -15,6 +15,7 @@ import java.util.Date;
 
 import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
+import static de.uzk.config.LanguageHandler.getWord;
 import static de.uzk.utils.PathManager.SNAPSHOTS_DIRECTORY;
 import static de.uzk.utils.PathManager.resolveProjectPath;
 
@@ -29,8 +30,8 @@ public class SnapshotHelper {
         PathManager.createIfNotExist(directory);
 
         // Bild zuschneiden
-        ScreenshotCropper cropper = new ScreenshotCropper(image);
-        int option = JOptionPane.showConfirmDialog(null, cropper, "Crop Image", JOptionPane.OK_CANCEL_OPTION);
+        SnapshotCropper cropper = new SnapshotCropper(image);
+        int option = JOptionPane.showConfirmDialog(null, cropper, getWord("dialog.snapshot"), JOptionPane.OK_CANCEL_OPTION);
         if (option != JOptionPane.OK_OPTION) return false;
         image = cropper.getCroppedImage();
 

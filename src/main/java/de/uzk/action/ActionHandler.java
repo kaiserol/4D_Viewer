@@ -71,7 +71,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             // Bearbeiten Shortcuts
             case SHORTCUT_TURN_IMAGE_90_LEFT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_LEFT);
             case SHORTCUT_TURN_IMAGE_90_RIGHT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_RIGHT);
-            case SHORTCUT_TAKE_SCREENSHOT -> gui.handleAction(SHORTCUT_TAKE_SCREENSHOT);
+            case ACTION_TAKE_SNAPSHOT -> gui.handleAction(ACTION_TAKE_SNAPSHOT);
 
             // Sonstige Shortcuts
             case SHORTCUT_TOGGLE_PIN_TIME -> gui.handleAction(SHORTCUT_TOGGLE_PIN_TIME);

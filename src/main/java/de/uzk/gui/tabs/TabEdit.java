@@ -19,7 +19,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     private JSlider zoomSlider;
     private JSlider contrastSlider;
     private JSlider brightnessSlider;
-    private JLabel screenshots;
+    private JLabel snapshots;
     private JCheckBox mirrorXBox;
     private JCheckBox mirrorYBox;
 
@@ -131,25 +131,25 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         gbc.setSizeAndWeight(1, 1, 0, 1);
         gbc.anchor = GridBagConstraints.SOUTHWEST;
 
-        // screenshotNumberLabel
-        JLabel screenshotNumberLabel = new JLabel(getWord("items.edit.screenshotNumber") + ":");
-        this.container.add(screenshotNumberLabel, gbc);
+        // snapshotNumberLabel
+        JLabel snapshotNumberLabel = new JLabel(getWord("items.edit.snapshotNumber") + ":");
+        this.container.add(snapshotNumberLabel, gbc);
 
         // gbc
         gbc.setPosAndInsets(1, 6, 0, 0, 10, 15);
 
-        // screenshotLabel
-        this.screenshots = new JLabel();
-        this.container.add(this.screenshots, gbc);
+        // snapshotLabel
+        this.snapshots = new JLabel();
+        this.container.add(this.snapshots, gbc);
 
         // gbc
         gbc.setPosAndInsets(0, 7, 0, 0, 0, 0);
         gbc.setSizeAndWeight(3, 1, 1, 0);
 
-        // screenshotButton
-        JButton screenshotButton = new JButton(getWord("items.edit.takeScreenshot"));
-        screenshotButton.addActionListener(e -> gui.getActionHandler().executeAction(ActionType.SHORTCUT_TAKE_SCREENSHOT));
-        this.container.add(screenshotButton, gbc);
+        // snapshotButton
+        JButton snapshotButton = new JButton(getWord("items.edit.takeSnapshot"));
+        snapshotButton.addActionListener(e -> gui.getActionHandler().executeAction(ActionType.ACTION_TAKE_SNAPSHOT));
+        this.container.add(snapshotButton, gbc);
     }
 
     private void initCheckBox(JCheckBox checkBox, boolean isMirrorXBox) {
@@ -191,8 +191,8 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
             degreeSpinner.setValue(NumberUtils.turn90Left(workspace.getConfig().getRotation()));
         } else if (actionType == ActionType.SHORTCUT_TURN_IMAGE_90_RIGHT) {
             degreeSpinner.setValue(NumberUtils.turn90Right(workspace.getConfig().getRotation()));
-        } else if (actionType == ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER) {
-            updateScreenshotCounter();
+        } else if (actionType == ActionType.ACTION_UPDATE_SNAPSHOT_COUNTER) {
+            updateSnapshotCounter();
         }
     }
 
@@ -200,7 +200,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     public void toggleOn() {
         GuiUtils.setEnabled(this.container, true);
         updateValues();
-        updateScreenshotCounter();
+        updateSnapshotCounter();
     }
 
     private void updateValues() {
@@ -215,15 +215,15 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     @Override
     public void toggleOff() {
         GuiUtils.setEnabled(this.container, false);
-        updateScreenshotCounter();
+        updateSnapshotCounter();
     }
 
     @Override
     public void appGainedFocus() {
-        updateScreenshotCounter();
+        updateSnapshotCounter();
     }
 
-    private void updateScreenshotCounter() {
-        this.screenshots.setText(String.valueOf(SnapshotHelper.getSnapshotsCount()));
+    private void updateSnapshotCounter() {
+        this.snapshots.setText(String.valueOf(SnapshotHelper.getSnapshotsCount()));
     }
 }

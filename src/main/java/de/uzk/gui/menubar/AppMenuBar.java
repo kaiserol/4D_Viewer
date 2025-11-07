@@ -57,7 +57,7 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageRight"), ICON_ARROW_RIGHT_TURN, actionHandler, SHORTCUT_TURN_IMAGE_90_RIGHT));
         menuEdit.addSeparator();
 
-        menuEdit.add(new CustomMenuItem(getWord("items.edit.takeScreenshot"), actionHandler, SHORTCUT_TAKE_SCREENSHOT));
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.takeSnapshot"), actionHandler, ACTION_TAKE_SNAPSHOT));
         return menuEdit;
     }
 

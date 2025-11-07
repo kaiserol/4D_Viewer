@@ -199,9 +199,9 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
     public void handleAction(ActionType actionType) {
         switch (actionType) {
             case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> updateCurrentImage();
-            case SHORTCUT_TAKE_SCREENSHOT -> {
+            case ACTION_TAKE_SNAPSHOT -> {
                 if (SnapshotHelper.saveSnapshot(this.currentImage)) {
-                    gui.handleAction(ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER);
+                    gui.handleAction(ActionType.ACTION_UPDATE_SNAPSHOT_COUNTER);
                 }
             }
         }

@@ -9,10 +9,10 @@ public enum ActionType {
     // Bearbeiten Shortcuts
     SHORTCUT_TURN_IMAGE_90_LEFT(new Shortcut(KeyEvent.VK_LEFT, Shortcut.ALT_DOWN | Shortcut.SHIFT_DOWN)),
     SHORTCUT_TURN_IMAGE_90_RIGHT(new Shortcut(KeyEvent.VK_RIGHT, Shortcut.ALT_DOWN | Shortcut.SHIFT_DOWN)),
-    SHORTCUT_TAKE_SCREENSHOT(new Shortcut(KeyEvent.VK_S, Shortcut.CTRL_DOWN)),
+    ACTION_TAKE_SNAPSHOT(new Shortcut(KeyEvent.VK_S, Shortcut.CTRL_DOWN)),
 
     ACTION_EDIT_IMAGE,
-    ACTION_UPDATE_SCREENSHOT_COUNTER,
+    ACTION_UPDATE_SNAPSHOT_COUNTER,
 
     // Navigieren Shortcuts
     SHORTCUT_GO_TO_FIRST_IMAGE(KeyEventType.PRESSED, new Shortcut(KeyEvent.VK_LEFT, Shortcut.CTRL_DOWN | Shortcut.SHIFT_DOWN)),
