@@ -224,6 +224,7 @@ public class Config {
         PathManager.save(filePath, this);
     }
 
+
     public static Config load() {
         Path filePath = resolveProjectPath(CONFIG_FILE_NAME);
 

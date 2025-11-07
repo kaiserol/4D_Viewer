@@ -39,7 +39,7 @@ public class ProjectsHelper {
         if (option == JOptionPane.OK_OPTION) {
             Path selectedPath = list.getSelectedValue();
             if (selectedPath == null) return;
-            gui.openImagesDirectory(selectedPath, workspace.getConfig().getImageFileType(), false);
+            gui.openImagesDirectory(selectedPath, null, false);
 
         }
     }

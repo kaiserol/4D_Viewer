@@ -91,7 +91,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         updateTheme();
 
         // Bilder laden
-        if (!openImagesDirectory(history.getLastIfExists(), workspace.getConfig().getImageFileType(), true)) {
+        if (!openImagesDirectory(history.getLastIfExists(), null, true)) {
             toggleOff();
         }
 
@@ -222,9 +222,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         if (actionType == ActionType.SHORTCUT_TOGGLE_PIN_TIME) workspace.togglePinTime();
 
         switch(actionType) {
-            case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> {
+            case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER ->
                 this.registerUnsavedChange();
-            }
+
         }
 
         // Observer ausführen

@@ -51,7 +51,7 @@ public class DialogImagesLoad implements LoadingImageListener {
         if (imagesDirectory == null || !Files.exists(imagesDirectory)) return LoadingResult.DIRECTORY_NOT_EXISTING;
         this.dialog.getContentPane().removeAll();
         this.dialog.setLayout(new BorderLayout());
-        this.dialog.setTitle(getWord("dialog.imageLoading") + " (" + imageFileType.getDescription() + ")");
+        this.dialog.setTitle(getWord("dialog.imageLoading"));
 
         // Inhalt hinzufügen
         JPanel panel = new JPanel(new BorderLayout(0, 20));

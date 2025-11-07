@@ -48,10 +48,14 @@ public class Workspace {
         return this.markers;
     }
 
+
     private void load(ImageFileType imageFileType) {
+
         this.config = Config.load();
-        this.config.setImageFileType(imageFileType);
         this.markers = Markers.load();
+        if(imageFileType != null) {
+            this.config.setImageFileType(imageFileType);
+        }
     }
 
     public void save() {
