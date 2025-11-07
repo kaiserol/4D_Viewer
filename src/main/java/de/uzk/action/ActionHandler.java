@@ -8,6 +8,7 @@ import de.uzk.gui.dialogs.DialogLogViewer;
 import de.uzk.gui.dialogs.DialogSettings;
 import de.uzk.gui.dialogs.DialogVersions;
 import de.uzk.image.Axis;
+import de.uzk.utils.ProjectsHelper;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -98,13 +99,15 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_GO_TO_LAST_LEVEL -> scrollToBoundary(Axis.LEVEL, false);
 
             // Projekte Shortcuts
-            case SHORTCUT_OPEN_RECENT -> gui.handleAction(SHORTCUT_OPEN_RECENT);
-            case SHORTCUT_OPEN_FOLDER -> gui.handleAction(SHORTCUT_OPEN_FOLDER);
+            case SHORTCUT_OPEN_RECENT -> ProjectsHelper.openRecents(gui);
+            case SHORTCUT_OPEN_FOLDER ->
+                ProjectsHelper.openFileChooser(gui);
+
             case SHORTCUT_SAVE_CONFIG -> {
                 workspace.getConfig().save();
                 gui.registerConfigSaved();
             }
-            case SHORTCUT_CLOSE_PROJECT -> gui.handleAction(SHORTCUT_CLOSE_PROJECT);
+            case SHORTCUT_CLOSE_PROJECT -> ProjectsHelper.clearImages(gui);
         }
     }
 

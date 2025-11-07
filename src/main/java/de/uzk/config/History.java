@@ -7,7 +7,8 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
-import static de.uzk.utils.PathManager.*;
+import static de.uzk.utils.PathManager.HISTORY_FILE_NAME;
+import static de.uzk.utils.PathManager.resolveConfigPath;
 
 public class History {
     // Historie
@@ -57,11 +58,8 @@ public class History {
         PathManager.save(filePath, lines);
     }
 
-    public List<Path> getLast(int n) {
-        n = Math.min(n, this.history.size());
-        int size = this.history.size();
-
-        return this.history.subList(size-n, size );
+    public List<Path> getAll() {
+        return this.history;
     }
 
     public static History load() {
