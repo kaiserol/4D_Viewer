@@ -73,11 +73,11 @@ public class Workspace {
         return this.imageFile;
     }
 
-    private ImageFile getImageFile(int time, int level) {
+    ImageFile getImageFile(int time, int level) {
         return this.matrix[time][level];
     }
 
-    private void setImageFile(int time, int level, ImageFile imageFile) {
+     void setImageFile(int time, int level, ImageFile imageFile) {
         this.matrix[time][level] = imageFile;
     }
 
@@ -121,10 +121,6 @@ public class Workspace {
         if (level >= 0 && level <= this.maxLevel) return true;
         logger.error("Invalid Level: " + level);
         return false;
-    }
-
-    public int getMissingImages() {
-        return this.missingImagesCount;
     }
 
     public List<Integer> getPinTimes() {
@@ -331,142 +327,20 @@ public class Workspace {
         int lSize = this.maxLevel + 1;
         this.matrix = new ImageFile[tSize][lSize];
 
-        StringBuilder report = new StringBuilder();
         int count = 0;
-        int duplicated = 0;
 
         // Bilddateien in Matrix einfügen
         for (ImageFile imageFile : imageFiles) {
             int time = imageFile.getTime();
             int level = imageFile.getLevel();
-
-            // Prüfe, ob das ImageFile auf der aktuellen Position bereits belegt ist
-            if (getImageFile(time, level) == null) {
-                setImageFile(time, level, imageFile);
-                count++;
-            } else {
-                appendImageFileToReport(imageFile, report);
-                duplicated++;
-            }
+            setImageFile(time, level, imageFile);
+            count++;
         }
 
-        logReport(duplicated, "duplicated", report);
 
-        int expectedImagesCount = tSize * lSize;
-        if (count < expectedImagesCount) {
-            checkMissingImageFiles();
-        }
         return count;
     }
 
-    // ========================================
-    // Report fehlender ImageFiles
-    // ========================================
-    public void checkMissingImageFiles() {
-        if (!isOpen()) return;
-
-        // Finde eine existierende ImageFile als Referenz
-        ImageFile imageFileReference = findExistingImageFile();
-        if (imageFileReference == null) return;
-
-        StringBuilder report = new StringBuilder();
-        int missing = 0;
-
-        // Durchlaufe die ganze Matrix
-        for (int time = 0; time <= this.maxTime; time++) {
-            for (int level = 0; level <= this.maxLevel; level++) {
-                ImageFile imageFile = getImageFile(time, level);
-                if (imageFile == null || !imageFile.exists()) {
-                    if (imageFile == null) {
-                        imageFile = new ImageFile(getImageFilePath(time, level, imageFileReference), time, level);
-                        setImageFile(time, level, imageFile);
-                    }
-                    appendImageFileToReport(imageFile, report);
-                    missing++;
-                }
-            }
-        }
-
-        if (missing > this.missingImagesCount) {
-            logReport(missing, "missing", report);
-        } else if (missing < this.missingImagesCount) {
-            // Es wurden einige Bilder wieder hergestellt
-            int imageFiles = (this.maxTime + 1) * (this.maxLevel + 1) - missing;
-            logger.info("Some missing images were restored." + StringUtils.NEXT_LINE + "Loaded images: " + imageFiles);
-        }
-        this.missingImagesCount = missing;
-    }
-
-    // ========================================
-    // Report fehlender ImageFiles als String
-    // ========================================
-    public String getMissingImagesCount() {
-        if (!isOpen()) return "";
-
-        StringBuilder report = new StringBuilder();
-        int missing = 0;
-
-        // Durchlaufe die ganze Matrix
-        for (int time = 0; time <= this.maxTime; time++) {
-            List<Integer> missingLevels = new ArrayList<>();
-
-            for (int level = 0; level <= this.maxLevel; level++) {
-                ImageFile imageFile = getImageFile(time, level);
-                if (!imageFile.exists()) {
-                    missingLevels.add(level);
-                    missing++;
-                }
-            }
-
-            if (!missingLevels.isEmpty()) {
-                report.append(StringUtils.wrapBold("--- Time: " + time + " ---")).append(StringUtils.NEXT_LINE);
-                report.append("Missing Levels: ").append(missingLevels).append(StringUtils.NEXT_LINE);
-                report.append("Expected Images:").append(StringUtils.NEXT_LINE);
-                for (int level : missingLevels) appendImageFileToReport(getImageFile(time, level), report);
-                report.append(StringUtils.NEXT_LINE);
-            }
-        }
-
-        if (missing == 0) {
-            report.append("No missing images.").append(StringUtils.NEXT_LINE);
-            return report.toString();
-        } else {
-            String headerText = formatReportHeader(missing, "missing");
-            String formattedText = StringUtils.applyColor(StringUtils.wrapBold(headerText), COLOR_RED);
-            return formattedText + StringUtils.NEXT_LINE + report;
-        }
-    }
-
-    // ========================================
-    // Report Methoden
-    // ========================================
-    private void appendImageFileToReport(ImageFile imageFile, StringBuilder reportBuilder) {
-        reportBuilder.append(formatImageFileRow(imageFile));
-    }
-
-    private String formatImageFileRow(ImageFile imageFile) {
-        String fileName = imageFile.getFileName();
-        int time = imageFile.getTime();
-        int level = imageFile.getLevel();
-
-        String text = String.format("- Filename: '%s' (time=%s, level=%s)", fileName, time, level);
-        return text + StringUtils.NEXT_LINE;
-    }
-
-    private String formatReportHeader(int count, String type) {
-        String base = count + " " + (count == 1 ? "image is" : "images are");
-        return base + " " + type + ":" + StringUtils.NEXT_LINE;
-    }
-
-    private void logReport(int count, String type, StringBuilder report) {
-        if (count > 0) {
-            logger.warning(formatReportHeader(count, type) + report);
-        }
-    }
-
-    // ========================================
-    // Hilfsmethoden
-    // ========================================
     public String getImageFileNamePattern() {
         return "(?i)" +                               // Case-insensitive Matching
             this.config.getTimeSep() + "\\d+" +       // Zeitkomponente (mind. 1 Ziffer)
@@ -474,43 +348,20 @@ public class Workspace {
             "\\." + StringUtils.formatArray(this.config.getImageFileType().getExtensions(), "|", '(', ')') + "$";
     }
 
-    private Path getImageFilePath(int time, int level, ImageFile imageFileReference) {
-        String fileName = imageFileReference.getFileName();
-        Path parentDirectory = imageFileReference.getFilePath().getParent();
 
-        int timeStrLength = getTimeStr(fileName).length();
-        int levelStrLength = getLevelStr(fileName).length();
-        String extension = getExtension(fileName);
-
-        // Dynamische Bestandteile erzeugen
-        String timeStr = (this.config.getTimeSep() + "%0" + timeStrLength + "d").formatted(time);
-        String levelStr = (this.config.getLevelSep() + "%0" + levelStrLength + "d").formatted(level);
-        return parentDirectory.resolve(timeStr + levelStr + "." + extension);
-    }
-
-    private ImageFile findExistingImageFile() {
-        for (int time = 0; time <= this.maxTime; time++) {
-            for (int level = 0; level <= this.maxLevel; level++) {
-                ImageFile imageFile = getImageFile(time, level);
-                if (imageFile != null && imageFile.exists()) return imageFile;
-            }
-        }
-        return null;
-    }
-
-    private String getTimeStr(String fileName) {
+    String getTimeStr(String fileName) {
         int startIndex = fileName.indexOf(this.config.getTimeSep()) + this.config.getTimeSep().length();
         int endIndex = fileName.lastIndexOf(this.config.getLevelSep());
         return fileName.substring(startIndex, endIndex);
     }
 
-    private String getLevelStr(String fileName) {
+    String getLevelStr(String fileName) {
         int startIndex = fileName.indexOf(this.config.getLevelSep()) + this.config.getLevelSep().length();
         int dotIndex = fileName.lastIndexOf('.');
         return fileName.substring(startIndex, dotIndex);
     }
 
-    private String getExtension(String fileName) {
+    String getExtension(String fileName) {
         int dotIndex = fileName.lastIndexOf('.');
         return fileName.substring(dotIndex + 1);
     }

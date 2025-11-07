@@ -12,6 +12,7 @@ import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.image.Axis;
 import de.uzk.image.ImageFileType;
 import de.uzk.image.LoadingResult;
+import de.uzk.image.MissingImagesReport;
 
 import javax.swing.*;
 import java.awt.*;
@@ -265,7 +266,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     @Override
     public void appGainedFocus() {
         // Prüfe, ob Bilder noch vorhanden sind
-        workspace.checkMissingImageFiles();
+        new MissingImagesReport(workspace).log();
 
         // Observer ausführen
         for (AppFocusListener observer : appFocusListeners) observer.appGainedFocus();
