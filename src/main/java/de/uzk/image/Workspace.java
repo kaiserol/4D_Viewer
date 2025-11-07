@@ -12,8 +12,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
-import static de.uzk.Main.history;
-import static de.uzk.Main.logger;
+import static de.uzk.Main.*;
 
 // Der Workspace entspricht einem Projekt
 public class Workspace {
@@ -21,8 +20,13 @@ public class Workspace {
     private Path imagesDirectory;
     private Config config;
     private Markers markers;
+
+    // ImageFiles
     private ImageFile[][] matrix;
     private ImageFile currentImageFile;
+    private final MissingImagesReport missingImagesReport;
+
+    // Zeit, Level
     private int time;
     private int level;
     private int maxTime;
@@ -30,8 +34,9 @@ public class Workspace {
     private final List<Integer> pinTimes;
 
     public Workspace() {
+        this.missingImagesReport = new MissingImagesReport();
         this.pinTimes = new ArrayList<>();
-        clear(true);
+        reset();
     }
 
     // ========================================
@@ -68,22 +73,22 @@ public class Workspace {
         return this.matrix != null;
     }
 
-    public ImageFile getCurrentImageFile() {
-        return this.currentImageFile;
-    }
-
     ImageFile getImageFile(int time, int level) {
         return this.matrix[time][level];
+    }
+
+    void setImageFile(int time, int level, ImageFile imageFile) {
+        this.matrix[time][level] = imageFile;
+    }
+
+    public ImageFile getCurrentImageFile() {
+        return this.currentImageFile;
     }
 
     private void setCurrentImageFile(int time, int level) {
         this.currentImageFile = getImageFile(time, level);
         this.time = currentImageFile.getTime();
         this.level = currentImageFile.getLevel();
-    }
-
-    void setImageFile(int time, int level, ImageFile imageFile) {
-        this.matrix[time][level] = imageFile;
     }
 
     public int getTime() {
@@ -191,19 +196,26 @@ public class Workspace {
     // ========================================
     // Zurücksetzen
     // ========================================
-    public void clear(boolean removeImageFilesDirectory) {
-        if (removeImageFilesDirectory) {
-            this.imagesDirectory = null;
-            this.config = Config.getDefault();
-            this.markers = new Markers();
-        }
+    public void reset() {
+        this.imagesDirectory = null;
+        this.config = Config.getDefault();
+        this.markers = new Markers();
+        clearTemp();
+    }
 
+    private void clearTemp() {
+        // ImageFiles
         this.matrix = null;
         this.currentImageFile = null;
+
+        // Zeit, Level
         this.time = 0;
         this.level = 0;
         this.maxLevel = 0;
         this.maxTime = 0;
+
+        // Listen leeren
+        this.missingImagesReport.clear();
         this.pinTimes.clear();
     }
 
@@ -309,7 +321,7 @@ public class Workspace {
         }
 
         // Matrix vorbereiten
-        clear(false);
+        clearTemp();
         this.maxTime = tempMaxTime;
         this.maxLevel = tempMaxLevel;
 
@@ -329,19 +341,74 @@ public class Workspace {
         int lSize = this.maxLevel + 1;
         this.matrix = new ImageFile[tSize][lSize];
 
-        int count = 0;
+        // Neuen Report aufbauen
+        StringBuilder reportBuilder = new StringBuilder();
+        int duplicatedCount = 0;
+        int imagesCount = 0;
 
-        // Bilddateien in Matrix einfügen
+        // ImageFiles in Matrix einfügen
         for (ImageFile imageFile : imageFiles) {
             int time = imageFile.getTime();
             int level = imageFile.getLevel();
-            setImageFile(time, level, imageFile);
-            count++;
+
+            // Prüfe, ob das ImageFile auf der aktuellen Position bereits belegt ist
+            if (getImageFile(time, level) == null) {
+                setImageFile(time, level, imageFile);
+                imagesCount++;
+            } else {
+                reportBuilder.append(MissingImagesReport.createImageFileRow(imageFile));
+                duplicatedCount++;
+            }
         }
 
-        return count;
+        // Report ausgeben
+        MissingImagesReport.logReport(duplicatedCount, "duplicated", reportBuilder);
+
+        int expectedImagesCount = tSize * lSize;
+        if (imagesCount < expectedImagesCount) {
+            ImageFile referenceImageFile = imageFiles.stream().findFirst().orElse(null);
+            addDummyImageFiles(referenceImageFile);
+            this.missingImagesReport.logReport(true);
+        }
+        return imagesCount;
     }
 
+    private void addDummyImageFiles(ImageFile referenceImageFile) {
+        if (referenceImageFile == null) return;
+
+        // Durchlaufe die ganze Matrix
+        for (int time = 0; time <= workspace.maxTime; time++) {
+            for (int level = 0; level <= workspace.maxLevel; level++) {
+                ImageFile imageFile = getImageFile(time, level);
+
+                // Füge Dummy ImageFile hinzu, falls die Matrix an dieser Position null zurückgibt
+                if (imageFile == null) {
+                    Path dummyImagePath = workspace.getDummyImageFilePath(time, level, referenceImageFile);
+                    ImageFile dummyImageFile = new ImageFile(dummyImagePath, time, level);
+                    workspace.setImageFile(time, level, dummyImageFile);
+                }
+            }
+        }
+    }
+
+    // ========================================
+    // Reporting
+    // ========================================
+    public int getMissingImagesCount() {
+        return this.missingImagesReport.getMissingImagesCount();
+    }
+
+    public void logMissingImages() {
+        this.missingImagesReport.logReport(false);
+    }
+
+    public String getMissingImagesReport() {
+        return this.missingImagesReport.getHtmlReport();
+    }
+
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
     public String getImageFileNamePattern() {
         return "(?i)" +                               // Case-insensitive Matching
             this.config.getTimeSep() + "\\d+" +       // Zeitkomponente (mind. 1 Ziffer)
@@ -349,20 +416,33 @@ public class Workspace {
             "\\." + StringUtils.formatArray(this.config.getImageFileType().getExtensions(), "|", '(', ')') + "$";
     }
 
+    private Path getDummyImageFilePath(int time, int level, ImageFile referenceImageFile) {
+        String fileName = referenceImageFile.getFileName();
+        Path parentDirectory = referenceImageFile.getFilePath().getParent();
 
-    String getTimeStr(String fileName) {
+        int timeStrLength = getTimeStr(fileName).length();
+        int levelStrLength = getLevelStr(fileName).length();
+        String extension = getExtension(fileName);
+
+        // Dynamische Bestandteile erzeugen
+        String timeStr = (this.config.getTimeSep() + "%0" + timeStrLength + "d").formatted(time);
+        String levelStr = (this.config.getLevelSep() + "%0" + levelStrLength + "d").formatted(level);
+        return parentDirectory.resolve(timeStr + levelStr + "." + extension);
+    }
+
+    private String getTimeStr(String fileName) {
         int startIndex = fileName.indexOf(this.config.getTimeSep()) + this.config.getTimeSep().length();
         int endIndex = fileName.lastIndexOf(this.config.getLevelSep());
         return fileName.substring(startIndex, endIndex);
     }
 
-    String getLevelStr(String fileName) {
+    private String getLevelStr(String fileName) {
         int startIndex = fileName.indexOf(this.config.getLevelSep()) + this.config.getLevelSep().length();
         int dotIndex = fileName.lastIndexOf('.');
         return fileName.substring(startIndex, dotIndex);
     }
 
-    String getExtension(String fileName) {
+    private String getExtension(String fileName) {
         int dotIndex = fileName.lastIndexOf('.');
         return fileName.substring(dotIndex + 1);
     }

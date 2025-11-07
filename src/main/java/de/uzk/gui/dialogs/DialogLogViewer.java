@@ -1,8 +1,6 @@
 package de.uzk.gui.dialogs;
 
-import de.uzk.gui.GuiUtils;
 import de.uzk.gui.SelectableText;
-import de.uzk.image.MissingImagesReport;
 import de.uzk.logger.LogEntry;
 import de.uzk.utils.StringUtils;
 
@@ -33,19 +31,18 @@ public class DialogLogViewer {
 
         // ESC schließt Dialog
         this.dialog.getRootPane().registerKeyboardAction(e -> this.dialog.dispose(),
-                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
         );
     }
 
     public void show() {
         this.dialog.getContentPane().removeAll();
         this.dialog.setLayout(new BorderLayout());
-        MissingImagesReport report = new MissingImagesReport(workspace);
-        this.tabs = getTabs(report);
+
         // Tabs hinzufügen
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        panel.add(this.tabs, BorderLayout.CENTER);
+        panel.add(this.tabs = getTabs(), BorderLayout.CENTER);
         this.dialog.add(panel);
 
         // Dialog anzeigen
@@ -76,12 +73,12 @@ public class DialogLogViewer {
 
         // Neue Abmessungen berechnen
         int newWidth = Math.min(
-                Math.max(dialogWidth + scrollBarWidth, MIN_WIDTH),
-                Math.min(DEFAULT_MAX_WIDTH, screenWidth - 100)
+            Math.max(dialogWidth + scrollBarWidth, MIN_WIDTH),
+            Math.min(DEFAULT_MAX_WIDTH, screenWidth - 100)
         );
         int newHeight = Math.min(
-                Math.max(dialogHeight, MIN_HEIGHT),
-                Math.min(DEFAULT_MAX_HEIGHT, screenHeight - 100)
+            Math.max(dialogHeight, MIN_HEIGHT),
+            Math.min(DEFAULT_MAX_HEIGHT, screenHeight - 100)
         );
 
         // Neue Abmessungen setzen
@@ -89,13 +86,13 @@ public class DialogLogViewer {
         this.dialog.setSize(new Dimension(newWidth, newHeight));
     }
 
-    private JTabbedPane getTabs(MissingImagesReport report) {
+    private JTabbedPane getTabs() {
         JTabbedPane tabs = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 
         // Tabs hinzufügen
         tabs.add(getWord("dialog.logViewer.logs"), getLogsPanel());
-        if (report.getMissingImagesCount() > 0) {
-            tabs.add(getWord("dialog.logViewer.missingImages"), getMissingImagesPanel(report));
+        if (workspace.getMissingImagesCount() > 0) {
+            tabs.add(getWord("dialog.logViewer.missingImages"), getMissingImagesPanel());
         }
         return tabs;
     }
@@ -108,8 +105,8 @@ public class DialogLogViewer {
         return getScrollableText(StringUtils.wrapHtml(logContent.toString(), "monospaced"));
     }
 
-    private JComponent getMissingImagesPanel(MissingImagesReport report) {
-        String missingImages = StringUtils.wrapPre(report.getFormattedReport());
+    private JComponent getMissingImagesPanel() {
+        String missingImages = StringUtils.wrapPre(workspace.getMissingImagesReport());
         return getScrollableText(StringUtils.wrapHtml(missingImages, "monospaced"));
     }
 
@@ -122,8 +119,6 @@ public class DialogLogViewer {
 
         // Text in ScrollPane packen
         SelectableText text = new SelectableText(htmlContent);
-        text.setOpaque(true);
-        text.setBackground(GuiUtils.getBackgroundColor());
         text.setMargin(new Insets(5, 5, 5, 5));
 
         JScrollPane scrollPane = new JScrollPane(text);

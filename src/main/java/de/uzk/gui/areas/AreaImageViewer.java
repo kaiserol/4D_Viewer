@@ -15,7 +15,6 @@ import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.List;
 
-import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
@@ -262,10 +261,11 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
             BufferedImage originalImage = Icons.loadImage(imagePath, false);
             List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
             if (originalImage != null) {
-                long t = System.nanoTime();
+//                long t = System.nanoTime();
                 this.currentImage = GuiUtils.getEditedImage(originalImage, true, markers);
-                long dt = System.nanoTime() - t;
-                logger.debug(String.format("Edited image in %,d ns", dt));
+//                long dt = System.nanoTime() - t;
+                // TODO: debug auskommentieren wenn du es wieder brauchst
+//                logger.debug(String.format("Edited image in %,d ns", dt));
             }
         }
 

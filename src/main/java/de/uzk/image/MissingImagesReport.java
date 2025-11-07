@@ -1,131 +1,169 @@
 package de.uzk.image;
 
-import de.uzk.config.Config;
+import de.uzk.gui.GuiUtils;
 import de.uzk.utils.StringUtils;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static de.uzk.Main.logger;
-import static de.uzk.gui.GuiUtils.COLOR_RED;
+import static de.uzk.Main.workspace;
 
 public class MissingImagesReport {
-    private final Map<Integer, List<ImageFile>> missingByTime;
-    private final Workspace workspace;
-    private final Config config;
-    private final ImageFile referenceImageFile;
+    private final Map<Integer, List<Integer>> missingByTime;
 
-    public MissingImagesReport(Workspace workspace) {
+    public MissingImagesReport() {
         this.missingByTime = new HashMap<>();
-        this.workspace = workspace;
-        this.config = workspace.getConfig();
-        this.referenceImageFile = findExistingImageFile();
-        fillReport();
     }
 
     public int getMissingImagesCount() {
         return this.missingByTime.values().stream().mapToInt(List::size).sum();
     }
 
-    public String getFormattedReport() {
+    public void clear() {
+        this.missingByTime.clear();
+    }
 
-        StringBuilder report = new StringBuilder();
-        int missing = 0;
+    public void logReport(boolean onLoading) {
+        if (!workspace.isOpen()) return;
 
-        // Durchlaufe die ganze Matrix
-        for (List<ImageFile> missingList : missingByTime.values()) {
-            if (missingList.isEmpty()) continue;
-            int time = missingList.get(0).getTime();
-            report.append(StringUtils.wrapBold("--- Time: " + time + " ---")).append(StringUtils.NEXT_LINE);
-            report.append("Missing Levels: ").append(missingList.size()).append(StringUtils.NEXT_LINE);
-            report.append("Expected Images:").append(StringUtils.NEXT_LINE);
-            for (ImageFile file : missingList) {
-                report.append(formatImageFileRow(file)).append(" ");
+        // Neuen Report aufbauen
+        StringBuilder reportBuilder = new StringBuilder();
+        Map<Integer, List<Integer>> newMissingByTime = new HashMap<>();
+        List<ImageFile> newMissingList = new ArrayList<>();
+
+        int missingCount = 0;
+
+        // Durchlaufe Matrix und finde fehlende Bilder
+        for (int time = 0; time <= workspace.getMaxTime(); time++) {
+            List<Integer> levelList = new ArrayList<>();
+            newMissingByTime.put(time, levelList);
+
+            for (int level = 0; level <= workspace.getMaxLevel(); level++) {
+                ImageFile imageFile = workspace.getImageFile(time, level);
+                if (!imageFile.exists()) {
+                    reportBuilder.append(createImageFileRow(imageFile));
+                    levelList.add(level);
+                    newMissingList.add(imageFile);
+                    missingCount++;
+                }
             }
-            report.append(StringUtils.NEXT_LINE);
+        }
 
+        // Alte Liste aus Map ableiten
+        List<ImageFile> oldMissingList = getAllMissingImagesFromMap(this.missingByTime);
 
+        // Prüfen, ob sich etwas geändert hat
+        if (hasDifferences(oldMissingList, newMissingList)) {
+            if (onLoading) logReport(missingCount, "missing", reportBuilder);
+            else logListDifferences(oldMissingList, newMissingList);
+
+            // Map aktualisieren
+            this.missingByTime.clear();
+            this.missingByTime.putAll(newMissingByTime);
+        }
+    }
+
+    // ========================================
+    // Vergleichslogik
+    // ========================================
+    private List<ImageFile> getAllMissingImagesFromMap(Map<Integer, List<Integer>> map) {
+        List<ImageFile> list = new ArrayList<>();
+        for (Map.Entry<Integer, List<Integer>> entry : map.entrySet()) {
+            int time = entry.getKey();
+            for (int level : entry.getValue()) {
+                list.add(workspace.getImageFile(time, level));
+            }
+        }
+        return list;
+    }
+
+    private boolean hasDifferences(List<ImageFile> oldList, List<ImageFile> newList) {
+        return !Objects.equals(oldList, newList);
+    }
+
+    private void logListDifferences(List<ImageFile> oldList, List<ImageFile> newList) {
+        List<ImageFile> newlyMissingImages = new ArrayList<>(newList);
+        List<ImageFile> restoredImages = new ArrayList<>(oldList);
+        newlyMissingImages.removeAll(oldList);
+        restoredImages.removeAll(newList);
+
+        // Report ausgeben
+        if (!restoredImages.isEmpty()) {
+            StringBuilder reportBuilder = new StringBuilder();
+            restoredImages.forEach(imageFile -> reportBuilder.append(createImageFileRow(imageFile)));
+
+            // Report ausgeben
+            String headerText = createReportHeader(restoredImages.size(), "restored");
+            logger.info(headerText + reportBuilder);
+        }
+
+        // Report ausgeben
+        if (!newlyMissingImages.isEmpty()) {
+            StringBuilder reportBuilder = new StringBuilder();
+            newlyMissingImages.forEach(imageFile -> reportBuilder.append(createImageFileRow(imageFile)));
+
+            // Report ausgeben
+            String headerText = createReportHeader(newlyMissingImages.size(), "newly missing");
+            logger.warning(headerText + reportBuilder);
+        }
+    }
+
+    // ========================================
+    // Reporting
+    // ========================================
+    public String getHtmlReport() {
+        // Report erstellen
+        StringBuilder reportBuilder = new StringBuilder();
+        int missingCount = 0;
+
+        // Durchlaufe Matrix und finde fehlende Bilder
+        for (int time = 0; time < workspace.getMaxTime(); time++) {
+            List<Integer> missingLevels = missingByTime.get(time);
+            if (missingLevels.isEmpty()) continue;
+
+            missingCount += missingLevels.size();
+            reportBuilder.append(StringUtils.wrapBold("--- Time: " + time + " ---")).append(StringUtils.NEXT_LINE);
+            reportBuilder.append("Missing Levels: ").append(missingLevels).append(StringUtils.NEXT_LINE);
+            reportBuilder.append("Expected Images:").append(StringUtils.NEXT_LINE);
+            for (int level : missingLevels) reportBuilder.append(createImageFileRow(time, level));
+            reportBuilder.append(StringUtils.NEXT_LINE);
         }
 
         if (this.missingByTime.isEmpty()) {
-            report.append("No missing images.").append(StringUtils.NEXT_LINE);
-            return report.toString();
+            reportBuilder.append("No missing images.").append(StringUtils.NEXT_LINE);
+            return reportBuilder.toString();
         } else {
-            String headerText = createReportHeader(missing);
-            String formattedText = StringUtils.applyColor(StringUtils.wrapBold(headerText), COLOR_RED);
-            return formattedText + StringUtils.NEXT_LINE + report;
+            String headerText = createReportHeader(missingCount, "missing");
+            String formattedText = StringUtils.applyColor(StringUtils.wrapBold(headerText), GuiUtils.COLOR_RED);
+            return formattedText + StringUtils.NEXT_LINE + reportBuilder;
         }
     }
 
-    public void log() {
-        StringBuilder report = new StringBuilder();
-        int count = 0;
-        for (List<ImageFile> missingList : missingByTime.values()) {
-            if (missingList.isEmpty()) continue;
-            for (ImageFile missing : missingList) report.append(formatImageFileRow(missing));
-            report.append(StringUtils.NEXT_LINE);
-            count += missingList.size();
-        }
-        if (count > 0) {
-            logger.warning(createReportHeader(count) + report);
-        }
-    }
-
-    private void fillReport() {
-        for (int t = 0; t < workspace.getMaxTime(); t++) {
-            List<ImageFile> missing = new ArrayList<>();
-            for (int l = 0; l < workspace.getMaxLevel(); l++) {
-                ImageFile imageFile = workspace.getImageFile(t, l);
-                if (imageFile == null) {
-                    ImageFile dummy = new ImageFile(getImageFilePath(t, l), t, l);
-                    missing.add(dummy);
-                    workspace.setImageFile(t, l, dummy);
-                } else if (!imageFile.exists()) {
-                    missing.add(imageFile);
-                }
-            }
-            missingByTime.put(t, missing);
-        }
-    }
-
-    private String createReportHeader(int count) {
-        String base = count + " " + (count == 1 ? "image is" : "images are");
-        return base + " missing:" + StringUtils.NEXT_LINE;
-    }
-
-    private ImageFile findExistingImageFile() {
-        for (int time = 0; time <= this.workspace.getMaxTime(); time++) {
-            for (int level = 0; level <= this.workspace.getMaxLevel(); level++) {
-                ImageFile imageFile = this.workspace.getImageFile(time, level);
-                if (imageFile != null && imageFile.exists()) return imageFile;
-            }
-        }
-        return null;
-    }
-
-    private Path getImageFilePath(int time, int level) {
-        String fileName = referenceImageFile.getFileName();
-        Path parentDirectory = referenceImageFile.getFilePath().getParent();
-
-        int timeStrLength = workspace.getTimeStr(fileName).length();
-        int levelStrLength = workspace.getLevelStr(fileName).length();
-        String extension = workspace.getExtension(fileName);
-
-        // Dynamische Bestandteile erzeugen
-        String timeStr = (workspace.getConfig().getTimeSep() + "%0" + timeStrLength + "d").formatted(time);
-        String levelStr = (workspace.getConfig().getLevelSep() + "%0" + levelStrLength + "d").formatted(level);
-        return parentDirectory.resolve(timeStr + levelStr + "." + extension);
-    }
-
-    private String formatImageFileRow(ImageFile imageFile) {
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
+    public static String createImageFileRow(ImageFile imageFile) {
         String fileName = imageFile.getFileName();
         int time = imageFile.getTime();
         int level = imageFile.getLevel();
 
-        String text = String.format("- Filename: '%s' (time=%s, level=%s)", fileName, time, level);
+        String text = String.format("- Image: '%s' (time=%s, level=%s)", fileName, time, level);
         return text + StringUtils.NEXT_LINE;
+    }
+
+    public static String createImageFileRow(int time, int level) {
+        ImageFile imageFile = workspace.getImageFile(time, level);
+        return createImageFileRow(imageFile);
+    }
+
+    public static String createReportHeader(int count, String type) {
+        String base = count + " " + (count == 1 ? "image is" : "images are");
+        return base + " " + type + ":" + StringUtils.NEXT_LINE;
+    }
+
+    public static void logReport(int count, String type, StringBuilder report) {
+        if (count > 0) {
+            logger.warning(createReportHeader(count, type) + report);
+        }
     }
 }
