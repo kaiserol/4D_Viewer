@@ -32,7 +32,7 @@ import static de.uzk.Main.workspace;
 public final class PathManager {
 
     // Systemverzeichnisse Pfade
-    public static final Path USER_WORKING_DIRECTORY = Path.of(System.getProperty("user.dir"));
+    public static final Path USER_DIRECTORY = Path.of(System.getProperty("user.dir"));
     public static final Path USER_HOME_DIRECTORY = Path.of(System.getProperty("user.home"));
 
     // Ressourcenverzeichnis Pfad
@@ -83,13 +83,13 @@ public final class PathManager {
     }
 
     public static Path resolveProjectPath(Path relativePath) {
-        if (workspace.getImageFilesDirectory() == null) {
+        if (workspace.getImagesDirectory() == null) {
             throw new NullPointerException("The image files directory is null.");
         }
 
         // Erstelle ein Projektverzeichnis, falls es noch nicht existiert
-        Path projectName = workspace.getImageFilesDirectory().getFileName();
-        Path projectPath = getProjectsPath().resolve(projectName);
+        Path imagesDirectoryName = workspace.getImagesDirectory().getFileName();
+        Path projectPath = getProjectsPath().resolve(imagesDirectoryName);
         createIfNotExist(projectPath);
 
         return projectPath.resolve(relativePath);
@@ -98,51 +98,51 @@ public final class PathManager {
     // ========================================
     // Speichern Methode
     // ========================================
-    public static void saveFile(Path file, Object data) {
-        Path directory = file.getParent();
-        createIfNotExist(directory);
+    public static void save(Path filePath, Object data) {
+        Path parentDirectory = filePath.getParent();
+        createIfNotExist(parentDirectory);
 
-        String fileBaseName = getFileBaseName(file.getFileName());
-        logger.info(String.format("Saving %s file '%s'", fileBaseName, file.toAbsolutePath()));
+        String fileBaseName = getFileBaseName(filePath.getFileName());
+        logger.info(String.format("Saving %s file '%s'", fileBaseName, filePath.toAbsolutePath()));
 
         try {
-            if (file.toString().endsWith(".json")) {
+            if (filePath.toString().endsWith(".json")) {
                 // JSON-Datei
                 ObjectMapper mapper = new ObjectMapper();
-                mapper.writerWithDefaultPrettyPrinter().writeValue(file.toFile(), data);
+                mapper.writerWithDefaultPrettyPrinter().writeValue(filePath.toFile(), data);
             } else if (data instanceof List<?> lines) {
                 // Textdatei
-                Files.write(file, lines.stream()
+                Files.write(filePath, lines.stream()
                     .map(Object::toString)
                     .toList());
             } else {
-                throw new IllegalArgumentException("Unsupported data type for file: " + file);
+                throw new IllegalArgumentException("Unsupported data type for file: " + filePath.getFileName());
             }
         } catch (Exception e) {
-            logger.error(String.format("Failed saving %s file '%s'", fileBaseName, file.toAbsolutePath()));
+            logger.error(String.format("Failed saving %s file '%s'", fileBaseName, filePath.toAbsolutePath()));
         }
     }
 
     // ========================================
     // Laden Methode
     // ========================================
-    public static Object loadFile(Path file, Class<?> clazz) {
-        if (!Files.exists(file)) return null;
+    public static Object load(Path filePath, Class<?> clazz) {
+        if (!Files.exists(filePath)) return null;
 
-        String fileBaseName = getFileBaseName(file.getFileName());
-        logger.info(String.format("Loading %s file '%s'", fileBaseName, file.toAbsolutePath()));
+        String fileBaseName = getFileBaseName(filePath.getFileName());
+        logger.info(String.format("Loading %s file '%s'", fileBaseName, filePath.toAbsolutePath()));
 
         try {
-            if (file.toString().endsWith(".json")) {
+            if (filePath.toString().endsWith(".json")) {
                 // JSON-Datei laden
                 ObjectMapper mapper = new ObjectMapper();
-                return mapper.readValue(file.toFile(), clazz);
+                return mapper.readValue(filePath.toFile(), clazz);
             } else {
                 // Textdatei laden
-                return Files.readAllLines(file);
+                return Files.readAllLines(filePath);
             }
         } catch (Exception e) {
-            logger.error(String.format("Failed loading %s file '%s'", fileBaseName, file.toAbsolutePath()));
+            logger.error(String.format("Failed loading %s file '%s'", fileBaseName, filePath.toAbsolutePath()));
             return null;
         }
     }
@@ -170,8 +170,8 @@ public final class PathManager {
         else if (Objects.equals(directoryName, PROJECTS_DIRECTORY.getFileName().toString())) return "projects";
         else if (Objects.equals(directoryName, SNAPSHOTS_DIRECTORY.getFileName().toString())) return "snapshots";
         else {
-            if (workspace.getImageFilesDirectory() != null) {
-                String workspaceDirectoryName = workspace.getImageFilesDirectory().getFileName().toString();
+            if (workspace.getImagesDirectory() != null) {
+                String workspaceDirectoryName = workspace.getImagesDirectory().getFileName().toString();
                 if (Objects.equals(directoryName, workspaceDirectoryName)) return "project";
             }
         }
@@ -179,8 +179,8 @@ public final class PathManager {
         return directoryName;
     }
 
-    private static String getFileBaseName(Path file) {
-        String fileName = file.getFileName().toString();
+    private static String getFileBaseName(Path filePath) {
+        String fileName = filePath.getFileName().toString();
         int dotIndex = fileName.lastIndexOf('.');
         return (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
     }

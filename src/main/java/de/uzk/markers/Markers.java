@@ -1,6 +1,7 @@
 package de.uzk.markers;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import de.uzk.utils.PathManager;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.DeserializationContext;
@@ -36,14 +37,14 @@ public class Markers {
     }
 
     public void save() {
-        Path file = resolveProjectPath(MARKERS_FILE_NAME);
-        saveFile(file, this);
+        Path filePath = resolveProjectPath(MARKERS_FILE_NAME);
+        PathManager.save(filePath, this);
     }
 
     public static Markers load() {
-        Path file = resolveProjectPath(MARKERS_FILE_NAME);
+        Path filePath = resolveProjectPath(MARKERS_FILE_NAME);
 
-        Object object = loadFile(file, Markers.class);
+        Object object = PathManager.load(filePath, Markers.class);
         if (object instanceof Markers markers) {
             markers.markers.removeIf(m -> m == null || m.getMarker() == null);
             return markers;

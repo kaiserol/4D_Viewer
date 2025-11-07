@@ -3,6 +3,7 @@ package de.uzk.config;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.uzk.image.ImageFileType;
+import de.uzk.utils.PathManager;
 
 import java.nio.file.Path;
 
@@ -219,14 +220,14 @@ public class Config {
     }
 
     public void save() {
-        Path file = resolveProjectPath(CONFIG_FILE_NAME);
-        saveFile(file, this);
+        Path filePath = resolveProjectPath(CONFIG_FILE_NAME);
+        PathManager.save(filePath, this);
     }
 
     public static Config load() {
-        Path file = resolveProjectPath(CONFIG_FILE_NAME);
+        Path filePath = resolveProjectPath(CONFIG_FILE_NAME);
 
-        Object object = loadFile(file, Config.class);
+        Object object = PathManager.load(filePath, Config.class);
         if (object instanceof Config config) return config;
         else return getDefault();
     }

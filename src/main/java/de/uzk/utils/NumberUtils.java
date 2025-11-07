@@ -102,4 +102,21 @@ public final class NumberUtils {
         int b = color.getBlue();
         return (0.299 * r) + (0.587 * g) + (0.114 * b);
     }
+
+    /**
+     * Parst die angegebene Zeichenfolge in einen ganzzahligen Wert.
+     * Wenn die Zeichenfolge aufgrund eines ungültigen Formats oder
+     * eines Überlaufs nicht als Ganzzahl analysiert werden kann,
+     * gibt die Methode {@link Integer#MIN_VALUE} als Fallback-Wert zurück.
+     *
+     * @param value Die als Ganzzahl zu analysierende Zeichenfolge.
+     * @return Der durch die Zeichenfolge dargestellte Ganzzahlwert oder {@link Integer#MIN_VALUE}
+     */
+    public static int parseInteger(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return Integer.MIN_VALUE;
+        }
+    }
 }

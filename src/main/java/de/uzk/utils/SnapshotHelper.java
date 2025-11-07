@@ -35,14 +35,14 @@ public class SnapshotHelper {
         image = cropper.getCroppedImage();
 
         // Dateiname bauen
-        Path file = buildSnapshotFile(directory);
-        logger.info(String.format("Saving snapshot as '%s'", file));
+        Path filePath = buildSnapshotFile(directory);
+        logger.info(String.format("Saving snapshot as '%s'", filePath.toAbsolutePath()));
 
         try {
-            ImageIO.write(image, workspace.getConfig().getImageFileType().getType(), file.toFile());
+            ImageIO.write(image, workspace.getConfig().getImageFileType().getType(), filePath.toFile());
             return true;
         } catch (IOException e) {
-            logger.error(String.format("Failed saving snapshot '%s'", file));
+            logger.error(String.format("Failed saving snapshot '%s'", filePath.toAbsolutePath()));
         }
         return false;
     }
@@ -55,15 +55,15 @@ public class SnapshotHelper {
         if (!Files.isDirectory(directory)) return 0;
 
         int count = 0;
-        try (DirectoryStream<Path> files = Files.newDirectoryStream(directory)) {
+        try (DirectoryStream<Path> paths = Files.newDirectoryStream(directory)) {
             String fileNamePattern = DATE_PATTERN + "\\(\\d+\\)_" + workspace.getImageFileNamePattern();
 
-            // Durchlaufe alle Dateien
-            for (Path file : files) {
-                String fileName = file.getFileName().toString();
+            // Durchlaufe alle Pfade
+            for (Path path : paths) {
+                String fileName = path.getFileName().toString();
 
-                // Prüfe, ob der Dateiname dem Muster entspricht
-                if (fileName.matches(fileNamePattern)) count++;
+                // Prüft, ob der Pfad eine reguläre Datei ist und der Name dem Muster entspricht
+                if (Files.isRegularFile(path) && fileName.matches(fileNamePattern)) count++;
             }
         } catch (IOException e) {
             logger.error(String.format("Failed getting snapshot count in the directory '%s'", directory));
@@ -75,11 +75,11 @@ public class SnapshotHelper {
     //  Hilfsmethoden
     // ========================================
     private static Path buildSnapshotFile(Path directory) {
-        String fileName = workspace.getImageFile().getFileName();
-        String date = DATE_FORMAT.format(new Date());
-        int count = getNextSnapshotIndex(directory, date);
+        String formattedDate = DATE_FORMAT.format(new Date());
+        int count = getNextSnapshotIndex(directory, formattedDate);
 
-        String snapshotFileName = "%s(%02d)_%s".formatted(date, count, fileName);
+        String imageFileName = workspace.getImageFile().getFileName();
+        String snapshotFileName = "%s(%02d)_%s".formatted(formattedDate, count, imageFileName);
         return directory.resolve(snapshotFileName);
     }
 
@@ -87,23 +87,23 @@ public class SnapshotHelper {
         if (!Files.isDirectory(directory)) return 1;
 
         int index = 1;
-        try (DirectoryStream<Path> files = Files.newDirectoryStream(directory)) {
+        try (DirectoryStream<Path> paths = Files.newDirectoryStream(directory)) {
             String fileNamePattern = date + "\\(\\d+\\)_" + workspace.getImageFileNamePattern();
 
-            // Durchlaufe alle Dateien
-            for (Path file : files) {
-                String fileName = file.getFileName().toString();
+            // Durchlaufe alle Pfade
+            for (Path path : paths) {
+                String fileName = path.getFileName().toString();
 
-                // Prüfe, ob der Dateiname dem Muster entspricht
-                if (fileName.matches(fileNamePattern)) {
-                    int indexStart = fileName.indexOf("(") + 1;
-                    int indexEnd = fileName.indexOf(")");
-                    int count = Integer.parseInt(fileName.substring(indexStart, indexEnd)) + 1;
+                // Prüft, ob der Pfad eine reguläre Datei ist und der Name dem Muster entspricht
+                if (Files.isRegularFile(path) && fileName.matches(fileNamePattern)) {
+                    int startIndex = fileName.indexOf("(") + 1;
+                    int endIndex = fileName.indexOf(")");
+                    int count = NumberUtils.parseInteger(fileName.substring(startIndex, endIndex)) + 1;
                     if (count > index) index = count;
                 }
             }
         } catch (IOException e) {
-            logger.error(String.format("Failed getting next snapshot index in the directory '%s'", directory));
+            logger.error(String.format("Failed getting next snapshot index in the directory '%s'", directory.toAbsolutePath()));
         }
         return index;
     }

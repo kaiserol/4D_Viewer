@@ -64,29 +64,29 @@ public final class Icons {
     private Icons() {
     }
 
-    public static BufferedImage loadImage(Path path, boolean showErrorIfNotFound) {
-        if (path != null) {
+    public static BufferedImage loadImage(Path imagePath, boolean showErrorIfNotFound) {
+        if (imagePath != null) {
             try {
-                return ImageIO.read(path.toFile());
+                return ImageIO.read(imagePath.toFile());
             } catch (Exception e) {
                 if (showErrorIfNotFound) {
-                    logger.error(String.format("Failed loading image '%s'", path));
+                    logger.error(String.format("Failed loading image '%s'", imagePath.toAbsolutePath()));
                 }
             }
         }
         return null;
     }
 
-    private static FlatSVGIcon loadResourceSVG(String svgFilePath) {
-        String svgNameCleanedFileSeps = svgFilePath.replace("/", StringUtils.FILE_SEP);
-        URL svgUrl = Icons.class.getClassLoader().getResource(svgNameCleanedFileSeps);
+    private static FlatSVGIcon loadResourceSVG(String svgPath) {
+        String svgFilePathCleaned = svgPath.replace("/", StringUtils.FILE_SEP);
+        URL svgUrl = Icons.class.getClassLoader().getResource(svgFilePathCleaned);
 
         try {
             if (svgUrl == null) throw new IOException();
             InputStream svgStream = svgUrl.openStream();
             return new FlatSVGIcon(svgStream);
         } catch (IOException e) {
-            logger.error(String.format("Failed loading SVG ressource '%s'", svgNameCleanedFileSeps));
+            logger.error(String.format("Failed loading SVG ressource '%s'", svgFilePathCleaned));
             return null;
         }
     }

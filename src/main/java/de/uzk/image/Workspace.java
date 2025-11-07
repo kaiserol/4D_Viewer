@@ -2,6 +2,7 @@ package de.uzk.image;
 
 import de.uzk.config.Config;
 import de.uzk.markers.Markers;
+import de.uzk.utils.NumberUtils;
 import de.uzk.utils.StringUtils;
 
 import java.io.IOException;
@@ -17,7 +18,7 @@ import static de.uzk.gui.GuiUtils.COLOR_RED;
 
 public class Workspace {
     // Eigenschaften
-    private Path imageFilesDirectory;
+    private Path imagesDirectory;
     private Config config;
     private Markers markers;
     private ImageFile[][] matrix;
@@ -32,56 +33,19 @@ public class Workspace {
         clear(true);
     }
 
-    public Path getImageFilesDirectory() {
-        return this.imageFilesDirectory;
+    // ========================================
+    // Getter und Setter
+    // ========================================
+    public Path getImagesDirectory() {
+        return this.imagesDirectory;
     }
 
-    public LoadingResult openDirectory(Path directory, ImageFileType imageFileType, LoadingImageListener progress) {
-        if (directory != null && Files.isDirectory(directory)) {
-            // Prüfe, ob das Verzeichnis bereits in der UI geladen ist
-            boolean sameDirectory = Objects.equals(this.imageFilesDirectory, directory);
-            boolean sameType = this.config.getImageFileType() == imageFileType;
-            if (sameDirectory && sameType) return LoadingResult.ALREADY_LOADED;
-
-            // Verzeichnis, Config & Markers speichern
-            Path oldImageFilesDirectory = this.imageFilesDirectory;
-            Config oldConfig = this.config;
-            Markers oldMarkers = this.markers;
-            this.save();
-
-            // Verzeichnis, Config & Markers laden
-            this.imageFilesDirectory = directory;
-            this.load(imageFileType);
-
-            // Lade das Verzeichnis, wenn es Image-Files hat
-            LoadingResult badResult;
-            try {
-                if (this.loadImageFiles(progress)) {
-                    history.add(directory);
-                    return LoadingResult.LOADED;
-                }
-                badResult = LoadingResult.DIRECTORY_HAS_NO_IMAGES;
-            } catch (InterruptedException e) {
-                badResult = LoadingResult.INTERRUPTED;
-            }
-
-            // Variablen zurücksetzen
-            this.imageFilesDirectory = oldImageFilesDirectory;
-            this.config = oldConfig;
-            this.markers = oldMarkers;
-            return badResult;
-        }
-        return LoadingResult.DIRECTORY_NOT_EXISTING;
+    public Config getConfig() {
+        return this.config;
     }
 
     public Markers getMarkers() {
         return this.markers;
-    }
-
-
-
-    public Config getConfig() {
-        return this.config;
     }
 
     private void load(ImageFileType imageFileType) {
@@ -123,9 +87,15 @@ public class Workspace {
 
     public void setTime(int time) {
         if (isOpen() && checkTime(time)) {
-            ImageFile loadedImageFile = getImageFile(time, this.imageFile.getLevel());
-            if (loadedImageFile != null) this.imageFile = loadedImageFile;
+            ImageFile imageFile = getImageFile(time, this.imageFile.getLevel());
+            if (imageFile != null) this.imageFile = imageFile;
         }
+    }
+
+    private boolean checkTime(int time) {
+        if (time >= 0 && time <= this.maxTime) return true;
+        logger.error("Invalid Time: " + time);
+        return false;
     }
 
     public int getMaxLevel() {
@@ -138,15 +108,9 @@ public class Workspace {
 
     public void setLevel(int level) {
         if (isOpen() && checkLevel(level)) {
-            ImageFile loadedImageFile = getImageFile(this.imageFile.getTime(), level);
-            if (loadedImageFile != null) this.imageFile = loadedImageFile;
+            ImageFile imageFile = getImageFile(this.imageFile.getTime(), level);
+            if (imageFile != null) this.imageFile = imageFile;
         }
-    }
-
-    private boolean checkTime(int time) {
-        if (time >= 0 && time <= this.maxTime) return true;
-        logger.error("Invalid Time: " + time);
-        return false;
     }
 
     private boolean checkLevel(int level) {
@@ -155,7 +119,7 @@ public class Workspace {
         return false;
     }
 
-    public int getMissingImagesCount() {
+    public int getMissingImages() {
         return this.missingImagesCount;
     }
 
@@ -164,6 +128,7 @@ public class Workspace {
     }
 
     public boolean isPinned(int time) {
+        if (!isOpen() && !checkTime(time)) return false;
         return this.pinTimes.contains(time);
     }
 
@@ -175,6 +140,27 @@ public class Workspace {
         else this.pinTimes.add(time);
     }
 
+    // ========================================
+    // Zurücksetzen
+    // ========================================
+    public void clear(boolean removeImageFilesDirectory) {
+        if (removeImageFilesDirectory) {
+            this.imagesDirectory = null;
+            this.config = Config.getDefault();
+            this.markers = new Markers();
+        }
+
+        this.matrix = null;
+        this.imageFile = null;
+        this.maxLevel = 0;
+        this.maxTime = 0;
+        this.missingImagesCount = 0;
+        this.pinTimes.clear();
+    }
+
+    // ========================================
+    // Navigieren Methoden
+    // ========================================
     public void toFirst(Axis axis) {
         if (!isOpen()) return;
         switch (axis) {
@@ -219,27 +205,53 @@ public class Workspace {
         }
     }
 
-    public void clear(boolean removeImageFilesDirectory) {
-        if (removeImageFilesDirectory) {
-            this.imageFilesDirectory = null;
-            this.config = Config.getDefault();
-            this.markers = new Markers();
-        }
+    // ========================================
+    // Lade Bilder aus dem Verzeichnis
+    // ========================================
+    public LoadingResult openImagesDirectory(Path imagesDirectory, ImageFileType imageFileType, LoadingImageListener progress) {
+        if (imagesDirectory != null && Files.isDirectory(imagesDirectory)) {
+            // Prüfe, ob das Verzeichnis bereits in der UI geladen ist
+            boolean sameDirectory = Objects.equals(this.imagesDirectory, imagesDirectory);
+            boolean sameFileType = this.config.getImageFileType() == imageFileType;
+            if (sameDirectory && sameFileType) return LoadingResult.ALREADY_LOADED;
 
-        this.matrix = null;
-        this.imageFile = null;
-        this.maxLevel = 0;
-        this.maxTime = 0;
-        this.missingImagesCount = 0;
-        this.pinTimes.clear();
+            // Verzeichnis, Config & Markers speichern
+            Path oldImagesDirectory = this.imagesDirectory;
+            Config oldConfig = this.config;
+            Markers oldMarkers = this.markers;
+            this.save();
+
+            // Verzeichnis, Config & Markers laden
+            this.imagesDirectory = imagesDirectory;
+            this.load(imageFileType);
+
+            // Lade das Verzeichnis, wenn es Bilder hat
+            LoadingResult badResult;
+            try {
+                if (this.loadImages(progress)) {
+                    history.add(imagesDirectory);
+                    return LoadingResult.LOADED;
+                }
+                badResult = LoadingResult.DIRECTORY_HAS_NO_IMAGES;
+            } catch (InterruptedException e) {
+                badResult = LoadingResult.INTERRUPTED;
+            }
+
+            // Variablen zurücksetzen
+            this.imagesDirectory = oldImagesDirectory;
+            this.config = oldConfig;
+            this.markers = oldMarkers;
+            return badResult;
+        }
+        return LoadingResult.DIRECTORY_NOT_EXISTING;
     }
 
-    private boolean loadImageFiles(LoadingImageListener progress) throws InterruptedException {
+    private boolean loadImages(LoadingImageListener progress) throws InterruptedException {
         progress.onLoadingStart();
 
-        // Dateien laden
+        // Pfade laden
         List<Path> paths;
-        try (DirectoryStream<Path> directory = Files.newDirectoryStream(this.imageFilesDirectory)) {
+        try (DirectoryStream<Path> directory = Files.newDirectoryStream(this.imagesDirectory)) {
             paths = StreamSupport.stream(directory.spliterator(), true).toList();
         } catch (IOException e) {
             progress.onLoadingComplete(0);
@@ -251,17 +263,30 @@ public class Workspace {
         int tempMaxTime = 0;
         int tempMaxLevel = 0;
 
-        // Dateien im Verzeichnis durchlaufen
+        // Dateinamen Muster erstellen
+        String fileNamePattern = getImageFileNamePattern();
+
+        // Durchlaufe alle Pfade
         for (int number = 1; number <= paths.size(); number++) {
             if (Thread.currentThread().isInterrupted()) throw new InterruptedException();
 
             Path path = paths.get(number - 1);
-            String fileNamePattern = getImageFileNamePattern();
+            String fileName = path.getFileName().toString();
 
-            // Prüfe, ob reguläre Datei und Name auf Muster passt
-            if (Files.isRegularFile(path) && path.getFileName().toString().matches(fileNamePattern)) {
-                int time = Integer.parseInt(getTimeStr(path.getFileName().toString()));
-                int level = Integer.parseInt(getLevelStr(path.getFileName().toString()));
+            // Prüft, ob der Pfad eine reguläre Datei ist und der Name dem Muster entspricht
+            if (Files.isRegularFile(path) && fileName.matches(fileNamePattern)) {
+                int time = NumberUtils.parseInteger(getTimeStr(fileName));
+                int level = NumberUtils.parseInteger(getLevelStr(fileName));
+
+                // Grenzwert bestimmen
+                if (0 > time || time >= 10_000) {
+                    logger.warning("The image '%s' has an invalid time.".formatted(fileName));
+                    continue;
+                }
+                if (0 > level || level >= 10_000) {
+                    logger.warning("The image '%s' has an invalid level.".formatted(fileName));
+                    continue;
+                }
 
                 // Maximalwerte bestimmen (Matrixgröße)
                 tempMaxTime = Math.max(tempMaxTime, time);
@@ -294,98 +319,54 @@ public class Workspace {
         return true;
     }
 
-    public String getImageFileNamePattern() {
-        return "(?i)" +                            // Case-insensitive Matching
-                this.config.getTimeSep() + "\\d{1,5}" +   // Zeitkomponente (1–5 Ziffern)
-                this.config.getLevelSep() + "\\d{1,3}" +  // Levelkomponente (1–3 Ziffern)
-                "\\." + StringUtils.formatArray(this.config.getImageFileType().getExtensions(), "|", '(', ')') + "$"; // Dateiende
-    }
-
-    private String getTimeStr(String fileName) {
-        int indexStart = fileName.indexOf(this.config.getTimeSep()) + this.config.getTimeSep().length();
-        int indexEnd = fileName.lastIndexOf(this.config.getLevelSep());
-        return fileName.substring(indexStart, indexEnd);
-    }
-
-    private String getLevelStr(String fileName) {
-        int indexStart = fileName.indexOf(this.config.getLevelSep()) + this.config.getLevelSep().length();
-        int indexEnd = fileName.lastIndexOf(".");
-        return fileName.substring(indexStart, indexEnd);
-    }
-
-    private String getExtension(String fileName) {
-        int indexStart = fileName.lastIndexOf(".");
-        return fileName.substring(indexStart + 1);
-    }
-
-    // Sucht in der Matrix eine beliebige existierende Datei,
-    // um deren Namensschema als Vorlage zu verwenden.
-    private ImageFile findExistingImageFileReference() {
-        for (int time = 0; time <= this.maxTime; time++) {
-            for (int level = 0; level <= this.maxLevel; level++) {
-                ImageFile imageFile = getImageFile(time, level);
-                if (imageFile != null && imageFile.exists()) return imageFile;
-            }
-        }
-        throw new IllegalStateException("No existing image file found."); // Kann eigentlich nicht eintreten
-    }
-
-    private Path getMissingFile(int time, int level, ImageFile imageFileNameReference) {
-        int timeStrLength = getTimeStr(imageFileNameReference.getFileName()).length();
-        int levelStrLength = getLevelStr(imageFileNameReference.getFileName()).length();
-        String extension = getExtension(imageFileNameReference.getFileName());
-
-        // Dynamische Bestandteile erzeugen
-        String timeStr = (this.config.getTimeSep() + "%0" + timeStrLength + "d").formatted(time);
-        String levelStr = (this.config.getLevelSep() + "%0" + levelStrLength + "d").formatted(level);
-        return imageFileNameReference.getPath().getParent().resolve(timeStr + levelStr + "." + extension);
-    }
-
+    // ========================================
+    // Erstelle Matrix mit ImageFiles
+    // ========================================
     private int createMatrix(Set<ImageFile> imageFiles) {
         int tSize = this.maxTime + 1;
         int lSize = this.maxLevel + 1;
         this.matrix = new ImageFile[tSize][lSize];
 
-        StringBuilder duplicatedImagesReport = new StringBuilder();
-        int imagesCount = 0;
-        int duplicatedImagesCount = 0;
+        StringBuilder report = new StringBuilder();
+        int count = 0;
+        int duplicated = 0;
 
         // Bilddateien in Matrix einfügen
         for (ImageFile imageFile : imageFiles) {
             int time = imageFile.getTime();
             int level = imageFile.getLevel();
 
-            // Prüfe, ob diese Position schon belegt ist (Duplikat)
+            // Prüfe, ob das ImageFile auf der aktuellen Position bereits belegt ist
             if (getImageFile(time, level) == null) {
                 setImageFile(time, level, imageFile);
-                imagesCount++;
+                count++;
             } else {
-                duplicatedImagesReport.append("- Filename: '").append(imageFile.getFileName()).append("' (time=").append(time).append(", level=").append(level).append(")").append(StringUtils.NEXT_LINE);
-                duplicatedImagesCount++;
+                appendImageFileToReport(imageFile, report);
+                duplicated++;
             }
         }
 
-        if (duplicatedImagesCount > 0) {
-            String tempText = (duplicatedImagesCount > 1 ? "images are" : "image is");
-            String headerText = duplicatedImagesCount + " " + tempText + " duplicated:" + StringUtils.NEXT_LINE;
-            logger.warning(headerText + duplicatedImagesReport);
-        }
+        logReport(duplicated, "duplicated", report);
 
         int expectedImagesCount = tSize * lSize;
-        if (imagesCount < expectedImagesCount) {
-            checkMissingFiles();
+        if (count < expectedImagesCount) {
+            checkMissingImageFiles();
         }
-        return imagesCount;
+        return count;
     }
 
-    public void checkMissingFiles() {
+    // ========================================
+    // Report fehlender ImageFiles
+    // ========================================
+    public void checkMissingImageFiles() {
         if (!isOpen()) return;
 
-        StringBuilder missingImagesReport = new StringBuilder();
-        int missingImagesCount = 0;
+        // Finde eine existierende ImageFile als Referenz
+        ImageFile imageFileReference = findExistingImageFile();
+        if (imageFileReference == null) return;
 
-        // Versuche, ein existierendes Referenzbild zu finden
-        ImageFile imageFileReference = findExistingImageFileReference();
+        StringBuilder report = new StringBuilder();
+        int missing = 0;
 
         // Durchlaufe die ganze Matrix
         for (int time = 0; time <= this.maxTime; time++) {
@@ -393,66 +374,140 @@ public class Workspace {
                 ImageFile imageFile = getImageFile(time, level);
                 if (imageFile == null || !imageFile.exists()) {
                     if (imageFile == null) {
-                        imageFile = new ImageFile(getMissingFile(time, level, imageFileReference), time, level);
+                        imageFile = new ImageFile(getImageFilePath(time, level, imageFileReference), time, level);
                         setImageFile(time, level, imageFile);
                     }
-                    missingImagesReport.append("- Filename: '").append(imageFile.getFileName()).append("' (time=").append(time).append(", level=").append(level).append(")").append(StringUtils.NEXT_LINE);
-                    missingImagesCount++;
+                    appendImageFileToReport(imageFile, report);
+                    missing++;
                 }
             }
         }
 
-        if (missingImagesCount > this.missingImagesCount) {
-            String tempText = (missingImagesCount > 1 ? "images are" : "image is");
-            String headerText = missingImagesCount + " " + tempText + " missing:" + StringUtils.NEXT_LINE;
-            logger.warning(headerText + missingImagesReport);
-        } else if (missingImagesCount < this.missingImagesCount) {
+        if (missing > this.missingImagesCount) {
+            logReport(missing, "missing", report);
+        } else if (missing < this.missingImagesCount) {
             // Es wurden einige Bilder wieder hergestellt
-            int imageFiles = (this.maxTime + 1) * (this.maxLevel + 1) - missingImagesCount;
+            int imageFiles = (this.maxTime + 1) * (this.maxLevel + 1) - missing;
             logger.info("Some missing images were restored." + StringUtils.NEXT_LINE + "Loaded images: " + imageFiles);
         }
-        this.missingImagesCount = missingImagesCount;
+        this.missingImagesCount = missing;
     }
 
-    public String getMissingImages() {
-        StringBuilder sb = new StringBuilder();
-        if (!isOpen()) return sb.toString();
+    // ========================================
+    // Report fehlender ImageFiles als String
+    // ========================================
+    public String getMissingImagesCount() {
+        if (!isOpen()) return "";
 
-        int totalMissing = 0;
+        StringBuilder report = new StringBuilder();
+        int missing = 0;
+
+        // Durchlaufe die ganze Matrix
         for (int time = 0; time <= this.maxTime; time++) {
             List<Integer> missingLevels = new ArrayList<>();
 
             for (int level = 0; level <= this.maxLevel; level++) {
                 ImageFile imageFile = getImageFile(time, level);
-                if (imageFile == null || !imageFile.exists()) {
+                if (!imageFile.exists()) {
                     missingLevels.add(level);
-                    totalMissing++;
+                    missing++;
                 }
             }
 
             if (!missingLevels.isEmpty()) {
-                String timeStr = StringUtils.wrapBold("--- Time: " + time + " ---");
-                sb.append(timeStr).append(StringUtils.NEXT_LINE);
-                sb.append("Missing Levels: ").append(missingLevels).append(StringUtils.NEXT_LINE);
-
-                sb.append("Expected Images:").append(StringUtils.NEXT_LINE);
-                for (int level : missingLevels) {
-                    ImageFile imageFile = getImageFile(time, level);
-                    String name = imageFile != null ? imageFile.getFileName() : "???";
-                    sb.append(" - '").append(name).append("' (time=").append(time).append(", level=").append(level).append(")").append(StringUtils.NEXT_LINE);
-                }
-                sb.append(StringUtils.NEXT_LINE);
+                report.append(StringUtils.wrapBold("--- Time: " + time + " ---")).append(StringUtils.NEXT_LINE);
+                report.append("Missing Levels: ").append(missingLevels).append(StringUtils.NEXT_LINE);
+                report.append("Expected Images:").append(StringUtils.NEXT_LINE);
+                for (int level : missingLevels) appendImageFileToReport(getImageFile(time, level), report);
+                report.append(StringUtils.NEXT_LINE);
             }
         }
 
-        if (totalMissing == 0) {
-            sb.append("No missing images.").append(StringUtils.NEXT_LINE);
+        if (missing == 0) {
+            report.append("No missing images.").append(StringUtils.NEXT_LINE);
+            return report.toString();
         } else {
-            String tempText = (totalMissing > 1 ? "images are" : "image is");
-            String headerText = StringUtils.applyColor(StringUtils.wrapBold(totalMissing + " " + tempText + " missing:"), COLOR_RED);
-            sb.insert(0, headerText + StringUtils.NEXT_LINE + StringUtils.NEXT_LINE);
+            String headerText = formatReportHeader(missing, "missing");
+            String formattedText = StringUtils.applyColor(StringUtils.wrapBold(headerText), COLOR_RED);
+            return formattedText + StringUtils.NEXT_LINE + report;
         }
+    }
 
-        return sb.toString();
+    // ========================================
+    // Report Methoden
+    // ========================================
+    private void appendImageFileToReport(ImageFile imageFile, StringBuilder reportBuilder) {
+        reportBuilder.append(formatImageFileRow(imageFile));
+    }
+
+    private String formatImageFileRow(ImageFile imageFile) {
+        String fileName = imageFile.getFileName();
+        int time = imageFile.getTime();
+        int level = imageFile.getLevel();
+
+        String text = String.format("- Filename: '%s' (time=%s, level=%s)", fileName, time, level);
+        return text + StringUtils.NEXT_LINE;
+    }
+
+    private String formatReportHeader(int count, String type) {
+        String base = count + " " + (count == 1 ? "image is" : "images are");
+        return base + " " + type + ":" + StringUtils.NEXT_LINE;
+    }
+
+    private void logReport(int count, String type, StringBuilder report) {
+        if (count > 0) {
+            logger.warning(formatReportHeader(count, type) + report);
+        }
+    }
+
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
+    public String getImageFileNamePattern() {
+        return "(?i)" +                               // Case-insensitive Matching
+            this.config.getTimeSep() + "\\d+" +       // Zeitkomponente (mind. 1 Ziffer)
+            this.config.getLevelSep() + "\\d+" +      // Levelkomponente (mind. 1 Ziffer)
+            "\\." + StringUtils.formatArray(this.config.getImageFileType().getExtensions(), "|", '(', ')') + "$";
+    }
+
+    private Path getImageFilePath(int time, int level, ImageFile imageFileReference) {
+        String fileName = imageFileReference.getFileName();
+        Path parentDirectory = imageFileReference.getFilePath().getParent();
+
+        int timeStrLength = getTimeStr(fileName).length();
+        int levelStrLength = getLevelStr(fileName).length();
+        String extension = getExtension(fileName);
+
+        // Dynamische Bestandteile erzeugen
+        String timeStr = (this.config.getTimeSep() + "%0" + timeStrLength + "d").formatted(time);
+        String levelStr = (this.config.getLevelSep() + "%0" + levelStrLength + "d").formatted(level);
+        return parentDirectory.resolve(timeStr + levelStr + "." + extension);
+    }
+
+    private ImageFile findExistingImageFile() {
+        for (int time = 0; time <= this.maxTime; time++) {
+            for (int level = 0; level <= this.maxLevel; level++) {
+                ImageFile imageFile = getImageFile(time, level);
+                if (imageFile != null && imageFile.exists()) return imageFile;
+            }
+        }
+        return null;
+    }
+
+    private String getTimeStr(String fileName) {
+        int startIndex = fileName.indexOf(this.config.getTimeSep()) + this.config.getTimeSep().length();
+        int endIndex = fileName.lastIndexOf(this.config.getLevelSep());
+        return fileName.substring(startIndex, endIndex);
+    }
+
+    private String getLevelStr(String fileName) {
+        int startIndex = fileName.indexOf(this.config.getLevelSep()) + this.config.getLevelSep().length();
+        int dotIndex = fileName.lastIndexOf('.');
+        return fileName.substring(startIndex, dotIndex);
+    }
+
+    private String getExtension(String fileName) {
+        int dotIndex = fileName.lastIndexOf('.');
+        return fileName.substring(dotIndex + 1);
     }
 }

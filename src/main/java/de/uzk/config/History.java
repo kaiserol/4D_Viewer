@@ -1,5 +1,7 @@
 package de.uzk.config;
 
+import de.uzk.utils.PathManager;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
@@ -14,8 +16,8 @@ public class History {
     private History(List<Path> history) {
         this.history = new LinkedList<>();
         if (history != null) {
-            // Pfade "manuell" mit Überprüfung hinzufügen
-            for (Path path : history) add(path);
+            // Wenn Pfade existieren, müssen sie vom Typ Verzeichnis sein, um hinzugefügt zu werden
+            for (Path path : history) this.add(path);
         }
     }
 
@@ -23,38 +25,42 @@ public class History {
         return history.isEmpty();
     }
 
-    public void add(Path directory) {
-        if (directory == null) return;
-        if (directory.toString().trim().isEmpty()) return;
+    public void add(Path imagesDirectory) {
+        if (imagesDirectory == null) return;
+        if (imagesDirectory.toString().isBlank()) return;
 
         // Normalisiere den Pfad für konsistente Vergleiche
-        Path normalized = directory.normalize();
+        Path normalized = imagesDirectory.normalize().toAbsolutePath();
 
         // Wenn der Pfad existiert und kein Verzeichnis ist, ablehnen
         if (Files.exists(normalized) && !Files.isDirectory(normalized)) return;
 
-        // Duplikate vermeiden
-        if (this.history.contains(normalized)) return;
+        // Falls bereits vorhanden, dann löschen
+        this.history.remove(normalized);
 
         // Am Ende hinzufügen
         this.history.add(normalized);
     }
 
-    public Path getLast() {
+    public Path getLastIfExists() {
         if (isEmpty()) return null;
-        return this.history.getLast();
+        Path path = this.history.getLast();
+        if (Files.isDirectory(path)) return path;
+        return null;
     }
 
     public void save() {
-        Path file = resolveConfigPath(HISTORY_FILE_NAME);
-        List<String> lines = this.history.stream().map(Path::toString).toList();
-        saveFile(file, lines);
+        Path filePath = resolveConfigPath(HISTORY_FILE_NAME);
+        List<String> lines = this.history.stream()
+            .map(p -> p.toAbsolutePath().toString())
+            .toList();
+        PathManager.save(filePath, lines);
     }
 
     public static History load() {
-        Path file = resolveConfigPath(HISTORY_FILE_NAME);
+        Path filePath = resolveConfigPath(HISTORY_FILE_NAME);
 
-        Object object = loadFile(file, History.class);
+        Object object = PathManager.load(filePath, History.class);
         if (object instanceof List<?> list) {
             List<Path> lines = list.stream().map(line -> Path.of(line == null ? "" : String.valueOf(line))).toList();
             return new History(lines);

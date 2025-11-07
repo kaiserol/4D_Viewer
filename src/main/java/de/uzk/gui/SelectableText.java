@@ -257,16 +257,16 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         if (currentLinkElement == null) return;
         if (!(getDocument() instanceof HTMLDocument htmlDoc)) return;
 
-        int start = currentLinkElement.getStartOffset();
-        int end = currentLinkElement.getEndOffset();
-        int length = Math.max(0, end - start);
+        int startIndex = currentLinkElement.getStartOffset();
+        int endIndex = currentLinkElement.getEndOffset();
+        int length = Math.max(0, endIndex - startIndex);
 
         SimpleAttributeSet set = new SimpleAttributeSet();
         Color color = active ? COLOR_ACTIVE_LINK : GuiUtils.getTextColor();
         StyleConstants.setForeground(set, color);
 
         // Farbe ändern
-        SwingUtilities.invokeLater(() -> htmlDoc.setCharacterAttributes(start, length, set, false));
+        SwingUtilities.invokeLater(() -> htmlDoc.setCharacterAttributes(startIndex, length, set, false));
     }
 
     // ========================================

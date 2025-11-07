@@ -100,8 +100,6 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         }
     }
 
-
-
     // ========================================
     // Hilfsmethoden
     // ========================================

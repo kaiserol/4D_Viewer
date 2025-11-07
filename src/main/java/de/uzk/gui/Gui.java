@@ -7,7 +7,7 @@ import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.gui.areas.AreaDirectorySelection;
 import de.uzk.gui.areas.AreaImageViewer;
 import de.uzk.gui.areas.AreaTabs;
-import de.uzk.gui.dialogs.DialogImageLoad;
+import de.uzk.gui.dialogs.DialogImagesLoad;
 import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.image.Axis;
 import de.uzk.image.ImageFileType;
@@ -27,7 +27,7 @@ import static de.uzk.config.LanguageHandler.getWord;
 public class Gui extends AreaContainerInteractive<JFrame> {
     // GUI-Elemente
     private final ActionHandler actionHandler;
-    private final DialogImageLoad dialogImageLoad;
+    private final DialogImagesLoad dialogImagesLoad;
 
     // Observer Listener
     private final List<HandleActionListener> handleActionListeners;
@@ -54,7 +54,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.actionHandler = new ActionHandler(this);
 
         // Dialog für das Laden von Bildern erstellen
-        this.dialogImageLoad = new DialogImageLoad(this.container);
+        this.dialogImagesLoad = new DialogImagesLoad(this.container);
 
         // Gui erstellen
         build();
@@ -71,8 +71,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         addContent();
         updateTheme();
 
-        // Image-Files laden
-        if (!loadImageFiles(history.getLast(), workspace.getConfig().getImageFileType(), true)) {
+        // Bilder laden
+        if (!openImagesDirectory(history.getLastIfExists(), workspace.getConfig().getImageFileType(), true)) {
             toggleOff();
         }
 
@@ -240,7 +240,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     @Override
     public void appGainedFocus() {
         // Prüfe, ob Bilder noch vorhanden sind
-        workspace.checkMissingFiles();
+        workspace.checkMissingImageFiles();
 
         // Observer ausführen
         for (AppFocusListener observer : appFocusListeners) observer.appGainedFocus();
@@ -260,9 +260,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.repaint();
     }
 
-    public boolean loadImageFiles(Path directory, ImageFileType imageFileType, boolean isGuiBeingBuilt) {
+    public boolean openImagesDirectory(Path imagesDirectory, ImageFileType imageFileType, boolean isGuiBeingBuilt) {
         // Prüfe, ob das Verzeichnis passende Bilder hat
-        LoadingResult result = this.dialogImageLoad.show(directory, imageFileType);
+        LoadingResult result = this.dialogImagesLoad.show(imagesDirectory, imageFileType);
         switch (result) {
             case LOADED -> {
                 toggleOn();
@@ -272,7 +272,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             case ALREADY_LOADED -> {
                 if (isGuiBeingBuilt) return false;
                 String message = getWord("optionPane.directory.the") + " " + imageFileType + " " +
-                        getWord("file.directory") + " '" + directory + "' " +
+                        getWord("file.directory") + " '" + imagesDirectory + "' " +
                         getWord("optionPane.directory.alreadyLoaded") + ".";
                 JOptionPane.showMessageDialog(
                         this.container,
@@ -283,7 +283,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             }
             case DIRECTORY_NOT_EXISTING -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + " '" + directory + "' " +
+                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + " '" + imagesDirectory + "' " +
                         getWord("optionPane.directory.doesNotExisting") + ".";
                 JOptionPane.showMessageDialog(
                         this.container,
@@ -294,7 +294,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             }
             case DIRECTORY_HAS_NO_IMAGES -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + " '" + directory + "' " +
+                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + " '" + imagesDirectory + "' " +
                         getWord("optionPane.directory.hasNo") + " " + imageFileType.getDescription() + ".";
                 JOptionPane.showMessageDialog(
                         this.container,

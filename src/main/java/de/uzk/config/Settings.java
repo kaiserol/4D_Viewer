@@ -2,6 +2,7 @@ package de.uzk.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.uzk.utils.PathManager;
 
 import java.nio.file.Path;
 
@@ -96,14 +97,14 @@ public class Settings {
     }
 
     public void save() {
-        Path file = resolveConfigPath(SETTINGS_FILE_NAME);
-        saveFile(file, this);
+        Path filePath = resolveConfigPath(SETTINGS_FILE_NAME);
+        PathManager.save(filePath, this);
     }
 
     public static Settings load() {
-        Path file = resolveConfigPath(SETTINGS_FILE_NAME);
+        Path filePath = resolveConfigPath(SETTINGS_FILE_NAME);
 
-        Object object = loadFile(file, Settings.class);
+        Object object = PathManager.load(filePath, Settings.class);
         if (object instanceof Settings settings) return settings;
         else return getDefault();
     }
