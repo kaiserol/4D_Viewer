@@ -41,23 +41,23 @@ public final class CharsetDetector {
     /**
      * Bestimmt das wahrscheinlichste Charset einer Datei.
      *
-     * @param file Pfad zur Datei
+     * @param filePath Pfad zur Datei
      * @return erkannter Charset oder {@link StandardCharsets#ISO_8859_1}, falls nicht ermittelbar
      */
-    public static Charset detectCharset(Path file) {
-        if (file == null || !Files.isRegularFile(file)) {
+    public static Charset detectCharset(Path filePath) {
+        if (filePath == null || !Files.isRegularFile(filePath)) {
             return StandardCharsets.ISO_8859_1;
         }
 
-        try (InputStream in = new BufferedInputStream(Files.newInputStream(file))) {
+        try (InputStream stream = new BufferedInputStream(Files.newInputStream(filePath))) {
             // BOM prüfen (Byte Order Mark)
-            Charset bomCharset = detectBom(in);
+            Charset bomCharset = detectBom(stream);
             if (bomCharset != null) {
                 return bomCharset;
             }
 
             // Falls keine BOM, heuristisch testen
-            byte[] bytes = Files.readAllBytes(file);
+            byte[] bytes = Files.readAllBytes(filePath);
             if (looksLikeUtf8(bytes)) return StandardCharsets.UTF_8;
 
             // Teste andere bekannte Charsets
@@ -67,7 +67,7 @@ public final class CharsetDetector {
                 }
             }
         } catch (IOException e) {
-            System.err.printf("Failed reading file '%s%n", file);
+            System.err.printf("Failed reading file '%s%n", filePath);
         }
         // Fallback
         return StandardCharsets.ISO_8859_1;
@@ -76,11 +76,11 @@ public final class CharsetDetector {
     /**
      * Prüft, ob eine Datei ein BOM (Byte Order Mark) enthält.
      */
-    private static Charset detectBom(InputStream in) throws IOException {
-        in.mark(4);
+    private static Charset detectBom(InputStream stream) throws IOException {
+        stream.mark(4);
         byte[] bom = new byte[4];
-        int n = in.read(bom, 0, bom.length);
-        in.reset();
+        int n = stream.read(bom, 0, bom.length);
+        stream.reset();
 
         if (n >= 3 && bom[0] == (byte) 0xEF && bom[1] == (byte) 0xBB && bom[2] == (byte) 0xBF) {
             return StandardCharsets.UTF_8;

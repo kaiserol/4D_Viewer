@@ -234,7 +234,7 @@ public final class StringUtils {
             builder.append(" ");
         }
 
-        String aligned = applyDivAlignment(builder.toString().trim(), align, maxWidth);
+        String aligned = applyDivAlignment(builder.toString(), align, maxWidth);
         return wrapHtml(aligned);
     }
 

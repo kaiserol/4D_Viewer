@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.uzk.Main.settings;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogVersions {
@@ -53,7 +52,6 @@ public class DialogVersions {
         int row = 0;
 
         // Version hinzufügen
-        gbc.insets.top = 10;
         addInfoRow(panel, gbc, row++, getWord("app.v1"), String.format(getWord("app.v1.date"), getWord("date.unknown")));
         gbc.insets.top = 5;
         addInfoRow(panel, gbc, row++, getWord("developers"), getWord("dialog.versions.v1.developer"));
@@ -112,7 +110,7 @@ public class DialogVersions {
                 String normalPart = valueText.substring(0, start).trim();
                 String specialPart = valueText.substring(start).trim();
 
-                Color lighterColor = GuiUtils.adjustColor(GuiUtils.getTextColor(), 0.3f, settings.getTheme().isLight());
+                Color lighterColor = GuiUtils.adjustColor(GuiUtils.COLOR_BLUE, 0.3f, true);
                 formattedValue = normalPart + " " + StringUtils.applyColor(specialPart, lighterColor);
             } else {
                 formattedValue = valueText;

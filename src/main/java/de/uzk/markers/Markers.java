@@ -1,6 +1,7 @@
 package de.uzk.markers;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import de.uzk.utils.PathManager;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.DeserializationContext;
@@ -36,15 +37,15 @@ public class Markers {
     }
 
     public void save() {
-        Path jsonFile = resolveInAppProjectsPath(Path.of(MARKERS_FILE_NAME));
-        saveJson(jsonFile, this);
+        Path filePath = resolveProjectPath(MARKERS_FILE_NAME);
+        PathManager.save(filePath, this);
     }
 
     public static Markers load() {
-        Path jsonFile = resolveInAppProjectsPath(Path.of(MARKERS_FILE_NAME));
+        Path filePath = resolveProjectPath(MARKERS_FILE_NAME);
 
-        Object obj = loadJson(jsonFile, Markers.class);
-        if (obj instanceof Markers markers) {
+        Object object = PathManager.load(filePath, Markers.class);
+        if (object instanceof Markers markers) {
             markers.markers.removeIf(m -> m == null || m.getMarker() == null);
             return markers;
         } else return new Markers();
@@ -54,7 +55,7 @@ public class Markers {
         return this.markers.stream().filter(m -> m.shouldRender(image)).map(MarkerMapping::getMarker).toList();
     }
 
-    //Helferklasse, die ungültige Marker zu nulls macht, die herausgefiltert werden können
+    // Helferklasse, die ungültige Marker zu nulls macht, die herausgefiltert werden können
     private static class NullInvalidMarkers extends StdDeserializer<MarkerMapping> {
         public NullInvalidMarkers() {
             super(MarkerMapping.class);

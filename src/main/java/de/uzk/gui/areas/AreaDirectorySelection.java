@@ -15,7 +15,7 @@ import java.nio.file.Path;
 
 import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
-import static de.uzk.utils.PathManager.USER_WORKING_DIRECTORY;
+import static de.uzk.utils.PathManager.USER_DIRECTORY;
 
 public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
     // GUI-Elemente
@@ -82,11 +82,12 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
         JFileChooser fileChooser = getFileChooser();
 
         // Startverzeichnis wählen
-        if (history.isEmpty()) {
-            Path startDirectory = USER_WORKING_DIRECTORY;
-            if (Files.isDirectory(startDirectory)) fileChooser.setCurrentDirectory(startDirectory.toFile());
+        Path lastUsedDirectory = history.getLastIfExists();
+        if (lastUsedDirectory == null) {
+            Path userDirectory = USER_DIRECTORY;
+            if (Files.isDirectory(userDirectory)) fileChooser.setCurrentDirectory(userDirectory.toFile());
         } else {
-            fileChooser.setSelectedFile(history.getLast().toFile());
+            fileChooser.setSelectedFile(lastUsedDirectory.toFile());
         }
 
         // Dialog öffnen
@@ -95,9 +96,9 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
             File selectedFile = fileChooser.getSelectedFile();
             if (selectedFile == null) return;
 
-            // Image-Files laden
+            // Bilder laden
             ImageFileType imageFileType = getSelectedImageFileType((FileNameExtensionFilter) fileChooser.getFileFilter());
-            gui.loadImageFiles(Path.of(selectedFile.getAbsolutePath()), imageFileType, false);
+            gui.openImagesDirectory(Path.of(selectedFile.getAbsolutePath()), imageFileType, false);
         }
     }
 
@@ -213,8 +214,8 @@ public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
     // ========================================
     private void updateDirectoryText() {
         if (workspace.isOpen()) {
-            Path path = workspace.getImageFilesDirectory().resolve(workspace.getImageFile().getFileName());
-            this.txtFieldDirectory.setText(path.toString());
+            Path imagePath = workspace.getImageFile().getFilePath();
+            this.txtFieldDirectory.setText(imagePath.toAbsolutePath().toString());
         } else {
             this.txtFieldDirectory.setText(null);
         }

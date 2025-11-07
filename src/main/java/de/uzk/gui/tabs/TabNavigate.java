@@ -40,7 +40,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         gbc.setPosAndInsets(0, 1, 0, 0, 0, 15);
 
         // timeSpinner
-        SpinnerNumberModel timeSpinnerModel = new SpinnerNumberModel(30, 1, Config.MAX_TIME_UNIT, 0.1);
+        SpinnerNumberModel timeSpinnerModel = new SpinnerNumberModel(30, Config.MIN_TIME_UNIT, Config.MAX_TIME_UNIT, 0.1);
         this.timeUnitSpinner = getUnitSpinner(timeSpinnerModel, Axis.TIME);
         this.container.add(timeUnitSpinner, gbc);
 
@@ -72,7 +72,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         gbc.setPosAndInsets(0, 3, 0, 0, 0, 15);
 
         // timeSpinner
-        SpinnerNumberModel levelSpinnerModel = new SpinnerNumberModel(1, 0.1, Config.MAX_LEVEL_UNIT, 0.1);
+        SpinnerNumberModel levelSpinnerModel = new SpinnerNumberModel(1, Config.MIN_LEVEL_UNIT, Config.MAX_LEVEL_UNIT, 0.1);
         this.levelUnitSpinner = getUnitSpinner(levelSpinnerModel, Axis.LEVEL);
         this.container.add(levelUnitSpinner, gbc);
 

@@ -92,7 +92,7 @@ public class DialogLogViewer {
 
         // Tabs hinzufügen
         tabs.add(getWord("dialog.logViewer.logs"), getLogsPanel());
-        if (workspace.getMissingImagesCount() > 0) {
+        if (workspace.getMissingImages() > 0) {
             tabs.add(getWord("dialog.logViewer.missingImages"), getMissingImagesPanel());
         }
         return tabs;
@@ -107,7 +107,7 @@ public class DialogLogViewer {
     }
 
     private JComponent getMissingImagesPanel() {
-        String missingImages = StringUtils.wrapPre(workspace.getMissingImages());
+        String missingImages = StringUtils.wrapPre(workspace.getMissingImagesCount());
         return getScrollableText(StringUtils.wrapHtml(missingImages, "monospaced"));
     }
 

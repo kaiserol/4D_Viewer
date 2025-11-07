@@ -16,13 +16,13 @@ import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class DialogImageLoad implements LoadingImageListener {
+public class DialogImagesLoad implements LoadingImageListener {
     // GUI-Elemente
     private final JDialog dialog;
     private JTextField textFieldFileName;
     private JTextField textFieldDirectoryName;
     private JProgressBar progressBar;
-    private JLabel labelImageFilesCount;
+    private JLabel labelImagesCount;
 
     // Thread
     private Thread thread;
@@ -31,7 +31,7 @@ public class DialogImageLoad implements LoadingImageListener {
     // Für einen schönen Ladeeffekt SLEEP_TIME_NANOS > 0 setzen (1 Millisekunde = 1_000_000 Nanos)
     private static final int SLEEP_TIME_NANOS = 0;
 
-    public DialogImageLoad(JFrame frame) {
+    public DialogImagesLoad(JFrame frame) {
         this.dialog = new JDialog(frame, true);
         this.dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.dialog.addWindowListener(new WindowAdapter() {
@@ -47,8 +47,8 @@ public class DialogImageLoad implements LoadingImageListener {
         );
     }
 
-    public LoadingResult show(Path directory, ImageFileType imageFileType) {
-        if (directory == null) return LoadingResult.DIRECTORY_NOT_EXISTING;
+    public LoadingResult show(Path imagesDirectory, ImageFileType imageFileType) {
+        if (imagesDirectory == null || !Files.exists(imagesDirectory)) return LoadingResult.DIRECTORY_NOT_EXISTING;
         this.dialog.getContentPane().removeAll();
         this.dialog.setLayout(new BorderLayout());
         this.dialog.setTitle(getWord("dialog.imageLoading") + " (" + imageFileType.getDescription() + ")");
@@ -61,14 +61,14 @@ public class DialogImageLoad implements LoadingImageListener {
         this.dialog.add(panel);
 
         // Wenn eine gültige "Datei" übergeben wird, wird ins Elternverzeichnis navigiert,
-        // ansonsten wird "directory" beibehalten
-        Path changedDirectory = Files.isRegularFile(directory) ? directory.getParent() : directory;
-        this.textFieldDirectoryName.setText(changedDirectory.toString());
+        // ansonsten wird "imagesDirectory" beibehalten
+        Path changedImagesDirectory = Files.isRegularFile(imagesDirectory) ? imagesDirectory.getParent() : imagesDirectory;
+        this.textFieldDirectoryName.setText(changedImagesDirectory.toAbsolutePath().toString());
 
         // Thread starten
         this.thread = null;
         this.result = null;
-        startThread(changedDirectory, imageFileType);
+        startThread(changedImagesDirectory, imageFileType);
 
         // Dialog anzeigen
         this.dialog.pack();
@@ -94,7 +94,7 @@ public class DialogImageLoad implements LoadingImageListener {
         // Anzahl gefundener Bilder hinzufügen
         JPanel imagesFoundPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
         imagesFoundPanel.add(new JLabel(getWord("dialog.imageLoading.foundImages") + ":"));
-        imagesFoundPanel.add(this.labelImageFilesCount = new JLabel("0"));
+        imagesFoundPanel.add(this.labelImagesCount = new JLabel("0"));
         panel.add(imagesFoundPanel, BorderLayout.CENTER);
 
         return panel;
@@ -130,7 +130,7 @@ public class DialogImageLoad implements LoadingImageListener {
     // ========================================
     @Override
     public void onLoadingStart() {
-        logger.info(String.format("Loading images from the directory '%s'", workspace.getImageFilesDirectory()));
+        logger.info(String.format("Loading images from the directory '%s'", workspace.getImagesDirectory().toAbsolutePath()));
     }
 
     @Override
@@ -191,16 +191,16 @@ public class DialogImageLoad implements LoadingImageListener {
     private void updateProgress(int filesCount, int currentFileNumber, int imagesCount) {
         this.progressBar.setValue(currentFileNumber);
         this.progressBar.setString(currentFileNumber + " / " + filesCount);
-        this.labelImageFilesCount.setText(String.valueOf(imagesCount));
+        this.labelImagesCount.setText(String.valueOf(imagesCount));
     }
 
     // ========================================
     // Thread Methoden
     // ========================================
-    private void startThread(Path directory, ImageFileType imageFileType) {
+    private void startThread(Path imagesDirectory, ImageFileType imageFileType) {
         if (this.thread != null) return;
         this.thread = new Thread(() -> {
-            this.result = workspace.openDirectory(directory, imageFileType, DialogImageLoad.this);
+            this.result = workspace.openImagesDirectory(imagesDirectory, imageFileType, DialogImagesLoad.this);
             SwingUtilities.invokeLater(this.dialog::dispose);
         });
         this.thread.start();

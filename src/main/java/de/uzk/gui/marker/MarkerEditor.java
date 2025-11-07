@@ -29,7 +29,7 @@ public class MarkerEditor extends Container {
 
     public MarkerEditor(ImageFile onto, Marker marker) {
         this.marker = marker;
-        this.preview = new MarkerPreview(Icons.loadImage(onto.getPath(), true), marker, this);
+        this.preview = new MarkerPreview(Icons.loadImage(onto.getFilePath(), true), marker, this);
         this.colorChooser = new JColorChooser();
         init();
     }

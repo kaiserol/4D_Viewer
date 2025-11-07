@@ -18,15 +18,17 @@ Darstellung und flexible Bildmanipulation.
     - Farbe, Größe und Position frei wählbar
 - **Unterstützte Formate**: GIF, JPEG, PNG, TIFF
 - **Internationalisierung**: Deutsch / Englisch
-- **App-Verzeichnis**:\
-  `{Benutzerverzeichnis}/.4D_Viewer/`
+- **Anwendungsverzeichnis**:\
+  `{Benutzerverzeichnis}/4D_Viewer/.config`\
+  Enthält alle globalen Einstellungen und Nutzerdaten der Anwendung:
     - _history.txt_: Verlauf der zuletzt geöffneten Projekte
-    - _settings.json_: Benutzereinstellungen (Sprache, Theme, Schriftgröße, Shortcuts)
-- **Projekt-Verzeichnis**:\
-  `{Benutzerverzeichnis}/.4D_Viewer/{Bilderverzeichnis}`
+    - _settings.json_: Benutzereinstellungen (Sprache, Theme, Schriftgröße)
+- **Projektverzeichnis**:\
+  `{Benutzerverzeichnis}/4D_Viewer/projects/{Bilderverzeichnis}`\
+  Beinhaltet alle projektspezifischen Dateien und Konfigurationen:
+    - _snapshots/_: Ablage für Momentaufnahmen
     - _config.json_: projektbezogene Konfigurationen (Einheiten, Spiegelung, Rotation, Zoom)
     - _markers.json_: gespeicherte Markierungen aus der UI
-    - _snapshots/_: Ablage für Momentaufnahmen
 
 ## 🧩 Installation & Ausführung
 
@@ -114,13 +116,16 @@ Falls eine andere Version angezeigt wird, ggf. `JAVA_HOME` anpassen oder eine pa
 
 ## 📸 Screenshots
 
-### Helles Farbschema
+[//]: # (### Helles Farbschema)
 
-![App LightMode](src/main/resources/images/screenshots/App_LightMode.png)
+[//]: # ()
+[//]: # (![App LightMode]&#40;src/main/resources/images/screenshots/App_LightMode.png&#41;)
 
-### Dunkles Farbschema
+[//]: # ()
+[//]: # (### Dunkles Farbschema)
 
-![App DarkMode](src/main/resources/images/screenshots/App_DarkMode.png)
+[//]: # ()
+[//]: # (![App DarkMode]&#40;src/main/resources/images/screenshots/App_DarkMode.png&#41;)
 
 ### Einstellungen
 

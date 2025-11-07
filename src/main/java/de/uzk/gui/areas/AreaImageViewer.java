@@ -6,7 +6,7 @@ import de.uzk.gui.GuiUtils;
 import de.uzk.gui.Icons;
 import de.uzk.image.Axis;
 import de.uzk.markers.Marker;
-import de.uzk.utils.ScreenshotHelper;
+import de.uzk.utils.SnapshotHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +19,7 @@ import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements MouseMotionListener  {
+public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements MouseMotionListener {
     // GUI-Elemente
     private JPanel panelView;
     private JPanel panelImage;
@@ -135,6 +135,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
 
     private class DragListener extends MouseAdapter {
         private Point start;
+
         @Override
         public void mousePressed(MouseEvent e) {
             this.start = e.getPoint();
@@ -143,9 +144,9 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
         @Override
         public void mouseDragged(MouseEvent e) {
             super.mouseDragged(e);
-            if(this.start != null) {
-                insetX = this.start.x -e.getX() ;
-                insetY = this.start.y -e.getY();
+            if (this.start != null) {
+                insetX = this.start.x - e.getX();
+                insetY = this.start.y - e.getY();
                 container.repaint();
             }
         }
@@ -186,7 +187,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
             g2D.drawImage(this.currentImage, x - this.insetX, y - this.insetY, width, height, null);
         } else {
             // Eine Fehlermeldung wird angezeigt, wenn das aktuelle Bild nicht geladen werden kann (weil es nicht existiert)
-            String text = workspace.getImageFilesDirectory() != null ? getWord("placeholder.imageCouldNotLoad") : "";
+            String text = workspace.getImagesDirectory() != null ? getWord("placeholder.imageCouldNotLoad") : "";
             GuiUtils.drawCenteredText(g2D, text, this.panelImage);
         }
     }
@@ -199,8 +200,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
         switch (actionType) {
             case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> updateCurrentImage();
             case SHORTCUT_TAKE_SCREENSHOT -> {
-
-                if (ScreenshotHelper.saveScreenshot(this.currentImage)) {
+                if (SnapshotHelper.saveSnapshot(this.currentImage)) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SCREENSHOT_COUNTER);
                 }
             }
@@ -216,7 +216,6 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
         setScrollBarValues(this.scrollBarTime, workspace.getTime(), workspace.getMaxTime());
         setScrollBarValues(this.scrollBarLevel, workspace.getLevel(), workspace.getMaxLevel());
     }
-
 
 
     @Override
@@ -244,8 +243,6 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
     }
 
 
-
-
     // ========================================
     // Hilfsmethoden
     // ========================================
@@ -261,13 +258,13 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
         // Bild neu laden
         this.currentImage = null;
         if (workspace.isOpen()) {
-            Path imagePath = workspace.getImageFile().getPath();
+            Path imagePath = workspace.getImageFile().getFilePath();
             BufferedImage originalImage = Icons.loadImage(imagePath, false);
             List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
             if (originalImage != null) {
                 long t = System.nanoTime();
                 this.currentImage = GuiUtils.getEditedImage(originalImage, true, markers);
-                long dt =  System.nanoTime() - t;
+                long dt = System.nanoTime() - t;
                 logger.debug(String.format("Edited image in %,d ns", dt));
             }
         }
