@@ -15,7 +15,7 @@ import static de.uzk.gui.GuiUtils.COLOR_RED;
 public class MissingImagesReport {
     private final Map<Integer, List<ImageFile>> missingByTime;
     private final Workspace workspace;
-    private final Config config ;
+    private final Config config;
     private final ImageFile referenceImageFile;
 
     public MissingImagesReport(Workspace workspace) {
@@ -36,8 +36,8 @@ public class MissingImagesReport {
         int missing = 0;
 
         // Durchlaufe die ganze Matrix
-        for(List<ImageFile> missingList: missingByTime.values()) {
-            if(missingList.isEmpty()) continue;
+        for (List<ImageFile> missingList : missingByTime.values()) {
+            if (missingList.isEmpty()) continue;
             int time = missingList.get(0).getTime();
             report.append(StringUtils.wrapBold("--- Time: " + time + " ---")).append(StringUtils.NEXT_LINE);
             report.append("Missing Levels: ").append(missingList.size()).append(StringUtils.NEXT_LINE);
@@ -63,27 +63,27 @@ public class MissingImagesReport {
     public void log() {
         StringBuilder report = new StringBuilder();
         int count = 0;
-        for(List<ImageFile> missingList: missingByTime.values()) {
-            if(missingList.isEmpty()) continue;
-             for (ImageFile missing: missingList) report.append(formatImageFileRow(missing));
+        for (List<ImageFile> missingList : missingByTime.values()) {
+            if (missingList.isEmpty()) continue;
+            for (ImageFile missing : missingList) report.append(formatImageFileRow(missing));
             report.append(StringUtils.NEXT_LINE);
-            count+= missingList.size();
+            count += missingList.size();
         }
-        if(count > 0) {
+        if (count > 0) {
             logger.warning(createReportHeader(count) + report);
         }
     }
 
     private void fillReport() {
-        for(int t = 0; t < workspace.getMaxTime(); t++) {
+        for (int t = 0; t < workspace.getMaxTime(); t++) {
             List<ImageFile> missing = new ArrayList<>();
-            for(int l = 0; l < workspace.getMaxLevel(); l++) {
+            for (int l = 0; l < workspace.getMaxLevel(); l++) {
                 ImageFile imageFile = workspace.getImageFile(t, l);
-                if(imageFile == null) {
+                if (imageFile == null) {
                     ImageFile dummy = new ImageFile(getImageFilePath(t, l), t, l);
                     missing.add(dummy);
                     workspace.setImageFile(t, l, dummy);
-                } else if(!imageFile.exists()) {
+                } else if (!imageFile.exists()) {
                     missing.add(imageFile);
                 }
             }
@@ -128,5 +128,4 @@ public class MissingImagesReport {
         String text = String.format("- Filename: '%s' (time=%s, level=%s)", fileName, time, level);
         return text + StringUtils.NEXT_LINE;
     }
-
 }

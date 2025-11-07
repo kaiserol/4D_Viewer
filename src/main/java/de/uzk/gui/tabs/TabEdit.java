@@ -148,7 +148,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
         // snapshotButton
         JButton snapshotButton = new JButton(getWord("items.edit.takeSnapshot"));
-        snapshotButton.addActionListener(e -> gui.getActionHandler().executeAction(ActionType.ACTION_TAKE_SNAPSHOT));
+        snapshotButton.addActionListener(e -> gui.getActionHandler().executeAction(ActionType.SHORTCUT_TAKE_SNAPSHOT));
         this.container.add(snapshotButton, gbc);
     }
 
@@ -187,12 +187,10 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
     @Override
     public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.SHORTCUT_TURN_IMAGE_90_LEFT) {
-            degreeSpinner.setValue(NumberUtils.turn90Left(workspace.getConfig().getRotation()));
-        } else if (actionType == ActionType.SHORTCUT_TURN_IMAGE_90_RIGHT) {
-            degreeSpinner.setValue(NumberUtils.turn90Right(workspace.getConfig().getRotation()));
-        } else if (actionType == ActionType.ACTION_UPDATE_SNAPSHOT_COUNTER) {
-            updateSnapshotCounter();
+        switch (actionType) {
+            case SHORTCUT_TURN_IMAGE_90_LEFT ->  degreeSpinner.setValue(NumberUtils.turn90Left(workspace.getConfig().getRotation()));
+            case SHORTCUT_TURN_IMAGE_90_RIGHT -> degreeSpinner.setValue(NumberUtils.turn90Right(workspace.getConfig().getRotation()));
+            case ACTION_UPDATE_SNAPSHOT_COUNTER -> updateSnapshotCounter();
         }
     }
 

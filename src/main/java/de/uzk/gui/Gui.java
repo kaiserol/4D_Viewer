@@ -4,7 +4,7 @@ import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
 import de.uzk.action.HandleActionListener;
 import de.uzk.gui.areas.AreaContainerInteractive;
-import de.uzk.gui.areas.AreaDirectorySelection;
+import de.uzk.gui.areas.AreaImageDirectoryPath;
 import de.uzk.gui.areas.AreaImageViewer;
 import de.uzk.gui.areas.AreaTabs;
 import de.uzk.gui.dialogs.DialogImagesLoad;
@@ -66,7 +66,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     public void registerUnsavedChange() {
-        if(!this.hasUnsavedChanges) {
+        if (!this.hasUnsavedChanges) {
             this.container.setTitle(this.container.getTitle() + "*");
         }
 
@@ -74,7 +74,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     public void registerConfigSaved() {
-        if(this.hasUnsavedChanges) {
+        if (this.hasUnsavedChanges) {
             this.container.setTitle(this.container.getTitle().replace("*", ""));
         }
         this.hasUnsavedChanges = false;
@@ -92,6 +92,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         updateTheme();
 
         // Bilder laden
+
+        // TODO: Warum rausgenommen (für mich)
+//        if (!openImagesDirectory(history.getLastIfExists(), workspace.getConfig().getImageFileType(), true))
         if (!openImagesDirectory(history.getLastIfExists(), null, true)) {
             toggleOff();
         }
@@ -162,18 +165,19 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.setTitle(getWord("app.name"));
         this.container.setLayout(new BorderLayout());
 
-        // mainPanel
+        // Panel erstellen
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // directorySelection
-        AreaDirectorySelection directorySelection = new AreaDirectorySelection(this);
-        mainPanel.add(directorySelection.getContainer(), BorderLayout.NORTH);
+        // Bilder Verzeichnis Pfad hinzufügen
+        AreaImageDirectoryPath imageDirectoryPath = new AreaImageDirectoryPath(this);
+        mainPanel.add(imageDirectoryPath.getContainer(), BorderLayout.NORTH);
 
-        // splitPane (tabs, imageViewer)
+        // SplitPane: Tabs & Bilder-Betrachter erstellen
         AreaTabs tabs = new AreaTabs(this);
         AreaImageViewer imageViewer = new AreaImageViewer(this);
 
+        // SplitPane hinzufügen
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setOneTouchExpandable(true);
         splitPane.add(tabs.getContainer());
@@ -219,13 +223,10 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     // ========================================
     @Override
     public void handleAction(ActionType actionType) {
-        // Prüfe, ob der Zeitpunkt angepinnt wurde
-        if (actionType == ActionType.SHORTCUT_TOGGLE_PIN_TIME) workspace.togglePinTime();
-
-        switch(actionType) {
-            case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER ->
-                this.registerUnsavedChange();
-
+        if (actionType == null) return;
+        switch (actionType) {
+            case SHORTCUT_PIN_TIME -> workspace.togglePinTime();
+            case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> this.registerUnsavedChange();
         }
 
         // Observer ausführen
@@ -251,6 +252,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     @Override
     public void update(Axis axis) {
+        if (axis == null) return;
+
         // Observer ausführen
         for (UpdateImageListener observer : updateImageListeners) observer.update(axis);
         updateUI();
@@ -290,43 +293,42 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         // Prüfe, ob das Verzeichnis passende Bilder hat
         LoadingResult result = this.dialogImagesLoad.show(imagesDirectory, imageFileType);
         switch (result) {
-            case LOADED -> {
+            case LOADING_SUCCESSFUL -> {
                 toggleOn();
                 handleAction(ActionType.ACTION_ADD_MARKER);
                 return true;
             }
-            case ALREADY_LOADED -> {
+            case DIRECTORY_ALREADY_LOADED -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + imageFileType + " " +
-                        getWord("file.directory") + " '" + imagesDirectory + "' " +
-                        getWord("optionPane.directory.alreadyLoaded") + ".";
+                String message = getWord("optionPane.directory.msgAlreadyLoaded")
+                    .formatted(imageFileType.getType(), imagesDirectory);
                 JOptionPane.showMessageDialog(
-                        this.container,
-                        message,
-                        getWord("optionPane.title.error"),
-                        JOptionPane.ERROR_MESSAGE
+                    this.container,
+                    message,
+                    getWord("optionPane.title.error"),
+                    JOptionPane.ERROR_MESSAGE
                 );
             }
-            case DIRECTORY_NOT_EXISTING -> {
+            case DIRECTORY_DOES_NOT_EXIST -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + " '" + imagesDirectory + "' " +
-                        getWord("optionPane.directory.doesNotExisting") + ".";
+                String message = getWord("optionPane.directory.msgDoesNotExist")
+                    .formatted(imagesDirectory);
                 JOptionPane.showMessageDialog(
-                        this.container,
-                        message,
-                        getWord("optionPane.title.error"),
-                        JOptionPane.ERROR_MESSAGE
+                    this.container,
+                    message,
+                    getWord("optionPane.title.error"),
+                    JOptionPane.ERROR_MESSAGE
                 );
             }
             case DIRECTORY_HAS_NO_IMAGES -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.the") + " " + getWord("file.directory") + " '" + imagesDirectory + "' " +
-                        getWord("optionPane.directory.hasNo") + " " + imageFileType.getDescription() + ".";
+                String message = getWord("optionPane.directory.msgHasNoImages")
+                    .formatted(imagesDirectory, imageFileType.getType());
                 JOptionPane.showMessageDialog(
-                        this.container,
-                        message,
-                        getWord("optionPane.title.error"),
-                        JOptionPane.ERROR_MESSAGE
+                    this.container,
+                    message,
+                    getWord("optionPane.title.error"),
+                    JOptionPane.ERROR_MESSAGE
                 );
             }
         }
@@ -338,11 +340,11 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             JCheckBox checkBox = new JCheckBox(getWord("optionPane.closeApp.dont_ask_again"));
             Object[] message = new Object[]{getWord("optionPane.closeApp.question"), checkBox};
             int option = JOptionPane.showConfirmDialog(
-                    this.container,
-                    message,
-                    getWord("optionPane.title.confirm"),
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE
+                this.container,
+                message,
+                getWord("optionPane.title.confirm"),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
             );
 
             // Wenn der Benutzer "Nein" klickt → Abbrechen

@@ -72,7 +72,7 @@ public final class GuiUtils {
         return font.getName();
     }
 
-    public static Desktop getDesktopSecure() {
+    public static Desktop getDesktop() {
         if (!Desktop.isDesktopSupported()) return null;
         return Desktop.getDesktop();
     }
@@ -116,7 +116,7 @@ public final class GuiUtils {
     // WebLink öffnen
     // ========================================
     public static void openWebLink(URL url) {
-        Desktop desktop = getDesktopSecure();
+        Desktop desktop = getDesktop();
         if (desktop == null) return;
 
         try {
@@ -143,7 +143,7 @@ public final class GuiUtils {
     }
 
     public static void initDesktopHandlers(Gui gui) {
-        Desktop desktop = getDesktopSecure();
+        Desktop desktop = getDesktop();
         if (gui == null || desktop == null) return;
 
         // TODO: Ersetze durch eine Dialog Klasse (About)

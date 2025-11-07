@@ -48,9 +48,12 @@ public class DialogImagesLoad implements LoadingImageListener {
     }
 
     public LoadingResult show(Path imagesDirectory, ImageFileType imageFileType) {
-        if (imagesDirectory == null || !Files.exists(imagesDirectory)) return LoadingResult.DIRECTORY_NOT_EXISTING;
+        if (imagesDirectory == null || !Files.exists(imagesDirectory)) return LoadingResult.DIRECTORY_DOES_NOT_EXIST;
         this.dialog.getContentPane().removeAll();
         this.dialog.setLayout(new BorderLayout());
+
+        // TODO: Warum rausgenommen (für mich)
+//        this.dialog.setTitle(getWord("dialog.imageLoading") + " (" + imageFileType.getDescription() + ")");
         this.dialog.setTitle(getWord("dialog.imageLoading"));
 
         // Inhalt hinzufügen
@@ -78,7 +81,7 @@ public class DialogImagesLoad implements LoadingImageListener {
 
         // Das übergebene LoadingResult wird zurückgegeben, wenn beim Laden der Bilder nichts schiefläuft (es können
         // theoretisch Exceptions auftreten, wodurch LoadingResult null gleichen könnte)
-        return this.result != null ? this.result : LoadingResult.INTERRUPTED;
+        return this.result != null ? this.result : LoadingResult.LOADING_INTERRUPTED;
     }
 
     private JPanel createProgressPanel() {

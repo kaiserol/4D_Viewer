@@ -19,7 +19,8 @@ public class ProjectsHelper {
 
     private static final Insets buttonMargin = new Insets(5, 5, 5, 5);
 
-    private ProjectsHelper() {}
+    private ProjectsHelper() {
+    }
 
     public static void openRecents(Gui gui) {
         DefaultListModel<Path> model = new DefaultListModel<>();
@@ -39,6 +40,9 @@ public class ProjectsHelper {
         if (option == JOptionPane.OK_OPTION) {
             Path selectedPath = list.getSelectedValue();
             if (selectedPath == null) return;
+
+            // TODO: Warum rausgenommen (für mich)
+//            gui.openImagesDirectory(selectedPath, workspace.getConfig().getImageFileType(), false);
             gui.openImagesDirectory(selectedPath, null, false);
 
         }
@@ -118,14 +122,14 @@ public class ProjectsHelper {
     }
 
     private static void setFileChooserTitel(JFileChooser fileChooser) {
-        String dialogTitle = String.format("%s", getWord("button.chooseDirectory"));
+        String dialogTitle = String.format("%s", getWord("items.project.openDirectory"));
         fileChooser.setDialogTitle(dialogTitle);
 
         // Dialogtitel dynamisch setzen, wenn der Filter geändert wird
         fileChooser.addPropertyChangeListener(evt -> {
             if (evt.getNewValue() instanceof FileNameExtensionFilter filter) {
                 ImageFileType imageFileType = getSelectedImageFileType(filter);
-                String newTitle = String.format("%s (%s)", getWord("button.chooseDirectory"), imageFileType.getDescription());
+                String newTitle = String.format("%s (%s)", getWord("items.project.openDirectory"), imageFileType.getDescription());
                 fileChooser.setDialogTitle(newTitle);
             }
         });

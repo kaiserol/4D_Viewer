@@ -10,33 +10,23 @@ import java.nio.file.Path;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class AreaDirectorySelection extends AreaContainerInteractive<JPanel> {
+public class AreaImageDirectoryPath extends AreaContainerInteractive<JPanel> {
     // GUI-Elemente
     private JTextField txtFieldDirectory;
 
-
-    public AreaDirectorySelection(Gui gui) {
+    public AreaImageDirectoryPath(Gui gui) {
         super(new JPanel(), gui);
         init();
     }
 
     private void init() {
-        this.container.setLayout(new BorderLayout(10, 0));
+        this.container.setLayout(new BorderLayout());
 
-        // "Bilder entfernen"-Button hinzufügen
-
-        // ButtonBar hinzufügen (Verändert das Aussehen der Buttons)
-        JToolBar buttonBar = new JToolBar();
-        buttonBar.setFloatable(false);
-        buttonBar.setRollover(true);
-        this.container.add(buttonBar, BorderLayout.WEST);
-
-        // "Verzeichnis Pfad"-Textfeld hinzufügen
+        // Bilder-Verzeichnis Pfad hinzufügen
         this.txtFieldDirectory = new JTextField();
         this.txtFieldDirectory.setEditable(false);
         this.txtFieldDirectory.putClientProperty("JTextField.placeholderText", getWord("placeholder.imageDirectory"));
         this.container.add(this.txtFieldDirectory, BorderLayout.CENTER);
-
     }
 
     // ========================================

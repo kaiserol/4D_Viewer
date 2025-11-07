@@ -110,7 +110,7 @@ public class DialogVersions {
                 String normalPart = valueText.substring(0, start).trim();
                 String specialPart = valueText.substring(start).trim();
 
-                Color lighterColor = GuiUtils.adjustColor(GuiUtils.COLOR_BLUE, 0.3f, true);
+                Color lighterColor = GuiUtils.adjustColor(GuiUtils.COLOR_BLUE, 0.2f, true);
                 formattedValue = normalPart + " " + StringUtils.applyColor(specialPart, lighterColor);
             } else {
                 formattedValue = valueText;

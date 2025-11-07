@@ -50,16 +50,16 @@ public class History {
         return null;
     }
 
+    public List<Path> getAll() {
+        return this.history;
+    }
+
     public void save() {
         Path filePath = resolveConfigPath(HISTORY_FILE_NAME);
         List<String> lines = this.history.stream()
             .map(p -> p.toAbsolutePath().toString())
             .toList();
         PathManager.save(filePath, lines);
-    }
-
-    public List<Path> getAll() {
-        return this.history;
     }
 
     public static History load() {

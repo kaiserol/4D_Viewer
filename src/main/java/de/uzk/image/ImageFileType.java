@@ -9,10 +9,10 @@ import static de.uzk.config.LanguageHandler.getWord;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ImageFileType {
-    GIF("GIF", "gif"),
-    JPEG("JPEG", "jpg", "jpeg"),
-    PNG("PNG", "png"),
-    TIFF("TIFF", "tif", "tiff");
+    GIF("gif", "gif"),
+    JPEG("jpeg", "jpg", "jpeg"),
+    PNG("png", "png"),
+    TIFF("tiff", "tif", "tiff");
 
     // Typ der Datei
     private final String type;

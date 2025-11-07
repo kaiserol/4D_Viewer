@@ -14,8 +14,8 @@ import java.util.stream.StreamSupport;
 
 import static de.uzk.Main.history;
 import static de.uzk.Main.logger;
-import static de.uzk.gui.GuiUtils.COLOR_RED;
 
+// Der Workspace entspricht einem Projekt
 public class Workspace {
     // Eigenschaften
     private Path imagesDirectory;
@@ -48,12 +48,10 @@ public class Workspace {
         return this.markers;
     }
 
-
     private void load(ImageFileType imageFileType) {
-
         this.config = Config.load();
         this.markers = Markers.load();
-        if(imageFileType != null) {
+        if (imageFileType != null) {
             this.config.setImageFileType(imageFileType);
         }
     }
@@ -77,7 +75,7 @@ public class Workspace {
         return this.matrix[time][level];
     }
 
-     void setImageFile(int time, int level, ImageFile imageFile) {
+    void setImageFile(int time, int level, ImageFile imageFile) {
         this.matrix[time][level] = imageFile;
     }
 
@@ -213,7 +211,7 @@ public class Workspace {
             // Prüfe, ob das Verzeichnis bereits in der UI geladen ist
             boolean sameDirectory = Objects.equals(this.imagesDirectory, imagesDirectory);
             boolean sameFileType = this.config.getImageFileType() == imageFileType;
-            if (sameDirectory && sameFileType) return LoadingResult.ALREADY_LOADED;
+            if (sameDirectory && sameFileType) return LoadingResult.DIRECTORY_ALREADY_LOADED;
 
             // Verzeichnis, Config & Markers speichern
             Path oldImagesDirectory = this.imagesDirectory;
@@ -230,11 +228,11 @@ public class Workspace {
             try {
                 if (this.loadImages(progress)) {
                     history.add(imagesDirectory);
-                    return LoadingResult.LOADED;
+                    return LoadingResult.LOADING_SUCCESSFUL;
                 }
                 badResult = LoadingResult.DIRECTORY_HAS_NO_IMAGES;
             } catch (InterruptedException e) {
-                badResult = LoadingResult.INTERRUPTED;
+                badResult = LoadingResult.LOADING_INTERRUPTED;
             }
 
             // Variablen zurücksetzen
@@ -243,7 +241,7 @@ public class Workspace {
             this.markers = oldMarkers;
             return badResult;
         }
-        return LoadingResult.DIRECTORY_NOT_EXISTING;
+        return LoadingResult.DIRECTORY_DOES_NOT_EXIST;
     }
 
     private boolean loadImages(LoadingImageListener progress) throws InterruptedException {
@@ -336,7 +334,6 @@ public class Workspace {
             setImageFile(time, level, imageFile);
             count++;
         }
-
 
         return count;
     }

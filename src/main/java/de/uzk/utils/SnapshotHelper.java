@@ -53,7 +53,10 @@ public class SnapshotHelper {
 
         // Wenn das Verzeichnis nicht existiert, wird 0 zurückgegeben
         Path directory = resolveProjectPath(SNAPSHOTS_DIRECTORY);
-        if (!Files.isDirectory(directory)) return 0;
+        if (!Files.isDirectory(directory)) {
+            PathManager.createIfNotExist(directory);
+            return 0;
+        }
 
         int count = 0;
         try (DirectoryStream<Path> paths = Files.newDirectoryStream(directory)) {

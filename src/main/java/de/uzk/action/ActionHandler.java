@@ -19,6 +19,12 @@ import static de.uzk.Main.settings;
 import static de.uzk.Main.workspace;
 import static de.uzk.action.ActionType.*;
 
+// TODO: navigateImage Methoden (aus der executeAction eventuell in seperate Methode auslagern -> wie vorher). Dadurch
+// dass navigateImage in executeAction enthalten ist, kann es sein, dass die navigateImages
+// einmal durch den Accerelerator und durch den ImageViewer ActionListener aufgerufen wird.
+// Will ich selbst testen, ob es nötig ist. (war früher nämlich ein Bug, dass es man es so gelassen hat...)
+// Zumal soll beim Pressed, mousewheellistener eventuell dann auch auslagern (in AreaImageViewer), damit es
+// eindeutiger ist...
 public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     // GUI-Elemente
     private final Gui gui;
@@ -68,24 +74,20 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     public void executeAction(ActionType actionType) {
         if (actionType == null) return;
         switch (actionType) {
+            // Projekte Shortcuts
+            case SHORTCUT_OPEN_FOLDER -> ProjectsHelper.openFileChooser(gui);
+            case SHORTCUT_OPEN_RECENT -> ProjectsHelper.openRecents(gui);
+            case SHORTCUT_CLOSE_PROJECT -> ProjectsHelper.clearImages(gui);
+            case SHORTCUT_SAVE_PROJECT -> {
+                workspace.getConfig().save();
+                gui.registerConfigSaved();
+            }
+
             // Bearbeiten Shortcuts
+            case SHORTCUT_PIN_TIME -> gui.handleAction(SHORTCUT_PIN_TIME);
             case SHORTCUT_TURN_IMAGE_90_LEFT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_LEFT);
             case SHORTCUT_TURN_IMAGE_90_RIGHT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_RIGHT);
-            case ACTION_TAKE_SNAPSHOT -> gui.handleAction(ACTION_TAKE_SNAPSHOT);
-
-            // Sonstige Shortcuts
-            case SHORTCUT_TOGGLE_PIN_TIME -> gui.handleAction(SHORTCUT_TOGGLE_PIN_TIME);
-
-            // Fenster Shortcuts
-            case SHORTCUT_FONT_SIZE_DECREASE -> GuiUtils.updateFontSize(gui, settings.getFontSize() - 1);
-            case SHORTCUT_FONT_SIZE_INCREASE -> GuiUtils.updateFontSize(gui, settings.getFontSize() + 1);
-            case SHORTCUT_FONT_SIZE_RESTORE -> GuiUtils.updateFontSize(gui, Settings.DEFAULT_FONT_SIZE);
-            case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show();
-
-            // Hilfe Shortcuts
-            case SHORTCUT_SHOW_DISCLAIMER -> dialogDisclaimer.show();
-            case SHORTCUT_SHOW_VERSIONS -> dialogVersions.show();
-            case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();
+            case SHORTCUT_TAKE_SNAPSHOT -> gui.handleAction(SHORTCUT_TAKE_SNAPSHOT);
 
             // Navigieren Shortcuts
             case SHORTCUT_GO_TO_FIRST_IMAGE -> scrollToBoundary(Axis.TIME, true);
@@ -98,16 +100,16 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_GO_TO_NEXT_LEVEL -> scroll(Axis.LEVEL, 1, false);
             case SHORTCUT_GO_TO_LAST_LEVEL -> scrollToBoundary(Axis.LEVEL, false);
 
-            // Projekte Shortcuts
-            case SHORTCUT_OPEN_RECENT -> ProjectsHelper.openRecents(gui);
-            case SHORTCUT_OPEN_FOLDER ->
-                ProjectsHelper.openFileChooser(gui);
+            // Fenster Shortcuts
+            case SHORTCUT_FONT_SIZE_DECREASE -> GuiUtils.updateFontSize(gui, settings.getFontSize() - 1);
+            case SHORTCUT_FONT_SIZE_INCREASE -> GuiUtils.updateFontSize(gui, settings.getFontSize() + 1);
+            case SHORTCUT_FONT_SIZE_RESTORE -> GuiUtils.updateFontSize(gui, Settings.DEFAULT_FONT_SIZE);
+            case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show();
 
-            case SHORTCUT_SAVE_CONFIG -> {
-                workspace.getConfig().save();
-                gui.registerConfigSaved();
-            }
-            case SHORTCUT_CLOSE_PROJECT -> ProjectsHelper.clearImages(gui);
+            // Hilfe Shortcuts
+            case SHORTCUT_SHOW_DISCLAIMER -> dialogDisclaimer.show();
+            case SHORTCUT_SHOW_VERSIONS -> dialogVersions.show();
+            case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();
         }
     }
 
@@ -123,13 +125,13 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         if (abs > 1) {
             if (axis == Axis.TIME) {
                 int newTime = (rotation < 0) ?
-                        Math.max(0, workspace.getTime() - abs) :
-                        Math.min(workspace.getMaxTime(), workspace.getTime() + rotation);
+                    Math.max(0, workspace.getTime() - abs) :
+                    Math.min(workspace.getMaxTime(), workspace.getTime() + rotation);
                 workspace.setTime(newTime);
             } else {
                 int newLevel = (rotation < 0) ?
-                        Math.max(0, workspace.getLevel() - abs) :
-                        Math.min(workspace.getMaxLevel(), workspace.getLevel() + rotation);
+                    Math.max(0, workspace.getLevel() - abs) :
+                    Math.min(workspace.getMaxLevel(), workspace.getLevel() + rotation);
                 workspace.setLevel(newLevel);
             }
         } else {

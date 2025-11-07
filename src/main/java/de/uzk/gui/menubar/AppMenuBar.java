@@ -39,12 +39,12 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     private CustomMenu getMenuProjects(ActionHandler actionHandler) {
         CustomMenu menuProjects = new CustomMenu(getWord("items.project"));
 
-        menuProjects.add(new CustomMenuItem(getWord("items.project.openRecent"), null, actionHandler, SHORTCUT_OPEN_RECENT));
         menuProjects.add(new CustomMenuItem(getWord("items.project.open"), null, actionHandler, SHORTCUT_OPEN_FOLDER));
+        menuProjects.add(new CustomMenuItem(getWord("items.project.openRecent"), null, actionHandler, SHORTCUT_OPEN_RECENT));
+        menuProjects.add(new CustomMenuItem(getWord("items.project.save"), null, actionHandler, SHORTCUT_SAVE_PROJECT));
         menuProjects.addSeparator();
-        menuProjects.add(new CustomMenuItem(getWord("items.project.save"), null, actionHandler, SHORTCUT_SAVE_CONFIG));
-        menuProjects.add(new CustomMenuItem(getWord("items.project.close"), null, actionHandler, SHORTCUT_CLOSE_PROJECT));
 
+        menuProjects.add(new CustomMenuItem(getWord("items.project.close"), null, actionHandler, SHORTCUT_CLOSE_PROJECT));
 
         return menuProjects;
     }
@@ -52,12 +52,12 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     private CustomMenu getMenuEdit(ActionHandler actionHandler) {
         CustomMenu menuEdit = new CustomMenu(getWord("items.edit"));
 
-        menuEdit.add(new CustomMenuItem(getWord("items.edit.pinTime"), ICON_PIN, actionHandler, SHORTCUT_TOGGLE_PIN_TIME));
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.pinTime"), ICON_PIN, actionHandler, SHORTCUT_PIN_TIME));
         menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageLeft"), ICON_ARROW_LEFT_TURN, actionHandler, SHORTCUT_TURN_IMAGE_90_LEFT));
         menuEdit.add(new CustomMenuItem(getWord("items.edit.turnImageRight"), ICON_ARROW_RIGHT_TURN, actionHandler, SHORTCUT_TURN_IMAGE_90_RIGHT));
         menuEdit.addSeparator();
 
-        menuEdit.add(new CustomMenuItem(getWord("items.edit.takeSnapshot"), actionHandler, ACTION_TAKE_SNAPSHOT));
+        menuEdit.add(new CustomMenuItem(getWord("items.edit.takeSnapshot"), actionHandler, SHORTCUT_TAKE_SNAPSHOT));
         return menuEdit;
     }
 
@@ -84,8 +84,8 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         menuWindow.add(itemFontRestore = new CustomMenuItem(getWord("items.window.fontSizeRestore"), actionHandler, SHORTCUT_FONT_SIZE_RESTORE));
         updateFontItems();
 
-        Desktop desktop = GuiUtils.getDesktopSecure();
-        if (!(desktop != null && desktop.isSupported(Desktop.Action.APP_PREFERENCES))) {
+        Desktop desktop = GuiUtils.getDesktop();
+        if (desktop == null || !desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
             menuWindow.addSeparator();
             menuWindow.add(new CustomMenuItem(getWord("items.window.openSettings"), actionHandler, SHORTCUT_OPEN_SETTINGS));
         }
@@ -96,6 +96,8 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         CustomMenu menuHelp = new CustomMenu(getWord("items.help"));
         menuHelp.add(new CustomMenuItem(getWord("items.help.showDisclaimer"), actionHandler, SHORTCUT_SHOW_DISCLAIMER));
         menuHelp.add(new CustomMenuItem(getWord("items.help.showVersions"), actionHandler, SHORTCUT_SHOW_VERSIONS));
+        menuHelp.addSeparator();
+
         menuHelp.add(new CustomMenuItem(getWord("items.help.showLogViewer"), actionHandler, SHORTCUT_SHOW_LOG_VIEWER));
         return menuHelp;
     }

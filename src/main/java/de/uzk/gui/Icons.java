@@ -17,6 +17,7 @@ import static de.uzk.Main.settings;
 
 public final class Icons {
     // Bearbeiten Icons
+    public static final FlatSVGIcon ICON_PIN = loadResourceSVG("images/icons/pin.svg");
     public static final FlatSVGIcon ICON_ARROW_LEFT_TURN = loadResourceSVG("images/icons/arrow_left_turn.svg");
     public static final FlatSVGIcon ICON_ARROW_RIGHT_TURN = loadResourceSVG("images/icons/arrow_right_turn.svg");
     public static final FlatSVGIcon ICON_DELETE = loadResourceSVG("images/icons/delete.svg");
@@ -32,33 +33,30 @@ public final class Icons {
     public static final FlatSVGIcon ICON_ARROW_DOWN = loadResourceSVG("images/icons/arrow_down.svg");
     public static final FlatSVGIcon ICON_ARROW_DOWN_END = loadResourceSVG("images/icons/arrow_down_end.svg");
 
-    // Sonstige Icons
-    public static final FlatSVGIcon ICON_PIN = loadResourceSVG("images/icons/pin.svg");
-
-    // App Icon
+    // App Image
     public static final Image APP_IMAGE = Objects.requireNonNull(loadResourceSVG("images/4D.svg")).getImage();
 
     // Icons Arrays
     private static final FlatSVGIcon[] ICONS_COLOR_BLUE = {
-            // Sonstige Icons
-            ICON_PIN,
+        // Bearbeiten Icons
+        ICON_PIN,
     };
     private static final FlatSVGIcon[] ICONS_COLOR_ON_THEME_SWITCH = {
-            // Navigieren Icons
-            ICON_ARROW_LEFT_START,
-            ICON_ARROW_LEFT,
-            ICON_ARROW_RIGHT,
-            ICON_ARROW_RIGHT_END,
+        // Bearbeiten Icons
+        ICON_ARROW_LEFT_TURN,
+        ICON_ARROW_RIGHT_TURN,
+        ICON_DELETE,
 
-            ICON_ARROW_UP_START,
-            ICON_ARROW_UP,
-            ICON_ARROW_DOWN,
-            ICON_ARROW_DOWN_END,
+        // Navigieren Icons
+        ICON_ARROW_LEFT_START,
+        ICON_ARROW_LEFT,
+        ICON_ARROW_RIGHT,
+        ICON_ARROW_RIGHT_END,
 
-            // Bearbeiten Icons
-            ICON_ARROW_LEFT_TURN,
-            ICON_ARROW_RIGHT_TURN,
-            ICON_DELETE,
+        ICON_ARROW_UP_START,
+        ICON_ARROW_UP,
+        ICON_ARROW_DOWN,
+        ICON_ARROW_DOWN_END,
     };
 
     private Icons() {
