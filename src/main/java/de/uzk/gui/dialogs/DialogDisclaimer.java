@@ -33,7 +33,7 @@ public class DialogDisclaimer {
 
         // Inhalte hinzufügen
         JPanel panel = new JPanel(new BorderLayout(0, 20));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
         panel.add(createRightOfUsePanel(), BorderLayout.CENTER);
         panel.add(createLiabilityExclusionPanel(), BorderLayout.SOUTH);
         this.dialog.add(panel, BorderLayout.CENTER);

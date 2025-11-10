@@ -12,6 +12,7 @@ import de.uzk.markers.Marker;
 import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
@@ -35,7 +36,22 @@ public final class GuiUtils {
     public static final Color COLOR_RED = new Color(255, 86, 86);
     public static final Color COLOR_DARK_RED = new Color(148, 0, 0);
 
-    // Inse
+    // Rahmen / Padding
+    public static final Border BORDER_NONE = BorderFactory.createEmptyBorder();
+    public static final Border BORDER_PADDING_LARGE = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+    public static final Border BORDER_PADDING_DEFAULT = BorderFactory.createEmptyBorder(5, 10, 5, 10);
+
+    // Insets
+    public static final Insets INSETS_NONE = new Insets(0, 0, 0, 0);
+    public static final Insets INSETS_DEFAULT = new Insets(5, 10, 5, 10);
+    public static final Insets INSETS_DEFAULT_SMALL = new Insets(5, 5, 5, 5);
+
+    // Bogengröße
+    private static final int ARC_DEFAULT = 999;
+
+    // Pfeil-Form: caret, chevron, triangle
+    private static final String ARROW_TYPE = "chevron";
+
     // Farben & Schriftart
     private static Color textColor;
     private static Color borderColor;
@@ -185,16 +201,12 @@ public final class GuiUtils {
         // Farben und Schriftart
         updateBaseColorsAndFont();
 
-        int arc = 999;
-        Insets defaultInsets = new Insets(5, 10, 5, 10);
-        String arrowType = "chevron"; // Pfeil-Form: caret, chevron, triangle
-
         // Komponenten-Konfigurationen
-        setupMisc(arc, defaultInsets, arrowType);
-        setupComboBox(arc, defaultInsets, arrowType);
-        setupSpinner(arc, defaultInsets, arrowType);
-        setupTabbedPane(arc, arrowType);
-        setupScrollBar(arc);
+        setupMisc();
+        setupComboBox();
+        setupSpinner();
+        setupTabbedPane();
+        setupScrollBar();
         setupSplitPane();
 
         // UI aktualisieren
@@ -212,53 +224,52 @@ public final class GuiUtils {
         UIManager.put("defaultFont", font);
     }
 
-    private static void setupMisc(int arc, Insets padding, String arrowType) {
+    private static void setupMisc() {
         // Komponente
-        UIManager.put("Component.arrowType", arrowType);
+        UIManager.put("Component.arrowType", ARROW_TYPE);
         UIManager.put("Component.hideMnemonics", false);
-        UIManager.put("Component.arc", arc);
+        UIManager.put("Component.arc", ARC_DEFAULT);
 
         // Icon
         UIManager.put("Dialog.showIcon", true);
         UIManager.put("OptionPane.showIcon", true);
 
         // Button
-        UIManager.put("Button.arc", arc);
-        UIManager.put("Button.margin", padding);
+        UIManager.put("Button.arc", ARC_DEFAULT);
+        UIManager.put("Button.margin", INSETS_DEFAULT);
 
         // Checkbox
-        UIManager.put("CheckBox.arc", arc);
-        UIManager.put("CheckBox.margin", new Insets(0, 0, 0, 0));
+        UIManager.put("CheckBox.margin", INSETS_NONE);
 
         // Textfeld
-        UIManager.put("TextComponent.arc", arc);
-        UIManager.put("TextField.arc", arc);
-        UIManager.put("TextArea.margin", padding);
-        UIManager.put("TextField.margin", padding);
-        UIManager.put("TextPane.margin", padding);
+        UIManager.put("TextComponent.arc", ARC_DEFAULT);
+        UIManager.put("TextField.arc", ARC_DEFAULT);
+        UIManager.put("TextArea.margin", INSETS_DEFAULT);
+        UIManager.put("TextField.margin", INSETS_DEFAULT);
+        UIManager.put("TextPane.margin", INSETS_DEFAULT);
 
         // Sonstige Komponenten
-        UIManager.put("List.selectionArc", arc);
-        UIManager.put("MenuItem.selectionArc", arc);
-        UIManager.put("ProgressBar.arc", arc);
-        UIManager.put("TitlePane.buttonArc", arc);
-        UIManager.put("ToolBar.hoverButtonGroupArc", arc);
-        UIManager.put("Tree.selectionArc", arc);
+        UIManager.put("List.selectionArc", ARC_DEFAULT);
+        UIManager.put("MenuItem.selectionArc", ARC_DEFAULT);
+        UIManager.put("ProgressBar.arc", ARC_DEFAULT);
+        UIManager.put("TitlePane.buttonArc", ARC_DEFAULT);
+        UIManager.put("ToolBar.hoverButtonGroupArc", ARC_DEFAULT);
+        UIManager.put("Tree.selectionArc", ARC_DEFAULT);
     }
 
-    private static void setupComboBox(int arc, Insets padding, String arrowType) {
+    private static void setupComboBox() {
         Color arrowColor = Color.LIGHT_GRAY;
         Color textFieldBg = UIManager.getColor("TextField.background");
         Color defaultButtonBg = UIManager.getColor("Button.default.background");
 
-        UIManager.put("ComboBox.arc", arc);
-        UIManager.put("ComboBox.buttonArc", arc);
-        UIManager.put("ComboBox.selectionArc", arc);
+        UIManager.put("ComboBox.arc", ARC_DEFAULT);
+        UIManager.put("ComboBox.buttonArc", ARC_DEFAULT);
+        UIManager.put("ComboBox.selectionArc", ARC_DEFAULT);
         UIManager.put("ComboBox.buttonStyle", "button");
-        UIManager.put("ComboBox.padding", padding);
+        UIManager.put("ComboBox.padding", INSETS_DEFAULT);
 
         // Pfeilfarben
-        UIManager.put("ComboBox.buttonArrowType", arrowType);
+        UIManager.put("ComboBox.buttonArrowType", ARROW_TYPE);
         UIManager.put("ComboBox.buttonArrowColor", adjustColor(arrowColor, 0.0f, false));
         UIManager.put("ComboBox.buttonHoverArrowColor", adjustColor(arrowColor, 0.1f, true));
         UIManager.put("ComboBox.buttonPressedArrowColor", adjustColor(arrowColor, 0.3f, true));
@@ -271,19 +282,19 @@ public final class GuiUtils {
         UIManager.put("ComboBox.buttonEditableBackground", defaultButtonBg);
     }
 
-    private static void setupSpinner(int arc, Insets padding, String arrowType) {
+    private static void setupSpinner() {
         Color arrowColor = Color.LIGHT_GRAY;
         Color textFieldBg = UIManager.getColor("TextField.background");
         Color defaultButtonBg = UIManager.getColor("Button.default.background");
 
-        UIManager.put("Spinner.arc", arc);
-        UIManager.put("Spinner.buttonArc", arc);
-        UIManager.put("Spinner.selectionArc", arc);
+        UIManager.put("Spinner.arc", ARC_DEFAULT);
+        UIManager.put("Spinner.buttonArc", ARC_DEFAULT);
+        UIManager.put("Spinner.selectionArc", ARC_DEFAULT);
         UIManager.put("Spinner.buttonStyle", "roundRect");
-        UIManager.put("Spinner.padding", padding);
+        UIManager.put("Spinner.padding", INSETS_DEFAULT);
 
         // Pfeilfarben
-        UIManager.put("Spinner.buttonArrowType", arrowType);
+        UIManager.put("Spinner.buttonArrowType", ARROW_TYPE);
         UIManager.put("Spinner.buttonArrowColor", adjustColor(arrowColor, 0.0f, false));
         UIManager.put("Spinner.buttonHoverArrowColor", adjustColor(arrowColor, 0.1f, true));
         UIManager.put("Spinner.buttonPressedArrowColor", adjustColor(arrowColor, 0.3f, true));
@@ -294,14 +305,14 @@ public final class GuiUtils {
         UIManager.put("Spinner.buttonSeparatorColor", defaultButtonBg);
     }
 
-    private static void setupTabbedPane(int arc, String arrowType) {
-        UIManager.put("TabbedPane.buttonArc ", arc);
-        UIManager.put("TabbedPane.closeArc", arc);
+    private static void setupTabbedPane() {
+        UIManager.put("TabbedPane.buttonArc ", ARC_DEFAULT);
+        UIManager.put("TabbedPane.closeArc", ARC_DEFAULT);
         UIManager.put("TabbedPane.tabArc", 0);
         UIManager.put("TabbedPane.tabSelectionArc", 0);
         UIManager.put("TabbedPane.tabSelectionHeight", 2);
         UIManager.put("TabbedPane.showTabSeparators", false);
-        UIManager.put("TabbedPane.arrowType", arrowType);
+        UIManager.put("TabbedPane.arrowType", ARROW_TYPE);
 
         // Linienfarbe
         UIManager.put("TabbedPane.underlineColor", COLOR_BLUE);
@@ -312,15 +323,15 @@ public final class GuiUtils {
         UIManager.put("TabbedPane.scrollButtonsPolicy", "asNeeded");
     }
 
-    private static void setupScrollBar(int arc) {
+    private static void setupScrollBar() {
         Color trackColor = UIManager.getColor("ScrollBar.background");
         Color thumbColor = COLOR_BLUE;
 
-        UIManager.put("ScrollBar.trackArc", arc);
-        UIManager.put("ScrollBar.thumbArc", arc);
+        UIManager.put("ScrollBar.trackArc", ARC_DEFAULT);
+        UIManager.put("ScrollBar.thumbArc", ARC_DEFAULT);
         UIManager.put("ScrollBar.width", 10);
-        UIManager.put("ScrollBar.trackInsets", new Insets(0, 0, 0, 0));
-        UIManager.put("ScrollBar.thumbInsets", BorderFactory.createEmptyBorder());
+        UIManager.put("ScrollBar.trackInsets", INSETS_NONE);
+        UIManager.put("ScrollBar.thumbInsets", BORDER_NONE);
         UIManager.put("ScrollBar.showButtons", true);
 
         // Hinter- und Vordergrundfarbe
@@ -423,12 +434,12 @@ public final class GuiUtils {
 
     public static BufferedImage getEditedImage(BufferedImage image, boolean transparentBackground, List<Marker> appliedMarkers) {
         int imageType = transparentBackground ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
-        float offset = 128 * ( (workspace.getConfig().getBrightness() - 100) / 100f);
+        float offset = 128 * ((workspace.getConfig().getBrightness() - 100) / 100f);
         // TODO: debug auskommentieren wenn du es wieder brauchst
 //        System.out.printf("Brightness %d creates offset %f%n", workspace.getConfig().getBrightness(), offset);
         float scale = workspace.getConfig().getContrast() / 100f;
 
-        BufferedImage transformed =  transformImage(image, imageType, workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), appliedMarkers);
+        BufferedImage transformed = transformImage(image, imageType, workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), appliedMarkers);
 
         new RescaleOp(scale, offset, null).filter(transformed, transformed);
 
@@ -436,8 +447,8 @@ public final class GuiUtils {
     }
 
     public static BufferedImage transformImage(BufferedImage image, int imageType, int rotation, boolean mirrorX, boolean mirrorY, List<Marker> appliedMarkers) {
-        if(appliedMarkers == null) appliedMarkers = new ArrayList<>();
-        if( !mirrorX && !mirrorY && rotation % 360 == 0 && appliedMarkers.isEmpty()) return image;
+        if (appliedMarkers == null) appliedMarkers = new ArrayList<>();
+        if (!mirrorX && !mirrorY && rotation % 360 == 0 && appliedMarkers.isEmpty()) return image;
 
         int width = image.getWidth();
         int height = image.getHeight();
@@ -521,11 +532,11 @@ public final class GuiUtils {
         else return container.getComponents();
     }
 
-    public static void makeComponentsSameSize(JPanel buttonPanel, Class<? extends Component> clazz) {
+    public static void makeComponentsSameSize(JPanel panel, Class<? extends Component> clazz) {
         int maxWidth = 0;
 
         // Maximale Breite bestimmen
-        for (Component comp : buttonPanel.getComponents()) {
+        for (Component comp : panel.getComponents()) {
             if (Objects.equals(comp.getClass(), clazz)) {
                 Dimension pref = comp.getPreferredSize();
                 maxWidth = Math.max(maxWidth, pref.width);
@@ -533,7 +544,7 @@ public final class GuiUtils {
         }
 
         // Einheitliche Größe setzen
-        for (Component comp : buttonPanel.getComponents()) {
+        for (Component comp : panel.getComponents()) {
             if (Objects.equals(comp.getClass(), clazz)) {
                 Dimension size = comp.getPreferredSize();
                 comp.setPreferredSize(new Dimension(maxWidth, size.height));

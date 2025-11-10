@@ -1,5 +1,6 @@
 package de.uzk.gui.dialogs;
 
+import de.uzk.gui.GuiUtils;
 import de.uzk.image.ImageFileType;
 import de.uzk.image.LoadingImageListener;
 import de.uzk.image.LoadingResult;
@@ -50,7 +51,7 @@ public class DialogImagesLoad implements LoadingImageListener {
     public LoadingResult show(Path imagesDirectory, ImageFileType imageFileType) {
         if (imagesDirectory == null || !Files.exists(imagesDirectory)) return LoadingResult.DIRECTORY_DOES_NOT_EXIST;
         this.dialog.getContentPane().removeAll();
-        this.dialog.setLayout(new BorderLayout());
+        this.dialog.setLayout(new BorderLayout(0, 10));
 
         // TODO: Warum rausgenommen (für mich)
 //        this.dialog.setTitle(getWord("dialog.imageLoading") + " (" + imageFileType.getDescription() + ")");
@@ -58,7 +59,7 @@ public class DialogImagesLoad implements LoadingImageListener {
 
         // Inhalt hinzufügen
         JPanel panel = new JPanel(new BorderLayout(0, 20));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
+        panel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
         panel.add(createProgressPanel(), BorderLayout.CENTER);
         panel.add(createFileDirectoryPanel(), BorderLayout.SOUTH);
         this.dialog.add(panel);
@@ -110,7 +111,6 @@ public class DialogImagesLoad implements LoadingImageListener {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(0, 0, 0, 0);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;

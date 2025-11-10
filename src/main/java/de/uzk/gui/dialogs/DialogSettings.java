@@ -74,7 +74,7 @@ public class DialogSettings {
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        contentPanel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
         contentPanel.add(createSettingsPanel(), BorderLayout.CENTER);
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
         this.dialog.add(contentPanel, BorderLayout.CENTER);
@@ -105,14 +105,16 @@ public class DialogSettings {
         gbc.gridy = 0;
 
         // 1. Abschnitt: Erscheinungsbild hinzufügen
-        gbc.insets = new Insets(0, 0, 0, 100);
+        gbc.insets.right = 100;
         panel.add(getBoldSectionLabel("dialog.settings.appearance"), gbc);
 
         // Sprache
         gbc.gridy++;
         gbc.gridwidth = 1;
-        gbc.insets = new Insets(10, 0, 0, 10);
+        gbc.insets.top = 10;
+        gbc.insets.right = 10;
         panel.add(new JLabel(getWord("dialog.settings.appearance.language") + ":"), gbc);
+
         gbc.gridx = 1;
         gbc.insets.right = 0;
         this.selectLanguage = new JComboBox<>(Language.sortedValues());
@@ -122,8 +124,9 @@ public class DialogSettings {
         // Farbschema
         gbc.gridy++;
         gbc.gridx = 0;
-        gbc.insets = new Insets(10, 0, 0, 10);
+        gbc.insets.right = 10;
         panel.add(new JLabel(getWord("dialog.settings.appearance.theme") + ":"), gbc);
+
         gbc.gridx = 1;
         gbc.insets.right = 0;
         this.selectTheme = new JComboBox<>(Theme.sortedValues());
@@ -133,8 +136,9 @@ public class DialogSettings {
         // Schriftgröße
         gbc.gridy++;
         gbc.gridx = 0;
-        gbc.insets = new Insets(10, 0, 0, 10);
+        gbc.insets.right = 10;
         panel.add(new JLabel(getWord("dialog.settings.appearance.fontSize") + ":"), gbc);
+
         gbc.gridx = 1;
         gbc.insets.right = 0;
         this.fontSizeSpinner = new JSpinner(new SpinnerNumberModel(this.oldFontSize, Settings.MIN_FONT_SIZE, Settings.MAX_FONT_SIZE, 1));
@@ -144,11 +148,12 @@ public class DialogSettings {
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.gridwidth = 2;
-        gbc.insets = new Insets(20, 0, 0, 100);
+        gbc.insets.top = 20;
+        gbc.insets.right = 100;
         panel.add(getBoldSectionLabel("dialog.settings.windowBehavior"), gbc);
 
         gbc.gridy++;
-        gbc.insets = new Insets(10, 0, 0, 0);
+        gbc.insets.right = 0;
         this.checkConfirmExit = new JCheckBox(getWord("dialog.settings.windowBehavior.confirmExit"));
         this.checkConfirmExit.setSelected(this.oldConfirmExit);
         panel.add(this.checkConfirmExit, gbc);
@@ -173,7 +178,7 @@ public class DialogSettings {
             okButton.setEnabled(changed);
         };
 
-        // Listener für JComboBox (Sprache & Theme)
+        // Listener für JComboBox (Language & Theme)
         this.selectLanguage.addActionListener(e -> checkChanges.run());
         this.selectTheme.addActionListener(e -> checkChanges.run());
 

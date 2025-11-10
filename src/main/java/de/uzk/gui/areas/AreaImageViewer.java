@@ -30,7 +30,6 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
 
     public AreaImageViewer(Gui gui) {
         super(new JPanel(), gui);
-
         init();
     }
 

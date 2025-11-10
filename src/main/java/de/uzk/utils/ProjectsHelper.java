@@ -16,9 +16,6 @@ import static de.uzk.config.LanguageHandler.getWord;
 import static de.uzk.utils.PathManager.USER_DIRECTORY;
 
 public class ProjectsHelper {
-
-    private static final Insets buttonMargin = new Insets(5, 5, 5, 5);
-
     private ProjectsHelper() {
     }
 
@@ -111,7 +108,7 @@ public class ProjectsHelper {
     private static void resetButtonsMarginRecursively(Component comp) {
         if (comp instanceof AbstractButton button) {
             // Nur Buttons ohne Text (also IconButtons) zurücksetzen
-            if (button.getText() == null || button.getText().isEmpty()) button.setMargin(buttonMargin);
+            if (button.getText() == null || button.getText().isEmpty()) button.setMargin(GuiUtils.INSETS_DEFAULT_SMALL);
         }
 
         if (comp instanceof Container innerContainer) {
@@ -161,7 +158,7 @@ public class ProjectsHelper {
 
         // contentPanel
         JPanel contentPanel = new JPanel();
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        contentPanel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
         contentPanel.setBackground(GuiUtils.getBackgroundColor());
 
         // contentPanel hinzufügen
