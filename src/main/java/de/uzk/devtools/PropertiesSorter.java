@@ -215,7 +215,7 @@ public class PropertiesSorter {
                 currentSection = new Section(trimmedLine);
             } else {
                 // Falls keine Sektion bisher vorhanden ist → Dummy-Sektion anlegen
-                if (currentSection == null && !trimmedLine.isEmpty()) {
+                if (currentSection == null && !trimmedLine.isBlank()) {
                     currentSection = new Section(null);
                 }
 
@@ -246,7 +246,7 @@ public class PropertiesSorter {
         String NO = "NO";
         String YES_NO = YES + "/" + NO;
         while (true) {
-            String normalizedQuestion = question == null || !question.isBlank() ? (question + " (" + YES_NO + "): ") : YES_NO + ": ";
+            String normalizedQuestion = question != null && !question.isBlank() ? (question + " (" + YES_NO + "): ") : YES_NO + ": ";
             System.out.print(normalizedQuestion);
             input = scanner.nextLine().trim().toUpperCase();
 
@@ -265,6 +265,24 @@ public class PropertiesSorter {
      */
     private static class Section implements Comparable<Section> {
         /**
+         * Comparator für Property-Zeilen.
+         * Vergleicht nur den Property-Namen (links vom '='),
+         * falls vorhanden – ansonsten den gesamten String.
+         * Vergleich erfolgt case-insensitive und trimmed.
+         */
+        private static final Comparator<String> PROPERTY_NAME_COMPARATOR = (s1, s2) -> {
+            if (s1 == null && s2 == null) return 0;
+            if (s1 == null) return -1;
+            if (s2 == null) return 1;
+
+            // Hilfsmethode für Property-Namen
+            String key1 = extractKey(s1);
+            String key2 = extractKey(s2);
+
+            return key1.compareToIgnoreCase(key2);
+        };
+
+        /**
          * Abschnittsüberschrift oder null
          */
         private final String header;
@@ -281,7 +299,6 @@ public class PropertiesSorter {
         public Section(String header) {
             this.header = header;
             this.subSections = new ArrayList<>();
-            addNewSubSection();
         }
 
         /**
@@ -289,24 +306,34 @@ public class PropertiesSorter {
          */
         private void addNewSubSection() {
             // TreeSet mit case-insensitive Sortierung
-            this.subSections.add(new TreeSet<>(String.CASE_INSENSITIVE_ORDER));
+            this.subSections.add(new TreeSet<>(PROPERTY_NAME_COMPARATOR));
         }
 
         /**
          * Fügt eine Zeile zum aktuellen Unterabschnitt hinzu.
-         * Leere Zeilen erzeugen neue Unterabschnitte.
+         * - Leere Zeilen erzeugen neue Unterabschnitte.
+         * - Bei Property-Zeilen wird vor und nach dem '=' getrimmt.
          *
          * @param line Zeile, die hinzugefügt werden soll
          */
         public void addLine(String line) {
-            Set<String> currentSubSection = this.subSections.get(this.subSections.size() - 1);
-
-            if (line.isEmpty()) {
-                // Neue Untersektion nur starten, wenn die aktuelle nicht leer ist
-                if (!currentSubSection.isEmpty()) addNewSubSection();
-            } else {
-                currentSubSection.add(line);
+            // Falls keine Untersektion existiert, initialisieren
+            if (this.subSections.isEmpty()) {
+                addNewSubSection();
             }
+
+            Set<String> currentSubSection = this.subSections.get(this.subSections.size() - 1);
+            if (line.isBlank()) {
+                // Neue Untersektion nur starten, wenn die aktuelle nicht leer ist
+                if (!currentSubSection.isEmpty()) {
+                    addNewSubSection();
+                }
+                return;
+            }
+
+            // Property-Zeile erkennen und säubern
+            String propertyLine = processPropertyLine(line);
+            currentSubSection.add(propertyLine);
         }
 
         /**
@@ -345,6 +372,47 @@ public class PropertiesSorter {
             if (this.header == null) return -1;
             if (other.header == null) return 1;
             return this.header.compareToIgnoreCase(other.header);
+        }
+
+        /**
+         * Formatiert eine Property-Zeile nach dem Muster "key=value".
+         * <p>
+         * Erkennt Zeilen, die ein Gleichheitszeichen enthalten, und entfernt
+         * überflüssige Leerzeichen um Schlüssel und Wert. Enthält die Zeile
+         * kein "=", wird sie unverändert zurückgegeben.
+         *
+         * @param line die zu verarbeitende Zeile (nicht {@code null})
+         * @return die bereinigte Property-Zeile
+         */
+        private static String processPropertyLine(String line) {
+            if (line == null) return "";
+
+            int equalsIndex = line.indexOf('=');
+            if (equalsIndex == -1) return line;
+
+            // Key und Value getrennt trimmen
+            String key = line.substring(0, equalsIndex).trim();
+            String value = line.substring(equalsIndex + 1).trim();
+            return key + "=" + value;
+        }
+
+        /**
+         * Extrahiert den Property-Namen (linke Seite des '=') aus einer Zeile.
+         * <p>
+         * Falls kein Gleichheitszeichen vorhanden ist, wird die gesamte Zeile
+         * getrimmt zurückgegeben.
+         *
+         * @param line die zu analysierende Zeile (nicht {@code null})
+         * @return den bereinigten Property-Namen
+         */
+        private static String extractKey(String line) {
+            if (line == null) return "";
+
+            int equalsIndex = line.indexOf('=');
+            if (equalsIndex == -1) return line;
+
+            // Nur den linken Teil (Property-Name), getrimmt
+            return line.substring(0, equalsIndex);
         }
     }
 }
