@@ -135,15 +135,17 @@ public class Workspace {
 
     public boolean isPinned(int time) {
         if (!isOpen() && isTimeInvalid(time)) return false;
-        return this.pinTimes.contains(time);
+
+        Integer timeInt = time;
+        return this.pinTimes.contains(timeInt);
     }
 
     public void togglePinTime() {
         if (!isOpen()) return;
 
-        int time = this.currentImageFile.getTime();
-        if (isPinned(time)) this.pinTimes.remove(time);
-        else this.pinTimes.add(time);
+        Integer timeInt = this.currentImageFile.getTime();
+        if (isPinned(timeInt)) this.pinTimes.remove(timeInt);
+        else this.pinTimes.add(timeInt);
     }
 
     // ========================================
@@ -394,9 +396,6 @@ public class Workspace {
     // ========================================
     // Reporting
     // ========================================
-    public int getMissingImagesCount() {
-        return this.missingImagesReport.getMissingImagesCount();
-    }
 
     public void logMissingImages() {
         this.missingImagesReport.logReport(false);

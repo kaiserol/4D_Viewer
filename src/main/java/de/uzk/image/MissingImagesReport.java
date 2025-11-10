@@ -56,11 +56,11 @@ public class MissingImagesReport {
         if (hasDifferences(oldMissingList, newMissingList)) {
             if (onLoading) logReport(missingCount, "missing", reportBuilder);
             else logListDifferences(oldMissingList, newMissingList);
-
-            // Map aktualisieren
-            this.missingByTime.clear();
-            this.missingByTime.putAll(newMissingByTime);
         }
+
+        // Map aktualisieren
+        this.missingByTime.clear();
+        this.missingByTime.putAll(newMissingByTime);
     }
 
     // ========================================
@@ -114,14 +114,12 @@ public class MissingImagesReport {
     public String getHtmlReport() {
         // Report erstellen
         StringBuilder reportBuilder = new StringBuilder();
-        int missingCount = 0;
 
         // Durchlaufe Matrix und finde fehlende Bilder
         for (int time = 0; time < workspace.getMaxTime(); time++) {
             List<Integer> missingLevels = missingByTime.get(time);
-            if (missingLevels.isEmpty()) continue;
+            if (missingLevels == null || missingLevels.isEmpty()) continue;
 
-            missingCount += missingLevels.size();
             reportBuilder.append(StringUtils.wrapBold("--- Time: " + time + " ---")).append(StringUtils.NEXT_LINE);
             reportBuilder.append("Missing Levels: ").append(missingLevels).append(StringUtils.NEXT_LINE);
             reportBuilder.append("Expected Images:").append(StringUtils.NEXT_LINE);
@@ -129,9 +127,20 @@ public class MissingImagesReport {
             reportBuilder.append(StringUtils.NEXT_LINE);
         }
 
-        if (this.missingByTime.isEmpty()) {
-            reportBuilder.append("No missing images.").append(StringUtils.NEXT_LINE);
-            return reportBuilder.toString();
+        int missingCount = getMissingImagesCount();
+        if (missingCount == 0) {
+            if (!workspace.isOpen()) return "";
+
+            int maxTime = workspace.getMaxTime();
+            int maxLevel = workspace.getMaxLevel();
+            String loadedImages = String.format("%d (%dx%d)", (maxTime + 1) * (maxLevel + 1), maxTime + 1, maxLevel + 1);
+            reportBuilder.append(StringUtils.wrapBold("Max Time: ")).append(maxTime).append(StringUtils.NEXT_LINE);
+            reportBuilder.append(StringUtils.wrapBold("Max Level: ")).append(maxLevel).append(StringUtils.NEXT_LINE);
+            reportBuilder.append(StringUtils.wrapBold("In Total: ")).append(loadedImages).append(StringUtils.NEXT_LINE);
+
+            String headerText = "Loaded Images:" + StringUtils.NEXT_LINE;
+            String formattedText = StringUtils.applyColor(StringUtils.wrapBold(headerText), GuiUtils.COLOR_BLUE);
+            return formattedText + StringUtils.NEXT_LINE + reportBuilder;
         } else {
             String headerText = createReportHeader(missingCount, "missing");
             String formattedText = StringUtils.applyColor(StringUtils.wrapBold(headerText), GuiUtils.COLOR_RED);

@@ -91,8 +91,8 @@ public class DialogLogViewer {
 
         // Tabs hinzufügen
         tabs.add(getWord("dialog.logViewer.logs"), getLogsPanel());
-        if (workspace.getMissingImagesCount() > 0) {
-            tabs.add(getWord("dialog.logViewer.missingImages"), getMissingImagesPanel());
+        if (workspace.isOpen()) {
+            tabs.add(getWord("dialog.logViewer.imagesReport"), getMissingImagesPanel());
         }
         return tabs;
     }

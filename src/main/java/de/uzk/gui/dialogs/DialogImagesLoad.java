@@ -166,7 +166,12 @@ public class DialogImagesLoad implements LoadingImageListener {
 
     @Override
     public void onLoadingComplete(int imageFiles) {
-        logger.info("Loaded images: " + imageFiles);
+        if (imageFiles == 0) logger.info("Loaded images: " + imageFiles);
+
+        int maxTime = workspace.getMaxTime();
+        int maxLevel = workspace.getMaxLevel();
+        String loadedImages = String.format("%d (%dx%d)", imageFiles, maxTime + 1, maxLevel + 1);
+        logger.info("Loaded images: " + loadedImages);
     }
 
     // ========================================
