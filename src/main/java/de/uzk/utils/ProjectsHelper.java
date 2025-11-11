@@ -1,5 +1,6 @@
 package de.uzk.utils;
 
+import de.uzk.gui.ComponentUtils;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.image.ImageFileType;
@@ -112,7 +113,7 @@ public class ProjectsHelper {
         }
 
         if (comp instanceof Container innerContainer) {
-            for (Component child : GuiUtils.getComponents(innerContainer)) {
+            for (Component child : ComponentUtils.getComponents(innerContainer)) {
                 resetButtonsMarginRecursively(child);
             }
         }

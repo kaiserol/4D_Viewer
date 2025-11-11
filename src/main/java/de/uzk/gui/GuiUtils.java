@@ -9,21 +9,21 @@ import de.uzk.config.Language;
 import de.uzk.config.Settings;
 import de.uzk.config.Theme;
 import de.uzk.markers.Marker;
-import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
-import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -143,6 +143,47 @@ public final class GuiUtils {
     }
 
     // ========================================
+    // Einstellungen Aktualisierungen
+    // ========================================
+    public static void updateLanguage(Gui gui, Language language) {
+        // Wenn sich die Sprache nicht ändert, abbrechen
+        Language oldLanguage = settings.getLanguage();
+        if (!settings.setLanguage(language)) return;
+
+        // UI aktualisieren
+        logger.info(String.format("Updating Language from '%s' to '%s'", oldLanguage.getValue(), language.getValue()));
+        Locale.setDefault(language.getLocale());
+        JComponent.setDefaultLocale(language.getLocale());
+        gui.rebuild();
+    }
+
+    public static void updateTheme(Gui gui, Theme theme) {
+        // Wenn sich das Farbschema nicht ändert, abbrechen
+        Theme oldTheme = settings.getTheme();
+        if (!settings.setTheme(theme)) return;
+
+        // UI aktualisieren
+        logger.info(String.format("Updating Theme from '%s' to '%s'", oldTheme.getValue(), theme.getValue()));
+        FlatLaf.updateUI();
+        updateFlatLaf();
+        gui.updateTheme();
+    }
+
+    public static void updateFontSize(Gui gui, int fontSize) {
+        if (fontSize < Settings.MIN_FONT_SIZE || fontSize > Settings.MAX_FONT_SIZE) return;
+
+        // Wenn sich die Schriftgröße nicht ändert, abbrechen
+        if (!settings.setFontSize(fontSize)) return;
+
+        // UI aktualisieren
+        font = font.deriveFont((float) fontSize);
+        UIManager.put("defaultFont", font);
+        FlatLaf.updateUI();
+        gui.updateTheme();
+        gui.handleAction(ActionType.ACTION_UPDATE_FONT);
+    }
+
+    // ========================================
     // Initialisierungen
     // ========================================
 
@@ -224,6 +265,9 @@ public final class GuiUtils {
         UIManager.put("defaultFont", font);
     }
 
+    // ========================================
+    // UIManger Aktualisierungen
+    // ========================================
     private static void setupMisc() {
         // Komponente
         UIManager.put("Component.arrowType", ARROW_TYPE);
@@ -374,44 +418,6 @@ public final class GuiUtils {
         return sb.toString();
     }
 
-    public static void updateLanguage(Gui gui, Language language) {
-        // Wenn sich die Sprache nicht ändert, abbrechen
-        Language oldLanguage = settings.getLanguage();
-        if (!settings.setLanguage(language)) return;
-
-        // UI aktualisieren
-        logger.info(String.format("Updating Language from '%s' to '%s'", oldLanguage.getValue(), language.getValue()));
-        Locale.setDefault(language.getLocale());
-        JComponent.setDefaultLocale(language.getLocale());
-        gui.rebuild();
-    }
-
-    public static void updateTheme(Gui gui, Theme theme) {
-        // Wenn sich das Farbschema nicht ändert, abbrechen
-        Theme oldTheme = settings.getTheme();
-        if (!settings.setTheme(theme)) return;
-
-        // UI aktualisieren
-        logger.info(String.format("Updating Theme from '%s' to '%s'", oldTheme.getValue(), theme.getValue()));
-        FlatLaf.updateUI();
-        updateFlatLaf();
-        gui.updateTheme();
-    }
-
-    public static void updateFontSize(Gui gui, int fontSize) {
-        if (fontSize < Settings.MIN_FONT_SIZE || fontSize > Settings.MAX_FONT_SIZE) return;
-
-        // Wenn sich die Schriftgröße nicht ändert, abbrechen
-        if (!settings.setFontSize(fontSize)) return;
-
-        // UI aktualisieren
-        font = font.deriveFont((float) fontSize);
-        UIManager.put("defaultFont", font);
-        FlatLaf.updateUI();
-        gui.updateTheme();
-        gui.handleAction(ActionType.ACTION_UPDATE_FONT);
-    }
-
     // ========================================
     // Bild Bearbeitung & Graphics
     // ========================================
@@ -509,65 +515,5 @@ public final class GuiUtils {
 
         if (lighten) return ColorFunctions.lighten(color, factor);
         else return ColorFunctions.darken(color, factor);
-    }
-
-    public static void setEnabled(Container container, boolean enabled) {
-        if (container == null) return;
-
-        for (Component component : getComponents(container)) {
-            component.setEnabled(enabled);
-            if (component instanceof Container newContainer) {
-                setEnabled(newContainer, enabled);
-            }
-        }
-    }
-
-    public static Component[] getComponents(Container container) {
-        if (container == null) return new Component[0];
-        else if (container instanceof JWindow window) return window.getOwnedWindows();
-        else if (container instanceof JFrame frame) return frame.getContentPane().getComponents();
-        else if (container instanceof JDialog dialog) return dialog.getContentPane().getComponents();
-        else if (container instanceof JMenu menu) return menu.getMenuComponents();
-        else if (container instanceof JScrollPane scrollPane) return scrollPane.getViewport().getComponents();
-        else return container.getComponents();
-    }
-
-    public static void makeComponentsSameSize(JPanel panel, Class<? extends Component> clazz) {
-        int maxWidth = 0;
-
-        // Maximale Breite bestimmen
-        for (Component comp : panel.getComponents()) {
-            if (Objects.equals(comp.getClass(), clazz)) {
-                Dimension pref = comp.getPreferredSize();
-                maxWidth = Math.max(maxWidth, pref.width);
-            }
-        }
-
-        // Einheitliche Größe setzen
-        for (Component comp : panel.getComponents()) {
-            if (Objects.equals(comp.getClass(), clazz)) {
-                Dimension size = comp.getPreferredSize();
-                comp.setPreferredSize(new Dimension(maxWidth, size.height));
-            }
-        }
-    }
-
-    public static boolean valueFitsInRange(Number number, SpinnerNumberModel model) {
-        double minValue = ((Number) model.getMinimum()).doubleValue();
-        double maxValue = ((Number) model.getMaximum()).doubleValue();
-        double stepSize = model.getStepSize().doubleValue();
-        double value = number.doubleValue();
-
-        return NumberUtils.valueFitsInRange(value, minValue, maxValue, stepSize);
-    }
-
-    public static void runWithoutAdjustmentEvents(JScrollBar scrollBar, Runnable action) {
-        AdjustmentListener[] listeners = scrollBar.getAdjustmentListeners();
-        for (AdjustmentListener l : listeners) scrollBar.removeAdjustmentListener(l);
-        try {
-            action.run();
-        } finally {
-            for (AdjustmentListener l : listeners) scrollBar.addAdjustmentListener(l);
-        }
     }
 }

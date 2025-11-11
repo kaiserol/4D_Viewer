@@ -1,10 +1,10 @@
 package de.uzk.gui.tabs;
 
 import de.uzk.config.Config;
-import de.uzk.gui.areas.AreaContainerInteractive;
+import de.uzk.gui.ComponentUtils;
 import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
 import de.uzk.gui.OGridBagConstraints;
+import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.image.Axis;
 
 import javax.swing.*;
@@ -105,8 +105,8 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
             case TIME -> workspace.getConfig().getTimeUnit();
             case LEVEL -> workspace.getConfig().getLevelUnit();
         };
-        if (GuiUtils.valueFitsInRange(number, spinnerModel)) spinner.setValue(number);
-        else updateUnitValue(spinner, axis);
+//        if (GuiUtils.valueFitsInRange(number, spinnerModel)) spinner.setValue(number);
+//        else updateUnitValue(spinner, axis);
 
 
         spinner.addChangeListener(e -> {
@@ -159,7 +159,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
 
     @Override
     public void toggleOn() {
-        GuiUtils.setEnabled(this.container, true);
+        ComponentUtils.setEnabled(this.container, true);
         updateSliderValuesSecretly(timeSlider, workspace.getTime(), workspace.getMaxTime());
         updateSliderValuesSecretly(levelSlider, workspace.getLevel(), workspace.getMaxLevel());
         this.timeUnitSpinner.setValue(workspace.getConfig().getTimeUnit());
@@ -168,7 +168,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
 
     @Override
     public void toggleOff() {
-        GuiUtils.setEnabled(this.container, false);
+        ComponentUtils.setEnabled(this.container, false);
         updateSliderValuesSecretly(timeSlider, 0, 0);
         updateSliderValuesSecretly(levelSlider, 0, 0);
         this.timeUnitSpinner.setValue(workspace.getConfig().getTimeUnit());

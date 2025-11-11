@@ -1,6 +1,7 @@
 package de.uzk.gui.areas;
 
 import de.uzk.action.ActionType;
+import de.uzk.gui.ComponentUtils;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.Icons;
@@ -10,7 +11,10 @@ import de.uzk.utils.SnapshotHelper;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.List;
@@ -18,7 +22,7 @@ import java.util.List;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements MouseMotionListener {
+public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     // GUI-Elemente
     private JPanel panelView;
     private JPanel panelImage;
@@ -52,8 +56,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
         // 2. Bildbereich mit Scrollbars hinzufügen
         this.panelView = new JPanel(new BorderLayout());
         this.panelImage = initImagePanel();
-        this.scrollBarTime = initScrollBar(Adjustable.HORIZONTAL, Axis.TIME);
-        this.scrollBarLevel = initScrollBar(Adjustable.VERTICAL, Axis.LEVEL);
+        this.scrollBarTime = createScrollBar(Adjustable.HORIZONTAL, Axis.TIME);
+        this.scrollBarLevel = createScrollBar(Adjustable.VERTICAL, Axis.LEVEL);
 
         int scrollBarWidth = UIManager.getInt("ScrollBar.width");
         this.panelView.add(this.panelImage, BorderLayout.CENTER);
@@ -64,7 +68,10 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
         this.container.setMinimumSize(new Dimension(scrollBarWidth * 3, scrollBarWidth * 3));
     }
 
-    private JScrollBar initScrollBar(int orientation, Axis axis) {
+    // ========================================
+    // Komponenten-Erzeugung
+    // ========================================
+    private JScrollBar createScrollBar(int orientation, Axis axis) {
         @SuppressWarnings("MagicConstant")
         JScrollBar scrollBar = new JScrollBar(orientation);
         scrollBar.addAdjustmentListener(e -> {
@@ -95,36 +102,24 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
         return panel;
     }
 
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        this.insetX = e.getX();
-        this.insetY = e.getY();
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-
-    }
-
     // ========================================
     // Innere Klassen
     // ========================================
-
-    // Listener für Fokusänderungen
     private class FocusBorderListener implements FocusListener {
+        // Listener für Fokusänderungen
         @Override
         public void focusGained(FocusEvent e) {
-            setFocusBorder(true);
+            setBorder(true);
         }
 
         @Override
         public void focusLost(FocusEvent e) {
-            setFocusBorder(false);
+            setBorder(false);
         }
     }
 
-    // Listener für Fokusaktivierung
     private class FocusMouseListener extends MouseAdapter {
+        // Listener für Fokusaktivierung
         @Override
         public void mouseReleased(MouseEvent e) {
             if (!container.isFocusOwner()) container.requestFocusInWindow();
@@ -158,9 +153,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
     // ========================================
     // Bild zeichnen
     // ========================================
-
-    // Erstellt das Panel mit Bildanzeige
     private JPanel initImagePanel() {
+        // Erstellt das Panel mit Bildanzeige
         return new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -170,8 +164,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
         };
     }
 
-    // Zeichnet das aktuelle Bild und Marker
     private void paintImage(Graphics g) {
+        // Zeichnet das aktuelle Bild und Marker
         Graphics2D g2D = GuiUtils.createHighQualityGraphics2D(g);
         if (this.currentImage != null) {
             double zoomPercentage = workspace.getConfig().getZoom() / 100.0;
@@ -208,46 +202,44 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
     @Override
     public void toggleOn() {
         // Komponenten aktivieren
-        GuiUtils.setEnabled(this.container, true);
+        ComponentUtils.setEnabled(this.container, true);
 
         updateCurrentImage();
-        setScrollBarValues(this.scrollBarTime, workspace.getTime(), workspace.getMaxTime());
-        setScrollBarValues(this.scrollBarLevel, workspace.getLevel(), workspace.getMaxLevel());
+        setScrollBarValuesSecurely(this.scrollBarTime, workspace.getTime(), workspace.getMaxTime());
+        setScrollBarValuesSecurely(this.scrollBarLevel, workspace.getLevel(), workspace.getMaxLevel());
     }
 
 
     @Override
     public void toggleOff() {
         // Komponenten deaktivieren
-        GuiUtils.setEnabled(this.container, false);
+        ComponentUtils.setEnabled(this.container, false);
 
         updateCurrentImage();
-        setScrollBarValues(this.scrollBarTime, 0, 0);
-        setScrollBarValues(this.scrollBarLevel, 0, 0);
+        setScrollBarValuesSecurely(this.scrollBarTime, 0, 0);
+        setScrollBarValuesSecurely(this.scrollBarLevel, 0, 0);
     }
 
     @Override
     public void update(Axis axis) {
         updateCurrentImage();
         switch (axis) {
-            case TIME -> setScrollBarValue(this.scrollBarTime, workspace.getTime());
-            case LEVEL -> setScrollBarValue(this.scrollBarLevel, workspace.getLevel());
+            case TIME -> ComponentUtils.setValueSecurely(this.scrollBarLevel, workspace.getTime());
+            case LEVEL -> ComponentUtils.setValueSecurely(this.scrollBarLevel, workspace.getLevel());
         }
     }
 
     @Override
     public void updateTheme() {
-        setFocusBorder(this.container.hasFocus());
+        setBorder(this.container.hasFocus());
     }
 
 
     // ========================================
     // Hilfsmethoden
     // ========================================
-
-    // Färbt den Rahmen bei Fokus
-    private void setFocusBorder(boolean focus) {
-        Color borderColor = focus ? GuiUtils.COLOR_BLUE : GuiUtils.getBorderColor();
+    private void setBorder(boolean focusedPanel) {
+        Color borderColor = focusedPanel ? GuiUtils.COLOR_BLUE : GuiUtils.getBorderColor();
         this.container.setBorder(BorderFactory.createLineBorder(borderColor));
         this.panelView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
     }
@@ -272,15 +264,9 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> implements
         this.container.repaint();
     }
 
-    private void setScrollBarValues(JScrollBar scrollBar, int value, int max) {
+    private void setScrollBarValuesSecurely(JScrollBar scrollBar, int value, int max) {
         if (scrollBar.getValueIsAdjusting()) return;
         if (scrollBar.getValue() == value && scrollBar.getMaximum() == max) return;
-        GuiUtils.runWithoutAdjustmentEvents(scrollBar, () -> scrollBar.setValues(value, 0, 0, max));
-    }
-
-    private void setScrollBarValue(JScrollBar scrollBar, int value) {
-        if (scrollBar.getValueIsAdjusting()) return;
-        if (scrollBar.getValue() == value) return;
-        GuiUtils.runWithoutAdjustmentEvents(scrollBar, () -> scrollBar.setValue(value));
+        ComponentUtils.runWithoutListeners(scrollBar, sb -> sb.setValues(value, 0, 0, max));
     }
 }

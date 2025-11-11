@@ -7,7 +7,8 @@ import de.uzk.utils.PathManager;
 
 import java.nio.file.Path;
 
-import static de.uzk.utils.PathManager.*;
+import static de.uzk.utils.PathManager.CONFIG_FILE_NAME;
+import static de.uzk.utils.PathManager.resolveProjectPath;
 
 public class Config {
     // Konfigurationen
@@ -18,10 +19,10 @@ public class Config {
     private double levelUnit;
     private boolean mirrorX;
     private boolean mirrorY;
-    private int rotation;
-    private int zoom;
-    private int contrast;
     private int brightness;
+    private int contrast;
+    private int zoom;
+    private int rotation;
 
     // Default-Konstanten
     private static final ImageFileType DEFAULT_IMAGE_FILE_TYPE = ImageFileType.getDefault();
@@ -29,26 +30,29 @@ public class Config {
     private static final String DEFAULT_LEVEL_SEP = "L";
     private static final double DEFAULT_TIME_UNIT = 30.0;
     private static final double DEFAULT_LEVEL_UNIT = 1.0;
+
     private static final boolean DEFAULT_MIRROR_X = false;
     private static final boolean DEFAULT_MIRROR_Y = false;
-    private static final int DEFAULT_ROTATION = 0;
-    private static final int DEFAULT_ZOOM = 100;
-    private static final int DEFAULT_CONTRAST = 100;
+
     private static final int DEFAULT_BRIGHTNESS = 100;
+    private static final int DEFAULT_CONTRAST = 100;
+    private static final int DEFAULT_ZOOM = 100;
+    private static final int DEFAULT_ROTATION = 0;
 
     // MinMax Konstanten
     public static final double MIN_TIME_UNIT = 1;
     public static final double MAX_TIME_UNIT = 600;
     public static final double MIN_LEVEL_UNIT = 0.1;
     public static final double MAX_LEVEL_UNIT = 1000;
-    public static final int MIN_ROTATION = 0;
-    public static final int MAX_ROTATION = 359;
+
+    public static final int MIN_BRIGHTNESS = 0;
+    public static final int MAX_BRIGHTNESS = 200;
+    public static final int MIN_CONTRAST = 0;
+    public static final int MAX_CONTRAST = 200;
     public static final int MIN_ZOOM = 50;
     public static final int MAX_ZOOM = 200;
-    public static final int MIN_CONTRAST = 1;
-    public static final int MAX_CONTRAST = 200;
-    public static final int MIN_BRIGHTNESS = 1;
-    public static final int MAX_BRIGHTNESS = 200;
+    public static final int MIN_ROTATION = 0;
+    public static final int MAX_ROTATION = 359;
 
     @JsonCreator
     public Config(
@@ -59,22 +63,24 @@ public class Config {
         @JsonProperty("levelUnit") double levelUnit,
         @JsonProperty("mirrorX") boolean mirrorX,
         @JsonProperty("mirrorY") boolean mirrorY,
-        @JsonProperty("rotation") int rotation,
-        @JsonProperty("zoom") int zoom,
+        @JsonProperty("brightness") int brightness,
         @JsonProperty("contrast") int contrast,
-        @JsonProperty("brightness") int brightness
+        @JsonProperty("zoom") int zoom,
+        @JsonProperty("rotation") int rotation
     ) {
         this.setImageFileType(imageFileType);
         this.setTimeSep(timeSep);
         this.setLevelSep(levelSep);
         this.setTimeUnit(timeUnit);
         this.setLevelUnit(levelUnit);
+
         this.setMirrorX(mirrorX);
         this.setMirrorY(mirrorY);
-        this.setRotation(rotation);
-        this.setZoom(zoom);
-        this.setContrast(contrast);
+
         this.setBrightness(brightness);
+        this.setContrast(contrast);
+        this.setZoom(zoom);
+        this.setRotation(rotation);
     }
 
     public ImageFileType getImageFileType() {
@@ -163,31 +169,17 @@ public class Config {
         this.mirrorY = mirrorY;
     }
 
-    public int getRotation() {
-        return this.rotation;
+    public int getBrightness() {
+        return brightness;
     }
 
-    public void setRotation(int rotation) {
-        if (MIN_ROTATION <= rotation && rotation <= MAX_ROTATION) {
-            this.rotation = rotation;
+    public void setBrightness(int brightness) {
+        if (MIN_BRIGHTNESS <= brightness && brightness <= MAX_BRIGHTNESS) {
+            this.brightness = brightness;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_ROTATION <= this.rotation && this.rotation <= MAX_ROTATION) return;
-            this.rotation = DEFAULT_ROTATION;
-        }
-    }
-
-    public int getZoom() {
-        return zoom;
-    }
-
-    public void setZoom(int zoom) {
-        if (MIN_ZOOM <= zoom && zoom <= MAX_ZOOM) {
-            this.zoom = zoom;
-        } else {
-            // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_ZOOM <= this.zoom && this.zoom <= MAX_ZOOM) return;
-            this.zoom = DEFAULT_ZOOM;
+            if (MIN_BRIGHTNESS <= this.brightness && this.brightness <= MAX_BRIGHTNESS) return;
+            this.brightness = DEFAULT_BRIGHTNESS;
         }
     }
 
@@ -205,17 +197,31 @@ public class Config {
         }
     }
 
-    public int getBrightness() {
-        return brightness;
+    public int getZoom() {
+        return zoom;
     }
 
-    public void setBrightness(int brightness) {
-        if (MIN_BRIGHTNESS <= brightness && brightness <= MAX_BRIGHTNESS) {
-            this.brightness = brightness;
+    public void setZoom(int zoom) {
+        if (MIN_ZOOM <= zoom && zoom <= MAX_ZOOM) {
+            this.zoom = zoom;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_BRIGHTNESS <= this.brightness && this.brightness <= MAX_BRIGHTNESS) return;
-            this.brightness = DEFAULT_BRIGHTNESS;
+            if (MIN_ZOOM <= this.zoom && this.zoom <= MAX_ZOOM) return;
+            this.zoom = DEFAULT_ZOOM;
+        }
+    }
+
+    public int getRotation() {
+        return this.rotation;
+    }
+
+    public void setRotation(int rotation) {
+        if (MIN_ROTATION <= rotation && rotation <= MAX_ROTATION) {
+            this.rotation = rotation;
+        } else {
+            // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
+            if (MIN_ROTATION <= this.rotation && this.rotation <= MAX_ROTATION) return;
+            this.rotation = DEFAULT_ROTATION;
         }
     }
 
@@ -223,7 +229,6 @@ public class Config {
         Path filePath = resolveProjectPath(CONFIG_FILE_NAME);
         PathManager.save(filePath, this);
     }
-
 
     public static Config load() {
         Path filePath = resolveProjectPath(CONFIG_FILE_NAME);
@@ -242,10 +247,10 @@ public class Config {
             DEFAULT_LEVEL_UNIT,
             DEFAULT_MIRROR_X,
             DEFAULT_MIRROR_Y,
-            DEFAULT_ROTATION,
-            DEFAULT_ZOOM,
+            DEFAULT_BRIGHTNESS,
             DEFAULT_CONTRAST,
-            DEFAULT_BRIGHTNESS
+            DEFAULT_ZOOM,
+            DEFAULT_ROTATION
         );
     }
 }

@@ -1,9 +1,9 @@
 package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionType;
-import de.uzk.gui.areas.AreaContainerInteractive;
+import de.uzk.gui.ComponentUtils;
 import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
+import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.gui.marker.MarkerEditor;
 import de.uzk.gui.marker.MarkerMappingInfo;
 import de.uzk.image.Axis;
@@ -71,12 +71,12 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
 
     @Override
     public void toggleOn() {
-        GuiUtils.setEnabled(this.container, true);
+        ComponentUtils.setEnabled(this.container, true);
     }
 
     @Override
     public void toggleOff() {
-        GuiUtils.setEnabled(this.container, false);
+        ComponentUtils.setEnabled(this.container, false);
     }
 
     @Override

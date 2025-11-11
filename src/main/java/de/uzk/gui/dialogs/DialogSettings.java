@@ -3,6 +3,7 @@ package de.uzk.gui.dialogs;
 import de.uzk.config.Language;
 import de.uzk.config.Settings;
 import de.uzk.config.Theme;
+import de.uzk.gui.ComponentUtils;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.utils.StringUtils;
@@ -70,7 +71,7 @@ public class DialogSettings {
             this.dialog.dispose();
         });
         buttonPanel.add(okButton);
-        GuiUtils.makeComponentsSameSize(buttonPanel, JButton.class);
+        ComponentUtils.makeComponentsSameSize(buttonPanel, JButton.class);
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout(10, 10));

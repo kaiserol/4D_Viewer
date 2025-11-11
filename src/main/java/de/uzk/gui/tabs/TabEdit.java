@@ -2,27 +2,28 @@ package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionType;
 import de.uzk.config.Config;
-import de.uzk.gui.*;
+import de.uzk.gui.ComponentUtils;
+import de.uzk.gui.CyclingSpinnerNumberModel;
+import de.uzk.gui.Gui;
+import de.uzk.gui.OGridBagConstraints;
 import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.utils.NumberUtils;
 import de.uzk.utils.SnapshotHelper;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class TabEdit extends AreaContainerInteractive<JPanel> {
     // GUI-Elemente
+    private JCheckBox mirrorXBox, mirrorYBox;
+    private JSlider contrastSlider, brightnessSlider, zoomSlider;
     private JSpinner degreeSpinner;
-    private JSlider zoomSlider;
-    private JSlider contrastSlider;
-    private JSlider brightnessSlider;
     private JLabel snapshots;
-    private JCheckBox mirrorXBox;
-    private JCheckBox mirrorYBox;
-
 
     public TabEdit(Gui gui) {
         super(new JPanel(), gui);
@@ -32,187 +33,136 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     private void init() {
         this.container.setLayout(new GridBagLayout());
 
-        // GridBagConstraints
-        OGridBagConstraints gbc = new OGridBagConstraints(new Insets(0, 0, 5, 15), GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);
-        gbc.setHorizontal(2, 0);
+        // Layout Manager
+        OGridBagConstraints gbc = new OGridBagConstraints();
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
 
-        // mirrorXBox
-        this.mirrorXBox = new JCheckBox(getWord("items.edit.mirrorHor"));
-        mirrorXBox.setFocusable(false);
-        initCheckBox(mirrorXBox, true);
-        this.container.add(mirrorXBox, gbc);
+        // Kontrollkästchen (Horizontales und Vertikales spiegeln)
+        this.mirrorXBox = createCheckBox(getWord("items.edit.mirrorX"), selected ->
+            setConfigValue(selected, workspace.getConfig()::isMirrorX, workspace.getConfig()::setMirrorX));
+        this.mirrorYBox = createCheckBox(getWord("items.edit.mirrorY"), selected ->
+            setConfigValue(selected, workspace.getConfig()::isMirrorY, workspace.getConfig()::setMirrorY));
+        addRow(this.mirrorXBox, gbc, 0);
+        addRow(this.mirrorYBox, gbc, 5);
 
-        // gbc
-        gbc.setPos(0, 1);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 1;
 
-        // mirrorYBox
-        this.mirrorYBox = new JCheckBox(getWord("items.edit.mirrorVert"));
-        mirrorYBox.setFocusable(false);
-        initCheckBox(mirrorYBox, false);
-        this.container.add(mirrorYBox, gbc);
+        // Schieberegler (Helligkeit, Kontrast und Zoom)
+        this.brightnessSlider = createSlider(Config.MIN_BRIGHTNESS, Config.MAX_BRIGHTNESS, value ->
+            setConfigValue(value, workspace.getConfig()::getBrightness, workspace.getConfig()::setBrightness));
+        this.contrastSlider = createSlider(Config.MIN_CONTRAST, Config.MAX_CONTRAST, value ->
+            setConfigValue(value, workspace.getConfig()::getContrast, workspace.getConfig()::setContrast));
+        this.zoomSlider = createSlider(Config.MIN_ZOOM, Config.MAX_ZOOM, value ->
+            setConfigValue(value, workspace.getConfig()::getZoom, workspace.getConfig()::setZoom));
 
-        // gbc
-        gbc.setPosAndInsets(0, 2, 0, 0, 0, 15);
+        addLabeledRow(gbc, getWord("items.edit.brightness"), this.brightnessSlider, 15);
+        addLabeledRow(gbc, getWord("items.edit.contrast"), this.contrastSlider, 10);
+        addLabeledRow(gbc, getWord("items.edit.zoom"), this.zoomSlider, 10);
 
-        // Create a SpinnerModel for numeric values
-        CyclingSpinnerNumberModel degreeSpinnerModel = new CyclingSpinnerNumberModel(0, Config.MIN_ROTATION, Config.MAX_ROTATION, 1);
-        this.degreeSpinner = getDegreeSpinner(degreeSpinnerModel);
-        this.container.add(this.degreeSpinner, gbc);
+        // Drehfeld (Rotation)
+        degreeSpinner = createSpinner(Config.MIN_ROTATION, Config.MAX_ROTATION, value ->
+            setConfigValue(value, workspace.getConfig()::getRotation, workspace.getConfig()::setRotation));
+        addLabeledRow(gbc, getWord("items.edit.rotation"), degreeSpinner, 10);
 
-        // gbc
-        gbc.setPosAndInsets(2, 2, 0, 0, 0, 0);
-
-        // degreeLabel
-        JLabel degreeLabel = new JLabel(getWord("items.edit.rotateImage"));
-        this.container.add(degreeLabel, gbc);
-
-        gbc.anchor = GridBagConstraints.FIRST_LINE_END;
-        gbc.setPosAndInsets(1, 3, 10, 25, 0, 0);
-        BoundedRangeModel zoomSliderModel = new DefaultBoundedRangeModel(workspace.getConfig().getZoom(), 0, Config.MIN_ZOOM, Config.MAX_ZOOM);
-        this.zoomSlider = new JSlider(zoomSliderModel);
-        this.zoomSlider.addChangeListener(e -> {
-            if(zoomSlider.isEnabled()) {
-                int newValue = zoomSliderModel.getValue();
-                if (newValue != workspace.getConfig().getZoom()) {
-                    workspace.getConfig().setZoom(newValue);
-                    gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
-                }
-            }
-        });
-        this.container.add(zoomSlider, gbc);
-
-        gbc.setPosAndInsets(0, 3, 10, 0, 0, 0);
-        JLabel zoomLabel = new JLabel(getWord("items.edit.zoom"));
-        this.container.add(zoomLabel, gbc);
-
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.setPosAndInsets(1, 4, 10, 25, 0, 0);
-        BoundedRangeModel contrastSliderModel = new DefaultBoundedRangeModel(workspace.getConfig().getContrast(), 0, Config.MIN_CONTRAST, Config.MAX_CONTRAST);
-        this.contrastSlider = new JSlider(contrastSliderModel);
-        this.contrastSlider.addChangeListener(e -> {
-            if(contrastSlider.isEnabled()) {
-                int newValue = contrastSliderModel.getValue();
-                if (newValue != workspace.getConfig().getContrast()) {
-                    workspace.getConfig().setContrast(newValue);
-                    gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
-                }
-            }
-        });
-        this.container.add(contrastSlider, gbc);
-
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.setPosAndInsets(0, 4, 10, 0, 0, 0);
-        JLabel contrastLabel = new JLabel(getWord("items.edit.contrast"));
-        this.container.add(contrastLabel, gbc);
-
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.setPosAndInsets(1, 5, 10, 25, 0, 0);
-        BoundedRangeModel brightnessSliderModel = new DefaultBoundedRangeModel(workspace.getConfig().getBrightness(), 0, Config.MIN_BRIGHTNESS, Config.MAX_BRIGHTNESS);
-        this.brightnessSlider = new JSlider(brightnessSliderModel);
-        this.brightnessSlider.addChangeListener(e -> {
-            if(brightnessSlider.isEnabled()) {
-                int newValue = brightnessSliderModel.getValue();
-                if (newValue != workspace.getConfig().getBrightness()) {
-                    workspace.getConfig().setBrightness(newValue);
-                    gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
-                }
-            }
-        });
-        this.container.add(brightnessSlider, gbc);
-
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.setPosAndInsets(0, 5, 10, 0, 0, 0);
-        JLabel brightnessLabel = new JLabel(getWord("items.edit.brightness"));
-        this.container.add(brightnessLabel, gbc);
-
-        gbc.setHorizontal(1, 1);
-        // gbc
-        gbc.setPosAndInsets(0, 6, 0, 0, 10, 10);
-        gbc.setSizeAndWeight(1, 1, 0, 1);
+        // Momentaufnahmen
         gbc.anchor = GridBagConstraints.SOUTHWEST;
+        gbc.weighty = 1;
+        gbc.gridwidth = 2;
 
-        // snapshotNumberLabel
-        JLabel snapshotNumberLabel = new JLabel(getWord("items.edit.snapshotNumber") + ":");
-        this.container.add(snapshotNumberLabel, gbc);
+        JPanel snapshotsPanel = new JPanel(new BorderLayout(10, 0));
+        snapshotsPanel.add(new JLabel(getWord("items.edit.snapshots") + ":"), BorderLayout.WEST);
+        snapshotsPanel.add(snapshots = new JLabel(), BorderLayout.CENTER);
+        addRow(snapshotsPanel, gbc, 15);
 
-        // gbc
-        gbc.setPosAndInsets(1, 6, 0, 0, 10, 15);
+        gbc.weighty = 0;
 
-        // snapshotLabel
-        this.snapshots = new JLabel();
-        this.container.add(this.snapshots, gbc);
-
-        // gbc
-        gbc.setPosAndInsets(0, 7, 0, 0, 0, 0);
-        gbc.setSizeAndWeight(3, 1, 1, 0);
-
-        // snapshotButton
-        JButton snapshotButton = new JButton(getWord("items.edit.takeSnapshot"));
-        snapshotButton.addActionListener(e -> gui.getActionHandler().executeAction(ActionType.SHORTCUT_TAKE_SNAPSHOT));
-        this.container.add(snapshotButton, gbc);
+        JButton snapshotsButton = new JButton(getWord("items.edit.takeSnapshot"));
+        snapshotsButton.addActionListener(e -> gui.getActionHandler().executeAction(ActionType.SHORTCUT_TAKE_SNAPSHOT));
+        addRow(snapshotsButton, gbc, 5);
     }
 
-    private void initCheckBox(JCheckBox checkBox, boolean isMirrorXBox) {
-        boolean startValue =  (isMirrorXBox ? workspace.getConfig().isMirrorX() : workspace.getConfig().isMirrorY());
-        checkBox.setSelected(startValue);
-        checkBox.addItemListener(e -> {
-                if(this.container.isEnabled()) {
-                    if (isMirrorXBox) workspace.getConfig().setMirrorX(checkBox.isSelected());
-                    else workspace.getConfig().setMirrorY(checkBox.isSelected());
-                    gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
-                }
-        });
+    // ========================================
+    // Komponenten-Erzeugung
+    // ========================================
+    private JCheckBox createCheckBox(String text, Consumer<Boolean> listener) {
+        JCheckBox box = new JCheckBox(text);
+        box.addActionListener(e -> listener.accept(box.isSelected()));
+        box.setFocusPainted(true);
+        return box;
     }
 
-    public JSpinner getDegreeSpinner(SpinnerNumberModel spinnerModel) {
-        JSpinner spinner = new JSpinner(spinnerModel);
+    private JSlider createSlider(int min, int max, Consumer<Integer> listener) {
+        JSlider slider = new JSlider(min, max, min);
+        slider.addChangeListener(e -> listener.accept(slider.getValue()));
+        slider.setSnapToTicks(true);
+        slider.setMajorTickSpacing(10);
+        slider.setMinorTickSpacing(1);
+        return slider;
+    }
 
-        Number rotation = workspace.getConfig().getRotation();
-        if (GuiUtils.valueFitsInRange(rotation, spinnerModel)) spinner.setValue(rotation);
-        else setRotationInImageHandler(spinner);
-
-        spinner.addChangeListener(e -> {
-            if(this.container.isEnabled()) {
-                setRotationInImageHandler(spinner);
-                gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
-            }
-        });
+    private JSpinner createSpinner(int min, int max, Consumer<Integer> listener) {
+        JSpinner spinner = new JSpinner(new CyclingSpinnerNumberModel(min, min, max, 1));
+        spinner.addChangeListener(e -> listener.accept((int) spinner.getValue()));
         return spinner;
     }
 
-    private void setRotationInImageHandler(JSpinner spinner) {
-        Number value = (Number) spinner.getValue();
-        workspace.getConfig().setRotation(value.intValue());
+    // ========================================
+    // Aktualisierungen
+    // ========================================
+    private <T> void setConfigValue(T newValue, Supplier<T> getter, Consumer<T> setter) {
+        // Abbrechen, wenn der Wert sich nicht geändert hat
+        T oldValue = getter.get();
+        if (oldValue.equals(newValue)) return;
+
+        setter.accept(newValue);
+        gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
     }
 
+    private void updateSnapshotCounter() {
+        this.snapshots.setText(String.valueOf(SnapshotHelper.getSnapshotsCount()));
+    }
+
+    // ========================================
+    // Observer Methoden
+    // ========================================
     @Override
     public void handleAction(ActionType actionType) {
         switch (actionType) {
-            case SHORTCUT_TURN_IMAGE_90_LEFT ->  degreeSpinner.setValue(NumberUtils.turn90Left(workspace.getConfig().getRotation()));
-            case SHORTCUT_TURN_IMAGE_90_RIGHT -> degreeSpinner.setValue(NumberUtils.turn90Right(workspace.getConfig().getRotation()));
+            case SHORTCUT_TURN_IMAGE_90_LEFT ->
+                ComponentUtils.setValueSecurely(this.degreeSpinner, NumberUtils.turn90Left(workspace.getConfig().getRotation()));
+            case SHORTCUT_TURN_IMAGE_90_RIGHT ->
+                ComponentUtils.setValueSecurely(this.degreeSpinner, NumberUtils.turn90Right(workspace.getConfig().getRotation()));
             case ACTION_UPDATE_SNAPSHOT_COUNTER -> updateSnapshotCounter();
         }
     }
 
     @Override
     public void toggleOn() {
-        GuiUtils.setEnabled(this.container, true);
-        updateValues();
-        updateSnapshotCounter();
-    }
+        ComponentUtils.setEnabled(this.container, true);
 
-    private void updateValues() {
-        this.degreeSpinner.setValue(workspace.getConfig().getRotation());
-        this.mirrorXBox.setSelected(workspace.getConfig().isMirrorX());
-        this.mirrorYBox.setSelected(workspace.getConfig().isMirrorY());
-        this.zoomSlider.setValue(workspace.getConfig().getZoom());
-        this.contrastSlider.setValue(workspace.getConfig().getContrast());
-        this.brightnessSlider.setValue(workspace.getConfig().getBrightness());
+        ComponentUtils.setValueSecurely(this.mirrorXBox, workspace.getConfig().isMirrorX());
+        ComponentUtils.setValueSecurely(this.mirrorYBox, workspace.getConfig().isMirrorY());
+        ComponentUtils.setValueSecurely(this.brightnessSlider, workspace.getConfig().getBrightness());
+        ComponentUtils.setValueSecurely(this.contrastSlider, workspace.getConfig().getContrast());
+        ComponentUtils.setValueSecurely(this.zoomSlider, workspace.getConfig().getZoom());
+        ComponentUtils.setValueSecurely(this.degreeSpinner, workspace.getConfig().getRotation());
+        updateSnapshotCounter();
     }
 
     @Override
     public void toggleOff() {
-        GuiUtils.setEnabled(this.container, false);
+        ComponentUtils.setEnabled(this.container, false);
+
+        ComponentUtils.setValueSecurely(this.mirrorXBox, false);
+        ComponentUtils.setValueSecurely(this.mirrorYBox, false);
+        ComponentUtils.setValueSecurely(this.brightnessSlider, Config.MIN_BRIGHTNESS);
+        ComponentUtils.setValueSecurely(this.contrastSlider, Config.MIN_CONTRAST);
+        ComponentUtils.setValueSecurely(this.zoomSlider, Config.MIN_ZOOM);
+        ComponentUtils.setValueSecurely(this.degreeSpinner, Config.MIN_ROTATION);
         updateSnapshotCounter();
     }
 
@@ -221,7 +171,27 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         updateSnapshotCounter();
     }
 
-    private void updateSnapshotCounter() {
-        this.snapshots.setText(String.valueOf(SnapshotHelper.getSnapshotsCount()));
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
+    private void addLabeledRow(GridBagConstraints gbc, String labelText, JComponent component, int topInset) {
+        gbc.insets.top = topInset;
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.weightx = 0;
+        gbc.insets.right = 15;
+        this.container.add(new JLabel(labelText + ":"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.insets.right = 0;
+        this.container.add(component, gbc);
+    }
+
+    private void addRow(JComponent component, GridBagConstraints gbc, int topInset) {
+        gbc.insets.top = topInset;
+        gbc.gridx = 0;
+        gbc.gridy++;
+        this.container.add(component, gbc);
     }
 }
