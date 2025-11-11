@@ -45,11 +45,14 @@ public class DialogDisclaimer {
         this.dialog.setVisible(true);
     }
 
+    // ========================================
+    // Komponenten-Erzeugung
+    // ========================================
     private JPanel createRightOfUsePanel() {
         JPanel panel = new JPanel(new BorderLayout(0, 10));
 
         // Untertitel hinzufügen
-        panel.add(getSubTitle(getWord("dialog.disclaimer.subtitle-1")), BorderLayout.NORTH);
+        panel.add(createSelectableSubTitle(getWord("dialog.disclaimer.subtitle-1")), BorderLayout.NORTH);
 
         // Text hinzufügen (Rechtlicher Hinweis)
         SelectableText rightOfUseText = new SelectableText(
@@ -67,9 +70,9 @@ public class DialogDisclaimer {
         JPanel panel = new JPanel(new BorderLayout(0, 10));
 
         // Untertitel hinzufügen
-        panel.add(getSubTitle(getWord("dialog.disclaimer.subtitle-2")), BorderLayout.NORTH);
+        panel.add(createSelectableSubTitle(getWord("dialog.disclaimer.subtitle-2")), BorderLayout.NORTH);
 
-        // Text hinzufügen
+        // Text hinzufügen (Haftungsausschluss)
         SelectableText disclaimerText = new SelectableText(
             StringUtils.wrapHtmlWithLinks(
                 getWord("dialog.disclaimer.text-2"),
@@ -80,10 +83,7 @@ public class DialogDisclaimer {
         return panel;
     }
 
-    // ========================================
-    // Hilfsmethoden
-    // ========================================
-    private SelectableText getSubTitle(String title) {
+    private SelectableText createSelectableSubTitle(String title) {
         String htmlContent = StringUtils.applyDivAlignment(StringUtils.applyFontSize(title, 125), "center", MAX_WIDTH);
         SelectableText subTitleText = new SelectableText(StringUtils.wrapHtml(htmlContent));
         subTitleText.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));

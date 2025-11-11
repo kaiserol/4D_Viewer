@@ -1,5 +1,6 @@
 package de.uzk.gui.dialogs;
 
+import de.uzk.utils.ComponentUtils;
 import de.uzk.gui.GuiUtils;
 import de.uzk.utils.StringUtils;
 
@@ -42,37 +43,32 @@ public class DialogVersions {
         this.dialog.setVisible(true);
     }
 
+    // ========================================
+    // Komponenten-Erzeugung
+    // ========================================
     private JPanel createContributorsPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
 
         // Layout Manager
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        int row = 0;
+        GridBagConstraints gbc = ComponentUtils.createGridBagConstraints();
 
-        // Version hinzufügen
-        addInfoRow(panel, gbc, row++, getWord("app.v1"), String.format(getWord("app.v1.date"), getWord("date.unknown")));
-        gbc.insets.top = 5;
-        addInfoRow(panel, gbc, row++, getWord("developers"), getWord("dialog.versions.v1.developer"));
-        addInfoRow(panel, gbc, row++, getWord("contributors"), getWord("dialog.versions.v1.contributor"));
+        // Version 1.* hinzufügen
+        addLabeledRow(panel, gbc, getWord("app.v1"), String.format(getWord("app.v1.date"), getWord("date.unknown")), 0);
+        addLabeledRow(panel, gbc, getWord("developers"), getWord("dialog.versions.v1.developer"), 5);
+        addLabeledRow(panel, gbc, getWord("contributors"), getWord("dialog.versions.v1.contributor"), 5);
 
-        // Version hinzufügen
-        gbc.insets.top = 20;
-        addInfoRow(panel, gbc, row++, getWord("app.v2_0"), getWord("app.v2_0.date"));
-        gbc.insets.top = 5;
-        addInfoRow(panel, gbc, row++, getWord("developers"), getWord("dialog.versions.v2_0.developer"));
-        addInfoRow(panel, gbc, row++, getWord("contributors"), getWord("dialog.versions.v2_0.contributor-1"));
-        addInfoRow(panel, gbc, row++, null, getWord("dialog.versions.v2_0.contributor-2"));
+        // Version 2.0 hinzufügen
+        addLabeledRow(panel, gbc, getWord("app.v2_0"), getWord("app.v2_0.date"), 20);
+        addLabeledRow(panel, gbc, getWord("developers"), getWord("dialog.versions.v2_0.developer"), 5);
+        addLabeledRow(panel, gbc, getWord("contributors"), getWord("dialog.versions.v2_0.contributor-1"), 5);
+        addLabeledRow(panel, gbc, null, getWord("dialog.versions.v2_0.contributor-2"), 5);
 
-        // Version hinzufügen
-        gbc.insets.top = 20;
-        addInfoRow(panel, gbc, row++, getWord("app.v2_1"), String.format(getWord("app.v2_1.date"), getWord("date.today")));
-        gbc.insets.top = 5;
-        addInfoRow(panel, gbc, row++, getWord("developers"), getWord("dialog.versions.v2_1.developer-1"));
-        addInfoRow(panel, gbc, row++, null, getWord("dialog.versions.v2_1.developer-2"));
-        addInfoRow(panel, gbc, row++, getWord("contributors"), getWord("dialog.versions.v2_1.contributor-1"));
-        addInfoRow(panel, gbc, row, null, getWord("dialog.versions.v2_1.contributor-2"));
+        // Version 2.1 hinzufügen
+        addLabeledRow(panel, gbc, getWord("app.v2_1"), String.format(getWord("app.v2_1.date"), getWord("date.today")), 20);
+        addLabeledRow(panel, gbc, getWord("developers"), getWord("dialog.versions.v2_1.developer-1"), 5);
+        addLabeledRow(panel, gbc, null, getWord("dialog.versions.v2_1.developer-2"), 5);
+        addLabeledRow(panel, gbc, getWord("contributors"), getWord("dialog.versions.v2_1.contributor-1"), 5);
+        addLabeledRow(panel, gbc, null, getWord("dialog.versions.v2_1.contributor-2"), 5);
 
         return panel;
     }
@@ -80,42 +76,39 @@ public class DialogVersions {
     // ========================================
     // Hilfsmethoden
     // ========================================
-    private void addInfoRow(JPanel panel, GridBagConstraints gbc, int row, String labelText, String valueText) {
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        gbc.insets.left = 0;
-        gbc.insets.right = 5;
-        gbc.weightx = 0;
+    private void addLabeledRow(Container container, GridBagConstraints gbc, String labelText, String value, int topInset) {
+        // 1. Linkes Label erzeugen
+        JLabel titleLabel = null;
+        if (labelText != null && !labelText.isEmpty()) {
+            titleLabel = new JLabel(StringUtils.wrapHtml(StringUtils.wrapBold(labelText) + ":"));
+            titleLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        }
 
-        JLabel label = new JLabel(StringUtils.wrapHtml(StringUtils.wrapBold(labelText) + ":"));
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        if (labelText != null && !labelText.isEmpty()) panel.add(label, gbc);
+        // 2. Textinhalt (rechts) vorbereiten
+        String formattedText = "";
 
-        gbc.gridx = 1;
-        gbc.insets.left = 5;
-        gbc.insets.right = 0;
-        gbc.weightx = 1;
+        if (value != null && !value.isEmpty()) {
+            // Pattern sucht nach "(...)" am Ende des Textes — typischerweise Zusatzinfos
+            Pattern bracketPattern = Pattern.compile("\\((.*)\\)\\s*$");
+            Matcher matcher = bracketPattern.matcher(value);
 
-        // Formatierungslogik für valueText
-        String formattedValue;
-        if (valueText == null || valueText.isEmpty()) {
-            formattedValue = "";
-        } else {
-            // Pattern für runde Klammern
-            Pattern p = Pattern.compile("\\((.*)\\)\\s*$");
-            Matcher m = p.matcher(valueText);
+            if (matcher.find()) {
+                // Text in "normalen" und "hervorgehobenen" Teil zerlegen
+                String mainText = value.substring(0, matcher.start()).trim();
+                String bracketPart = matcher.group(0).trim();
 
-            if (m.find()) {
-                int start = m.start();
-                String normalPart = valueText.substring(0, start).trim();
-                String specialPart = valueText.substring(start).trim();
-
-                Color lighterColor = GuiUtils.adjustColor(GuiUtils.COLOR_BLUE, 0.2f, true);
-                formattedValue = normalPart + " " + StringUtils.applyColor(specialPart, lighterColor);
+                // Zusatzinfo farblich leicht absetzen
+                Color highlightColor = GuiUtils.adjustColor(GuiUtils.COLOR_BLUE, 0.2f, true);
+                formattedText = StringUtils.wrapHtml(mainText + " " +
+                    StringUtils.applyColor(bracketPart, highlightColor));
             } else {
-                formattedValue = valueText;
+                // Kein Klammertext – einfach übernehmen
+                formattedText = StringUtils.wrapHtml(value);
             }
         }
-        panel.add(new JLabel(StringUtils.wrapHtml(formattedValue)), gbc);
+        JLabel valueLabel = new JLabel(formattedText);
+
+        // 3. Zeile mit ComponentUtils hinzufügen
+        ComponentUtils.addLabeledRow(container, gbc, titleLabel, valueLabel, topInset);
     }
 }

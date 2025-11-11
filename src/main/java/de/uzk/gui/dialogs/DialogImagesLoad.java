@@ -1,5 +1,6 @@
 package de.uzk.gui.dialogs;
 
+import de.uzk.utils.ComponentUtils;
 import de.uzk.gui.GuiUtils;
 import de.uzk.image.ImageFileType;
 import de.uzk.image.LoadingImageListener;
@@ -30,7 +31,7 @@ public class DialogImagesLoad implements LoadingImageListener {
     private LoadingResult result;
 
     // Für einen schönen Ladeeffekt SLEEP_TIME_NANOS > 0 setzen (1 Millisekunde = 1_000_000 Nanos)
-    private static final int SLEEP_TIME_NANOS = 0;
+    private static final int SLEEP_TIME_NANOS = 1_000;
 
     public DialogImagesLoad(JFrame frame) {
         this.dialog = new JDialog(frame, true);
@@ -44,7 +45,7 @@ public class DialogImagesLoad implements LoadingImageListener {
 
         // ESC schließt Dialog
         this.dialog.getRootPane().registerKeyboardAction(e -> closeThread(),
-                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
         );
     }
 
@@ -85,6 +86,9 @@ public class DialogImagesLoad implements LoadingImageListener {
         return this.result != null ? this.result : LoadingResult.LOADING_INTERRUPTED;
     }
 
+    // ========================================
+    // Komponenten-Erzeugung
+    // ========================================
     private JPanel createProgressPanel() {
         JPanel panel = new JPanel(new BorderLayout(0, 10));
 
@@ -108,24 +112,48 @@ public class DialogImagesLoad implements LoadingImageListener {
         JPanel panel = new JPanel(new GridBagLayout());
 
         // Layout Manager
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        gbc.weightx = 1;
+        GridBagConstraints gbc = ComponentUtils.createGridBagConstraints();
 
-        // Dateiname anzeigen
-        gbc.gridwidth = 1;
-        this.textFieldFileName = addLabelTextFieldRow(panel, gbc, 1, getWord("file.fileName") + ":");
+        // Dateiname hinzufügen
+        this.textFieldFileName = createTextField();
         this.textFieldFileName.setFocusable(false);
+        ComponentUtils.addLabeledRow(panel, gbc, getWord("file.fileName"), this.textFieldFileName, 0);
 
-        // Verzeichnisname anzeigen
-        gbc.insets.top = 5;
-        this.textFieldDirectoryName = addLabelTextFieldRow(panel, gbc, 2, getWord("file.directoryName") + ":");
+        // Verzeichnisname hinzufügen
+        this.textFieldDirectoryName = createTextField();
+        ComponentUtils.addLabeledRow(panel, gbc, getWord("file.directoryName"), this.textFieldDirectoryName, 5);
 
         return panel;
+    }
+
+    private JTextField createTextField() {
+        JTextField textField = new JTextField();
+        textField.setEditable(false);
+        return textField;
+    }
+
+    // ========================================
+    // Thread Methoden
+    // ========================================
+    private void startThread(Path imagesDirectory, ImageFileType imageFileType) {
+        if (this.thread != null) return;
+        this.thread = new Thread(() -> {
+            this.result = workspace.openImagesDirectory(imagesDirectory, imageFileType, DialogImagesLoad.this);
+            SwingUtilities.invokeLater(this.dialog::dispose);
+        });
+        this.thread.start();
+    }
+
+    private void closeThread() {
+        if (this.thread != null && this.thread.isAlive()) {
+            this.thread.interrupt();
+            try {
+                this.thread.join();
+            } catch (InterruptedException e) {
+                logger.error("Failed to join loading images thread");
+            }
+        }
+        this.dialog.dispose();
     }
 
     // ========================================
@@ -174,55 +202,9 @@ public class DialogImagesLoad implements LoadingImageListener {
         logger.info("Loaded images: " + loadedImages);
     }
 
-    // ========================================
-    // Hilfsmethoden
-    // ========================================
-    private JTextField addLabelTextFieldRow(JPanel panel, GridBagConstraints gbc, int row, String labelText) {
-        // Label hinzufügen
-        gbc.weightx = 0;
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        gbc.insets.right = 10;
-        panel.add(new JLabel(labelText), gbc);
-
-        // Textfeld hinzufügen
-        gbc.weightx = 1;
-        gbc.gridx = 1;
-        gbc.insets.right = 0;
-        JTextField textField = new JTextField();
-        textField.setEditable(false);
-        panel.add(textField, gbc);
-
-        return textField;
-    }
-
     private void updateProgress(int filesCount, int currentFileNumber, int imagesCount) {
         this.progressBar.setValue(currentFileNumber);
         this.progressBar.setString(currentFileNumber + " / " + filesCount);
         this.labelImagesCount.setText(String.valueOf(imagesCount));
-    }
-
-    // ========================================
-    // Thread Methoden
-    // ========================================
-    private void startThread(Path imagesDirectory, ImageFileType imageFileType) {
-        if (this.thread != null) return;
-        this.thread = new Thread(() -> {
-            this.result = workspace.openImagesDirectory(imagesDirectory, imageFileType, DialogImagesLoad.this);
-            SwingUtilities.invokeLater(this.dialog::dispose);
-        });
-        this.thread.start();
-    }
-
-    private void closeThread() {
-        if (this.thread != null && this.thread.isAlive()) {
-            this.thread.interrupt();
-            try {
-                this.thread.join();
-            } catch (InterruptedException e) {
-                logger.error("Failed to join loading images thread");
-            }
-        }
-        this.dialog.dispose();
     }
 }

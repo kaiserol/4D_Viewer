@@ -6,7 +6,6 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.formdev.flatlaf.util.ColorFunctions;
 import de.uzk.action.ActionType;
 import de.uzk.config.Language;
-import de.uzk.config.Settings;
 import de.uzk.config.Theme;
 import de.uzk.markers.Marker;
 

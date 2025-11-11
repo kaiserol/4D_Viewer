@@ -43,7 +43,7 @@ public class DialogLogViewer {
         // Tabs hinzufügen
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
-        panel.add(this.tabs = getTabs(), BorderLayout.CENTER);
+        panel.add(this.tabs = createTabs(), BorderLayout.CENTER);
         this.dialog.add(panel);
 
         // Dialog anzeigen
@@ -53,6 +53,49 @@ public class DialogLogViewer {
         this.dialog.setVisible(true);
     }
 
+    // ========================================
+    // Komponenten-Erzeugung
+    // ========================================
+    private JTabbedPane createTabs() {
+        JTabbedPane tabs = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+
+        // Tabs hinzufügen
+        tabs.add(getWord("dialog.logViewer.logs"), createLogsPanel());
+        if (workspace.isOpen()) {
+            tabs.add(getWord("dialog.logViewer.imagesReport"), createMissingImagesPanel());
+        }
+        return tabs;
+    }
+
+    private JComponent createLogsPanel() {
+        StringBuilder logContent = new StringBuilder();
+        for (LogEntry logEntry : logger.getLogs()) {
+            logContent.append(logEntry.getFormattedText(true));
+        }
+        return createTextPanel(StringUtils.wrapHtml(logContent.toString(), "monospaced"));
+    }
+
+    private JComponent createMissingImagesPanel() {
+        String missingImages = StringUtils.wrapPre(workspace.getMissingImagesReport());
+        return createTextPanel(StringUtils.wrapHtml(missingImages, "monospaced"));
+    }
+
+    private JComponent createTextPanel(String htmlContent) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+
+        // Text in ScrollPane packen
+        SelectableText text = new SelectableText(htmlContent);
+        text.setMargin(GuiUtils.INSETS_DEFAULT_SMALL);
+
+        JScrollPane scrollPane = new JScrollPane(text);
+        panel.add(scrollPane);
+        return panel;
+    }
+
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
     private void resizeWindow() {
         // Abmessungen des Bildschirms ermitteln
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -85,46 +128,6 @@ public class DialogLogViewer {
         // Neue Abmessungen setzen
         this.dialog.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         this.dialog.setSize(new Dimension(newWidth, newHeight));
-    }
-
-    private JTabbedPane getTabs() {
-        JTabbedPane tabs = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-
-        // Tabs hinzufügen
-        tabs.add(getWord("dialog.logViewer.logs"), getLogsPanel());
-        if (workspace.isOpen()) {
-            tabs.add(getWord("dialog.logViewer.imagesReport"), getMissingImagesPanel());
-        }
-        return tabs;
-    }
-
-    private JComponent getLogsPanel() {
-        StringBuilder logContent = new StringBuilder();
-        for (LogEntry logEntry : logger.getLogs()) {
-            logContent.append(logEntry.getFormattedText(true));
-        }
-        return getScrollableText(StringUtils.wrapHtml(logContent.toString(), "monospaced"));
-    }
-
-    private JComponent getMissingImagesPanel() {
-        String missingImages = StringUtils.wrapPre(workspace.getMissingImagesReport());
-        return getScrollableText(StringUtils.wrapHtml(missingImages, "monospaced"));
-    }
-
-    // ========================================
-    // Hilfsmethoden
-    // ========================================
-    private JComponent getScrollableText(String htmlContent) {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-
-        // Text in ScrollPane packen
-        SelectableText text = new SelectableText(htmlContent);
-        text.setMargin(GuiUtils.INSETS_DEFAULT_SMALL);
-
-        JScrollPane scrollPane = new JScrollPane(text);
-        panel.add(scrollPane);
-        return panel;
     }
 
     private JScrollPane getScrollPane(JTabbedPane tabbedPane, int tabIndex) {

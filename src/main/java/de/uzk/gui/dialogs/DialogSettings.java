@@ -3,9 +3,9 @@ package de.uzk.gui.dialogs;
 import de.uzk.config.Language;
 import de.uzk.config.Settings;
 import de.uzk.config.Theme;
-import de.uzk.gui.ComponentUtils;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
+import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
@@ -38,7 +38,7 @@ public class DialogSettings {
 
         // ESC schließt Dialog
         this.dialog.getRootPane().registerKeyboardAction(e -> dialog.dispose(),
-                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
         );
     }
 
@@ -58,13 +58,15 @@ public class DialogSettings {
         this.oldFontSize = settings.getFontSize();
         this.oldConfirmExit = settings.isConfirmExit();
 
-        // Button-Leiste erstellen
+        // Schaltfächen Panel erstellen
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
+        // Schaltfläche (Abbrechen)
         JButton cancelButton = new JButton(getWord("button.cancel"));
         cancelButton.addActionListener(e -> dialog.dispose());
         buttonPanel.add(cancelButton);
 
+        // Schaltfläche (OK)
         JButton okButton = new JButton(getWord("button.ok"));
         okButton.addActionListener(e -> {
             applySettings();
@@ -73,15 +75,15 @@ public class DialogSettings {
         buttonPanel.add(okButton);
         ComponentUtils.makeComponentsSameSize(buttonPanel, JButton.class);
 
+        // Den OK-Button als Default-Button setzen
+        this.dialog.getRootPane().setDefaultButton(okButton);
+
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
         contentPanel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
         contentPanel.add(createSettingsPanel(), BorderLayout.CENTER);
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
         this.dialog.add(contentPanel, BorderLayout.CENTER);
-
-        // Den OK-Button als Default-Button setzen
-        this.dialog.getRootPane().setDefaultButton(okButton);
 
         // Listener einrichten, damit OK nur aktiv ist, wenn sich etwas geändert hat
         setupChangeListeners(okButton);
@@ -93,79 +95,63 @@ public class DialogSettings {
         this.dialog.setVisible(true);
     }
 
+    // ========================================
+    // Komponenten-Erzeugung
+    // ========================================
     private JPanel createSettingsPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
 
         // Layout Manager
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        GridBagConstraints gbc = ComponentUtils.createGridBagConstraints();
         gbc.gridwidth = 2;
         gbc.weightx = 1;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.insets.right = 100;
 
         // 1. Abschnitt: Erscheinungsbild hinzufügen
-        gbc.insets.right = 100;
-        panel.add(getBoldSectionLabel("dialog.settings.appearance"), gbc);
+        ComponentUtils.addRow(panel, gbc, createBoldLabel(getWord("dialog.settings.appearance")), 0);
 
-        // Sprache
-        gbc.gridy++;
         gbc.gridwidth = 1;
-        gbc.insets.top = 10;
-        gbc.insets.right = 10;
-        panel.add(new JLabel(getWord("dialog.settings.appearance.language") + ":"), gbc);
 
-        gbc.gridx = 1;
-        gbc.insets.right = 0;
+        // Auswahlfeld (Sprache) hinzufügen
         this.selectLanguage = new JComboBox<>(Language.sortedValues());
         this.selectLanguage.setSelectedItem(this.oldLanguage);
-        panel.add(this.selectLanguage, gbc);
+        ComponentUtils.addLabeledRow(panel, gbc, getWord("dialog.settings.appearance.language"), this.selectLanguage, 10);
 
-        // Farbschema
-        gbc.gridy++;
-        gbc.gridx = 0;
-        gbc.insets.right = 10;
-        panel.add(new JLabel(getWord("dialog.settings.appearance.theme") + ":"), gbc);
-
-        gbc.gridx = 1;
-        gbc.insets.right = 0;
+        // Auswahlfeld (Farbschema) hinzufügen
         this.selectTheme = new JComboBox<>(Theme.sortedValues());
         this.selectTheme.setSelectedItem(this.oldTheme);
-        panel.add(this.selectTheme, gbc);
+        ComponentUtils.addLabeledRow(panel, gbc, getWord("dialog.settings.appearance.theme"), this.selectTheme, 10);
 
-        // Schriftgröße
-        gbc.gridy++;
-        gbc.gridx = 0;
-        gbc.insets.right = 10;
-        panel.add(new JLabel(getWord("dialog.settings.appearance.fontSize") + ":"), gbc);
+        // Drehfeld (Schriftgröße) hinzufügen
+        this.fontSizeSpinner = ComponentUtils.createSpinner(Settings.MIN_FONT_SIZE, Settings.MAX_FONT_SIZE, integer -> {
+        });
+        this.fontSizeSpinner.setValue(this.oldFontSize);
+        ComponentUtils.addLabeledRow(panel, gbc, getWord("dialog.settings.appearance.fontSize"), this.fontSizeSpinner, 10);
 
-        gbc.gridx = 1;
-        gbc.insets.right = 0;
-        this.fontSizeSpinner = new JSpinner(new SpinnerNumberModel(this.oldFontSize, Settings.MIN_FONT_SIZE, Settings.MAX_FONT_SIZE, 1));
-        panel.add(this.fontSizeSpinner, gbc);
+        gbc.gridwidth = 2;
+        gbc.weightx = 1;
+        gbc.insets.right = 100;
 
         // 2. Abschnitt: Fenster-Verhalten hinzufügen
-        gbc.gridy++;
-        gbc.gridx = 0;
-        gbc.gridwidth = 2;
-        gbc.insets.top = 20;
-        gbc.insets.right = 100;
-        panel.add(getBoldSectionLabel("dialog.settings.windowBehavior"), gbc);
+        ComponentUtils.addRow(panel, gbc, createBoldLabel(getWord("dialog.settings.windowBehavior")), 20);
 
-        gbc.gridy++;
-        gbc.insets.right = 0;
+        gbc.weightx = 0;
+
+        // Kontrollkästchen (Beenden bestätigen) hinzufügen
         this.checkConfirmExit = new JCheckBox(getWord("dialog.settings.windowBehavior.confirmExit"));
         this.checkConfirmExit.setSelected(this.oldConfirmExit);
-        panel.add(this.checkConfirmExit, gbc);
+        ComponentUtils.addRow(panel, gbc, this.checkConfirmExit, 10);
 
         return panel;
     }
 
-    private JLabel getBoldSectionLabel(String key) {
-        return new JLabel(StringUtils.wrapHtml(StringUtils.wrapBold(getWord(key))));
+    private JLabel createBoldLabel(String text) {
+        return new JLabel(StringUtils.wrapHtml(StringUtils.wrapBold(text)));
     }
 
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
     private void setupChangeListeners(JButton okButton) {
         // Initial: deaktiviert
         okButton.setEnabled(false);
@@ -173,20 +159,20 @@ public class DialogSettings {
         // Prüft, ob ein Wert geändert wurde
         Runnable checkChanges = () -> {
             boolean changed = !Objects.equals(this.selectLanguage.getSelectedItem(), this.oldLanguage)
-                    || !Objects.equals(this.selectTheme.getSelectedItem(), this.oldTheme)
-                    || (int) this.fontSizeSpinner.getValue() != this.oldFontSize
-                    || this.checkConfirmExit.isSelected() != this.oldConfirmExit;
+                || !Objects.equals(this.selectTheme.getSelectedItem(), this.oldTheme)
+                || (int) this.fontSizeSpinner.getValue() != this.oldFontSize
+                || this.checkConfirmExit.isSelected() != this.oldConfirmExit;
             okButton.setEnabled(changed);
         };
 
-        // Listener für JComboBox (Language & Theme)
+        // Listener für JComboBox (Language & Theme) hinzufügen
         this.selectLanguage.addActionListener(e -> checkChanges.run());
         this.selectTheme.addActionListener(e -> checkChanges.run());
 
-        // Listener für JSpinner (FontSize)
+        // Listener für JSpinner (FontSize) hinzufügen
         this.fontSizeSpinner.addChangeListener(e -> checkChanges.run());
 
-        // Listener für JCheckBox (ConfirmExit)
+        // Listener für JCheckBox (ConfirmExit) hinzufügen
         this.checkConfirmExit.addActionListener(e -> checkChanges.run());
     }
 

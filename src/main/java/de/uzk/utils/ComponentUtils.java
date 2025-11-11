@@ -1,4 +1,6 @@
-package de.uzk.gui;
+package de.uzk.utils;
+
+import de.uzk.gui.CyclingSpinnerNumberModel;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -18,6 +20,15 @@ public class ComponentUtils {
         checkBox.addActionListener(e -> listener.accept(checkBox.isSelected()));
         checkBox.setFocusPainted(true);
         return checkBox;
+    }
+
+    public static JScrollBar createScrollBar(int orientation, Consumer<Integer> listener) {
+        @SuppressWarnings("MagicConstant")
+        JScrollBar scrollBar = new JScrollBar(orientation);
+        scrollBar.addAdjustmentListener(e -> listener.accept(scrollBar.getValue()));
+        scrollBar.setBlockIncrement(1);
+        scrollBar.setUnitIncrement(1);
+        return scrollBar;
     }
 
     public static JSlider createSlider(int min, int max, Consumer<Integer> listener) {
@@ -87,8 +98,7 @@ public class ComponentUtils {
     }
 
     public static void setValueSecurely(JSpinner spinner, int newValue) {
-        Object current = spinner.getValue();
-        if (current instanceof Number && ((Number) current).intValue() == newValue) return;
+        if (spinner.getValue() instanceof Number value && value.intValue() == newValue) return;
         runWithoutListeners(spinner, s -> {
             s.setValue(newValue);
             if (s.getEditor() instanceof JSpinner.DefaultEditor defaultEditor) {
@@ -161,5 +171,42 @@ public class ComponentUtils {
                 comp.setPreferredSize(new Dimension(maxWidth, size.height));
             }
         }
+    }
+
+    public static GridBagConstraints createGridBagConstraints() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        return gbc;
+    }
+
+    public static void addLabeledRow(Container container, GridBagConstraints gbc, String labelText, JComponent component, int topInset) {
+        addLabeledRow(container, gbc, new JLabel(labelText + ":"), component, topInset);
+    }
+
+    public static void addLabeledRow(Container container, GridBagConstraints gbc, JLabel label, JComponent component,  int topInset) {
+        gbc.gridx = 0;
+        gbc.weightx = 0;
+        gbc.insets.top = topInset;
+        gbc.insets.right = 10;
+        if (label != null) container.add(label, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.insets.right = 0;
+        if (component != null) container.add(component, gbc);
+
+        gbc.gridy++;
+    }
+
+    public static void addRow(Container container, GridBagConstraints gbc, JComponent component, int topInset) {
+        gbc.gridx = 0;
+        gbc.insets.top = topInset;
+        if (component != null) container.add(component, gbc);
+
+        gbc.gridy++;
     }
 }

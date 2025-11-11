@@ -1,6 +1,5 @@
 package de.uzk.utils;
 
-import de.uzk.gui.ComponentUtils;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.image.ImageFileType;

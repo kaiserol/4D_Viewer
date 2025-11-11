@@ -1,12 +1,12 @@
 package de.uzk.gui.areas;
 
 import de.uzk.action.ActionType;
-import de.uzk.gui.ComponentUtils;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.Icons;
 import de.uzk.image.Axis;
 import de.uzk.markers.Marker;
+import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.SnapshotHelper;
 
 import javax.swing.*;
@@ -24,13 +24,10 @@ import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     // GUI-Elemente
-    private JPanel panelView;
-    private JPanel panelImage;
+    private JPanel panelView, panelImage;
+    private JScrollBar scrollBarTime, scrollBarLevel;
     private BufferedImage currentImage;
-    private JScrollBar scrollBarTime;
-    private JScrollBar scrollBarLevel;
-    private int insetX;
-    private int insetY;
+    private int insetX, insetY;
 
     public AreaImageViewer(Gui gui) {
         super(new JPanel(), gui);
@@ -56,50 +53,18 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         // 2. Bildbereich mit Scrollbars hinzufügen
         this.panelView = new JPanel(new BorderLayout());
         this.panelImage = initImagePanel();
-        this.scrollBarTime = createScrollBar(Adjustable.HORIZONTAL, Axis.TIME);
-        this.scrollBarLevel = createScrollBar(Adjustable.VERTICAL, Axis.LEVEL);
+        this.scrollBarTime = ComponentUtils.createScrollBar(Adjustable.HORIZONTAL, newValue ->
+            handleScrollAction(newValue, Axis.TIME, this.scrollBarTime));
+        this.scrollBarLevel = ComponentUtils.createScrollBar(Adjustable.VERTICAL, newValue ->
+            handleScrollAction(newValue, Axis.LEVEL, this.scrollBarLevel));
 
         int scrollBarWidth = UIManager.getInt("ScrollBar.width");
         this.panelView.add(this.panelImage, BorderLayout.CENTER);
-        this.panelView.add(insertRightSpace(this.scrollBarTime, scrollBarWidth), BorderLayout.SOUTH);
+        this.panelView.add(createRightSpace(this.scrollBarTime, scrollBarWidth), BorderLayout.SOUTH);
         this.panelView.add(this.scrollBarLevel, BorderLayout.EAST);
 
         this.container.add(this.panelView, BorderLayout.CENTER);
         this.container.setMinimumSize(new Dimension(scrollBarWidth * 3, scrollBarWidth * 3));
-    }
-
-    // ========================================
-    // Komponenten-Erzeugung
-    // ========================================
-    private JScrollBar createScrollBar(int orientation, Axis axis) {
-        @SuppressWarnings("MagicConstant")
-        JScrollBar scrollBar = new JScrollBar(orientation);
-        scrollBar.addAdjustmentListener(e -> {
-            // Wenn sich der Wert nicht ändert, abbrechen
-            int oldValue = (axis == Axis.TIME) ? workspace.getTime() : workspace.getLevel();
-            int newValue = e.getValue();
-            if (oldValue == newValue) return;
-
-            // Richtung berechnen: > 0: vorwärts, < 0: rückwärts
-            int rotation = newValue - oldValue;
-            gui.getActionHandler().scroll(axis, rotation, e.getValueIsAdjusting());
-        });
-        scrollBar.setBlockIncrement(1);
-        scrollBar.setUnitIncrement(1);
-        return scrollBar;
-    }
-
-    private JPanel insertRightSpace(JComponent component, int size) {
-        // labelEmpty
-        JLabel labelEmpty = new JLabel();
-        labelEmpty.setOpaque(true);
-        labelEmpty.setPreferredSize(new Dimension(size, size));
-
-        // panel
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(component, BorderLayout.CENTER);
-        panel.add(labelEmpty, BorderLayout.EAST);
-        return panel;
     }
 
     // ========================================
@@ -148,6 +113,22 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         public void mouseReleased(MouseEvent e) {
             this.start = null;
         }
+    }
+
+    // ========================================
+    // Komponenten-Erzeugung
+    // ========================================
+    private JPanel createRightSpace(JComponent component, int size) {
+        // labelEmpty
+        JLabel labelEmpty = new JLabel();
+        labelEmpty.setOpaque(true);
+        labelEmpty.setPreferredSize(new Dimension(size, size));
+
+        // panel
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(component, BorderLayout.CENTER);
+        panel.add(labelEmpty, BorderLayout.EAST);
+        return panel;
     }
 
     // ========================================
@@ -205,8 +186,8 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         ComponentUtils.setEnabled(this.container, true);
 
         updateCurrentImage();
-        setScrollBarValuesSecurely(this.scrollBarTime, workspace.getTime(), workspace.getMaxTime());
-        setScrollBarValuesSecurely(this.scrollBarLevel, workspace.getLevel(), workspace.getMaxLevel());
+        updateScrollBarValuesSecurely(this.scrollBarTime, workspace.getTime(), workspace.getMaxTime());
+        updateScrollBarValuesSecurely(this.scrollBarLevel, workspace.getLevel(), workspace.getMaxLevel());
     }
 
 
@@ -216,15 +197,15 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         ComponentUtils.setEnabled(this.container, false);
 
         updateCurrentImage();
-        setScrollBarValuesSecurely(this.scrollBarTime, 0, 0);
-        setScrollBarValuesSecurely(this.scrollBarLevel, 0, 0);
+        updateScrollBarValuesSecurely(this.scrollBarTime, 0, 0);
+        updateScrollBarValuesSecurely(this.scrollBarLevel, 0, 0);
     }
 
     @Override
     public void update(Axis axis) {
         updateCurrentImage();
         switch (axis) {
-            case TIME -> ComponentUtils.setValueSecurely(this.scrollBarLevel, workspace.getTime());
+            case TIME -> ComponentUtils.setValueSecurely(this.scrollBarTime, workspace.getTime());
             case LEVEL -> ComponentUtils.setValueSecurely(this.scrollBarLevel, workspace.getLevel());
         }
     }
@@ -235,12 +216,16 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     }
 
     // ========================================
-    // Hilfsmethoden
+    // Aktualisierungen
     // ========================================
-    private void setBorder(boolean focusedPanel) {
-        Color borderColor = focusedPanel ? GuiUtils.COLOR_BLUE : GuiUtils.getBorderColor();
-        this.container.setBorder(BorderFactory.createLineBorder(borderColor));
-        this.panelView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
+    private void handleScrollAction(int newValue, Axis axis, JScrollBar scrollBar) {
+        // Wenn sich der Wert nicht ändert, abbrechen
+        int oldValue = (axis == Axis.TIME) ? workspace.getTime() : workspace.getLevel();
+        if (oldValue == newValue) return;
+
+        // Richtung berechnen: > 0: vorwärts, < 0: rückwärts
+        int rotation = newValue - oldValue;
+        gui.getActionHandler().scroll(axis, rotation, scrollBar.getValueIsAdjusting());
     }
 
     private void updateCurrentImage() {
@@ -263,9 +248,18 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         this.container.repaint();
     }
 
-    private void setScrollBarValuesSecurely(JScrollBar scrollBar, int value, int max) {
+    private void updateScrollBarValuesSecurely(JScrollBar scrollBar, int value, int max) {
         if (scrollBar.getValueIsAdjusting()) return;
         if (scrollBar.getValue() == value && scrollBar.getMaximum() == max) return;
         ComponentUtils.runWithoutListeners(scrollBar, sb -> sb.setValues(value, 0, 0, max));
+    }
+
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
+    private void setBorder(boolean focusedPanel) {
+        Color borderColor = focusedPanel ? GuiUtils.COLOR_BLUE : GuiUtils.getBorderColor();
+        this.container.setBorder(BorderFactory.createLineBorder(borderColor));
+        this.panelView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
     }
 }
