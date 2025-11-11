@@ -39,7 +39,7 @@ public class Config {
     private static final int DEFAULT_ZOOM = 100;
     private static final int DEFAULT_ROTATION = 0;
 
-    // MinMax Konstanten
+    // MinMax-Konstanten
     public static final double MIN_TIME_UNIT = 1;
     public static final double MAX_TIME_UNIT = 600;
     public static final double MIN_LEVEL_UNIT = 0.1;
@@ -73,10 +73,8 @@ public class Config {
         this.setLevelSep(levelSep);
         this.setTimeUnit(timeUnit);
         this.setLevelUnit(levelUnit);
-
         this.setMirrorX(mirrorX);
         this.setMirrorY(mirrorY);
-
         this.setBrightness(brightness);
         this.setContrast(contrast);
         this.setZoom(zoom);
@@ -129,100 +127,116 @@ public class Config {
         return this.timeUnit;
     }
 
-    public void setTimeUnit(double timeUnit) {
+    public boolean setTimeUnit(double timeUnit) {
         if (MIN_TIME_UNIT <= timeUnit && timeUnit <= MAX_TIME_UNIT) {
+            if (this.timeUnit == timeUnit) return false;
             this.timeUnit = timeUnit;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_TIME_UNIT <= this.timeUnit && this.timeUnit <= MAX_TIME_UNIT) return;
+            if (MIN_TIME_UNIT <= this.timeUnit && this.timeUnit <= MAX_TIME_UNIT) return false;
             this.timeUnit = DEFAULT_TIME_UNIT;
         }
+        return true;
     }
 
     public double getLevelUnit() {
         return this.levelUnit;
     }
 
-    public void setLevelUnit(double levelUnit) {
+    public boolean setLevelUnit(double levelUnit) {
         if (MIN_LEVEL_UNIT <= levelUnit && levelUnit <= MAX_LEVEL_UNIT) {
+            if (this.levelUnit == levelUnit) return false;
             this.levelUnit = levelUnit;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_LEVEL_UNIT <= this.levelUnit && this.levelUnit <= MAX_LEVEL_UNIT) return;
+            if (MIN_LEVEL_UNIT <= this.levelUnit && this.levelUnit <= MAX_LEVEL_UNIT) return false;
             this.levelUnit = DEFAULT_LEVEL_UNIT;
         }
+        return true;
     }
 
     public boolean isMirrorX() {
         return this.mirrorX;
     }
 
-    public void setMirrorX(boolean mirrorX) {
+    public boolean setMirrorX(boolean mirrorX) {
+        if (this.mirrorX == mirrorX) return false;
         this.mirrorX = mirrorX;
+        return true;
     }
 
     public boolean isMirrorY() {
         return this.mirrorY;
     }
 
-    public void setMirrorY(boolean mirrorY) {
+    public boolean setMirrorY(boolean mirrorY) {
+        if (this.mirrorY == mirrorY) return false;
         this.mirrorY = mirrorY;
+        return true;
     }
 
     public int getBrightness() {
         return brightness;
     }
 
-    public void setBrightness(int brightness) {
+    public boolean setBrightness(int brightness) {
         if (MIN_BRIGHTNESS <= brightness && brightness <= MAX_BRIGHTNESS) {
+            if (this.brightness == brightness) return false;
             this.brightness = brightness;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_BRIGHTNESS <= this.brightness && this.brightness <= MAX_BRIGHTNESS) return;
+            if (MIN_BRIGHTNESS <= this.brightness && this.brightness <= MAX_BRIGHTNESS) return false;
             this.brightness = DEFAULT_BRIGHTNESS;
         }
+        return true;
     }
 
     public int getContrast() {
         return contrast;
     }
 
-    public void setContrast(int contrast) {
+    public boolean setContrast(int contrast) {
         if (MIN_CONTRAST <= contrast && contrast <= MAX_CONTRAST) {
+            if (this.contrast == contrast) return false;
             this.contrast = contrast;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_CONTRAST <= this.contrast && this.contrast <= MAX_CONTRAST) return;
+            if (MIN_CONTRAST <= this.contrast && this.contrast <= MAX_CONTRAST) return false;
             this.contrast = DEFAULT_CONTRAST;
         }
+        return true;
     }
 
     public int getZoom() {
         return zoom;
     }
 
-    public void setZoom(int zoom) {
+    public boolean setZoom(int zoom) {
         if (MIN_ZOOM <= zoom && zoom <= MAX_ZOOM) {
+            if (this.zoom == zoom) return false;
             this.zoom = zoom;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_ZOOM <= this.zoom && this.zoom <= MAX_ZOOM) return;
+            if (MIN_ZOOM <= this.zoom && this.zoom <= MAX_ZOOM) return false;
             this.zoom = DEFAULT_ZOOM;
         }
+        return true;
     }
 
     public int getRotation() {
         return this.rotation;
     }
 
-    public void setRotation(int rotation) {
+    public boolean setRotation(int rotation) {
         if (MIN_ROTATION <= rotation && rotation <= MAX_ROTATION) {
+            if (this.rotation == rotation) return false;
             this.rotation = rotation;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_ROTATION <= this.rotation && this.rotation <= MAX_ROTATION) return;
+            if (MIN_ROTATION <= this.rotation && this.rotation <= MAX_ROTATION) return false;
             this.rotation = DEFAULT_ROTATION;
         }
+        return true;
     }
 
     public void save() {
@@ -245,8 +259,10 @@ public class Config {
             DEFAULT_LEVEL_SEP,
             DEFAULT_TIME_UNIT,
             DEFAULT_LEVEL_UNIT,
+
             DEFAULT_MIRROR_X,
             DEFAULT_MIRROR_Y,
+
             DEFAULT_BRIGHTNESS,
             DEFAULT_CONTRAST,
             DEFAULT_ZOOM,

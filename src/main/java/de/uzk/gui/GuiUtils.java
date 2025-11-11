@@ -170,8 +170,6 @@ public final class GuiUtils {
     }
 
     public static void updateFontSize(Gui gui, int fontSize) {
-        if (fontSize < Settings.MIN_FONT_SIZE || fontSize > Settings.MAX_FONT_SIZE) return;
-
         // Wenn sich die Schriftgröße nicht ändert, abbrechen
         if (!settings.setFontSize(fontSize)) return;
 

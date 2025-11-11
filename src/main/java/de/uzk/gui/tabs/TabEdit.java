@@ -3,7 +3,6 @@ package de.uzk.gui.tabs;
 import de.uzk.action.ActionType;
 import de.uzk.config.Config;
 import de.uzk.gui.ComponentUtils;
-import de.uzk.gui.CyclingSpinnerNumberModel;
 import de.uzk.gui.Gui;
 import de.uzk.gui.OGridBagConstraints;
 import de.uzk.gui.areas.AreaContainerInteractive;
@@ -12,7 +11,7 @@ import de.uzk.utils.SnapshotHelper;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static de.uzk.Main.workspace;
@@ -41,10 +40,10 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         gbc.gridwidth = 2;
 
         // Kontrollkästchen (Horizontales und Vertikales spiegeln)
-        this.mirrorXBox = createCheckBox(getWord("items.edit.mirrorX"), selected ->
-            setConfigValue(selected, workspace.getConfig()::isMirrorX, workspace.getConfig()::setMirrorX));
-        this.mirrorYBox = createCheckBox(getWord("items.edit.mirrorY"), selected ->
-            setConfigValue(selected, workspace.getConfig()::isMirrorY, workspace.getConfig()::setMirrorY));
+        this.mirrorXBox = ComponentUtils.createCheckBox(getWord("items.edit.mirrorX"), newValue ->
+            setConfigValue(newValue, workspace.getConfig()::isMirrorX, workspace.getConfig()::setMirrorX));
+        this.mirrorYBox = ComponentUtils.createCheckBox(getWord("items.edit.mirrorY"), newValue ->
+            setConfigValue(newValue, workspace.getConfig()::isMirrorY, workspace.getConfig()::setMirrorY));
         addRow(this.mirrorXBox, gbc, 0);
         addRow(this.mirrorYBox, gbc, 5);
 
@@ -52,27 +51,27 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         gbc.gridwidth = 1;
 
         // Schieberegler (Helligkeit, Kontrast und Zoom)
-        this.brightnessSlider = createSlider(Config.MIN_BRIGHTNESS, Config.MAX_BRIGHTNESS, value ->
-            setConfigValue(value, workspace.getConfig()::getBrightness, workspace.getConfig()::setBrightness));
-        this.contrastSlider = createSlider(Config.MIN_CONTRAST, Config.MAX_CONTRAST, value ->
-            setConfigValue(value, workspace.getConfig()::getContrast, workspace.getConfig()::setContrast));
-        this.zoomSlider = createSlider(Config.MIN_ZOOM, Config.MAX_ZOOM, value ->
-            setConfigValue(value, workspace.getConfig()::getZoom, workspace.getConfig()::setZoom));
+        this.brightnessSlider = ComponentUtils.createSlider(Config.MIN_BRIGHTNESS, Config.MAX_BRIGHTNESS, newValue ->
+            setConfigValue(newValue, workspace.getConfig()::getBrightness, workspace.getConfig()::setBrightness));
+        this.contrastSlider = ComponentUtils.createSlider(Config.MIN_CONTRAST, Config.MAX_CONTRAST, newValue ->
+            setConfigValue(newValue, workspace.getConfig()::getContrast, workspace.getConfig()::setContrast));
+        this.zoomSlider = ComponentUtils.createSlider(Config.MIN_ZOOM, Config.MAX_ZOOM, newValue ->
+            setConfigValue(newValue, workspace.getConfig()::getZoom, workspace.getConfig()::setZoom));
 
         addLabeledRow(gbc, getWord("items.edit.brightness"), this.brightnessSlider, 15);
         addLabeledRow(gbc, getWord("items.edit.contrast"), this.contrastSlider, 10);
         addLabeledRow(gbc, getWord("items.edit.zoom"), this.zoomSlider, 10);
 
         // Drehfeld (Rotation)
-        degreeSpinner = createSpinner(Config.MIN_ROTATION, Config.MAX_ROTATION, value ->
-            setConfigValue(value, workspace.getConfig()::getRotation, workspace.getConfig()::setRotation));
+        degreeSpinner = ComponentUtils.createSpinner(Config.MIN_ROTATION, Config.MAX_ROTATION, newValue ->
+            setConfigValue(newValue, workspace.getConfig()::getRotation, workspace.getConfig()::setRotation));
         addLabeledRow(gbc, getWord("items.edit.rotation"), degreeSpinner, 10);
 
-        // Momentaufnahmen
         gbc.anchor = GridBagConstraints.SOUTHWEST;
         gbc.weighty = 1;
         gbc.gridwidth = 2;
 
+        // Momentaufnahmen
         JPanel snapshotsPanel = new JPanel(new BorderLayout(10, 0));
         snapshotsPanel.add(new JLabel(getWord("items.edit.snapshots") + ":"), BorderLayout.WEST);
         snapshotsPanel.add(snapshots = new JLabel(), BorderLayout.CENTER);
@@ -80,50 +79,10 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
         gbc.weighty = 0;
 
+        // Schaltfläche (Momentaufnahme machen)
         JButton snapshotsButton = new JButton(getWord("items.edit.takeSnapshot"));
         snapshotsButton.addActionListener(e -> gui.getActionHandler().executeAction(ActionType.SHORTCUT_TAKE_SNAPSHOT));
         addRow(snapshotsButton, gbc, 5);
-    }
-
-    // ========================================
-    // Komponenten-Erzeugung
-    // ========================================
-    private JCheckBox createCheckBox(String text, Consumer<Boolean> listener) {
-        JCheckBox box = new JCheckBox(text);
-        box.addActionListener(e -> listener.accept(box.isSelected()));
-        box.setFocusPainted(true);
-        return box;
-    }
-
-    private JSlider createSlider(int min, int max, Consumer<Integer> listener) {
-        JSlider slider = new JSlider(min, max, min);
-        slider.addChangeListener(e -> listener.accept(slider.getValue()));
-        slider.setSnapToTicks(true);
-        slider.setMajorTickSpacing(10);
-        slider.setMinorTickSpacing(1);
-        return slider;
-    }
-
-    private JSpinner createSpinner(int min, int max, Consumer<Integer> listener) {
-        JSpinner spinner = new JSpinner(new CyclingSpinnerNumberModel(min, min, max, 1));
-        spinner.addChangeListener(e -> listener.accept((int) spinner.getValue()));
-        return spinner;
-    }
-
-    // ========================================
-    // Aktualisierungen
-    // ========================================
-    private <T> void setConfigValue(T newValue, Supplier<T> getter, Consumer<T> setter) {
-        // Abbrechen, wenn der Wert sich nicht geändert hat
-        T oldValue = getter.get();
-        if (oldValue.equals(newValue)) return;
-
-        setter.accept(newValue);
-        gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
-    }
-
-    private void updateSnapshotCounter() {
-        this.snapshots.setText(String.valueOf(SnapshotHelper.getSnapshotsCount()));
     }
 
     // ========================================
@@ -169,6 +128,22 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     @Override
     public void appGainedFocus() {
         updateSnapshotCounter();
+    }
+
+    // ========================================
+    // Aktualisierungen
+    // ========================================
+    private <T> void setConfigValue(T newValue, Supplier<T> getter, Predicate<T> setter) {
+        // Wenn sich der Wert nicht ändert, abbrechen
+        T settingsValue = getter.get();
+        if (settingsValue.equals(newValue)) return;
+
+        boolean hasValueChanged = setter.test(newValue);
+        if (hasValueChanged) gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
+    }
+
+    private void updateSnapshotCounter() {
+        this.snapshots.setText(String.valueOf(SnapshotHelper.getSnapshotsCount()));
     }
 
     // ========================================

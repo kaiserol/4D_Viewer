@@ -16,7 +16,7 @@ import static de.uzk.Main.*;
 
 // Der Workspace entspricht einem Projekt
 public class Workspace {
-    // Eigenschaften
+    // Konfigurationen und Markierungen
     private Path imagesDirectory;
     private Config config;
     private Markers markers;
@@ -26,7 +26,7 @@ public class Workspace {
     private ImageFile currentImageFile;
     private final MissingImagesReport missingImagesReport;
 
-    // Zeit, Level
+    // Time, Level
     private int time;
     private int level;
     private int maxTime;
@@ -133,19 +133,17 @@ public class Workspace {
         return new ArrayList<>(this.pinTimes);
     }
 
-    public boolean isPinned(int time) {
+    public boolean isPinned(Integer time) {
         if (!isOpen() && isTimeInvalid(time)) return false;
-
-        Integer timeInt = time;
-        return this.pinTimes.contains(timeInt);
+        return this.pinTimes.contains(time);
     }
 
     public void togglePinTime() {
         if (!isOpen()) return;
 
-        Integer timeInt = this.currentImageFile.getTime();
-        if (isPinned(timeInt)) this.pinTimes.remove(timeInt);
-        else this.pinTimes.add(timeInt);
+        Integer time = this.currentImageFile.getTime();
+        if (isPinned(time)) this.pinTimes.remove(time);
+        else this.pinTimes.add(time);
     }
 
     // ========================================
@@ -336,7 +334,7 @@ public class Workspace {
     }
 
     // ========================================
-    // Erstelle Matrix mit ImageFiles
+    // Erstelle Matrix
     // ========================================
     private int createMatrix(Set<ImageFile> imageFiles) {
         int tSize = this.maxTime + 1;

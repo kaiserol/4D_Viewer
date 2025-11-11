@@ -75,7 +75,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         @SuppressWarnings("MagicConstant")
         JScrollBar scrollBar = new JScrollBar(orientation);
         scrollBar.addAdjustmentListener(e -> {
-            // Abbrechen, wenn der Wert sich nicht geändert hat
+            // Wenn sich der Wert nicht ändert, abbrechen
             int oldValue = (axis == Axis.TIME) ? workspace.getTime() : workspace.getLevel();
             int newValue = e.getValue();
             if (oldValue == newValue) return;
@@ -233,7 +233,6 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     public void updateTheme() {
         setBorder(this.container.hasFocus());
     }
-
 
     // ========================================
     // Hilfsmethoden

@@ -21,7 +21,7 @@ public class Settings {
     public static final int DEFAULT_FONT_SIZE = 14;
     private static final boolean DEFAULT_CONFIRM_EXIT = true;
 
-    // MinMax Konstanten
+    // MinMax-Konstanten
     public static final int MIN_FONT_SIZE = 8;
     public static final int MAX_FONT_SIZE = 20;
 

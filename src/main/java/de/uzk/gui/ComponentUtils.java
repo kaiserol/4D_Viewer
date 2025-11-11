@@ -11,6 +11,31 @@ import java.util.function.Consumer;
 
 public class ComponentUtils {
     // ========================================
+    // Komponenten-Erzeugung
+    // ========================================
+    public static JCheckBox createCheckBox(String text, Consumer<Boolean> listener) {
+        JCheckBox checkBox = new JCheckBox(text);
+        checkBox.addActionListener(e -> listener.accept(checkBox.isSelected()));
+        checkBox.setFocusPainted(true);
+        return checkBox;
+    }
+
+    public static JSlider createSlider(int min, int max, Consumer<Integer> listener) {
+        JSlider slider = new JSlider(min, max, min);
+        slider.addChangeListener(e -> listener.accept(slider.getValue()));
+        slider.setSnapToTicks(true);
+        slider.setMajorTickSpacing(10);
+        slider.setMinorTickSpacing(1);
+        return slider;
+    }
+
+    public static JSpinner createSpinner(int min, int max, Consumer<Integer> listener) {
+        JSpinner spinner = new JSpinner(new CyclingSpinnerNumberModel(min, min, max, 1));
+        spinner.addChangeListener(e -> listener.accept((int) spinner.getValue()));
+        return spinner;
+    }
+
+    // ========================================
     // RunWithoutListeners – Standardvarianten
     // ========================================
     public static void runWithoutListeners(JCheckBox component, Consumer<JCheckBox> action) {
