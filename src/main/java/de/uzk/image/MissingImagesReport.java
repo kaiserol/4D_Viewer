@@ -133,17 +133,18 @@ public class MissingImagesReport {
 
             int maxTime = workspace.getMaxTime();
             int maxLevel = workspace.getMaxLevel();
-            String loadedImages = String.format("%d (%dx%d)", (maxTime + 1) * (maxLevel + 1), maxTime + 1, maxLevel + 1);
-            reportBuilder.append(StringUtils.wrapBold("Max Time: ")).append(maxTime).append(StringUtils.NEXT_LINE);
-            reportBuilder.append(StringUtils.wrapBold("Max Level: ")).append(maxLevel).append(StringUtils.NEXT_LINE);
-            reportBuilder.append(StringUtils.wrapBold("In Total: ")).append(loadedImages).append(StringUtils.NEXT_LINE);
+            String loadedImages = String.format("%d images (%dx%d)", (maxTime + 1) * (maxLevel + 1), maxTime + 1, maxLevel + 1);
+            reportBuilder.append(loadedImages).append(StringUtils.NEXT_LINE).append(StringUtils.NEXT_LINE);
+            reportBuilder.append(StringUtils.wrapBold("Further information:")).append(StringUtils.NEXT_LINE);
+            reportBuilder.append("Max Time: ").append(maxTime).append(StringUtils.NEXT_LINE);
+            reportBuilder.append("Max Level: ").append(maxLevel).append(StringUtils.NEXT_LINE);
 
             String headerText = "Loaded Images:" + StringUtils.NEXT_LINE;
             String formattedText = StringUtils.applyColor(StringUtils.wrapBold(headerText), GuiUtils.COLOR_BLUE);
-            return formattedText + StringUtils.NEXT_LINE + reportBuilder;
+            return formattedText + reportBuilder;
         } else {
             String headerText = createReportHeader(missingCount, "missing");
-            String formattedText = StringUtils.applyColor(StringUtils.wrapBold(headerText), GuiUtils.COLOR_RED);
+            String formattedText = StringUtils.wrapBold(headerText);
             return formattedText + StringUtils.NEXT_LINE + reportBuilder;
         }
     }

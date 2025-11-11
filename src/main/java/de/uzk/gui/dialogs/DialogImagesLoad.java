@@ -31,7 +31,7 @@ public class DialogImagesLoad implements LoadingImageListener {
     private LoadingResult result;
 
     // Für einen schönen Ladeeffekt SLEEP_TIME_NANOS > 0 setzen (1 Millisekunde = 1_000_000 Nanos)
-    private static final int SLEEP_TIME_NANOS = 1_000;
+    private static final int SLEEP_TIME_NANOS = 0;
 
     public DialogImagesLoad(JFrame frame) {
         this.dialog = new JDialog(frame, true);
