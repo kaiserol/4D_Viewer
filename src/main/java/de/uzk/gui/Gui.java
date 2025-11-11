@@ -7,7 +7,7 @@ import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.gui.areas.AreaImageDirectoryPath;
 import de.uzk.gui.areas.AreaImageViewer;
 import de.uzk.gui.areas.AreaTabs;
-import de.uzk.gui.dialogs.DialogImagesLoad;
+import de.uzk.gui.dialogs.DialogLoadingImages;
 import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.image.Axis;
 import de.uzk.image.ImageFileType;
@@ -27,7 +27,9 @@ import static de.uzk.config.LanguageHandler.getWord;
 public class Gui extends AreaContainerInteractive<JFrame> {
     // GUI-Elemente
     private final ActionHandler actionHandler;
-    private final DialogImagesLoad dialogImagesLoad;
+
+    // Dialoge
+    private final DialogLoadingImages dialogLoadingImages;
 
     // Observer Listener
     private final List<HandleActionListener> handleActionListeners;
@@ -56,7 +58,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.actionHandler = new ActionHandler(this);
 
         // Dialog für das Laden von Bildern erstellen
-        this.dialogImagesLoad = new DialogImagesLoad(this.container);
+        this.dialogLoadingImages = new DialogLoadingImages(this.container);
 
         // Gui erstellen
         build();
@@ -290,7 +292,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     public boolean openImagesDirectory(Path imagesDirectory, ImageFileType imageFileType, boolean isGuiBeingBuilt) {
         // Prüfe, ob das Verzeichnis passende Bilder hat
-        LoadingResult result = this.dialogImagesLoad.show(imagesDirectory, imageFileType);
+        LoadingResult result = this.dialogLoadingImages.show(imagesDirectory, imageFileType);
         switch (result) {
             case LOADING_SUCCESSFUL -> {
                 toggleOn();

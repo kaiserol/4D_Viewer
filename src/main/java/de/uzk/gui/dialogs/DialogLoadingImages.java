@@ -1,10 +1,10 @@
 package de.uzk.gui.dialogs;
 
-import de.uzk.utils.ComponentUtils;
 import de.uzk.gui.GuiUtils;
 import de.uzk.image.ImageFileType;
 import de.uzk.image.LoadingImageListener;
 import de.uzk.image.LoadingResult;
+import de.uzk.utils.ComponentUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,12 +18,11 @@ import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class DialogImagesLoad implements LoadingImageListener {
+public class DialogLoadingImages implements LoadingImageListener {
     // GUI-Elemente
     private final JDialog dialog;
-    private JTextField textFieldFileName;
-    private JTextField textFieldDirectoryName;
     private JProgressBar progressBar;
+    private JTextField textFieldFileName, textFieldDirectoryName;
     private JLabel labelImagesCount;
 
     // Thread
@@ -33,7 +32,7 @@ public class DialogImagesLoad implements LoadingImageListener {
     // Für einen schönen Ladeeffekt SLEEP_TIME_NANOS > 0 setzen (1 Millisekunde = 1_000_000 Nanos)
     private static final int SLEEP_TIME_NANOS = 0;
 
-    public DialogImagesLoad(JFrame frame) {
+    public DialogLoadingImages(JFrame frame) {
         this.dialog = new JDialog(frame, true);
         this.dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.dialog.addWindowListener(new WindowAdapter() {
@@ -51,12 +50,11 @@ public class DialogImagesLoad implements LoadingImageListener {
 
     public LoadingResult show(Path imagesDirectory, ImageFileType imageFileType) {
         if (imagesDirectory == null || !Files.exists(imagesDirectory)) return LoadingResult.DIRECTORY_DOES_NOT_EXIST;
-        this.dialog.getContentPane().removeAll();
-        this.dialog.setLayout(new BorderLayout(0, 10));
-
         // TODO: Warum rausgenommen (für mich)
 //        this.dialog.setTitle(getWord("dialog.imageLoading") + " (" + imageFileType.getDescription() + ")");
-        this.dialog.setTitle(getWord("dialog.imageLoading"));
+        this.dialog.setTitle(getWord("dialog.loadingImages"));
+        this.dialog.getContentPane().removeAll();
+        this.dialog.setLayout(new BorderLayout(0, 10));
 
         // Inhalt hinzufügen
         JPanel panel = new JPanel(new BorderLayout(0, 20));
@@ -101,7 +99,7 @@ public class DialogImagesLoad implements LoadingImageListener {
 
         // Anzahl gefundener Bilder hinzufügen
         JPanel imagesFoundPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
-        imagesFoundPanel.add(new JLabel(getWord("dialog.imageLoading.foundImages") + ":"));
+        imagesFoundPanel.add(new JLabel(getWord("dialog.loadingImages.foundImages") + ":"));
         imagesFoundPanel.add(this.labelImagesCount = new JLabel("0"));
         panel.add(imagesFoundPanel, BorderLayout.CENTER);
 
@@ -138,7 +136,7 @@ public class DialogImagesLoad implements LoadingImageListener {
     private void startThread(Path imagesDirectory, ImageFileType imageFileType) {
         if (this.thread != null) return;
         this.thread = new Thread(() -> {
-            this.result = workspace.openImagesDirectory(imagesDirectory, imageFileType, DialogImagesLoad.this);
+            this.result = workspace.openImagesDirectory(imagesDirectory, imageFileType, DialogLoadingImages.this);
             SwingUtilities.invokeLater(this.dialog::dispose);
         });
         this.thread.start();

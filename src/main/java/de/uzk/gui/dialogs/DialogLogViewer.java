@@ -27,7 +27,7 @@ public class DialogLogViewer {
     private static final int DEFAULT_MAX_HEIGHT = 400;
 
     public DialogLogViewer(JFrame frame) {
-        this.dialog = new JDialog(frame, getWord("dialog.logViewer"), true);
+        this.dialog = new JDialog(frame, true);
         this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         // ESC schließt Dialog
@@ -37,6 +37,7 @@ public class DialogLogViewer {
     }
 
     public void show() {
+        this.dialog.setTitle(getWord("dialog.logViewer"));
         this.dialog.getContentPane().removeAll();
         this.dialog.setLayout(new BorderLayout());
 
@@ -60,7 +61,7 @@ public class DialogLogViewer {
         JTabbedPane tabs = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 
         // Tabs hinzufügen
-        tabs.add(getWord("dialog.logViewer.logs"), createLogsPanel());
+        tabs.add(getWord("dialog.logViewer.log"), createLogsPanel());
         if (workspace.isOpen()) {
             tabs.add(getWord("dialog.logViewer.imagesReport"), createMissingImagesPanel());
         }

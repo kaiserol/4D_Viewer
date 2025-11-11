@@ -1,7 +1,7 @@
 package de.uzk.gui.dialogs;
 
-import de.uzk.utils.ComponentUtils;
 import de.uzk.gui.GuiUtils;
+import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
@@ -12,12 +12,12 @@ import java.util.regex.Pattern;
 
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class DialogVersions {
+public class DialogHistoryAndCredits {
     // GUI-Elemente
     private final JDialog dialog;
 
-    public DialogVersions(JFrame frame) {
-        this.dialog = new JDialog(frame, getWord("dialog.versions"), true);
+    public DialogHistoryAndCredits(JFrame frame) {
+        this.dialog = new JDialog(frame, true);
         this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         // ESC schließt Dialog
@@ -27,6 +27,7 @@ public class DialogVersions {
     }
 
     public void show() {
+        this.dialog.setTitle(getWord("dialog.historyAndCredits"));
         this.dialog.getContentPane().removeAll();
         this.dialog.setLayout(new BorderLayout());
 
@@ -54,21 +55,21 @@ public class DialogVersions {
 
         // Version 1.* hinzufügen
         addLabeledRow(panel, gbc, getWord("app.v1"), String.format(getWord("app.v1.date"), getWord("date.unknown")), 0);
-        addLabeledRow(panel, gbc, getWord("developers"), getWord("dialog.versions.v1.developer"), 5);
-        addLabeledRow(panel, gbc, getWord("contributors"), getWord("dialog.versions.v1.contributor"), 5);
+        addLabeledRow(panel, gbc, getWord("developers"), getWord("dialog.historyAndCredits.v1.developer"), 5);
+        addLabeledRow(panel, gbc, getWord("contributors"), getWord("dialog.historyAndCredits.v1.contributor"), 5);
 
         // Version 2.0 hinzufügen
         addLabeledRow(panel, gbc, getWord("app.v2_0"), getWord("app.v2_0.date"), 20);
-        addLabeledRow(panel, gbc, getWord("developers"), getWord("dialog.versions.v2_0.developer"), 5);
-        addLabeledRow(panel, gbc, getWord("contributors"), getWord("dialog.versions.v2_0.contributor-1"), 5);
-        addLabeledRow(panel, gbc, null, getWord("dialog.versions.v2_0.contributor-2"), 5);
+        addLabeledRow(panel, gbc, getWord("developers"), getWord("dialog.historyAndCredits.v2_0.developer"), 5);
+        addLabeledRow(panel, gbc, getWord("contributors"), getWord("dialog.historyAndCredits.v2_0.contributor-1"), 5);
+        addLabeledRow(panel, gbc, null, getWord("dialog.historyAndCredits.v2_0.contributor-2"), 5);
 
         // Version 2.1 hinzufügen
         addLabeledRow(panel, gbc, getWord("app.v2_1"), String.format(getWord("app.v2_1.date"), getWord("date.today")), 20);
-        addLabeledRow(panel, gbc, getWord("developers"), getWord("dialog.versions.v2_1.developer-1"), 5);
-        addLabeledRow(panel, gbc, null, getWord("dialog.versions.v2_1.developer-2"), 5);
-        addLabeledRow(panel, gbc, getWord("contributors"), getWord("dialog.versions.v2_1.contributor-1"), 5);
-        addLabeledRow(panel, gbc, null, getWord("dialog.versions.v2_1.contributor-2"), 5);
+        addLabeledRow(panel, gbc, getWord("developers"), getWord("dialog.historyAndCredits.v2_1.developer-1"), 5);
+        addLabeledRow(panel, gbc, null, getWord("dialog.historyAndCredits.v2_1.developer-2"), 5);
+        addLabeledRow(panel, gbc, getWord("contributors"), getWord("dialog.historyAndCredits.v2_1.contributor-1"), 5);
+        addLabeledRow(panel, gbc, null, getWord("dialog.historyAndCredits.v2_1.contributor-2"), 5);
 
         return panel;
     }

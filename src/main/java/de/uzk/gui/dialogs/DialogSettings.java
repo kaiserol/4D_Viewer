@@ -32,7 +32,7 @@ public class DialogSettings {
     private boolean oldConfirmExit;
 
     public DialogSettings(Gui gui) {
-        this.dialog = new JDialog(gui.getContainer(), getWord("dialog.settings"), true);
+        this.dialog = new JDialog(gui.getContainer(), true);
         this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.gui = gui;
 
@@ -49,8 +49,9 @@ public class DialogSettings {
             this.dialog.requestFocus();
             return;
         }
-        dialog.getContentPane().removeAll();
-        dialog.setLayout(new BorderLayout());
+        this.dialog.setTitle(getWord("dialog.settings"));
+        this.dialog.getContentPane().removeAll();
+        this.dialog.setLayout(new BorderLayout());
 
         // Alte Werte speichern
         this.oldLanguage = settings.getLanguage();

@@ -47,9 +47,10 @@ public enum ActionType {
     ACTION_UPDATE_FONT,
 
     // Hilfe Shortcuts
-    SHORTCUT_SHOW_DISCLAIMER(new Shortcut(KeyEvent.VK_F1)),
-    SHORTCUT_SHOW_VERSIONS(new Shortcut(KeyEvent.VK_F2)),
-    SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F3));
+    SHORTCUT_SHOW_ABOUT,
+    SHORTCUT_SHOW_LEGAL,
+    SHORTCUT_SHOW_HISTORY_AND_CREDITS,
+    SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F12));
 
     /**
      * Mögliche KeyEvents

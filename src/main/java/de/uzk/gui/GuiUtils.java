@@ -87,7 +87,7 @@ public final class GuiUtils {
         return font.getName();
     }
 
-    public static Desktop getDesktop() {
+    public static Desktop getDesktopSecurely() {
         if (!Desktop.isDesktopSupported()) return null;
         return Desktop.getDesktop();
     }
@@ -131,7 +131,7 @@ public final class GuiUtils {
     // WebLink öffnen
     // ========================================
     public static void openWebLink(URL url) {
-        Desktop desktop = getDesktop();
+        Desktop desktop = getDesktopSecurely();
         if (desktop == null) return;
 
         try {
@@ -197,17 +197,13 @@ public final class GuiUtils {
     }
 
     public static void initDesktopHandlers(Gui gui) {
-        Desktop desktop = getDesktop();
+        Desktop desktop = getDesktopSecurely();
         if (gui == null || desktop == null) return;
 
-        // TODO: Ersetze durch eine Dialog Klasse (About)
         // Über 4D Viewer
         if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
             desktop.setAboutHandler(e ->
-                JOptionPane.showMessageDialog(null,
-                    "4D Viewer v2.1\nErstellt von Oliver Kaiser",
-                    "Über 4D Viewer",
-                    JOptionPane.INFORMATION_MESSAGE)
+                gui.getActionHandler().executeAction(ActionType.SHORTCUT_SHOW_ABOUT)
             );
         }
 

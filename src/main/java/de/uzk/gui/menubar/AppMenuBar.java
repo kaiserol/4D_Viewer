@@ -79,12 +79,13 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
 
     private CustomMenu getMenuWindow(ActionHandler actionHandler) {
         CustomMenu menuWindow = new CustomMenu(getWord("items.window"));
+
         menuWindow.add(itemFontDecrease = new CustomMenuItem(getWord("items.window.fontSizeDecrease"), actionHandler, SHORTCUT_FONT_SIZE_DECREASE));
         menuWindow.add(itemFontIncrease = new CustomMenuItem(getWord("items.window.fontSizeIncrease"), actionHandler, SHORTCUT_FONT_SIZE_INCREASE));
         menuWindow.add(itemFontRestore = new CustomMenuItem(getWord("items.window.fontSizeRestore"), actionHandler, SHORTCUT_FONT_SIZE_RESTORE));
         updateFontItems();
 
-        Desktop desktop = GuiUtils.getDesktop();
+        Desktop desktop = GuiUtils.getDesktopSecurely();
         if (desktop == null || !desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
             menuWindow.addSeparator();
             menuWindow.add(new CustomMenuItem(getWord("items.window.openSettings"), actionHandler, SHORTCUT_OPEN_SETTINGS));
@@ -94,8 +95,14 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
 
     private CustomMenu getMenuHelp(ActionHandler actionHandler) {
         CustomMenu menuHelp = new CustomMenu(getWord("items.help"));
-        menuHelp.add(new CustomMenuItem(getWord("items.help.showDisclaimer"), actionHandler, SHORTCUT_SHOW_DISCLAIMER));
-        menuHelp.add(new CustomMenuItem(getWord("items.help.showVersions"), actionHandler, SHORTCUT_SHOW_VERSIONS));
+
+        Desktop desktop = GuiUtils.getDesktopSecurely();
+        if (desktop == null || !desktop.isSupported(Desktop.Action.APP_ABOUT)) {
+            String name = getWord("items.help.showAbout") + " " + getWord("app.name");
+            menuHelp.add(new CustomMenuItem(name, actionHandler, SHORTCUT_SHOW_ABOUT));
+        }
+        menuHelp.add(new CustomMenuItem(getWord("items.help.showLegal"), actionHandler, SHORTCUT_SHOW_LEGAL));
+        menuHelp.add(new CustomMenuItem(getWord("items.help.showHistoryAndCredits"), actionHandler, SHORTCUT_SHOW_HISTORY_AND_CREDITS));
         menuHelp.addSeparator();
 
         menuHelp.add(new CustomMenuItem(getWord("items.help.showLogViewer"), actionHandler, SHORTCUT_SHOW_LOG_VIEWER));

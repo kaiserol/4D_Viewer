@@ -10,15 +10,15 @@ import java.awt.event.KeyEvent;
 
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class DialogDisclaimer {
+public class DialogLegal {
     // GUI-Elemente
     private final JDialog dialog;
 
     // Maximale Dialogbreite
     private static final int MAX_WIDTH = 500;
 
-    public DialogDisclaimer(JFrame frame) {
-        this.dialog = new JDialog(frame, getWord("dialog.disclaimer"), true);
+    public DialogLegal(JFrame frame) {
+        this.dialog = new JDialog(frame, true);
         this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         // ESC schließt Dialog
@@ -28,14 +28,15 @@ public class DialogDisclaimer {
     }
 
     public void show() {
+        this.dialog.setTitle(getWord("dialog.legal"));
         this.dialog.getContentPane().removeAll();
         this.dialog.setLayout(new BorderLayout());
 
         // Inhalte hinzufügen
         JPanel panel = new JPanel(new BorderLayout(0, 20));
         panel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
-        panel.add(createRightOfUsePanel(), BorderLayout.CENTER);
-        panel.add(createLiabilityExclusionPanel(), BorderLayout.SOUTH);
+        panel.add(createUsagePanel(), BorderLayout.CENTER);
+        panel.add(createDisclaimerPanel(), BorderLayout.SOUTH);
         this.dialog.add(panel, BorderLayout.CENTER);
 
         // Dialog anzeigen
@@ -48,38 +49,38 @@ public class DialogDisclaimer {
     // ========================================
     // Komponenten-Erzeugung
     // ========================================
-    private JPanel createRightOfUsePanel() {
+    private JPanel createUsagePanel() {
         JPanel panel = new JPanel(new BorderLayout(0, 10));
 
         // Untertitel hinzufügen
-        panel.add(createSelectableSubTitle(getWord("dialog.disclaimer.subtitle-1")), BorderLayout.NORTH);
+        panel.add(createSelectableSubTitle(getWord("dialog.legal.subtitle.usage")), BorderLayout.NORTH);
 
-        // Text hinzufügen (Rechtlicher Hinweis)
-        SelectableText rightOfUseText = new SelectableText(
+        // Text hinzufügen
+        SelectableText text = new SelectableText(
             StringUtils.wrapHtmlWithLinks(
-                getWord("dialog.disclaimer.text-1"),
+                getWord("dialog.legal.text.usage"),
                 "justify",
                 MAX_WIDTH
             )
         );
-        panel.add(rightOfUseText, BorderLayout.CENTER);
+        panel.add(text, BorderLayout.CENTER);
         return panel;
     }
 
-    private JPanel createLiabilityExclusionPanel() {
+    private JPanel createDisclaimerPanel() {
         JPanel panel = new JPanel(new BorderLayout(0, 10));
 
         // Untertitel hinzufügen
-        panel.add(createSelectableSubTitle(getWord("dialog.disclaimer.subtitle-2")), BorderLayout.NORTH);
+        panel.add(createSelectableSubTitle(getWord("dialog.legal.subtitle.disclaimer")), BorderLayout.NORTH);
 
-        // Text hinzufügen (Haftungsausschluss)
-        SelectableText disclaimerText = new SelectableText(
+        // Text hinzufügen
+        SelectableText text = new SelectableText(
             StringUtils.wrapHtmlWithLinks(
-                getWord("dialog.disclaimer.text-2"),
+                getWord("dialog.legal.text.disclaimer"),
                 "justify",
                 MAX_WIDTH
             ));
-        panel.add(disclaimerText, BorderLayout.CENTER);
+        panel.add(text, BorderLayout.CENTER);
         return panel;
     }
 

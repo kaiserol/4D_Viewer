@@ -3,10 +3,7 @@ package de.uzk.action;
 import de.uzk.config.Settings;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
-import de.uzk.gui.dialogs.DialogDisclaimer;
-import de.uzk.gui.dialogs.DialogLogViewer;
-import de.uzk.gui.dialogs.DialogSettings;
-import de.uzk.gui.dialogs.DialogVersions;
+import de.uzk.gui.dialogs.*;
 import de.uzk.image.Axis;
 import de.uzk.utils.ProjectsHelper;
 
@@ -28,8 +25,11 @@ import static de.uzk.action.ActionType.*;
 public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     // GUI-Elemente
     private final Gui gui;
-    private final DialogDisclaimer dialogDisclaimer;
-    private final DialogVersions dialogVersions;
+
+    // Dialoge
+    private final DialogAbout dialogAbout;
+    private final DialogLegal dialogLegal;
+    private final DialogHistoryAndCredits dialogHistoryAndCredits;
     private final DialogLogViewer dialogLogViewer;
     private final DialogSettings dialogSettings;
 
@@ -42,8 +42,9 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
 
     public ActionHandler(Gui gui) {
         this.gui = gui;
-        this.dialogDisclaimer = new DialogDisclaimer(gui.getContainer());
-        this.dialogVersions = new DialogVersions(gui.getContainer());
+        this.dialogAbout = new DialogAbout(gui.getContainer());
+        this.dialogLegal = new DialogLegal(gui.getContainer());
+        this.dialogHistoryAndCredits = new DialogHistoryAndCredits(gui.getContainer());
         this.dialogLogViewer = new DialogLogViewer(gui.getContainer());
         this.dialogSettings = new DialogSettings(gui);
     }
@@ -107,8 +108,9 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show();
 
             // Hilfe Shortcuts
-            case SHORTCUT_SHOW_DISCLAIMER -> dialogDisclaimer.show();
-            case SHORTCUT_SHOW_VERSIONS -> dialogVersions.show();
+            case SHORTCUT_SHOW_ABOUT -> dialogAbout.show();
+            case SHORTCUT_SHOW_LEGAL -> dialogLegal.show();
+            case SHORTCUT_SHOW_HISTORY_AND_CREDITS -> dialogHistoryAndCredits.show();
             case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();
         }
     }
