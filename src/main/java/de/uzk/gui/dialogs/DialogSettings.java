@@ -123,7 +123,7 @@ public class DialogSettings {
         ComponentUtils.addLabeledRow(panel, gbc, getWord("dialog.settings.appearance.theme"), this.selectTheme, 10);
 
         // Drehfeld (Schriftgröße) hinzufügen
-        this.fontSizeSpinner = ComponentUtils.createSpinner(Settings.MIN_FONT_SIZE, Settings.MAX_FONT_SIZE, integer -> {
+        this.fontSizeSpinner = ComponentUtils.createSpinner(Settings.MIN_FONT_SIZE, Settings.MAX_FONT_SIZE, false, integer -> {
         });
         this.fontSizeSpinner.setValue(this.oldFontSize);
         ComponentUtils.addLabeledRow(panel, gbc, getWord("dialog.settings.appearance.fontSize"), this.fontSizeSpinner, 10);

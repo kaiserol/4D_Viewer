@@ -60,7 +60,7 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         ComponentUtils.addLabeledRow(this.container, gbc, getWord("items.edit.zoom"), this.zoomSlider, 10);
 
         // Drehfeld (Rotation) hinzufügen
-        degreeSpinner = ComponentUtils.createSpinner(Config.MIN_ROTATION, Config.MAX_ROTATION, newValue ->
+        degreeSpinner = ComponentUtils.createSpinner(Config.MIN_ROTATION, Config.MAX_ROTATION, true, newValue ->
             setConfigValue(newValue, workspace.getConfig()::getRotation, workspace.getConfig()::setRotation));
         ComponentUtils.addLabeledRow(this.container, gbc, getWord("items.edit.rotation"), degreeSpinner, 10);
 

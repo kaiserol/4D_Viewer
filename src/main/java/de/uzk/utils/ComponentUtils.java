@@ -40,8 +40,8 @@ public class ComponentUtils {
         return slider;
     }
 
-    public static JSpinner createSpinner(int min, int max, Consumer<Integer> listener) {
-        JSpinner spinner = new JSpinner(new CyclingSpinnerNumberModel(min, min, max, 1));
+    public static JSpinner createSpinner(int min, int max, boolean cycling, Consumer<Integer> listener) {
+        JSpinner spinner = new JSpinner(new CyclingSpinnerNumberModel(min, min, max, 1, cycling));
         spinner.addChangeListener(e -> listener.accept((int) spinner.getValue()));
         return spinner;
     }
