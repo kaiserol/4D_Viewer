@@ -68,8 +68,8 @@ public enum Language {
     @Override
     public String toString() {
         return switch (this) {
-            case ENGLISH -> getWord("languages.english");
-            case GERMAN -> getWord("languages.german");
+            case ENGLISH -> getWord("settings.language.english");
+            case GERMAN -> getWord("settings.language.german");
         };
     }
 }

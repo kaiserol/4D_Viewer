@@ -141,7 +141,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                confirmExitApp();
+                closeApp();
             }
         });
         this.container.addWindowFocusListener(new WindowAdapter() {
@@ -301,7 +301,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             }
             case DIRECTORY_ALREADY_LOADED -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.msgAlreadyLoaded")
+                String message = getWord("result.directoryAlreadyLoaded")
                     .formatted(imageFileType.getType(), imagesDirectory);
                 JOptionPane.showMessageDialog(
                     this.container,
@@ -312,7 +312,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             }
             case DIRECTORY_DOES_NOT_EXIST -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.msgDoesNotExist")
+                String message = getWord("result.directoryDoesNotExist")
                     .formatted(imagesDirectory);
                 JOptionPane.showMessageDialog(
                     this.container,
@@ -323,7 +323,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
             }
             case DIRECTORY_HAS_NO_IMAGES -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("optionPane.directory.msgHasNoImages")
+                String message = getWord("result.directoryHasNoImages")
                     .formatted(imagesDirectory, imageFileType.getType());
                 JOptionPane.showMessageDialog(
                     this.container,
@@ -336,9 +336,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         return false;
     }
 
-    public void confirmExitApp() {
+    public void closeApp() {
         if (settings.isConfirmExit()) {
-            JCheckBox checkBox = new JCheckBox(getWord("optionPane.closeApp.dont_ask_again"));
+            JCheckBox checkBox = new JCheckBox(getWord("optionPane.closeApp.checkBox"));
             Object[] message = new Object[]{getWord("optionPane.closeApp.question"), checkBox};
             int option = JOptionPane.showConfirmDialog(
                 this.container,

@@ -25,7 +25,7 @@ public class AreaImageDirectoryPath extends AreaContainerInteractive<JPanel> {
         // Bilder-Verzeichnis Pfad hinzufügen
         this.txtFieldDirectory = new JTextField();
         this.txtFieldDirectory.setEditable(false);
-        this.txtFieldDirectory.putClientProperty("JTextField.placeholderText", getWord("placeholder.imageDirectory"));
+        this.txtFieldDirectory.putClientProperty("JTextField.placeholderText", getWord("imagesDirectory"));
         this.container.add(this.txtFieldDirectory, BorderLayout.CENTER);
     }
 

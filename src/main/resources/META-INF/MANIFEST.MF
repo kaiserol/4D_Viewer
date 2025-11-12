@@ -1,8 +1,2 @@
 Manifest-Version: 1.0
 Main-Class: de.uzk.Main
-Created-By: Apache Maven 3.9.11
-Implementation-Title: 4D Viewer
-Implementation-Version: 2.1
-Implementation-Vendor: Universität zu Köln
-Implementation-URL: https://gitlab.git.nrw/okaiser1/4d_viewer
-Authors: Oliver Kaiser & Lion Rexhepi

@@ -61,9 +61,9 @@ public class DialogLogViewer {
         JTabbedPane tabs = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 
         // Tabs hinzufügen
-        tabs.add(getWord("dialog.logViewer.log"), createLogsPanel());
+        tabs.add(getWord("dialog.logViewer.tab.log"), createLogsPanel());
         if (workspace.isOpen()) {
-            tabs.add(getWord("dialog.logViewer.imagesReport"), createMissingImagesPanel());
+            tabs.add(getWord("dialog.logViewer.tab.imagesReport"), createMissingImagesPanel());
         }
         return tabs;
     }

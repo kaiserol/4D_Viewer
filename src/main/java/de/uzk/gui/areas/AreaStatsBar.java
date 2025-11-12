@@ -95,8 +95,8 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
     private void updateTimeLevel() {
         int time = workspace.getTime();
         int level =  workspace.getLevel();
-        String timeString = String.format("%s: %d", getWord("items.nav.axis.time"), time);
-        String levelString = String.format("%s: %d", getWord("items.nav.axis.level"), level);
+        String timeString = String.format("%s: %d", getWord("menu.nav.time"), time);
+        String levelString = String.format("%s: %d", getWord("menu.nav.level"), level);
         this.labelTimeLevel.setText(StringUtils.wrapHtml(StringUtils.wrapItalic(StringUtils.applyFontSize(
                 timeString + " / " + levelString, 75))));
     }

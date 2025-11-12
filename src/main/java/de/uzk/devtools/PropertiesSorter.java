@@ -34,6 +34,7 @@ public class PropertiesSorter {
      * Liest alle {@code .properties-Dateien} aus dem Ressourcenordner, sortiert sie und überschreibt sie bei Zustimmung.
      */
     public static void main(String[] args) throws IOException {
+        boolean skipConfirmations = (args.length == 1 && "--skip-confirm".equalsIgnoreCase(args[0]));
         Path[] propertiesPaths = getPropertiesPaths();
 
         for (Path propertyPath : propertiesPaths) {
@@ -55,11 +56,16 @@ public class PropertiesSorter {
                 continue;
             }
 
-            // Nutzer fragen, ob die Datei überschrieben werden soll
-            String question = "⚠️ Should the file be overwritten?";
-            if (!askUserForConfirmation(question)) {
-                System.out.printf("❌ File ‘%s’ is skipped.%n%n", propertyPath);
-                continue;
+
+            if (skipConfirmations) {
+                System.out.println("⚠️ File will be overwritten. (Confirmation was skipped)");
+            } else {
+                // Nutzer fragen, ob die Datei überschrieben werden soll
+                String question = "⚠️ Should the file be overwritten?";
+                if (!askUserForConfirmation(question)) {
+                    System.out.printf("❌ File ‘%s’ is skipped.%n%n", propertyPath);
+                    continue;
+                }
             }
 
             // Datei überschreiben

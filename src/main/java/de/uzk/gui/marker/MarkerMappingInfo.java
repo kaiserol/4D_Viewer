@@ -68,14 +68,14 @@ public class MarkerMappingInfo extends JPanel {
 
         c.gridy = 1;
         c.gridwidth = 1;
-        this.add(new JLabel(getWord("items.markers.visibleFromImage") + ":"), c);
+        this.add(new JLabel(getWord("menu.markers.visibleFromImage") + ":"), c);
 
         c.gridx = 1;
         JSpinner minimum = new JSpinner(fromModel);
         this.add(minimum, c);
 
         c.setPos(0, 2);
-        this.add(new JLabel(getWord("items.markers.visibleToImage") + ":"), c);
+        this.add(new JLabel(getWord("menu.markers.visibleToImage") + ":"), c);
 
         c.gridx = 1;
         JSpinner maximum = new JSpinner(toModel);

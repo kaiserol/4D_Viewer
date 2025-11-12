@@ -37,9 +37,9 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         gbc.gridwidth = 2;
 
         // Kontrollkästchen (Horizontales und Vertikales spiegeln) hinzufügen
-        this.mirrorXBox = ComponentUtils.createCheckBox(getWord("items.edit.mirrorX"), newValue ->
+        this.mirrorXBox = ComponentUtils.createCheckBox(getWord("menu.edit.mirrorX"), newValue ->
             setConfigValue(newValue, workspace.getConfig()::isMirrorX, workspace.getConfig()::setMirrorX));
-        this.mirrorYBox = ComponentUtils.createCheckBox(getWord("items.edit.mirrorY"), newValue ->
+        this.mirrorYBox = ComponentUtils.createCheckBox(getWord("menu.edit.mirrorY"), newValue ->
             setConfigValue(newValue, workspace.getConfig()::isMirrorY, workspace.getConfig()::setMirrorY));
         ComponentUtils.addRow(this.container, gbc, this.mirrorXBox, 0);
         ComponentUtils.addRow(this.container, gbc, this.mirrorYBox, 5);
@@ -55,14 +55,14 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
         this.zoomSlider = ComponentUtils.createSlider(Config.MIN_ZOOM, Config.MAX_ZOOM, newValue ->
             setConfigValue(newValue, workspace.getConfig()::getZoom, workspace.getConfig()::setZoom));
 
-        ComponentUtils.addLabeledRow(this.container, gbc, getWord("items.edit.brightness"), this.brightnessSlider, 15);
-        ComponentUtils.addLabeledRow(this.container, gbc, getWord("items.edit.contrast"), this.contrastSlider, 10);
-        ComponentUtils.addLabeledRow(this.container, gbc, getWord("items.edit.zoom"), this.zoomSlider, 10);
+        ComponentUtils.addLabeledRow(this.container, gbc, getWord("menu.edit.brightness"), this.brightnessSlider, 15);
+        ComponentUtils.addLabeledRow(this.container, gbc, getWord("menu.edit.contrast"), this.contrastSlider, 10);
+        ComponentUtils.addLabeledRow(this.container, gbc, getWord("menu.edit.zoom"), this.zoomSlider, 10);
 
         // Drehfeld (Rotation) hinzufügen
         degreeSpinner = ComponentUtils.createSpinner(Config.MIN_ROTATION, Config.MAX_ROTATION, true, newValue ->
             setConfigValue(newValue, workspace.getConfig()::getRotation, workspace.getConfig()::setRotation));
-        ComponentUtils.addLabeledRow(this.container, gbc, getWord("items.edit.rotation"), degreeSpinner, 10);
+        ComponentUtils.addLabeledRow(this.container, gbc, getWord("menu.edit.rotation"), degreeSpinner, 10);
 
         gbc.anchor = GridBagConstraints.SOUTHWEST;
         gbc.weighty = 1;
@@ -70,14 +70,14 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
         // Label (Momentaufnahmen) hinzufügen
         JPanel snapshotsPanel = new JPanel(new BorderLayout(10, 0));
-        snapshotsPanel.add(new JLabel(getWord("items.edit.snapshots") + ":"), BorderLayout.WEST);
+        snapshotsPanel.add(new JLabel(getWord("menu.edit.snapshots") + ":"), BorderLayout.WEST);
         snapshotsPanel.add(snapshots = new JLabel(), BorderLayout.CENTER);
         ComponentUtils.addRow(this.container, gbc, snapshotsPanel, 15);
 
         gbc.weighty = 0;
 
         // Schaltfläche (Momentaufnahme machen) hinzufügen
-        JButton snapshotsButton = new JButton(getWord("items.edit.takeSnapshot"));
+        JButton snapshotsButton = new JButton(getWord("menu.edit.takeSnapshot"));
         snapshotsButton.addActionListener(e -> gui.getActionHandler().executeAction(ActionType.SHORTCUT_TAKE_SNAPSHOT));
         ComponentUtils.addRow(this.container, gbc, snapshotsButton, 5);
     }

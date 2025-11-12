@@ -35,7 +35,7 @@ public enum ImageFileType {
 
     @JsonIgnore
     public String getDescription() {
-        return this.type + "-" + getWord("file.images");
+        return this.type + "-" + getWord("images");
     }
 
     @JsonIgnore

@@ -49,7 +49,7 @@ public enum ActionType {
     // Hilfe Shortcuts
     SHORTCUT_SHOW_ABOUT,
     SHORTCUT_SHOW_LEGAL,
-    SHORTCUT_SHOW_HISTORY_AND_CREDITS,
+    SHORTCUT_SHOW_HISTORY,
     SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F12));
 
     /**

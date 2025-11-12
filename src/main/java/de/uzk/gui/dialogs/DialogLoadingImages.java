@@ -115,11 +115,11 @@ public class DialogLoadingImages implements LoadingImageListener {
         // Dateiname hinzufügen
         this.textFieldFileName = createTextField();
         this.textFieldFileName.setFocusable(false);
-        ComponentUtils.addLabeledRow(panel, gbc, getWord("file.fileName"), this.textFieldFileName, 0);
+        ComponentUtils.addLabeledRow(panel, gbc, getWord("name.file"), this.textFieldFileName, 0);
 
         // Verzeichnisname hinzufügen
         this.textFieldDirectoryName = createTextField();
-        ComponentUtils.addLabeledRow(panel, gbc, getWord("file.directoryName"), this.textFieldDirectoryName, 5);
+        ComponentUtils.addLabeledRow(panel, gbc, getWord("name.directory"), this.textFieldDirectoryName, 5);
 
         return panel;
     }

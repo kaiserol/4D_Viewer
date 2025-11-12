@@ -29,7 +29,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     // Dialoge
     private final DialogAbout dialogAbout;
     private final DialogLegal dialogLegal;
-    private final DialogHistoryAndCredits dialogHistoryAndCredits;
+    private final DialogHistory dialogHistory;
     private final DialogLogViewer dialogLogViewer;
     private final DialogSettings dialogSettings;
 
@@ -44,7 +44,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         this.gui = gui;
         this.dialogAbout = new DialogAbout(gui.getContainer());
         this.dialogLegal = new DialogLegal(gui.getContainer());
-        this.dialogHistoryAndCredits = new DialogHistoryAndCredits(gui.getContainer());
+        this.dialogHistory = new DialogHistory(gui.getContainer());
         this.dialogLogViewer = new DialogLogViewer(gui.getContainer());
         this.dialogSettings = new DialogSettings(gui);
     }
@@ -110,7 +110,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             // Hilfe Shortcuts
             case SHORTCUT_SHOW_ABOUT -> dialogAbout.show();
             case SHORTCUT_SHOW_LEGAL -> dialogLegal.show();
-            case SHORTCUT_SHOW_HISTORY_AND_CREDITS -> dialogHistoryAndCredits.show();
+            case SHORTCUT_SHOW_HISTORY -> dialogHistory.show();
             case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();
         }
     }

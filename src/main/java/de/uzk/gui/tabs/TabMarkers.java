@@ -27,7 +27,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
         this.container.removeAll();
         this.container.setLayout(new BorderLayout());
 
-        JButton add = new JButton(getWord("items.markers.addMarker"));
+        JButton add = new JButton(getWord("menu.markers.addMarker"));
         add.addActionListener(e -> {
             MarkerEditor initial = new MarkerEditor(workspace.getCurrentImageFile());
             int option = JOptionPane.showConfirmDialog(
@@ -56,7 +56,7 @@ public class TabMarkers extends AreaContainerInteractive<JPanel> {
             }
             this.container.add(new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
         } else {
-            JLabel noneLabel = new JLabel(getWord("items.markers.noMarkersSet"));
+            JLabel noneLabel = new JLabel(getWord("menu.markers.noMarkersSet"));
             noneLabel.setHorizontalAlignment(SwingConstants.CENTER);
             this.container.add(noneLabel, BorderLayout.CENTER);
         }

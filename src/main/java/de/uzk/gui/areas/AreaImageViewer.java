@@ -160,7 +160,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
             g2D.drawImage(this.currentImage, x - this.insetX, y - this.insetY, width, height, null);
         } else {
             // Eine Fehlermeldung wird angezeigt, wenn das aktuelle Bild nicht geladen werden kann (weil es nicht existiert)
-            String text = workspace.getImagesDirectory() != null ? getWord("placeholder.imageCouldNotLoad") : "";
+            String text = workspace.getImagesDirectory() != null ? getWord("dialog.loadingImages.imageCouldNotLoad") : "";
             GuiUtils.drawCenteredText(g2D, text, this.panelImage);
         }
     }

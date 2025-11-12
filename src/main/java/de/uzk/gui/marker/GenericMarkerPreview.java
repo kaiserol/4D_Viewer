@@ -23,7 +23,7 @@ public class GenericMarkerPreview extends JComponent implements MouseListener {
         this.addMouseListener(this);
         this.markerShape = markerShape;
         this.markerColor = markerColor;
-        GuiUtils.setToolTipText(this, getWord("items.markers.tooltipEditMarker"));
+        GuiUtils.setToolTipText(this, getWord("menu.markers.tooltipEditMarker"));
     }
 
     @Override

@@ -33,9 +33,9 @@ public class AreaTabs extends AreaContainerInteractive<JPanel> {
         this.tabbedPane.setFocusable(true);
 
         // Tabs hinzufügen
-        this.tabbedPane.add(getWord("items.edit"), new TabEdit(this.gui).getContainer());
-        this.tabbedPane.add(getWord("items.nav"), new TabNavigate(this.gui).getContainer());
-        this.tabbedPane.add(getWord("items.markers"), new TabMarkers(this.gui).getContainer());
+        this.tabbedPane.add(getWord("menu.edit"), new TabEdit(this.gui).getContainer());
+        this.tabbedPane.add(getWord("menu.nav"), new TabNavigate(this.gui).getContainer());
+        this.tabbedPane.add(getWord("menu.markers"), new TabMarkers(this.gui).getContainer());
         this.container.add(this.tabbedPane, BorderLayout.CENTER);
     }
 

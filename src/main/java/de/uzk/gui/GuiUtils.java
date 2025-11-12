@@ -218,7 +218,7 @@ public final class GuiUtils {
         if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
             desktop.setQuitHandler((QuitEvent e, QuitResponse response) -> {
                 response.cancelQuit();
-                gui.confirmExitApp();
+                gui.closeApp();
             });
         }
     }

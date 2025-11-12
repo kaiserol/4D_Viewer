@@ -33,7 +33,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         OGridBagConstraints gbc = new OGridBagConstraints(new Insets(0, 0, 5, 15), GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);
 
         // imageLabel
-        JLabel imageLabel = new JLabel(getWord("items.nav.axis.time.layer") + ":");
+        JLabel imageLabel = new JLabel(getWord("menu.nav.time.layer") + ":");
         this.container.add(imageLabel, gbc);
 
         // gbc
@@ -49,7 +49,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         gbc.weightx = 1;
 
         // imageUnitLabel
-        JLabel imageUnitLabel = new JLabel(getWord("items.nav.axis.time.unit"));
+        JLabel imageUnitLabel = new JLabel(getWord("menu.nav.time.unit"));
         this.container.add(imageUnitLabel, gbc);
 
         // gbc
@@ -65,7 +65,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         gbc.weightx = 0;
 
         // levelLabel
-        JLabel levelLabel = new JLabel(getWord("items.nav.axis.level.layer") + ":");
+        JLabel levelLabel = new JLabel(getWord("menu.nav.level.layer") + ":");
         this.container.add(levelLabel, gbc);
 
         // gbc
@@ -81,7 +81,7 @@ public class TabNavigate extends AreaContainerInteractive<JPanel> {
         gbc.weightx = 1;
 
         // timeUnitLabel
-        JLabel levelUnitLabel = new JLabel(getWord("items.nav.axis.level.unit"));
+        JLabel levelUnitLabel = new JLabel(getWord("menu.nav.level.unit"));
         this.container.add(levelUnitLabel, gbc);
 
         // gbc

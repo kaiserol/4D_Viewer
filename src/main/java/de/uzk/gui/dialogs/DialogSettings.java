@@ -109,37 +109,37 @@ public class DialogSettings {
         gbc.insets.right = 100;
 
         // 1. Abschnitt: Erscheinungsbild hinzufügen
-        ComponentUtils.addRow(panel, gbc, createBoldLabel(getWord("dialog.settings.appearance")), 0);
+        ComponentUtils.addRow(panel, gbc, createBoldLabel(getWord("dialog.settings.section.appearance")), 0);
 
         gbc.gridwidth = 1;
 
         // Auswahlfeld (Sprache) hinzufügen
         this.selectLanguage = new JComboBox<>(Language.sortedValues());
         this.selectLanguage.setSelectedItem(this.oldLanguage);
-        ComponentUtils.addLabeledRow(panel, gbc, getWord("dialog.settings.appearance.language"), this.selectLanguage, 10);
+        ComponentUtils.addLabeledRow(panel, gbc, getWord("settings.language"), this.selectLanguage, 10);
 
         // Auswahlfeld (Farbschema) hinzufügen
         this.selectTheme = new JComboBox<>(Theme.sortedValues());
         this.selectTheme.setSelectedItem(this.oldTheme);
-        ComponentUtils.addLabeledRow(panel, gbc, getWord("dialog.settings.appearance.theme"), this.selectTheme, 10);
+        ComponentUtils.addLabeledRow(panel, gbc, getWord("settings.theme"), this.selectTheme, 10);
 
         // Drehfeld (Schriftgröße) hinzufügen
         this.fontSizeSpinner = ComponentUtils.createSpinner(Settings.MIN_FONT_SIZE, Settings.MAX_FONT_SIZE, false, integer -> {
         });
         this.fontSizeSpinner.setValue(this.oldFontSize);
-        ComponentUtils.addLabeledRow(panel, gbc, getWord("dialog.settings.appearance.fontSize"), this.fontSizeSpinner, 10);
+        ComponentUtils.addLabeledRow(panel, gbc, getWord("settings.fontSize"), this.fontSizeSpinner, 10);
 
         gbc.gridwidth = 2;
         gbc.weightx = 1;
         gbc.insets.right = 100;
 
         // 2. Abschnitt: Fenster-Verhalten hinzufügen
-        ComponentUtils.addRow(panel, gbc, createBoldLabel(getWord("dialog.settings.windowBehavior")), 20);
+        ComponentUtils.addRow(panel, gbc, createBoldLabel(getWord("dialog.settings.section.windowBehavior")), 20);
 
         gbc.weightx = 0;
 
         // Kontrollkästchen (Beenden bestätigen) hinzufügen
-        this.checkConfirmExit = new JCheckBox(getWord("dialog.settings.windowBehavior.confirmExit"));
+        this.checkConfirmExit = new JCheckBox(getWord("dialog.settings.checkBox.confirmExit"));
         this.checkConfirmExit.setSelected(this.oldConfirmExit);
         ComponentUtils.addRow(panel, gbc, this.checkConfirmExit, 10);
 

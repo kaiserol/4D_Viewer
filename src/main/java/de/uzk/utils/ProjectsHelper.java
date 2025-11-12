@@ -29,7 +29,7 @@ public class ProjectsHelper {
 
         int option = JOptionPane.showConfirmDialog(null,
             list,
-            getWord("items.project.openRecent"),
+            getWord("menu.project.openRecent"),
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.PLAIN_MESSAGE
         );
@@ -47,7 +47,7 @@ public class ProjectsHelper {
 
     public static void clearImages(Gui gui) {
         int option = JOptionPane.showConfirmDialog(gui.getContainer(),
-            getWord("optionPane.directory.clear"),
+            getWord("dialog.loadingImages.closeProject"),
             getWord("optionPane.title.confirm"),
             JOptionPane.YES_NO_OPTION,
             JOptionPane.QUESTION_MESSAGE
@@ -119,14 +119,14 @@ public class ProjectsHelper {
     }
 
     private static void setFileChooserTitel(JFileChooser fileChooser) {
-        String dialogTitle = String.format("%s", getWord("items.project.openDirectory"));
+        String dialogTitle = String.format("%s", getWord("menu.project.openDirectory"));
         fileChooser.setDialogTitle(dialogTitle);
 
         // Dialogtitel dynamisch setzen, wenn der Filter geändert wird
         fileChooser.addPropertyChangeListener(evt -> {
             if (evt.getNewValue() instanceof FileNameExtensionFilter filter) {
                 ImageFileType imageFileType = getSelectedImageFileType(filter);
-                String newTitle = String.format("%s (%s)", getWord("items.project.openDirectory"), imageFileType.getDescription());
+                String newTitle = String.format("%s (%s)", getWord("menu.project.openDirectory"), imageFileType.getDescription());
                 fileChooser.setDialogTitle(newTitle);
             }
         });

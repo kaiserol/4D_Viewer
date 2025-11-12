@@ -10,13 +10,14 @@ import java.awt.event.KeyEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static de.uzk.Main.settings;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class DialogHistoryAndCredits {
+public class DialogHistory {
     // GUI-Elemente
     private final JDialog dialog;
 
-    public DialogHistoryAndCredits(JFrame frame) {
+    public DialogHistory(JFrame frame) {
         this.dialog = new JDialog(frame, true);
         this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -27,7 +28,7 @@ public class DialogHistoryAndCredits {
     }
 
     public void show() {
-        this.dialog.setTitle(getWord("dialog.historyAndCredits"));
+        this.dialog.setTitle(getWord("dialog.history"));
         this.dialog.getContentPane().removeAll();
         this.dialog.setLayout(new BorderLayout());
 
@@ -55,21 +56,21 @@ public class DialogHistoryAndCredits {
 
         // Version 1.* hinzufügen
         addLabeledRow(panel, gbc, getWord("app.v1"), String.format(getWord("app.v1.date"), getWord("date.unknown")), 0);
-        addLabeledRow(panel, gbc, getWord("developers"), getWord("dialog.historyAndCredits.v1.developer"), 5);
-        addLabeledRow(panel, gbc, getWord("contributors"), getWord("dialog.historyAndCredits.v1.contributor"), 5);
+        addLabeledRow(panel, gbc, getWord("people.developers"), getWord("dialog.history.v1.developer"), 5);
+        addLabeledRow(panel, gbc, getWord("people.contributors"), getWord("dialog.history.v1.contributor"), 5);
 
         // Version 2.0 hinzufügen
         addLabeledRow(panel, gbc, getWord("app.v2_0"), getWord("app.v2_0.date"), 20);
-        addLabeledRow(panel, gbc, getWord("developers"), getWord("dialog.historyAndCredits.v2_0.developer"), 5);
-        addLabeledRow(panel, gbc, getWord("contributors"), getWord("dialog.historyAndCredits.v2_0.contributor-1"), 5);
-        addLabeledRow(panel, gbc, null, getWord("dialog.historyAndCredits.v2_0.contributor-2"), 5);
+        addLabeledRow(panel, gbc, getWord("people.developers"), getWord("dialog.history.v2_0.developer"), 5);
+        addLabeledRow(panel, gbc, getWord("people.contributors"), getWord("dialog.history.v2_0.contributor-1"), 5);
+        addLabeledRow(panel, gbc, null, getWord("dialog.history.v2_0.contributor-2"), 5);
 
         // Version 2.1 hinzufügen
         addLabeledRow(panel, gbc, getWord("app.v2_1"), String.format(getWord("app.v2_1.date"), getWord("date.today")), 20);
-        addLabeledRow(panel, gbc, getWord("developers"), getWord("dialog.historyAndCredits.v2_1.developer-1"), 5);
-        addLabeledRow(panel, gbc, null, getWord("dialog.historyAndCredits.v2_1.developer-2"), 5);
-        addLabeledRow(panel, gbc, getWord("contributors"), getWord("dialog.historyAndCredits.v2_1.contributor-1"), 5);
-        addLabeledRow(panel, gbc, null, getWord("dialog.historyAndCredits.v2_1.contributor-2"), 5);
+        addLabeledRow(panel, gbc, getWord("people.developers"), getWord("dialog.history.v2_1.developer-1"), 5);
+        addLabeledRow(panel, gbc, null, getWord("dialog.history.v2_1.developer-2"), 5);
+        addLabeledRow(panel, gbc, getWord("people.contributors"), getWord("dialog.history.v2_1.contributor-1"), 5);
+        addLabeledRow(panel, gbc, null, getWord("dialog.history.v2_1.contributor-2"), 5);
 
         return panel;
     }
@@ -99,7 +100,7 @@ public class DialogHistoryAndCredits {
                 String bracketPart = matcher.group(0).trim();
 
                 // Zusatzinfo farblich leicht absetzen
-                Color highlightColor = GuiUtils.adjustColor(GuiUtils.COLOR_BLUE, 0.2f, true);
+                Color highlightColor = GuiUtils.adjustColor(GuiUtils.getTextColor(), 0.3f, settings.getTheme().isLight());
                 formattedText = StringUtils.wrapHtml(mainText + " " +
                     StringUtils.applyColor(bracketPart, highlightColor));
             } else {
