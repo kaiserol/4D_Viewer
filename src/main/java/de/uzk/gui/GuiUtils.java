@@ -96,11 +96,6 @@ public final class GuiUtils {
     // ========================================
     // Setter
     // ========================================
-    public static void setCursor(JComponent component, Cursor cursor) {
-        if (component == null) return;
-        SwingUtilities.invokeLater(() -> component.setCursor(cursor));
-    }
-
     public static void setImageIcon(JFrame frame) {
         frame.setIconImage(Icons.APP_IMAGE);
 
@@ -114,10 +109,17 @@ public final class GuiUtils {
         }
     }
 
+    public static void setCursor(JComponent component, Cursor cursor) {
+        if (component == null) return;
+        SwingUtilities.invokeLater(() -> component.setCursor(cursor));
+    }
+
     public static void setToolTipText(JComponent component, String text) {
         if (component == null) return;
         component.setToolTipText(text);
 
+        ToolTipManager.sharedInstance().setInitialDelay(0);
+        ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
         Point mouse = component.getMousePosition();
         if (mouse != null) {
             MouseEvent mouseEvent = new MouseEvent(component, MouseEvent.MOUSE_MOVED,

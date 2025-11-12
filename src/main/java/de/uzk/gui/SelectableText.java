@@ -14,7 +14,6 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.StyleSheet;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.Objects;
@@ -28,7 +27,7 @@ import static javax.swing.event.HyperlinkEvent.EventType.*;
  * <p>
  * Hauptmerkmale:
  * <ul>
- *   <li>Zeigt den Textcursor (I-Beam), solange sich die Maus über dem Text befindet.</li>
+ *   <li>Zeigt den Standard-Cursor, solange sich die Maus über dem Text befindet.</li>
  *   <li>Wenn sich die Maus über einem Hyperlink befindet und die Command- (bzw. Ctrl-)Taste gedrückt ist,
  *       erscheint der Hand-Cursor (Pointer).</li>
  *   <li>Beim Klicken auf einen Link wird der Standardbrowser über {@link GuiUtils#openWebLink(java.net.URL)} geöffnet.</li>
@@ -58,6 +57,16 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     private CursorMode currentCursorMode = CursorMode.TEXT;
 
     /**
+     * Standard-Cursor
+     */
+    private static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+
+    /**
+     * Hand-Cursor
+     */
+    private static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+
+    /**
      * Farbe, die einen aktiven Hyperlink darstellt
      */
     private static final Color COLOR_ACTIVE_LINK = GuiUtils.COLOR_BLUE;
@@ -85,11 +94,10 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
 
         // Unsichtbares Caret (kein blinkender Balken)
         setCaret(new NoBlinkCaret());
-        setTextCursor();
+        setDefaultCursor();
 
         // Maus- & Hyperlink-Events
-        addMouseListener(new MouseCaretListener());
-        addMouseMotionListener(new MouseMotionCaretListener());
+        addMouseMotionListener(new MouseMovementListener());
         addHyperlinkListener(this);
 
         // Globale Tastaturüberwachung aktivieren
@@ -126,24 +134,9 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     }
 
     /**
-     * Listener, der Cursor bei Eintritt/Austritt aus der Komponente anpasst
-     */
-    private class MouseCaretListener extends MouseAdapter {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            updateCursor();
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            resetLinkElement();
-        }
-    }
-
-    /**
      * Listener, der Cursor bei Mausbewegungen aktualisiert
      */
-    private class MouseMotionCaretListener extends MouseMotionAdapter {
+    private class MouseMovementListener extends MouseMotionAdapter {
         @Override
         public void mouseMoved(MouseEvent e) {
             updateCursor();
@@ -220,27 +213,22 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
             switch (newMode) {
                 case LINK_CTRL_HOVER -> {
                     applyLinkHoverStyle(true);
-                    GuiUtils.setCursor(this, Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                    GuiUtils.setCursor(this, HAND_CURSOR);
                     GuiUtils.setToolTipText(this, getWord("tooltip.openInBrowser"));
                 }
                 case LINK_HOVER -> {
                     applyLinkHoverStyle(false);
-                    GuiUtils.setCursor(this, Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                    GuiUtils.setCursor(this, HAND_CURSOR);
 
                     String tooltipText = String.format("%s (%s %s)",
-                            getWord("tooltip.openInBrowser"),
-                            Shortcut.getModifiersList(Shortcut.CTRL_DOWN).get(0),
-                            getWord("tooltip.click")
+                        getWord("tooltip.openInBrowser"),
+                        Shortcut.getModifiersList(Shortcut.CTRL_DOWN).get(0),
+                        getWord("tooltip.click")
                     );
                     GuiUtils.setToolTipText(this, tooltipText);
                 }
-                default -> setTextCursor();
+                default -> setDefaultCursor();
             }
-        } else {
-            // Setze den Textcursor, wenn der Text Modus aktiv ist und der falsche Cursor gesetzt wurde
-            if (newMode != CursorMode.TEXT) return;
-            if (getCursor() != Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)) return;
-            setTextCursor();
         }
     }
 
@@ -274,11 +262,11 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     // ========================================
 
     /**
-     * Setzt Standard-Textcursor und entfernt Tooltip
+     * Setzt Standard-Cursor und entfernt Tooltip
      */
-    private void setTextCursor() {
+    private void setDefaultCursor() {
         applyLinkHoverStyle(false);
-        GuiUtils.setCursor(this, Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        GuiUtils.setCursor(this, DEFAULT_CURSOR);
         GuiUtils.setToolTipText(this, null);
     }
 
