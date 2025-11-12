@@ -11,7 +11,7 @@ import de.uzk.utils.OperatingSystem;
 import javax.swing.*;
 
 /*
- * Copyright 2025 Oliver Kaiser
+ * Copyright 2023-2025 Oliver Kaiser
  *
  * Lizenziert unter der Apache License, Version 2.0 (die "Lizenz");
  * Sie dürfen diese Datei nur im Einklang mit der Lizenz verwenden.
