@@ -239,7 +239,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         } else {
             // Setze den Textcursor, wenn der Text Modus aktiv ist und der falsche Cursor gesetzt wurde
             if (newMode != CursorMode.TEXT) return;
-            if (getCursor() != Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR)) return;
+            if (getCursor() != Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)) return;
             setTextCursor();
         }
     }
@@ -278,7 +278,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      */
     private void setTextCursor() {
         applyLinkHoverStyle(false);
-        GuiUtils.setCursor(this, Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+        GuiUtils.setCursor(this, Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         GuiUtils.setToolTipText(this, null);
     }
 

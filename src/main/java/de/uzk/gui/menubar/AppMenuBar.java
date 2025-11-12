@@ -98,7 +98,7 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
 
         Desktop desktop = GuiUtils.getDesktopSecurely();
         if (desktop == null || !desktop.isSupported(Desktop.Action.APP_ABOUT)) {
-            String name = getWord("menu.help.showAbout") + " " + getWord("app.name");
+            String name = getWord("dialog.about").formatted(getWord("app.name"));
             menuHelp.add(new CustomMenuItem(name, actionHandler, SHORTCUT_SHOW_ABOUT));
         }
         menuHelp.add(new CustomMenuItem(getWord("menu.help.showLegal"), actionHandler, SHORTCUT_SHOW_LEGAL));

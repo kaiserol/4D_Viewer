@@ -6,7 +6,7 @@ import java.awt.*;
 import java.io.File;
 
 /**
- * Dienstklasse für Zeichenkettenoperationen und HTML-Formatierungen.
+ * Die Dienstklasse für Zeichenkettenoperationen und HTML-Formatierungen.
  * <p>
  * Bietet Methoden zur formatierten Darstellung von Arrays,
  * Einbettung von Text in HTML-Tags (z.&nbsp;B. fett, kursiv, Farbe, Größe, Ausrichtung)
@@ -64,22 +64,8 @@ public final class StringUtils {
      */
     public static String applyDivAlignment(String text, String align, int maxWidth) {
         return String.format(
-                "<div style=\"text-align:%s; width:%dpx; word-wrap:break-word;\">%s</div>",
-                align, maxWidth, text
-        );
-    }
-
-    /**
-     * Richtet den Text in einem &lt;div&gt;-Tag aus.
-     *
-     * @param text     der auszurichtende Text
-     * @param align    Textausrichtung (z.&nbsp;B. "left", "center", "right", "justify")
-     * @return HTML-String mit entsprechendem Stil
-     */
-    public static String applyDivAlignment(String text, String align) {
-        return String.format(
-                "<div style=\"text-align:%s;\">%s</div>",
-                align, text
+            "<div style=\"text-align:%s; width:%dpx; word-wrap:break-word;\">%s</div>",
+            align, maxWidth, text
         );
     }
 
@@ -186,32 +172,29 @@ public final class StringUtils {
      */
     public static String wrapHtml(String htmlContent, String fontName) {
         String style = String.format("""
-                body { font-family: %s; }
-                pre { margin: 5px 0; }
-                """, fontName);
+            body { font-family: %s; }
+            pre { margin: 5px 0; }
+            """, fontName);
 
         return "<html><head><style>" + style + "</style></head><body>" + htmlContent + "</body></html>";
     }
 
     /**
-     * Formatiert beliebige Texteingaben zu einfachem HTML,
-     * erkennt URLs automatisch und richtet den Text nach Wunsch aus.
+     * Erkennt URLs automatisch.
      *
-     * @param text     der Eingabetext (z.&nbsp;B. mit Zeilenumbrüchen)
-     * @param align    Textausrichtung (z.&nbsp;B. "left", "center", "right", "justify")
-     * @param maxWidth maximale Breite in Pixeln
-     * @return HTML-formatierter Text
+     * @param text der Eingabetext (z.&nbsp;B. mit Zeilenumbrüchen)
+     * @return HTML-formatierter Text mit Hyperlinks
      */
-    public static String wrapHtmlWithLinks(String text, String align, int maxWidth) {
+    public static String wrapLinks(String text) {
         if (text == null || text.isEmpty()) return "";
 
         String[] words = text.replace("\r\n", "<br>")
-                .replace("\n", "<br>")
-                .trim()
-                .split("\\s+");
+            .replace("\n", "<br>")
+            .replace("<br>", " <br>")
+            .trim()
+            .split("\\s+");
 
         StringBuilder builder = new StringBuilder();
-
         for (String word : words) {
             // Hyperlink-Erkennung (http/https)
             if (word.matches("https?://\\S+")) {
@@ -234,7 +217,20 @@ public final class StringUtils {
             builder.append(" ");
         }
 
-        String aligned = applyDivAlignment(builder.toString(), align, maxWidth);
+        return builder.toString();
+    }
+
+    /**
+     * Formatiert beliebige Texteingaben zu einfachem HTML,
+     * erkennt URLs automatisch und richtet den Text nach Wunsch aus.
+     *
+     * @param text     der Eingabetext (z.&nbsp;B. mit Zeilenumbrüchen)
+     * @param align    Textausrichtung (z.&nbsp;B. "left", "center", "right", "justify")
+     * @param maxWidth maximale Breite in Pixeln
+     * @return HTML-formatierter Text
+     */
+    public static String wrapHtmlWithLinks(String text, String align, int maxWidth) {
+        String aligned = applyDivAlignment(wrapLinks(text), align, maxWidth);
         return wrapHtml(aligned);
     }
 
