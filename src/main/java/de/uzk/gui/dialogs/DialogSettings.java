@@ -81,7 +81,7 @@ public class DialogSettings {
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
-        contentPanel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
+        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
         contentPanel.add(createSettingsPanel(), BorderLayout.CENTER);
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
         this.dialog.add(contentPanel, BorderLayout.CENTER);

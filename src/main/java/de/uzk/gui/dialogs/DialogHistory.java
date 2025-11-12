@@ -34,7 +34,7 @@ public class DialogHistory {
 
         // Inhalte hinzufügen
         JPanel panel = new JPanel(new BorderLayout(0, 20));
-        panel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
+        panel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
         panel.add(createContributorsPanel(), BorderLayout.CENTER);
         this.dialog.add(panel, BorderLayout.CENTER);
 

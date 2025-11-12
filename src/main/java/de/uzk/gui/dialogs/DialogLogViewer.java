@@ -43,7 +43,7 @@ public class DialogLogViewer {
 
         // Tabs hinzufügen
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
+        panel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
         panel.add(this.tabs = createTabs(), BorderLayout.CENTER);
         this.dialog.add(panel);
 
@@ -87,7 +87,7 @@ public class DialogLogViewer {
 
         // Text in ScrollPane packen
         SelectableText text = new SelectableText(htmlContent);
-        text.setMargin(GuiUtils.INSETS_DEFAULT_SMALL);
+        text.setMargin(GuiUtils.INSETS_SMALL);
 
         JScrollPane scrollPane = new JScrollPane(text);
         panel.add(scrollPane);

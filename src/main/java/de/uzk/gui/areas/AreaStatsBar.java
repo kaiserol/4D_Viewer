@@ -24,7 +24,7 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
 
     private void init() {
         this.container.setLayout(new BorderLayout());
-        this.container.setBorder(GuiUtils.BORDER_PADDING_DEFAULT);
+        this.container.setBorder(GuiUtils.BORDER_EMPTY_MEDIUM);
 
         // Zeit-Label
         this.labelTime = new JLabel("", SwingConstants.CENTER);

@@ -168,7 +168,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
         // Panel erstellen
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-        mainPanel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
+        mainPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
 
         // Bilder Verzeichnis Pfad hinzufügen
         AreaImageDirectoryPath imageDirectoryPath = new AreaImageDirectoryPath(this);

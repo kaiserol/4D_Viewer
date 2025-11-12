@@ -36,14 +36,15 @@ public final class GuiUtils {
     public static final Color COLOR_DARK_RED = new Color(148, 0, 0);
 
     // Rahmen / Padding
-    public static final Border BORDER_NONE = BorderFactory.createEmptyBorder();
-    public static final Border BORDER_PADDING_LARGE = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-    public static final Border BORDER_PADDING_DEFAULT = BorderFactory.createEmptyBorder(5, 10, 5, 10);
+    public static final Border BORDER_EMPTY_NONE = BorderFactory.createEmptyBorder();
+    public static final Border BORDER_EMPTY_DEFAULT = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+    public static final Border BORDER_EMPTY_MEDIUM = BorderFactory.createEmptyBorder(5, 10, 5, 10);
 
     // Insets
     public static final Insets INSETS_NONE = new Insets(0, 0, 0, 0);
-    public static final Insets INSETS_DEFAULT = new Insets(5, 10, 5, 10);
-    public static final Insets INSETS_DEFAULT_SMALL = new Insets(5, 5, 5, 5);
+    public static final Insets INSETS_DEFAULT = new Insets(10, 10, 10, 10);
+    public static final Insets INSETS_MEDIUM = new Insets(5, 10, 5, 10);
+    public static final Insets INSETS_SMALL = new Insets(5, 5, 5, 5);
 
     // Bogengröße
     private static final int ARC_DEFAULT = 999;
@@ -273,7 +274,7 @@ public final class GuiUtils {
 
         // Button
         UIManager.put("Button.arc", ARC_DEFAULT);
-        UIManager.put("Button.margin", INSETS_DEFAULT);
+        UIManager.put("Button.margin", INSETS_MEDIUM);
 
         // Checkbox
         UIManager.put("CheckBox.margin", INSETS_NONE);
@@ -281,9 +282,9 @@ public final class GuiUtils {
         // Textfeld
         UIManager.put("TextComponent.arc", ARC_DEFAULT);
         UIManager.put("TextField.arc", ARC_DEFAULT);
-        UIManager.put("TextArea.margin", INSETS_DEFAULT);
-        UIManager.put("TextField.margin", INSETS_DEFAULT);
-        UIManager.put("TextPane.margin", INSETS_DEFAULT);
+        UIManager.put("TextArea.margin", INSETS_MEDIUM);
+        UIManager.put("TextField.margin", INSETS_MEDIUM);
+        UIManager.put("TextPane.margin", INSETS_MEDIUM);
 
         // Sonstige Komponenten
         UIManager.put("List.selectionArc", ARC_DEFAULT);
@@ -303,7 +304,7 @@ public final class GuiUtils {
         UIManager.put("ComboBox.buttonArc", ARC_DEFAULT);
         UIManager.put("ComboBox.selectionArc", ARC_DEFAULT);
         UIManager.put("ComboBox.buttonStyle", "button");
-        UIManager.put("ComboBox.padding", INSETS_DEFAULT);
+        UIManager.put("ComboBox.padding", INSETS_MEDIUM);
 
         // Pfeilfarben
         UIManager.put("ComboBox.buttonArrowType", ARROW_TYPE);
@@ -328,7 +329,7 @@ public final class GuiUtils {
         UIManager.put("Spinner.buttonArc", ARC_DEFAULT);
         UIManager.put("Spinner.selectionArc", ARC_DEFAULT);
         UIManager.put("Spinner.buttonStyle", "roundRect");
-        UIManager.put("Spinner.padding", INSETS_DEFAULT);
+        UIManager.put("Spinner.padding", INSETS_MEDIUM);
 
         // Pfeilfarben
         UIManager.put("Spinner.buttonArrowType", ARROW_TYPE);
@@ -368,7 +369,7 @@ public final class GuiUtils {
         UIManager.put("ScrollBar.thumbArc", ARC_DEFAULT);
         UIManager.put("ScrollBar.width", 10);
         UIManager.put("ScrollBar.trackInsets", INSETS_NONE);
-        UIManager.put("ScrollBar.thumbInsets", BORDER_NONE);
+        UIManager.put("ScrollBar.thumbInsets", BORDER_EMPTY_NONE);
         UIManager.put("ScrollBar.showButtons", true);
 
         // Hinter- und Vordergrundfarbe

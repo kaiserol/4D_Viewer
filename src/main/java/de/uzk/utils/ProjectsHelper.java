@@ -108,7 +108,7 @@ public class ProjectsHelper {
     private static void resetButtonsMarginRecursively(Component comp) {
         if (comp instanceof AbstractButton button) {
             // Nur Buttons ohne Text (also IconButtons) zurücksetzen
-            if (button.getText() == null || button.getText().isEmpty()) button.setMargin(GuiUtils.INSETS_DEFAULT_SMALL);
+            if (button.getText() == null || button.getText().isEmpty()) button.setMargin(GuiUtils.INSETS_SMALL);
         }
 
         if (comp instanceof Container innerContainer) {
@@ -158,7 +158,7 @@ public class ProjectsHelper {
 
         // contentPanel
         JPanel contentPanel = new JPanel();
-        contentPanel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
+        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
         contentPanel.setBackground(GuiUtils.getBackgroundColor());
 
         // contentPanel hinzufügen

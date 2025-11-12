@@ -34,7 +34,7 @@ public class DialogLegal {
 
         // Inhalte hinzufügen
         JPanel panel = new JPanel(new BorderLayout(0, 20));
-        panel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
+        panel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
         panel.add(createUsagePanel(), BorderLayout.CENTER);
         panel.add(createDisclaimerPanel(), BorderLayout.SOUTH);
         this.dialog.add(panel, BorderLayout.CENTER);

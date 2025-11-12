@@ -58,7 +58,7 @@ public class DialogLoadingImages implements LoadingImageListener {
 
         // Inhalt hinzufügen
         JPanel panel = new JPanel(new BorderLayout(0, 20));
-        panel.setBorder(GuiUtils.BORDER_PADDING_LARGE);
+        panel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
         panel.add(createProgressPanel(), BorderLayout.CENTER);
         panel.add(createFileDirectoryPanel(), BorderLayout.SOUTH);
         this.dialog.add(panel);
