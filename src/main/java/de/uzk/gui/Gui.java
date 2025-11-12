@@ -12,6 +12,7 @@ import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.image.Axis;
 import de.uzk.image.ImageFileType;
 import de.uzk.image.LoadingResult;
+import de.uzk.utils.ComponentUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -338,7 +339,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
     public void closeApp() {
         if (settings.isConfirmExit()) {
-            JCheckBox checkBox = new JCheckBox(getWord("optionPane.closeApp.checkBox"));
+            JCheckBox checkBox = ComponentUtils.createCheckBox(getWord("optionPane.closeApp.checkBox"), null);
             Object[] message = new Object[]{getWord("optionPane.closeApp.question"), checkBox};
             int option = JOptionPane.showConfirmDialog(
                 this.container,

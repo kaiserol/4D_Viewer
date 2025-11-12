@@ -17,32 +17,57 @@ public class ComponentUtils {
     // ========================================
     public static JCheckBox createCheckBox(String text, Consumer<Boolean> listener) {
         JCheckBox checkBox = new JCheckBox(text);
-        checkBox.addActionListener(e -> listener.accept(checkBox.isSelected()));
         checkBox.setFocusPainted(true);
+
+        if (listener != null) {
+            checkBox.addActionListener(e -> listener.accept(checkBox.isSelected()));
+        }
         return checkBox;
+    }
+
+    public static <E> JComboBox<E> createComboBox(E[] items, Consumer<E> listener) {
+        JComboBox<E> comboBox = new JComboBox<>(items);
+
+        if (listener != null) {
+            comboBox.addActionListener(e -> {
+                int index = comboBox.getSelectedIndex();
+                if (index < 0) return;
+                listener.accept(comboBox.getItemAt(index));
+            });
+        }
+        return comboBox;
     }
 
     public static JScrollBar createScrollBar(int orientation, Consumer<Integer> listener) {
         @SuppressWarnings("MagicConstant")
         JScrollBar scrollBar = new JScrollBar(orientation);
-        scrollBar.addAdjustmentListener(e -> listener.accept(scrollBar.getValue()));
         scrollBar.setBlockIncrement(1);
         scrollBar.setUnitIncrement(1);
+
+        if (listener != null) {
+            scrollBar.addAdjustmentListener(e -> listener.accept(scrollBar.getValue()));
+        }
         return scrollBar;
     }
 
     public static JSlider createSlider(int min, int max, Consumer<Integer> listener) {
         JSlider slider = new JSlider(min, max, min);
-        slider.addChangeListener(e -> listener.accept(slider.getValue()));
         slider.setSnapToTicks(true);
         slider.setMajorTickSpacing(10);
         slider.setMinorTickSpacing(1);
+
+        if (listener != null) {
+            slider.addChangeListener(e -> listener.accept(slider.getValue()));
+        }
         return slider;
     }
 
     public static JSpinner createSpinner(int min, int max, boolean cycling, Consumer<Integer> listener) {
         JSpinner spinner = new JSpinner(new CyclingSpinnerNumberModel(min, min, max, 1, cycling));
-        spinner.addChangeListener(e -> listener.accept((int) spinner.getValue()));
+
+        if (listener != null) {
+            spinner.addChangeListener(e -> listener.accept((int) spinner.getValue()));
+        }
         return spinner;
     }
 
@@ -110,16 +135,16 @@ public class ComponentUtils {
     // ========================================
     // Generische Basismethode
     // ========================================
-    private static <C extends JComponent, T extends EventListener> void runWithoutListeners(
-        C component, Consumer<C> action, Class<T> listenerType,
-        Consumer<T> removeListener, Consumer<T> addListener) {
+    private static <E extends JComponent, L extends EventListener> void runWithoutListeners(
+        E component, Consumer<E> action, Class<L> listenerType,
+        Consumer<L> removeListener, Consumer<L> addListener) {
 
-        T[] listeners = component.getListeners(listenerType);
-        for (T listener : listeners) removeListener.accept(listener);
+        L[] listeners = component.getListeners(listenerType);
+        for (L listener : listeners) removeListener.accept(listener);
         try {
             action.accept(component);
         } finally {
-            for (T listener : listeners) addListener.accept(listener);
+            for (L listener : listeners) addListener.accept(listener);
         }
     }
 
@@ -187,7 +212,7 @@ public class ComponentUtils {
         addLabeledRow(container, gbc, new JLabel(labelText + ":"), component, topInset);
     }
 
-    public static void addLabeledRow(Container container, GridBagConstraints gbc, JLabel label, JComponent component,  int topInset) {
+    public static void addLabeledRow(Container container, GridBagConstraints gbc, JLabel label, JComponent component, int topInset) {
         gbc.gridx = 0;
         gbc.weightx = 0;
         gbc.insets.top = topInset;

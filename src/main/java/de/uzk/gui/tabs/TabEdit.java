@@ -130,9 +130,9 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     // ========================================
     // Aktualisierungen
     // ========================================
-    private <T> void setConfigValue(T newValue, Supplier<T> getter, Predicate<T> setter) {
+    private <E> void setConfigValue(E newValue, Supplier<E> getter, Predicate<E> setter) {
         // Wenn sich der Wert nicht ändert, abbrechen
-        T settingsValue = getter.get();
+        E settingsValue = getter.get();
         if (settingsValue.equals(newValue)) return;
 
         boolean hasValueChanged = setter.test(newValue);
