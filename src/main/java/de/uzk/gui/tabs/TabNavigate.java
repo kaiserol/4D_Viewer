@@ -15,7 +15,7 @@ import static de.uzk.config.LanguageHandler.getWord;
 
 // TODO: Überarbeite Klasse
 public class TabNavigate extends AreaContainerInteractive<JPanel> {
-    // GUI-Elemente
+    // Gui Elemente
     private JSlider timeSlider;
     private JSlider levelSlider;
     private JSpinner timeUnitSpinner;

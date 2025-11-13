@@ -17,7 +17,7 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class TabEdit extends AreaContainerInteractive<JPanel> {
-    // GUI-Elemente
+    // Gui Elemente
     private JCheckBox mirrorXBox, mirrorYBox;
     private JSlider contrastSlider, brightnessSlider, zoomSlider;
     private JSpinner degreeSpinner;
@@ -130,9 +130,9 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     // ========================================
     // Aktualisierungen
     // ========================================
-    private <E> void setConfigValue(E newValue, Supplier<E> getter, Predicate<E> setter) {
+    private <T> void setConfigValue(T newValue, Supplier<T> getter, Predicate<T> setter) {
         // Wenn sich der Wert nicht ändert, abbrechen
-        E settingsValue = getter.get();
+        T settingsValue = getter.get();
         if (settingsValue.equals(newValue)) return;
 
         boolean hasValueChanged = setter.test(newValue);
