@@ -39,7 +39,9 @@ public class DialogDirectoryChooser {
         setFileFilter(fileChooser); // Filter setzen
         setTitel(fileChooser); // Dialogtitel setzen
         addContent(fileChooser); // Inhalte hinzufügen
-        resetButtonsMargin(fileChooser); // Button-Margin zurücksetzen
+
+        // Button-Margin zurücksetzen
+        resetButtonsMargin(fileChooser);
 
         return fileChooser;
     }
@@ -103,9 +105,9 @@ public class DialogDirectoryChooser {
         fileChooser.setAccessory(panel);
     }
 
-    // ------------------------------------------------------
+    // ========================================
     // Getter
-    // ------------------------------------------------------
+    // ========================================
     public File getDirectory() {
         File selected = this.fileChooser.getSelectedFile();
         if (selected != null && selected.isFile()) {
@@ -119,9 +121,9 @@ public class DialogDirectoryChooser {
         return getSelectedImageFileType(filter);
     }
 
-    // ------------------------------------------------------
+    // ========================================
     // Hilfsmethoden
-    // ------------------------------------------------------
+    // ========================================
     private static File getLastDirectory() {
         Path lastDirectory = history.getLastIfExists();
         return lastDirectory == null ? USER_DIRECTORY.toFile() : lastDirectory.toFile();
@@ -134,7 +136,7 @@ public class DialogDirectoryChooser {
         return ImageFileType.fromExtension(firstExtension);
     }
 
-    private static void resetButtonsMargin(Component root) {
+    private static void resetButtonsMargin(JFileChooser root) {
         ComponentUtils.findComponentsRecursively(AbstractButton.class, root).forEach(button -> {
             // Nur Buttons ohne Text (also IconButtons) zurücksetzen
             if (button.getText() == null || button.getText().isEmpty()) {

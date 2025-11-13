@@ -57,7 +57,7 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(e.getButton() == MouseEvent.BUTTON1) {
+        if (SwingUtilities.isLeftMouseButton(e)) {
             Point pos = this.getPointRelativeToImage(e.getPoint());
             this.marker.setX(pos.x);
             this.marker.setY(pos.y);
@@ -73,9 +73,8 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if(this.dragStart != null) {
+        if (this.dragStart != null) {
             Point pos = this.getPointRelativeToImage(e.getPoint());
-
 
 
             Rectangle rect = new Rectangle(this.dragStart);
@@ -104,11 +103,18 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
 
 
     @Override
-    public void mouseEntered(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+    }
+
     @Override
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    }
+
     @Override
-    public void mouseMoved(MouseEvent e) {}
+    public void mouseMoved(MouseEvent e) {
+    }
+
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+    }
 }

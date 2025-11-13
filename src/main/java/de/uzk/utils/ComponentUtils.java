@@ -151,9 +151,9 @@ public class ComponentUtils {
         }
     }
 
-    // ------------------------------------------------------
+    // ========================================
     // Komponenten Ermittlung
-    // ------------------------------------------------------
+    // ========================================
     public static Component[] getComponents(Container container) {
         if (container == null) return new Component[0];
         else if (container instanceof JWindow window) return window.getOwnedWindows();
@@ -164,9 +164,9 @@ public class ComponentUtils {
         else return container.getComponents();
     }
 
-    // ------------------------------------------------------
+    // ========================================
     // Komponenten Hilfsmethoden
-    // ------------------------------------------------------
+    // ========================================
     public static void setEnabled(Container root, boolean enabled) {
         if (root == null) return;
 
@@ -214,9 +214,9 @@ public class ComponentUtils {
         }
     }
 
-    // ------------------------------------------------------
+    // ========================================
     // GridBag Layout Methoden
-    // ------------------------------------------------------
+    // ========================================
     public static GridBagConstraints createGridBagConstraints() {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;

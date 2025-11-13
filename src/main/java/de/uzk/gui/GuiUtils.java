@@ -39,12 +39,18 @@ public final class GuiUtils {
     public static final Border BORDER_EMPTY_NONE = BorderFactory.createEmptyBorder();
     public static final Border BORDER_EMPTY_DEFAULT = BorderFactory.createEmptyBorder(10, 10, 10, 10);
     public static final Border BORDER_EMPTY_MEDIUM = BorderFactory.createEmptyBorder(5, 10, 5, 10);
+    public static final Border BORDER_EMPTY_SMALL = BorderFactory.createEmptyBorder(5, 5, 5, 5);
+    public static final Border BORDER_EMPTY_TINY = BorderFactory.createEmptyBorder(2, 5, 2, 5);
 
     // Insets
     public static final Insets INSETS_NONE = new Insets(0, 0, 0, 0);
     public static final Insets INSETS_DEFAULT = new Insets(10, 10, 10, 10);
     public static final Insets INSETS_MEDIUM = new Insets(5, 10, 5, 10);
     public static final Insets INSETS_SMALL = new Insets(5, 5, 5, 5);
+
+    // Cursor
+    public static final Cursor DEFAULT_CURSOR = Cursor.getDefaultCursor();
+    public static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
 
     // Bogengröße
     private static final int ARC_DEFAULT = 999;

@@ -57,16 +57,6 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     private CursorMode currentCursorMode = CursorMode.TEXT;
 
     /**
-     * Standard-Cursor
-     */
-    private static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-
-    /**
-     * Hand-Cursor
-     */
-    private static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
-
-    /**
      * Farbe, die einen aktiven Hyperlink darstellt
      */
     private static final Color COLOR_ACTIVE_LINK = GuiUtils.COLOR_BLUE;
@@ -213,12 +203,12 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
             switch (newMode) {
                 case LINK_CTRL_HOVER -> {
                     applyLinkHoverStyle(true);
-                    GuiUtils.setCursor(this, HAND_CURSOR);
+                    GuiUtils.setCursor(this, GuiUtils.HAND_CURSOR);
                     GuiUtils.setToolTipText(this, getWord("tooltip.openInBrowser"));
                 }
                 case LINK_HOVER -> {
                     applyLinkHoverStyle(false);
-                    GuiUtils.setCursor(this, HAND_CURSOR);
+                    GuiUtils.setCursor(this, GuiUtils.HAND_CURSOR);
 
                     String tooltipText = String.format("%s (%s %s)",
                         getWord("tooltip.openInBrowser"),
@@ -266,7 +256,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      */
     private void setDefaultCursor() {
         applyLinkHoverStyle(false);
-        GuiUtils.setCursor(this, DEFAULT_CURSOR);
+        GuiUtils.setCursor(this, GuiUtils.DEFAULT_CURSOR);
         GuiUtils.setToolTipText(this, null);
     }
 

@@ -119,7 +119,7 @@ public class MarkerEditor extends Container {
     }
 
     private void selectColor(JButton color) {
-        Color selected = this.dialogColorChooser.chooseColor(color.getBackground());
+        Color selected = this.dialogColorChooser.chooseColor(this.marker.getColor());
         color.setBackground(selected);
         this.marker.setColor(selected);
         this.preview.repaint();
