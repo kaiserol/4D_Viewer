@@ -37,7 +37,7 @@ public class ProjectsHelper {
 
             // TODO: Warum rausgenommen (für mich)
 //            gui.openImagesDirectory(selectedPath, workspace.getConfig().getImageFileType(), false);
-            gui.openImagesDirectory(selectedPath, null, false);
+            gui.loadImagesDirectory(selectedPath, null, false);
         }
     }
 
@@ -66,7 +66,7 @@ public class ProjectsHelper {
 
             // Bilder laden
             ImageFileType imageFileType = directoryChooser.getSelectedImageFileType();
-            gui.openImagesDirectory(directory.toPath(), imageFileType, false);
+            gui.loadImagesDirectory(directory.toPath(), imageFileType, false);
         }
     }
 }

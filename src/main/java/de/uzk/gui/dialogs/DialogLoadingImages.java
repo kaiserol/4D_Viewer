@@ -50,7 +50,7 @@ public class DialogLoadingImages implements LoadingImageListener {
         );
     }
 
-    public LoadingResult show(Path imagesDirectory, ImageFileType imageFileType) {
+    public LoadingResult load(Path imagesDirectory, ImageFileType imageFileType) {
         if (imagesDirectory == null || !Files.exists(imagesDirectory)) return LoadingResult.DIRECTORY_DOES_NOT_EXIST;
 
         // TODO: Warum rausgenommen (für mich)
@@ -136,7 +136,7 @@ public class DialogLoadingImages implements LoadingImageListener {
     private void startThread(Path imagesDirectory, ImageFileType imageFileType) {
         if (this.thread != null) return;
         this.thread = new Thread(() -> {
-            this.result = workspace.openImagesDirectory(imagesDirectory, imageFileType, DialogLoadingImages.this);
+            this.result = workspace.loadImagesDirectory(imagesDirectory, imageFileType, DialogLoadingImages.this);
             SwingUtilities.invokeLater(this.dialog::dispose);
         });
         this.thread.start();

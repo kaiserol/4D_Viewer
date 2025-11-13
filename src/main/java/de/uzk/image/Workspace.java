@@ -54,7 +54,7 @@ public class Workspace {
         return this.markers;
     }
 
-    private void load(ImageFileType imageFileType) {
+    private void loadConfigs(ImageFileType imageFileType) {
         this.config = Config.load();
         this.markers = Markers.load();
         if (imageFileType != null) {
@@ -62,14 +62,14 @@ public class Workspace {
         }
     }
 
-    public void save() {
-        if (isOpen()) {
+    public void saveConfigs() {
+        if (isLoaded()) {
             this.config.save();
             this.markers.save();
         }
     }
 
-    public boolean isOpen() {
+    public boolean isLoaded() {
         return this.matrix != null;
     }
 
@@ -96,7 +96,7 @@ public class Workspace {
     }
 
     public void setTime(int time) {
-        if (!isOpen() || isTimeInvalid(time)) return;
+        if (!isLoaded() || isTimeInvalid(time)) return;
         setCurrentImageFile(time, this.currentImageFile.getLevel());
     }
 
@@ -111,7 +111,7 @@ public class Workspace {
     }
 
     public void setLevel(int level) {
-        if (!isOpen() || isLevelInvalid(level)) return;
+        if (!isLoaded() || isLevelInvalid(level)) return;
         setCurrentImageFile(this.currentImageFile.getTime(), level);
     }
 
@@ -134,12 +134,12 @@ public class Workspace {
     }
 
     public boolean isPinned(Integer time) {
-        if (!isOpen() && isTimeInvalid(time)) return false;
+        if (!isLoaded() && isTimeInvalid(time)) return false;
         return this.pinTimes.contains(time);
     }
 
     public void togglePinTime() {
-        if (!isOpen()) return;
+        if (!isLoaded()) return;
 
         Integer time = this.currentImageFile.getTime();
         if (isPinned(time)) this.pinTimes.remove(time);
@@ -150,7 +150,7 @@ public class Workspace {
     // Navigieren Methoden
     // ========================================
     public void toFirst(Axis axis) {
-        if (!isOpen()) return;
+        if (!isLoaded()) return;
         switch (axis) {
             case TIME -> setCurrentImageFile(0, this.currentImageFile.getLevel());
             case LEVEL -> setCurrentImageFile(this.currentImageFile.getTime(), 0);
@@ -158,7 +158,7 @@ public class Workspace {
     }
 
     public void toLast(Axis axis) {
-        if (!isOpen()) return;
+        if (!isLoaded()) return;
         switch (axis) {
             case TIME -> setCurrentImageFile(this.maxTime, this.currentImageFile.getLevel());
             case LEVEL -> setCurrentImageFile(this.currentImageFile.getTime(), this.maxLevel);
@@ -166,7 +166,7 @@ public class Workspace {
     }
 
     public void prev(Axis axis) {
-        if (!isOpen()) return;
+        if (!isLoaded()) return;
         switch (axis) {
             case TIME -> {
                 int prevTime = Math.max(0, this.currentImageFile.getTime() - 1);
@@ -180,7 +180,7 @@ public class Workspace {
     }
 
     public void next(Axis axis) {
-        if (!isOpen()) return;
+        if (!isLoaded()) return;
         switch (axis) {
             case TIME -> {
                 int nextTime = Math.min(this.maxTime, this.currentImageFile.getTime() + 1);
@@ -222,7 +222,7 @@ public class Workspace {
     // ========================================
     // Lade Bilder aus dem Verzeichnis
     // ========================================
-    public LoadingResult openImagesDirectory(Path imagesDirectory, ImageFileType imageFileType, LoadingImageListener progress) {
+    public LoadingResult loadImagesDirectory(Path imagesDirectory, ImageFileType imageFileType, LoadingImageListener progress) {
         if (imagesDirectory != null && Files.isDirectory(imagesDirectory)) {
             // Prüfe, ob das Verzeichnis bereits in der UI geladen ist
             boolean sameDirectory = Objects.equals(this.imagesDirectory, imagesDirectory);
@@ -233,11 +233,11 @@ public class Workspace {
             Path oldImagesDirectory = this.imagesDirectory;
             Config oldConfig = this.config;
             Markers oldMarkers = this.markers;
-            this.save();
+            this.saveConfigs();
 
             // Verzeichnis, Config & Markers laden
             this.imagesDirectory = imagesDirectory;
-            this.load(imageFileType);
+            this.loadConfigs(imageFileType);
 
             // Lade das Verzeichnis, wenn es Bilder hat
             LoadingResult badResult;

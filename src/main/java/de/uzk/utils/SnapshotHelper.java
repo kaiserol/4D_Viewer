@@ -25,7 +25,7 @@ public class SnapshotHelper {
     private static final String DATE_PATTERN = "\\d{4}-\\d{2}-\\d{2}";
 
     public static boolean saveSnapshot(BufferedImage image) {
-        if (image == null || !workspace.isOpen()) return false;
+        if (image == null || !workspace.isLoaded()) return false;
         Path directory = resolveProjectPath(SNAPSHOTS_DIRECTORY);
         PathManager.createIfNotExist(directory);
 
@@ -49,7 +49,7 @@ public class SnapshotHelper {
     }
 
     public static int getSnapshotsCount() {
-        if (!workspace.isOpen()) return 0;
+        if (!workspace.isLoaded()) return 0;
 
         // Wenn das Verzeichnis nicht existiert, wird 0 zurückgegeben
         Path directory = resolveProjectPath(SNAPSHOTS_DIRECTORY);

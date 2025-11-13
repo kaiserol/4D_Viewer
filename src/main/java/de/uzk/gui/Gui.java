@@ -4,8 +4,8 @@ import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
 import de.uzk.action.HandleActionListener;
 import de.uzk.gui.areas.AreaContainerInteractive;
-import de.uzk.gui.areas.AreaImageDirectoryPath;
 import de.uzk.gui.areas.AreaImageViewer;
+import de.uzk.gui.areas.AreaImagesDirectoryPath;
 import de.uzk.gui.areas.AreaTabs;
 import de.uzk.gui.dialogs.DialogLoadingImages;
 import de.uzk.gui.menubar.AppMenuBar;
@@ -98,7 +98,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
         // TODO: Warum rausgenommen (für mich)
 //        if (!openImagesDirectory(history.getLastIfExists(), workspace.getConfig().getImageFileType(), true))
-        if (!openImagesDirectory(history.getLastIfExists(), null, true)) {
+        if (!loadImagesDirectory(history.getLastIfExists(), null, true)) {
             toggleOff();
         }
 
@@ -127,7 +127,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         updateTheme();
 
         // Prüfe, ob Bilder geladen sind
-        if (workspace.isOpen()) toggleOn();
+        if (workspace.isLoaded()) toggleOn();
         else toggleOff();
 
         // Fenster packen
@@ -173,8 +173,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         mainPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
 
         // Bilder Verzeichnis Pfad hinzufügen
-        AreaImageDirectoryPath imageDirectoryPath = new AreaImageDirectoryPath(this);
-        mainPanel.add(imageDirectoryPath.getContainer(), BorderLayout.NORTH);
+        AreaImagesDirectoryPath imagesDirectoryPath = new AreaImagesDirectoryPath(this);
+        mainPanel.add(imagesDirectoryPath.getContainer(), BorderLayout.NORTH);
 
         // SplitPane: Tabs & Bilder-Betrachter erstellen
         AreaTabs tabs = new AreaTabs(this);
@@ -292,13 +292,12 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.repaint();
     }
 
-    public boolean openImagesDirectory(Path imagesDirectory, ImageFileType imageFileType, boolean isGuiBeingBuilt) {
-        // Wenn eine gültige "Datei" übergeben wird, wird ins Elternverzeichnis navigiert,
-        // ansonsten wird "imagesDirectory" beibehalten
-        imagesDirectory = Files.isRegularFile(imagesDirectory) ? imagesDirectory.getParent() : imagesDirectory;
+    public boolean loadImagesDirectory(Path imagesDirectory, ImageFileType imageFileType, boolean isGuiBeingBuilt) {
+        // Wenn eine "gültige Datei" übergeben wird, wird ins Elternverzeichnis navigiert
+        imagesDirectory = imagesDirectory != null && Files.isRegularFile(imagesDirectory) ? imagesDirectory.getParent() : imagesDirectory;
 
         // Prüfe, ob das Verzeichnis passende Bilder hat
-        LoadingResult result = this.dialogLoadingImages.show(imagesDirectory, imageFileType);
+        LoadingResult result = this.dialogLoadingImages.load(imagesDirectory, imageFileType);
 
         switch (result) {
             case LOADING_SUCCESSFUL -> {
@@ -365,7 +364,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         // Dateien abspeichern
         settings.save();
         history.save();
-        workspace.save();
+        workspace.saveConfigs();
 
         // Anwendung beenden
         System.exit(0);

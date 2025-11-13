@@ -76,7 +76,7 @@ public class DialogSettings {
 
         // Dialog anzeigen
         this.dialog.pack();
-//        this.dialog.setResizable(false);
+        this.dialog.setResizable(false);
         this.dialog.setLocationRelativeTo(this.dialog.getOwner());
         this.dialog.setVisible(true);
     }

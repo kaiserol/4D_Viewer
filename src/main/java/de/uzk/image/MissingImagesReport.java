@@ -24,7 +24,7 @@ public class MissingImagesReport {
     }
 
     public void logReport(boolean onLoading) {
-        if (!workspace.isOpen()) return;
+        if (!workspace.isLoaded()) return;
 
         // Neuen Report aufbauen
         StringBuilder reportBuilder = new StringBuilder();
@@ -129,7 +129,7 @@ public class MissingImagesReport {
 
         int missingCount = getMissingImagesCount();
         if (missingCount == 0) {
-            if (!workspace.isOpen()) return "";
+            if (!workspace.isLoaded()) return "";
 
             int maxTime = workspace.getMaxTime();
             int maxLevel = workspace.getMaxLevel();

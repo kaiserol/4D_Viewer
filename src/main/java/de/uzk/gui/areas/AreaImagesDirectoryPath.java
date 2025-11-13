@@ -10,11 +10,11 @@ import java.nio.file.Path;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class AreaImageDirectoryPath extends AreaContainerInteractive<JPanel> {
+public class AreaImagesDirectoryPath extends AreaContainerInteractive<JPanel> {
     // Gui Elemente
     private JTextField txtFieldDirectory;
 
-    public AreaImageDirectoryPath(Gui gui) {
+    public AreaImagesDirectoryPath(Gui gui) {
         super(new JPanel(), gui);
         init();
     }
@@ -51,7 +51,7 @@ public class AreaImageDirectoryPath extends AreaContainerInteractive<JPanel> {
     // Hilfsmethoden
     // ========================================
     private void updateDirectoryText() {
-        if (workspace.isOpen()) {
+        if (workspace.isLoaded()) {
             Path imagePath = workspace.getCurrentImageFile().getFilePath();
             this.txtFieldDirectory.setText(imagePath.toAbsolutePath().toString());
         } else {
