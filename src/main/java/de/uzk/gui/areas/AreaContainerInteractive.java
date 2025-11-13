@@ -7,11 +7,11 @@ import de.uzk.image.Axis;
 
 import java.awt.*;
 
-public abstract class AreaContainerInteractive<E extends Container> implements HandleActionListener, ToggleListener, UpdateImageListener, UpdateThemeListener, AppFocusListener {
-    protected E container;
+public abstract class AreaContainerInteractive<T extends Container> implements HandleActionListener, ToggleListener, UpdateImageListener, UpdateThemeListener, AppFocusListener {
+    protected T container;
     protected final Gui gui;
 
-    public AreaContainerInteractive(E container, Gui gui) {
+    public AreaContainerInteractive(T container, Gui gui) {
         setContainer(container);
         this.gui = gui;
         if (gui != null) {
@@ -23,12 +23,12 @@ public abstract class AreaContainerInteractive<E extends Container> implements H
         }
     }
 
-    public final void setContainer(E container) {
+    public final void setContainer(T container) {
         if (container == null) throw new NullPointerException("Container is null.");
         this.container = container;
     }
 
-    public final E getContainer() {
+    public final T getContainer() {
         return container;
     }
 

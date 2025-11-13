@@ -19,10 +19,12 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogLoadingImages implements LoadingImageListener {
-    // GUI-Elemente
+    // Dialoge
     private final JDialog dialog;
+
+    // Gui Elemente
     private JProgressBar progressBar;
-    private JTextField textFieldFileName, textFieldDirectoryName;
+    private JTextField textFieldFileName;
     private JLabel labelImagesCount;
 
     // Thread
@@ -50,28 +52,25 @@ public class DialogLoadingImages implements LoadingImageListener {
 
     public LoadingResult show(Path imagesDirectory, ImageFileType imageFileType) {
         if (imagesDirectory == null || !Files.exists(imagesDirectory)) return LoadingResult.DIRECTORY_DOES_NOT_EXIST;
+
         // TODO: Warum rausgenommen (für mich)
 //        this.dialog.setTitle(getWord("dialog.imageLoading") + " (" + imageFileType.getDescription() + ")");
         this.dialog.setTitle(getWord("dialog.loadingImages"));
         this.dialog.getContentPane().removeAll();
-        this.dialog.setLayout(new BorderLayout(0, 10));
+        this.dialog.setLayout(new BorderLayout());
 
         // Inhalt hinzufügen
-        JPanel panel = new JPanel(new BorderLayout(0, 20));
-        panel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
-        panel.add(createProgressPanel(), BorderLayout.CENTER);
-        panel.add(createFileDirectoryPanel(), BorderLayout.SOUTH);
-        this.dialog.add(panel);
+        JPanel contentPanel = new JPanel(new BorderLayout(0, 20));
+        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
+        contentPanel.add(createProgressPanel(), BorderLayout.CENTER);
+        contentPanel.add(createFileDirectoryPanel(imagesDirectory), BorderLayout.SOUTH);
 
-        // Wenn eine gültige "Datei" übergeben wird, wird ins Elternverzeichnis navigiert,
-        // ansonsten wird "imagesDirectory" beibehalten
-        Path changedImagesDirectory = Files.isRegularFile(imagesDirectory) ? imagesDirectory.getParent() : imagesDirectory;
-        this.textFieldDirectoryName.setText(changedImagesDirectory.toAbsolutePath().toString());
+        this.dialog.add(contentPanel, BorderLayout.CENTER);
 
         // Thread starten
         this.thread = null;
         this.result = null;
-        startThread(changedImagesDirectory, imageFileType);
+        startThread(imagesDirectory, imageFileType);
 
         // Dialog anzeigen
         this.dialog.pack();
@@ -106,7 +105,7 @@ public class DialogLoadingImages implements LoadingImageListener {
         return panel;
     }
 
-    private JPanel createFileDirectoryPanel() {
+    private JPanel createFileDirectoryPanel(Path imagesDirectory) {
         JPanel panel = new JPanel(new GridBagLayout());
 
         // Layout Manager
@@ -118,8 +117,9 @@ public class DialogLoadingImages implements LoadingImageListener {
         ComponentUtils.addLabeledRow(panel, gbc, getWord("name.file"), this.textFieldFileName, 0);
 
         // Verzeichnisname hinzufügen
-        this.textFieldDirectoryName = createTextField();
-        ComponentUtils.addLabeledRow(panel, gbc, getWord("name.directory"), this.textFieldDirectoryName, 5);
+        JTextField textFieldDirectoryName = createTextField();
+        textFieldDirectoryName.setText(imagesDirectory.toAbsolutePath().toString());
+        ComponentUtils.addLabeledRow(panel, gbc, getWord("name.directory"), textFieldDirectoryName, 5);
 
         return panel;
     }

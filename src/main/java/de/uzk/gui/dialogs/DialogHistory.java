@@ -14,7 +14,7 @@ import static de.uzk.Main.settings;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogHistory {
-    // GUI-Elemente
+    // Dialoge
     private final JDialog dialog;
 
     public DialogHistory(JFrame frame) {
@@ -33,10 +33,11 @@ public class DialogHistory {
         this.dialog.setLayout(new BorderLayout());
 
         // Inhalte hinzufügen
-        JPanel panel = new JPanel(new BorderLayout(0, 20));
-        panel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
-        panel.add(createContributorsPanel(), BorderLayout.CENTER);
-        this.dialog.add(panel, BorderLayout.CENTER);
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
+        contentPanel.add(createHistoryPanel(), BorderLayout.CENTER);
+
+        this.dialog.add(contentPanel, BorderLayout.CENTER);
 
         // Dialog anzeigen
         this.dialog.pack();
@@ -48,7 +49,7 @@ public class DialogHistory {
     // ========================================
     // Komponenten-Erzeugung
     // ========================================
-    private JPanel createContributorsPanel() {
+    private JPanel createHistoryPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
 
         // Layout Manager

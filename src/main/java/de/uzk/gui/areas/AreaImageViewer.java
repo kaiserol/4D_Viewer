@@ -23,7 +23,7 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
-    // GUI-Elemente
+    // Gui Elemente
     private JPanel panelView, panelImage;
     private JScrollBar scrollBarTime, scrollBarLevel;
     private BufferedImage currentImage;

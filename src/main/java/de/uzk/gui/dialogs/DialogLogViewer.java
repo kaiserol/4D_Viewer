@@ -14,8 +14,10 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogLogViewer {
-    // GUI-Elemente
+    // Dialoge
     private final JDialog dialog;
+
+    // Gui Elemente
     private JTabbedPane tabs;
 
     // Minimale Fenstergrößen
@@ -41,11 +43,12 @@ public class DialogLogViewer {
         this.dialog.getContentPane().removeAll();
         this.dialog.setLayout(new BorderLayout());
 
-        // Tabs hinzufügen
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
-        panel.add(this.tabs = createTabs(), BorderLayout.CENTER);
-        this.dialog.add(panel);
+        // Inhalte hinzufügen
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
+        contentPanel.add(this.tabs = createTabs(), BorderLayout.CENTER);
+
+        this.dialog.add(contentPanel);
 
         // Dialog anzeigen
         this.dialog.pack();
@@ -107,7 +110,7 @@ public class DialogLogViewer {
         int dialogWidth = dialog.getWidth();
         int dialogHeight = dialog.getHeight();
 
-        JScrollPane scrollPane = getScrollPane(this.tabs, this.tabs.getSelectedIndex());
+        JScrollPane scrollPane = findTabScrollPane(this.tabs, this.tabs.getSelectedIndex());
         if (scrollPane != null) {
             dialogWidth = dialogWidth + scrollPane.getWidth() - scrollPane.getViewport().getView().getWidth();
             dialogHeight = dialogHeight + scrollPane.getHeight() - scrollPane.getViewport().getView().getHeight();
@@ -131,7 +134,7 @@ public class DialogLogViewer {
         this.dialog.setSize(new Dimension(newWidth, newHeight));
     }
 
-    private JScrollPane getScrollPane(JTabbedPane tabbedPane, int tabIndex) {
+    private JScrollPane findTabScrollPane(JTabbedPane tabbedPane, int tabIndex) {
         if (tabIndex < 0 || tabIndex >= tabbedPane.getTabCount()) return null;
 
         // ScrollPane ermitteln

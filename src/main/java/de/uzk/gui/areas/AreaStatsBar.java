@@ -12,7 +12,7 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
-    // GUI-Elemente
+    // Gui Elemente
     private JLabel labelTime;
     private JLabel labelLevel;
     private JLabel labelTimeLevel;

@@ -13,7 +13,7 @@ import java.awt.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaTabs extends AreaContainerInteractive<JPanel> {
-    // GUI-Elemente
+    // Gui Elemente
     private JTabbedPane tabbedPane;
 
     public AreaTabs(Gui gui) {

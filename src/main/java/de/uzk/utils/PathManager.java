@@ -84,7 +84,7 @@ public final class PathManager {
 
     public static Path resolveProjectPath(Path relativePath) {
         if (workspace.getImagesDirectory() == null) {
-            throw new NullPointerException("The image files directory is null.");
+            throw new NullPointerException("The images directory is null.");
         }
 
         // Erstelle ein Projektverzeichnis, falls es noch nicht existiert
@@ -148,7 +148,7 @@ public final class PathManager {
     }
 
     // ========================================
-    //  Hilfsmethoden
+    // Hilfsmethoden
     // ========================================
     public static void createIfNotExist(Path directory) {
         if (!Files.exists(directory)) {

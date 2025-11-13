@@ -18,6 +18,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +27,11 @@ import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class Gui extends AreaContainerInteractive<JFrame> {
-    // GUI-Elemente
-    private final ActionHandler actionHandler;
-
     // Dialoge
     private final DialogLoadingImages dialogLoadingImages;
+
+    // Gui Elemente
+    private final ActionHandler actionHandler;
 
     // Observer Listener
     private final List<HandleActionListener> handleActionListeners;
@@ -292,8 +293,13 @@ public class Gui extends AreaContainerInteractive<JFrame> {
     }
 
     public boolean openImagesDirectory(Path imagesDirectory, ImageFileType imageFileType, boolean isGuiBeingBuilt) {
+        // Wenn eine gültige "Datei" übergeben wird, wird ins Elternverzeichnis navigiert,
+        // ansonsten wird "imagesDirectory" beibehalten
+        imagesDirectory = Files.isRegularFile(imagesDirectory) ? imagesDirectory.getParent() : imagesDirectory;
+
         // Prüfe, ob das Verzeichnis passende Bilder hat
         LoadingResult result = this.dialogLoadingImages.show(imagesDirectory, imageFileType);
+
         switch (result) {
             case LOADING_SUCCESSFUL -> {
                 toggleOn();

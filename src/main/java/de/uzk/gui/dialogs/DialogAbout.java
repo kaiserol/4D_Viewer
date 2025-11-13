@@ -18,7 +18,7 @@ import static de.uzk.Main.settings;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogAbout {
-    // GUI-Elemente
+    // Dialoge
     private final JDialog dialog;
 
     // Konstanten
@@ -40,11 +40,11 @@ public class DialogAbout {
         this.dialog.setLayout(new BorderLayout());
 
         // Inhalte hinzufügen
-        JPanel content = new JPanel(new BorderLayout());
-        content.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
-        content.add(createAboutPanel(), BorderLayout.CENTER);
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
+        contentPanel.add(createAboutPanel(), BorderLayout.CENTER);
 
-        this.dialog.add(content, BorderLayout.CENTER);
+        this.dialog.add(contentPanel, BorderLayout.CENTER);
 
         // Dialog anzeigen
         this.dialog.pack();

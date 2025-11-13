@@ -11,7 +11,7 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaImageDirectoryPath extends AreaContainerInteractive<JPanel> {
-    // GUI-Elemente
+    // Gui Elemente
     private JTextField txtFieldDirectory;
 
     public AreaImageDirectoryPath(Gui gui) {

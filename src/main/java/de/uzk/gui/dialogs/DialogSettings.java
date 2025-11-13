@@ -17,13 +17,17 @@ import static de.uzk.Main.settings;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogSettings {
-    // GUI-Elemente
-    private final JDialog dialog;
     private final Gui gui;
+
+    // Dialoge
+    private final JDialog dialog;
+
+    // Gui Elemente
     private JComboBox<Language> selectLanguage;
     private JComboBox<Theme> selectTheme;
     private JSpinner fontSizeSpinner;
     private JCheckBox checkConfirmExit;
+    private JButton okButton;
 
     // Alte Werte
     private Language oldLanguage;
@@ -37,7 +41,7 @@ public class DialogSettings {
         this.gui = gui;
 
         // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(e -> dialog.dispose(),
+        this.dialog.getRootPane().registerKeyboardAction(e -> this.dialog.dispose(),
             KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
         );
     }
@@ -59,39 +63,20 @@ public class DialogSettings {
         this.oldFontSize = settings.getFontSize();
         this.oldConfirmExit = settings.isConfirmExit();
 
-        // Schaltfächen Panel erstellen
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-
-        // Schaltfläche (Abbrechen)
-        JButton cancelButton = new JButton(getWord("button.cancel"));
-        cancelButton.addActionListener(e -> dialog.dispose());
-        buttonPanel.add(cancelButton);
-
-        // Schaltfläche (OK)
-        JButton okButton = new JButton(getWord("button.ok"));
-        okButton.addActionListener(e -> {
-            applySettings();
-            this.dialog.dispose();
-        });
-        buttonPanel.add(okButton);
-        ComponentUtils.makeComponentsSameSize(buttonPanel, JButton.class);
-
-        // Den OK-Button als Default-Button setzen
-        this.dialog.getRootPane().setDefaultButton(okButton);
-
         // Inhalte hinzufügen
-        JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
+        JPanel contentPanel = new JPanel(new BorderLayout(0, 10));
         contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
         contentPanel.add(createSettingsPanel(), BorderLayout.CENTER);
-        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
+        contentPanel.add(createButtonsPanel(), BorderLayout.SOUTH);
+
         this.dialog.add(contentPanel, BorderLayout.CENTER);
 
         // Listener einrichten, damit OK nur aktiv ist, wenn sich etwas geändert hat
-        setupChangeListeners(okButton);
+        setupChangeListeners();
 
         // Dialog anzeigen
         this.dialog.pack();
-        this.dialog.setResizable(false);
+//        this.dialog.setResizable(false);
         this.dialog.setLocationRelativeTo(this.dialog.getOwner());
         this.dialog.setVisible(true);
     }
@@ -145,16 +130,41 @@ public class DialogSettings {
         return panel;
     }
 
-    private JLabel createBoldLabel(String text) {
-        return new JLabel(StringUtils.wrapHtml(StringUtils.wrapBold(text)));
+    private JPanel createButtonsPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+        // Schaltfläche (Abbrechen)
+        JButton cancelButton = new JButton(getWord("button.cancel"));
+        cancelButton.addActionListener(e -> this.dialog.dispose());
+        panel.add(cancelButton);
+
+        // Schaltfläche (OK)
+        this.okButton = new JButton(getWord("button.ok"));
+        this.okButton.addActionListener(e -> {
+            applySettings();
+            this.dialog.dispose();
+        });
+        panel.add(this.okButton);
+
+        // Gleicht die Größen aller Buttons an
+        ComponentUtils.equalizeComponentSizes(panel, JButton.class);
+
+        // Den OK-Button als Default-Button setzen
+        this.dialog.getRootPane().setDefaultButton(this.okButton);
+
+        return panel;
     }
 
     // ========================================
     // Hilfsmethoden
     // ========================================
-    private void setupChangeListeners(JButton okButton) {
+    private JLabel createBoldLabel(String text) {
+        return new JLabel(StringUtils.wrapHtml(StringUtils.wrapBold(text)));
+    }
+
+    private void setupChangeListeners() {
         // Initial: deaktiviert
-        okButton.setEnabled(false);
+        this.okButton.setEnabled(false);
 
         // Prüft, ob ein Wert geändert wurde
         Runnable checkChanges = () -> {
@@ -162,7 +172,7 @@ public class DialogSettings {
                 || !Objects.equals(this.selectTheme.getSelectedItem(), this.oldTheme)
                 || (int) this.fontSizeSpinner.getValue() != this.oldFontSize
                 || this.checkConfirmExit.isSelected() != this.oldConfirmExit;
-            okButton.setEnabled(changed);
+            this.okButton.setEnabled(changed);
         };
 
         // Listener für JComboBox (Language & Theme) hinzufügen

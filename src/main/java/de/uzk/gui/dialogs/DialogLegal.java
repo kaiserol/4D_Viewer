@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogLegal {
-    // GUI-Elemente
+    // Dialoge
     private final JDialog dialog;
 
     // Maximale Dialogbreite
@@ -33,11 +33,12 @@ public class DialogLegal {
         this.dialog.setLayout(new BorderLayout());
 
         // Inhalte hinzufügen
-        JPanel panel = new JPanel(new BorderLayout(0, 20));
-        panel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
-        panel.add(createUsagePanel(), BorderLayout.CENTER);
-        panel.add(createDisclaimerPanel(), BorderLayout.SOUTH);
-        this.dialog.add(panel, BorderLayout.CENTER);
+        JPanel contentPanel = new JPanel(new BorderLayout(0, 20));
+        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
+        contentPanel.add(createUsagePanel(), BorderLayout.CENTER);
+        contentPanel.add(createDisclaimerPanel(), BorderLayout.SOUTH);
+
+        this.dialog.add(contentPanel, BorderLayout.CENTER);
 
         // Dialog anzeigen
         this.dialog.pack();

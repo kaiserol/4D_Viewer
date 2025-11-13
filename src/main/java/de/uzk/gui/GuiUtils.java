@@ -59,6 +59,7 @@ public final class GuiUtils {
     private static Font font;
 
     private GuiUtils() {
+        // Verhindert Instanziierung dieser Hilfsklasse
     }
 
     // ========================================

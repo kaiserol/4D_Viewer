@@ -7,7 +7,9 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentListener;
+import java.util.ArrayList;
 import java.util.EventListener;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -41,6 +43,7 @@ public class ComponentUtils {
     public static JScrollBar createScrollBar(int orientation, Consumer<Integer> listener) {
         @SuppressWarnings("MagicConstant")
         JScrollBar scrollBar = new JScrollBar(orientation);
+
         scrollBar.setBlockIncrement(1);
         scrollBar.setUnitIncrement(1);
 
@@ -64,6 +67,9 @@ public class ComponentUtils {
 
     public static JSpinner createSpinner(int min, int max, boolean cycling, Consumer<Integer> listener) {
         JSpinner spinner = new JSpinner(new CyclingSpinnerNumberModel(min, min, max, 1, cycling));
+        if (spinner.getEditor() instanceof JSpinner.DefaultEditor editor) {
+            editor.getTextField().setHorizontalAlignment(JTextField.LEFT);
+        }
 
         if (listener != null) {
             spinner.addChangeListener(e -> listener.accept((int) spinner.getValue()));
@@ -72,38 +78,7 @@ public class ComponentUtils {
     }
 
     // ========================================
-    // RunWithoutListeners – Standardvarianten
-    // ========================================
-    public static void runWithoutListeners(JCheckBox component, Consumer<JCheckBox> action) {
-        runWithoutListeners(component, action, ActionListener.class,
-            component::addActionListener,
-            component::removeActionListener
-        );
-    }
-
-    public static void runWithoutListeners(JScrollBar component, Consumer<JScrollBar> action) {
-        runWithoutListeners(component, action, AdjustmentListener.class,
-            component::removeAdjustmentListener,
-            component::addAdjustmentListener
-        );
-    }
-
-    public static void runWithoutListeners(JSlider component, Consumer<JSlider> action) {
-        runWithoutListeners(component, action, ChangeListener.class,
-            component::removeChangeListener,
-            component::addChangeListener
-        );
-    }
-
-    public static void runWithoutListeners(JSpinner component, Consumer<JSpinner> action) {
-        runWithoutListeners(component, action, ChangeListener.class,
-            component::removeChangeListener,
-            component::addChangeListener
-        );
-    }
-
-    // ========================================
-    // Erweiterte Varianten: Nur bei Änderungen
+    // RunWithoutListeners: Standardvarianten
     // ========================================
     public static void setValueSecurely(JCheckBox checkBox, boolean newValue) {
         if (checkBox.isSelected() == newValue) return;
@@ -133,9 +108,37 @@ public class ComponentUtils {
     }
 
     // ========================================
-    // Generische Basismethode
+    // RunWithoutListeners
     // ========================================
-    private static <E extends JComponent, L extends EventListener> void runWithoutListeners(
+    public static void runWithoutListeners(JCheckBox component, Consumer<JCheckBox> action) {
+        runWithoutListeners(component, action, ActionListener.class,
+            component::addActionListener,
+            component::removeActionListener
+        );
+    }
+
+    public static void runWithoutListeners(JScrollBar component, Consumer<JScrollBar> action) {
+        runWithoutListeners(component, action, AdjustmentListener.class,
+            component::removeAdjustmentListener,
+            component::addAdjustmentListener
+        );
+    }
+
+    public static void runWithoutListeners(JSlider component, Consumer<JSlider> action) {
+        runWithoutListeners(component, action, ChangeListener.class,
+            component::removeChangeListener,
+            component::addChangeListener
+        );
+    }
+
+    public static void runWithoutListeners(JSpinner component, Consumer<JSpinner> action) {
+        runWithoutListeners(component, action, ChangeListener.class,
+            component::removeChangeListener,
+            component::addChangeListener
+        );
+    }
+
+    private static <E extends Component, L extends EventListener> void runWithoutListeners(
         E component, Consumer<E> action, Class<L> listenerType,
         Consumer<L> removeListener, Consumer<L> addListener) {
 
@@ -149,21 +152,7 @@ public class ComponentUtils {
     }
 
     // ------------------------------------------------------
-    // Komponenten-Aktivierung / -Deaktivierung
-    // ------------------------------------------------------
-    public static void setEnabled(Container container, boolean enabled) {
-        if (container == null) return;
-
-        for (Component component : getComponents(container)) {
-            component.setEnabled(enabled);
-            if (component instanceof Container newContainer) {
-                setEnabled(newContainer, enabled);
-            }
-        }
-    }
-
-    // ------------------------------------------------------
-    // Komponenten-Ermittlung
+    // Komponenten Ermittlung
     // ------------------------------------------------------
     public static Component[] getComponents(Container container) {
         if (container == null) return new Component[0];
@@ -176,28 +165,58 @@ public class ComponentUtils {
     }
 
     // ------------------------------------------------------
-    // Layout-Helfer
+    // Komponenten Hilfsmethoden
     // ------------------------------------------------------
-    public static void makeComponentsSameSize(JPanel panel, Class<? extends Component> clazz) {
+    public static void setEnabled(Container root, boolean enabled) {
+        if (root == null) return;
+
+        for (Component child : getComponents(root)) {
+            child.setEnabled(enabled);
+            if (child instanceof Container container) {
+                setEnabled(container, enabled);
+            }
+        }
+    }
+
+    public static <T extends Component> List<T> findComponentsRecursively(Class<T> type, Component root) {
+        List<T> result = new ArrayList<>();
+
+        if (type.isInstance(root)) {
+            result.add(type.cast(root));
+        }
+
+        if (root instanceof Container container) {
+            for (Component child : ComponentUtils.getComponents(container)) {
+                result.addAll(findComponentsRecursively(type, child));
+            }
+        }
+
+        return result;
+    }
+
+    public static <T extends Component> void equalizeComponentSizes(Container root, Class<T> clazz) {
         int maxWidth = 0;
 
         // Maximale Breite bestimmen
-        for (Component comp : panel.getComponents()) {
-            if (Objects.equals(comp.getClass(), clazz)) {
-                Dimension pref = comp.getPreferredSize();
+        for (Component child : root.getComponents()) {
+            if (Objects.equals(child.getClass(), clazz)) {
+                Dimension pref = child.getPreferredSize();
                 maxWidth = Math.max(maxWidth, pref.width);
             }
         }
 
         // Einheitliche Größe setzen
-        for (Component comp : panel.getComponents()) {
-            if (Objects.equals(comp.getClass(), clazz)) {
-                Dimension size = comp.getPreferredSize();
-                comp.setPreferredSize(new Dimension(maxWidth, size.height));
+        for (Component child : root.getComponents()) {
+            if (Objects.equals(child.getClass(), clazz)) {
+                Dimension size = child.getPreferredSize();
+                child.setPreferredSize(new Dimension(maxWidth, size.height));
             }
         }
     }
 
+    // ------------------------------------------------------
+    // GridBag Layout Methoden
+    // ------------------------------------------------------
     public static GridBagConstraints createGridBagConstraints() {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;

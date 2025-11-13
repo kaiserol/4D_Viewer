@@ -76,7 +76,7 @@ public class SnapshotHelper {
     }
 
     // ========================================
-    //  Hilfsmethoden
+    // Hilfsmethoden
     // ========================================
     private static Path buildSnapshotFile(Path directory) {
         String formattedDate = DATE_FORMAT.format(new Date());
