@@ -1,19 +1,16 @@
 package de.uzk.utils;
 
 import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
+import de.uzk.gui.dialogs.DialogDirectoryChooser;
 import de.uzk.image.ImageFileType;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static de.uzk.Main.*;
+import static de.uzk.Main.history;
+import static de.uzk.Main.logger;
 import static de.uzk.config.LanguageHandler.getWord;
-import static de.uzk.utils.PathManager.USER_DIRECTORY;
 
 public class ProjectsHelper {
     private ProjectsHelper() {
@@ -41,7 +38,6 @@ public class ProjectsHelper {
             // TODO: Warum rausgenommen (für mich)
 //            gui.openImagesDirectory(selectedPath, workspace.getConfig().getImageFileType(), false);
             gui.openImagesDirectory(selectedPath, null, false);
-
         }
     }
 
@@ -59,117 +55,18 @@ public class ProjectsHelper {
         }
     }
 
-    // ========================================
-    // Dateiauswahl Methoden
-    // ========================================
-    public static void openFileChooser(Gui gui) {
-        JFileChooser fileChooser = getFileChooser();
-
-        // Startverzeichnis wählen
-        Path lastUsedDirectory = history.getLastIfExists();
-        if (lastUsedDirectory == null) {
-            Path userDirectory = USER_DIRECTORY;
-            if (Files.isDirectory(userDirectory)) fileChooser.setCurrentDirectory(userDirectory.toFile());
-        } else {
-            fileChooser.setSelectedFile(lastUsedDirectory.toFile());
-        }
-
+    public static void openProject(Gui gui) {
         // Dialog öffnen
-        int option = fileChooser.showOpenDialog(gui.getContainer());
+        DialogDirectoryChooser directoryChooser = new DialogDirectoryChooser();
+        int option = directoryChooser.showOpenDialog(gui.getContainer());
+
         if (option == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            if (selectedFile == null) return;
+            File directory = directoryChooser.getDirectory();
+            if (directory == null) return;
 
             // Bilder laden
-            ImageFileType imageFileType = getSelectedImageFileType((FileNameExtensionFilter) fileChooser.getFileFilter());
-            gui.openImagesDirectory(Path.of(selectedFile.getAbsolutePath()), imageFileType, false);
+            ImageFileType imageFileType = directoryChooser.getSelectedImageFileType();
+            gui.openImagesDirectory(directory.toPath(), imageFileType, false);
         }
-    }
-
-    private static JFileChooser getFileChooser() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        fileChooser.setMultiSelectionEnabled(false);
-        fileChooser.putClientProperty("FileChooser.readOnly", Boolean.TRUE);
-        resetButtonsMarginRecursively(fileChooser);
-
-        // Dialogtitel setzen
-        setFileChooserTitel(fileChooser);
-
-        // Filter setzen
-        setFileChooserFilter(fileChooser);
-
-        // Inhalt hinzufügen (Zeit-Trenner, Ebenen-Trenner)
-        addFileChooserContent(fileChooser);
-        return fileChooser;
-    }
-
-    private static void resetButtonsMarginRecursively(Component comp) {
-        if (comp instanceof AbstractButton button) {
-            // Nur Buttons ohne Text (also IconButtons) zurücksetzen
-            if (button.getText() == null || button.getText().isEmpty()) button.setMargin(GuiUtils.INSETS_SMALL);
-        }
-
-        if (comp instanceof Container innerContainer) {
-            for (Component child : ComponentUtils.getComponents(innerContainer)) {
-                resetButtonsMarginRecursively(child);
-            }
-        }
-    }
-
-    private static void setFileChooserTitel(JFileChooser fileChooser) {
-        String dialogTitle = String.format("%s", getWord("menu.project.openDirectory"));
-        fileChooser.setDialogTitle(dialogTitle);
-
-        // Dialogtitel dynamisch setzen, wenn der Filter geändert wird
-        fileChooser.addPropertyChangeListener(evt -> {
-            if (evt.getNewValue() instanceof FileNameExtensionFilter filter) {
-                ImageFileType imageFileType = getSelectedImageFileType(filter);
-                String newTitle = String.format("%s (%s)", getWord("menu.project.openDirectory"), imageFileType.getDescription());
-                fileChooser.setDialogTitle(newTitle);
-            }
-        });
-    }
-
-    private static void setFileChooserFilter(JFileChooser fileChooser) {
-        fileChooser.setAcceptAllFileFilterUsed(false);
-
-        for (ImageFileType type : ImageFileType.sortedValues()) {
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                type.getFullDescription(),
-                type.getExtensions()
-            );
-            fileChooser.addChoosableFileFilter(filter);
-
-            // Standardfilter auswählen
-            if (type == workspace.getConfig().getImageFileType()) {
-                fileChooser.setFileFilter(filter);
-            }
-        }
-    }
-
-    private static void addFileChooserContent(JFileChooser fileChooser) {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createEmptyBorder(0, 10, 0, 0),
-            BorderFactory.createLineBorder(GuiUtils.getBorderColor())
-        ));
-
-        // contentPanel
-        JPanel contentPanel = new JPanel();
-        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
-        contentPanel.setBackground(GuiUtils.getBackgroundColor());
-
-        // contentPanel hinzufügen
-        panel.add(contentPanel, BorderLayout.CENTER);
-        fileChooser.setAccessory(panel);
-    }
-
-    private static ImageFileType getSelectedImageFileType(FileNameExtensionFilter filter) {
-        if (filter == null) return ImageFileType.getDefault();
-
-        String firstExtension = filter.getExtensions()[0];
-        return ImageFileType.fromExtension(firstExtension);
     }
 }

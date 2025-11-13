@@ -23,7 +23,6 @@ import static de.uzk.action.ActionType.*;
 // Zumal soll beim Pressed, mousewheellistener eventuell dann auch auslagern (in AreaImageViewer), damit es
 // eindeutiger ist...
 public class ActionHandler extends KeyAdapter implements MouseWheelListener {
-    // GUI-Elemente
     private final Gui gui;
 
     // Dialoge
@@ -76,7 +75,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         if (actionType == null) return;
         switch (actionType) {
             // Projekte Shortcuts
-            case SHORTCUT_OPEN_FOLDER -> ProjectsHelper.openFileChooser(gui);
+            case SHORTCUT_OPEN_FOLDER -> ProjectsHelper.openProject(gui);
             case SHORTCUT_OPEN_RECENT -> ProjectsHelper.openRecents(gui);
             case SHORTCUT_CLOSE_PROJECT -> ProjectsHelper.clearImages(gui);
             case SHORTCUT_SAVE_PROJECT -> {

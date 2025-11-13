@@ -2,6 +2,7 @@ package de.uzk.gui.marker;
 
 import de.uzk.gui.Icons;
 import de.uzk.gui.OGridBagConstraints;
+import de.uzk.gui.dialogs.DialogColorChooser;
 import de.uzk.image.ImageFile;
 import de.uzk.markers.Marker;
 import de.uzk.markers.MarkerShape;
@@ -10,7 +11,6 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
@@ -21,7 +21,7 @@ public class MarkerEditor extends Container {
     private final Marker marker;
     private final MarkerPreview preview;
     private final java.util.List<Runnable> onUpdate = new ArrayList<>();
-    private final JColorChooser colorChooser;
+    private final DialogColorChooser dialogColorChooser;
 
     public MarkerEditor(ImageFile onto) {
         this(onto, new Marker());
@@ -30,7 +30,7 @@ public class MarkerEditor extends Container {
     public MarkerEditor(ImageFile onto, Marker marker) {
         this.marker = marker;
         this.preview = new MarkerPreview(Icons.loadImage(onto.getFilePath(), true), marker, this);
-        this.colorChooser = new JColorChooser();
+        this.dialogColorChooser = new DialogColorChooser(null);
         init();
     }
 
@@ -67,10 +67,10 @@ public class MarkerEditor extends Container {
         gbc.weightx = 0.2;
         gbc.ipady = 10;
         gbc.ipadx = 30;
-        JButton color = new JButton("");
-        color.setBackground(this.marker.getColor());
-        color.addActionListener(a -> openColorChooserDialog(color));
-        this.add(color, gbc);
+        JButton buttonColor = new JButton();
+        buttonColor.setBackground(this.marker.getColor());
+        buttonColor.addActionListener(a -> selectColor(buttonColor));
+        this.add(buttonColor, gbc);
 
         gbc.setPos(1, 2);
         gbc.setSizeAndWeight(1, 1, 0.1, 0);
@@ -118,20 +118,11 @@ public class MarkerEditor extends Container {
 
     }
 
-    private void openColorChooserDialog(JButton color) {
-        this.colorChooser.setColor(color.getBackground());
-        ActionListener okListener = e -> {
-            Color selected = this.colorChooser.getColor();
-            color.setBackground(selected);
-            this.marker.setColor(selected);
-            this.preview.repaint();
-        };
-
-        // Dialog anzeigen
-        JDialog dialog = JColorChooser.createDialog(this, getWord("dialog.markers.color"),
-                true, this.colorChooser, okListener, null
-        );
-        dialog.setVisible(true);
+    private void selectColor(JButton color) {
+        Color selected = this.dialogColorChooser.chooseColor(color.getBackground());
+        color.setBackground(selected);
+        this.marker.setColor(selected);
+        this.preview.repaint();
     }
 
     void changed() {
@@ -145,10 +136,10 @@ public class MarkerEditor extends Container {
 
         JLabel[] labels = {new JLabel("X: "), new JLabel("Y: "), new JLabel(getWord("dialog.markers.width")), new JLabel(getWord("dialog.markers.height")),};
         JSpinner[] spinners = {
-                createSpinner(this.marker::getX, this.marker::setX),
-                createSpinner(this.marker::getY, this.marker::setY),
-                createSpinner(this.marker::getWidth, this.marker::setWidth),
-                createSpinner(this.marker::getHeight, this.marker::setHeight)
+            createSpinner(this.marker::getX, this.marker::setX),
+            createSpinner(this.marker::getY, this.marker::setY),
+            createSpinner(this.marker::getWidth, this.marker::setWidth),
+            createSpinner(this.marker::getHeight, this.marker::setHeight)
         };
 
         gbc.fill = OGridBagConstraints.HORIZONTAL;
