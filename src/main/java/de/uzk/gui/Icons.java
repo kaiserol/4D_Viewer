@@ -1,6 +1,7 @@
 package de.uzk.gui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import de.uzk.utils.ColorUtils;
 import de.uzk.utils.StringUtils;
 
 import javax.imageio.ImageIO;
@@ -93,7 +94,7 @@ public final class Icons {
         for (FlatSVGIcon svgIcon : ICONS_COLOR_BLUE) {
             // Tausche Farben aus
             updateSVGIconsColor(svgIcon, new FlatSVGIcon.ColorFilter(color -> {
-                if (Objects.equals(color, Color.BLACK)) return GuiUtils.COLOR_BLUE;
+                if (Objects.equals(color, Color.BLACK)) return ColorUtils.COLOR_BLUE;
                 else return color;
             }));
         }

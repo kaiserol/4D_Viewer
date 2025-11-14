@@ -3,8 +3,7 @@ package de.uzk.markers;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.uzk.utils.NumberUtils;
-import de.uzk.utils.StringUtils;
+import de.uzk.utils.ColorUtils;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -27,13 +26,13 @@ public class Marker {
 
     public Marker(Marker other) {
         this(
-                other.x,
-                other.y,
-                other.width,
-                other.height,
-                other.shape,
-                other.color,
-                other.label
+            other.x,
+            other.y,
+            other.width,
+            other.height,
+            other.shape,
+            other.color,
+            other.label
         );
     }
 
@@ -49,20 +48,20 @@ public class Marker {
 
     @JsonCreator
     public Marker(
-            @JsonProperty("x")
-            int x,
-            @JsonProperty("y")
-            int y,
-            @JsonProperty("width")
-            int width,
-            @JsonProperty("height")
-            int height,
-            @JsonProperty(value = "shape", defaultValue = "RECTANGLE")
-            MarkerShape shape,
-            @JsonProperty(value = "color", defaultValue = "#000000")
-            String color,
-            @JsonProperty("label")
-            String label) {
+        @JsonProperty("x")
+        int x,
+        @JsonProperty("y")
+        int y,
+        @JsonProperty("width")
+        int width,
+        @JsonProperty("height")
+        int height,
+        @JsonProperty(value = "shape", defaultValue = "RECTANGLE")
+        MarkerShape shape,
+        @JsonProperty(value = "color", defaultValue = "#000000")
+        String color,
+        @JsonProperty("label")
+        String label) {
         this(x, y, width, height, shape, Color.decode(color), label);
     }
 
@@ -119,7 +118,7 @@ public class Marker {
         Shape finalShape = switch (this.shape) {
             case RECTANGLE -> actualBounds;
             case ELLIPSE ->
-                    new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
+                new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
 
         };
 
@@ -141,7 +140,7 @@ public class Marker {
         Shape finalShape = switch (this.shape) {
             case RECTANGLE -> actualBounds;
             case ELLIPSE ->
-                    new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
+                new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
 
         };
 
@@ -149,7 +148,6 @@ public class Marker {
         to.transform(at);
         to.setColor(this.color);
         to.setStroke(new BasicStroke(LINE_WIDTH * (float) scaleFactor));
-
 
 
         to.draw(finalShape);
@@ -166,14 +164,10 @@ public class Marker {
         metrics = to.getFontMetrics();
         int width = metrics.stringWidth(this.label);
         int height = metrics.getHeight();
-        to.fillRect(x, y, width , height );
+        to.fillRect(x, y, width, height);
 
-        double brightness = NumberUtils.calculatePerceivedBrightness(this.color);
-        if (brightness > 186) {
-            to.setColor(Color.BLACK);
-        } else {
-            to.setColor(Color.WHITE);
-        }
+        boolean lightColor = ColorUtils.calculatePerceivedBrightness(this.color) > 0.5;
+        to.setColor(lightColor ? Color.BLACK : Color.WHITE);
 
         to.drawString(this.label, x, y + metrics.getAscent());
     }
@@ -198,6 +192,6 @@ public class Marker {
 
     @JsonGetter("color")
     private String getHexColor() {
-        return StringUtils.colorToHex(this.color);
+        return ColorUtils.colorToHex(this.color);
     }
 }

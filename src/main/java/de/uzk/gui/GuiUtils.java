@@ -8,6 +8,7 @@ import de.uzk.action.ActionType;
 import de.uzk.config.Language;
 import de.uzk.config.Theme;
 import de.uzk.markers.Marker;
+import de.uzk.utils.ColorUtils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -28,13 +29,6 @@ import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public final class GuiUtils {
-    // Farben
-    public static final Color COLOR_BLUE = new Color(0, 122, 255);
-    public static final Color COLOR_GREEN = new Color(8, 166, 52);
-    public static final Color COLOR_YELLOW = new Color(252, 204, 78);
-    public static final Color COLOR_RED = new Color(255, 86, 86);
-    public static final Color COLOR_DARK_RED = new Color(148, 0, 0);
-
     // Rahmen / Padding
     public static final Border BORDER_EMPTY_NONE = BorderFactory.createEmptyBorder();
     public static final Border BORDER_EMPTY_DEFAULT = BorderFactory.createEmptyBorder(10, 10, 10, 10);
@@ -47,10 +41,6 @@ public final class GuiUtils {
     public static final Insets INSETS_DEFAULT = new Insets(10, 10, 10, 10);
     public static final Insets INSETS_MEDIUM = new Insets(5, 10, 5, 10);
     public static final Insets INSETS_SMALL = new Insets(5, 5, 5, 5);
-
-    // Cursor
-    public static final Cursor DEFAULT_CURSOR = Cursor.getDefaultCursor();
-    public static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
 
     // Bogengröße
     private static final int ARC_DEFAULT = 999;
@@ -362,7 +352,7 @@ public final class GuiUtils {
         UIManager.put("TabbedPane.arrowType", ARROW_TYPE);
 
         // Linienfarbe
-        UIManager.put("TabbedPane.underlineColor", COLOR_BLUE);
+        UIManager.put("TabbedPane.underlineColor", ColorUtils.COLOR_BLUE);
         UIManager.put("TabbedPane.inactiveUnderlineColor", settings.getTheme().isLight() ? Color.GRAY : Color.WHITE);
 
         // Scroll-Eigenschaften
@@ -372,7 +362,7 @@ public final class GuiUtils {
 
     private static void setupScrollBar() {
         Color trackColor = UIManager.getColor("ScrollBar.background");
-        Color thumbColor = COLOR_BLUE;
+        Color thumbColor = ColorUtils.COLOR_BLUE;
 
         UIManager.put("ScrollBar.trackArc", ARC_DEFAULT);
         UIManager.put("ScrollBar.thumbArc", ARC_DEFAULT);

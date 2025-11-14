@@ -1,12 +1,12 @@
 package de.uzk.gui;
 
 import de.uzk.action.Shortcut;
-import de.uzk.utils.StringUtils;
+import de.uzk.utils.ColorUtils;
+import de.uzk.utils.ComponentUtils;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.text.DefaultCaret;
 import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -37,12 +37,12 @@ import static javax.swing.event.HyperlinkEvent.EventType.*;
 public class SelectableText extends JEditorPane implements HyperlinkListener {
 
     /**
-     * true, wenn die Command-/Strg-Taste aktuell gedrückt ist
+     * True, wenn die Command-/Strg-Taste aktuell gedrückt ist
      */
     private volatile boolean commandPressed = false;
 
     /**
-     * true, wenn sich der Mauszeiger aktuell über einem Hyperlink befindet
+     * True, wenn sich der Mauszeiger aktuell über einem Hyperlink befindet
      */
     private boolean overLink = false;
 
@@ -59,7 +59,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     /**
      * Farbe, die einen aktiven Hyperlink darstellt
      */
-    private static final Color COLOR_ACTIVE_LINK = GuiUtils.COLOR_BLUE;
+    private static final Color COLOR_ACTIVE_LINK = ColorUtils.COLOR_BLUE;
 
     /**
      * Mögliche Cursor-/Tooltip-Zustände
@@ -83,7 +83,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         setMargin(GuiUtils.INSETS_NONE);
 
         // Unsichtbares Caret (kein blinkender Balken)
-        setCaret(new NoBlinkCaret());
+        setCaret(ComponentUtils.getNoBlinkCaret());
         setDefaultCursor();
 
         // Maus- & Hyperlink-Events
@@ -97,7 +97,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         SwingUtilities.invokeLater(() -> {
             if (getDocument() instanceof HTMLDocument htmlDoc) {
                 StyleSheet styleSheet = htmlDoc.getStyleSheet();
-                String hexDefaultColor = StringUtils.colorToHex(GuiUtils.getTextColor());
+                String hexDefaultColor = ColorUtils.colorToHex(GuiUtils.getTextColor());
                 styleSheet.addRule(String.format("a { color: %s; }", hexDefaultColor));
                 styleSheet.addRule(String.format("a:visited { color: %s; }", hexDefaultColor));
                 styleSheet.addRule(String.format("a:hover { color: %s; }", hexDefaultColor));
@@ -108,21 +108,6 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     // ========================================
     // Innere Klassen
     // ========================================
-
-    /**
-     * Unsichtbares, nicht blinkendes Caret
-     */
-    private static class NoBlinkCaret extends DefaultCaret {
-        public NoBlinkCaret() {
-            setBlinkRate(0);
-        }
-
-        @Override
-        public void paint(Graphics g) {
-            // Unsichtbares Caret
-        }
-    }
-
     /**
      * Listener, der Cursor bei Mausbewegungen aktualisiert
      */
@@ -203,12 +188,12 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
             switch (newMode) {
                 case LINK_CTRL_HOVER -> {
                     applyLinkHoverStyle(true);
-                    GuiUtils.setCursor(this, GuiUtils.HAND_CURSOR);
+                    GuiUtils.setCursor(this, ComponentUtils.HAND_CURSOR);
                     GuiUtils.setToolTipText(this, getWord("tooltip.openInBrowser"));
                 }
                 case LINK_HOVER -> {
                     applyLinkHoverStyle(false);
-                    GuiUtils.setCursor(this, GuiUtils.HAND_CURSOR);
+                    GuiUtils.setCursor(this, ComponentUtils.HAND_CURSOR);
 
                     String tooltipText = String.format("%s (%s %s)",
                         getWord("tooltip.openInBrowser"),
@@ -229,7 +214,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     /**
      * Färbt den Hyperlink nur dann ein, wenn Command/Ctrl gedrückt ist.
      *
-     * @param active true, wenn Link aktiv ist, sonst false
+     * @param active True, wenn Link aktiv ist, sonst false
      */
     private void applyLinkHoverStyle(boolean active) {
         if (currentLinkElement == null) return;
@@ -256,7 +241,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      */
     private void setDefaultCursor() {
         applyLinkHoverStyle(false);
-        GuiUtils.setCursor(this, GuiUtils.DEFAULT_CURSOR);
+        GuiUtils.setCursor(this, ComponentUtils.DEFAULT_CURSOR);
         GuiUtils.setToolTipText(this, null);
     }
 

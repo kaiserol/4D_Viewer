@@ -1,18 +1,18 @@
 package de.uzk.gui.dialogs;
 
 import de.uzk.gui.GuiUtils;
+import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
 
 import javax.swing.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import static de.uzk.Main.settings;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -33,14 +33,27 @@ public class DialogColorChooser {
     public DialogColorChooser(JFrame frame) {
         this.dialog = new JDialog(frame, true);
         this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        this.dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("closed");
+                closeDialog(initialColor);
+            }
+        });
 
         // Favoriten Lister initialisieren
         this.favoriteColors = new ArrayList<>();
 
         // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(e -> this.dialog.dispose(),
+        this.dialog.getRootPane().registerKeyboardAction(e -> closeDialog(this.initialColor),
             KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
         );
+    }
+
+    private void closeDialog(Color color) {
+        this.selectedColor = color;
+        this.colorChooser.setColor(color);
+        this.dialog.dispose();
     }
 
     public Color chooseColor(Color intialColor) {
@@ -88,7 +101,7 @@ public class DialogColorChooser {
         ));
         panel.setOpaque(false);
 
-        // Plus-Button
+        // Plus Button
         FavoriteColorButton addButton = new FavoriteColorButton(null, true);
         addButton.addClickedListener(e -> {
             if (!SwingUtilities.isLeftMouseButton(e)) return;
@@ -117,26 +130,6 @@ public class DialogColorChooser {
         return panel;
     }
 
-    private FavoriteColorButton createColorButton(Color color, JPanel favoritesPanel) {
-        FavoriteColorButton button = new FavoriteColorButton(color, false);
-        button.addClickedListener(e -> {
-            if (SwingUtilities.isLeftMouseButton(e)) {
-                this.colorChooser.setColor(color);
-            } else if (SwingUtilities.isRightMouseButton(e)) {
-                button.showPopupMenu(e, () -> {
-                    favoritesPanel.remove(button);
-                    this.favoriteColors.remove(button);
-
-                    // Revalidierung
-                    favoritesPanel.revalidate();
-                    favoritesPanel.repaint();
-                });
-            }
-        });
-
-        return button;
-    }
-
     private JPanel createPreviewPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createCompoundBorder(
@@ -153,7 +146,7 @@ public class DialogColorChooser {
         gbc.fill = GridBagConstraints.BOTH;
 
         // ---- Linker Bereich: 3 Labels ----
-        JLabel label1 = createSampleTextLabel(Color.BLACK, this.initialColor);
+        JLabel label1 = createSampleTextLabel(null, this.initialColor);
         JLabel label2 = createSampleTextLabel(this.initialColor, Color.BLACK);
         JLabel label3 = createSampleTextLabel(Color.WHITE, this.initialColor);
 
@@ -161,34 +154,48 @@ public class DialogColorChooser {
         ComponentUtils.addRow(panel, gbc, label2, 5);
         ComponentUtils.addRow(panel, gbc, label3, 5);
 
-        gbc.gridx++;
+        gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.gridheight = 3;
+        gbc.gridheight = 2;
         gbc.insets = new Insets(0, 10, 0, 0);
 
-        // ---- Linker Bereich: 2 Farbfelder ----
-        JTextField previousColorField = createColorField(this.initialColor);
-        JTextField selectedColorField = createColorField(this.initialColor);
+        // ---- Linker Bereich (oben): 2 Farbfelder ----
+        JLabel currentColorField = createColorField(this.initialColor, this.colorChooser::setColor);
+        JLabel previousColorField = createColorField(this.initialColor, this.colorChooser::setColor);
 
-        JPanel colorBoxesPanel = new JPanel();
-        colorBoxesPanel.setLayout(new BoxLayout(colorBoxesPanel, BoxLayout.Y_AXIS));
-        colorBoxesPanel.add(previousColorField);
-        colorBoxesPanel.add(Box.createVerticalStrut(10));
-        colorBoxesPanel.add(selectedColorField);
+        panel.add(currentColorField, gbc);
+        gbc.gridx++;
+        panel.add(previousColorField, gbc);
 
-        panel.add(colorBoxesPanel, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridheight = 1;
+        gbc.insets.top = 5;
+
+        // ---- Linker Bereich (unten): 2 Farbfelder Labels ----
+        panel.add(createCenteredLabel(getWord("label.current")), gbc);
+        gbc.gridx++;
+        panel.add(createCenteredLabel(getWord("label.previous")), gbc);
 
         // ---- Listener für dynamisches Update ----
         this.colorChooser.getSelectionModel().addChangeListener(e -> {
-            this.selectedColor = colorChooser.getColor();
+            Color color = colorChooser.getColor();
 
             // Labels aktualisieren
-            label1.setForeground(this.selectedColor);
-            label2.setBackground(this.selectedColor);
-            label3.setForeground(this.selectedColor);
+            label1.setForeground(color);
+            label2.setBackground(color);
+            label3.setForeground(color);
 
             // Aktuelles Farbfeld aktualisieren
-            selectedColorField.setBackground(this.selectedColor);
+            boolean lightBackground = ColorUtils.calculatePerceivedBrightness(color) > 0.5;
+
+            currentColorField.setForeground(lightBackground ? Color.BLACK : Color.WHITE);
+            currentColorField.setBackground(color);
+            currentColorField.setText(ColorUtils.colorToHex(color, true));
+
+            // Revalidierung
+            panel.revalidate();
+            panel.repaint();
         });
 
         // ---- Vorschau Panel erstellen ----
@@ -208,15 +215,12 @@ public class DialogColorChooser {
 
         // Schaltfläche (Abbrechen)
         JButton cancelButton = new JButton(getWord("button.cancel"));
-        cancelButton.addActionListener(e -> this.dialog.dispose());
+        cancelButton.addActionListener(e -> closeDialog(this.initialColor));
         panel.add(cancelButton);
 
         // Schaltfläche (OK)
         JButton okButton = new JButton(getWord("button.ok"));
-        okButton.addActionListener(e -> {
-            this.selectedColor = this.colorChooser.getColor();
-            this.dialog.dispose();
-        });
+        okButton.addActionListener(e -> closeDialog(this.colorChooser.getColor()));
         panel.add(okButton);
 
         // Gleicht die Größen aller Buttons an
@@ -232,19 +236,11 @@ public class DialogColorChooser {
     // Hilfsmethoden
     // ========================================
     private static void configureColorChooserPanels(JColorChooser colorChooser) {
-        AbstractColorChooserPanel rgbPanel = Arrays.stream(colorChooser.getChooserPanels())
-            .filter(panel -> "RGB".equals(panel.getDisplayName()))
-            .findFirst()
-            .orElse(null);
+        Stream<AbstractColorChooserPanel> panels = Arrays.stream(colorChooser.getChooserPanels())
+            .filter(panel -> !"swatches rgb".contains(panel.getDisplayName().toLowerCase()));
 
-        // Wenn RGB-Panel vorhanden ist, alle anderen Panels entfernen
-        if (rgbPanel != null) {
-            colorChooser.removeAll();
-            colorChooser.setChooserPanels(new AbstractColorChooserPanel[]{rgbPanel});
-        } else {
-            AbstractColorChooserPanel swatchesPanel = colorChooser.getChooserPanels()[0];
-            colorChooser.removeChooserPanel(swatchesPanel);
-        }
+        // Wenn Swatches oder RGB-Panel vorhanden ist, alle anderen Panels entfernen
+        panels.iterator().forEachRemaining(colorChooser::removeChooserPanel);
     }
 
     private static void configureColorChooserUI(JColorChooser root) {
@@ -290,14 +286,53 @@ public class DialogColorChooser {
         return label;
     }
 
-    private static JTextField createColorField(Color background) {
-        JTextField field = new JTextField();
-        field.setEnabled(false);
-        field.setColumns(7);
-        field.setOpaque(true);
-        field.setBackground(background);
-        field.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
-        return field;
+    private static JLabel createCenteredLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        return label;
+    }
+
+    private static JLabel createColorField(Color background, Consumer<Color> clicked) {
+        JLabel colorField = new JLabel();
+        colorField.setHorizontalAlignment(SwingConstants.CENTER);
+        colorField.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
+        colorField.setPreferredSize(new Dimension(100, 0));
+        colorField.setOpaque(true);
+        colorField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (!SwingUtilities.isLeftMouseButton(e)) return;
+                clicked.accept(colorField.getBackground());
+            }
+        });
+
+        // Aktuelles Farbfeld aktualisieren
+        boolean lightBackground = ColorUtils.calculatePerceivedBrightness(background) > 0.5;
+        colorField.setForeground(lightBackground ? Color.BLACK : Color.WHITE);
+        colorField.setBackground(background);
+        colorField.setText(ColorUtils.colorToHex(background, true));
+
+        return colorField;
+    }
+
+    private FavoriteColorButton createColorButton(Color color, JPanel favoritesPanel) {
+        FavoriteColorButton button = new FavoriteColorButton(color, false);
+        button.addClickedListener(e -> {
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                this.colorChooser.setColor(color);
+            } else if (SwingUtilities.isRightMouseButton(e)) {
+                button.showPopupMenu(e, () -> {
+                    favoritesPanel.remove(button);
+                    this.favoriteColors.remove(button);
+
+                    // Revalidierung
+                    favoritesPanel.revalidate();
+                    favoritesPanel.repaint();
+                });
+            }
+        });
+
+        return button;
     }
 
     // ========================================
@@ -362,15 +397,8 @@ public class DialogColorChooser {
 
             // Statusfarben
             boolean light = settings.getTheme().isLight();
-            Color border = GuiUtils.adjustColor(light ? Color.BLACK : Color.WHITE, this.hover ? 0.5f : 0, light);
-            Color background;
-
-            if (isAddButton) {
-                background = light ? Color.WHITE : Color.BLACK;
-            } else {
-//                border = light ? Color.BLACK : Color.WHITE;
-                background = color;
-            }
+            Color border = GuiUtils.adjustColor((light ? Color.BLACK : Color.WHITE), this.hover ? 0.5f : 0, light);
+            Color background = isAddButton ? (light ? Color.WHITE : Color.BLACK) : color;
 
             // Kreis füllen
             g2.setColor(background);
@@ -381,7 +409,7 @@ public class DialogColorChooser {
             g2.setColor(border);
             g2.drawOval(x, y, diameter, diameter);
 
-            // Plus-Zeichen für Add-Button
+            // Plus-Zeichen zeichnen
             if (this.isAddButton) {
                 int center = size / 2;
                 int addRadius = (int) (diameter / 4.0);

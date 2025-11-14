@@ -2,9 +2,9 @@ package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionType;
 import de.uzk.config.Config;
-import de.uzk.utils.ComponentUtils;
 import de.uzk.gui.Gui;
 import de.uzk.gui.areas.AreaContainerInteractive;
+import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.NumberUtils;
 import de.uzk.utils.SnapshotHelper;
 
@@ -88,10 +88,20 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
     @Override
     public void handleAction(ActionType actionType) {
         switch (actionType) {
-            case SHORTCUT_TURN_IMAGE_90_LEFT ->
-                ComponentUtils.setValueSecurely(this.degreeSpinner, NumberUtils.turn90Left(workspace.getConfig().getRotation()));
-            case SHORTCUT_TURN_IMAGE_90_RIGHT ->
-                ComponentUtils.setValueSecurely(this.degreeSpinner, NumberUtils.turn90Right(workspace.getConfig().getRotation()));
+            case SHORTCUT_TURN_IMAGE_90_LEFT -> {
+                int rotation = NumberUtils.snapToLeft90(workspace.getConfig().getRotation());
+                ComponentUtils.setValueSecurely(this.degreeSpinner, rotation);
+
+                workspace.getConfig().setRotation(rotation);
+                gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
+            }
+            case SHORTCUT_TURN_IMAGE_90_RIGHT -> {
+                int rotation = NumberUtils.snapToRight90(workspace.getConfig().getRotation());
+                ComponentUtils.setValueSecurely(this.degreeSpinner, rotation);
+
+                workspace.getConfig().setRotation(rotation);
+                gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
+            }
             case ACTION_UPDATE_SNAPSHOT_COUNTER -> updateSnapshotCounter();
         }
     }

@@ -1,6 +1,6 @@
 package de.uzk.image;
 
-import de.uzk.gui.GuiUtils;
+import de.uzk.utils.ColorUtils;
 import de.uzk.utils.StringUtils;
 
 import java.util.*;
@@ -140,7 +140,7 @@ public class MissingImagesReport {
             reportBuilder.append("Max Level: ").append(maxLevel).append(StringUtils.NEXT_LINE);
 
             String headerText = "Loaded Images:" + StringUtils.NEXT_LINE;
-            String formattedText = StringUtils.applyColor(StringUtils.wrapBold(headerText), GuiUtils.COLOR_BLUE);
+            String formattedText = StringUtils.applyColor(StringUtils.wrapBold(headerText), ColorUtils.COLOR_BLUE);
             return formattedText + reportBuilder;
         } else {
             String headerText = createReportHeader(missingCount, "missing");

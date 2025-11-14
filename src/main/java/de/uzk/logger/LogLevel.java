@@ -1,15 +1,15 @@
 package de.uzk.logger;
 
-import de.uzk.gui.GuiUtils;
+import de.uzk.utils.ColorUtils;
 
 import java.awt.*;
 
 public enum LogLevel {
-    DEBUG(GuiUtils.COLOR_BLUE),
-    ERROR(GuiUtils.COLOR_RED),
-    EXCEPTION(GuiUtils.COLOR_DARK_RED),
-    INFO(GuiUtils.COLOR_GREEN),
-    WARNING(GuiUtils.COLOR_YELLOW);
+    DEBUG(ColorUtils.COLOR_BLUE),
+    ERROR(ColorUtils.COLOR_RED),
+    EXCEPTION(ColorUtils.COLOR_DARK_RED),
+    INFO(ColorUtils.COLOR_GREEN),
+    WARNING(ColorUtils.COLOR_YELLOW);
 
     private final Color color;
 

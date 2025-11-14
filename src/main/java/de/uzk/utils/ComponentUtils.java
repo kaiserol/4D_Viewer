@@ -4,6 +4,8 @@ import de.uzk.gui.CyclingSpinnerNumberModel;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.Caret;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentListener;
@@ -14,9 +16,27 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 public class ComponentUtils {
+    // Cursor
+    public static final Cursor DEFAULT_CURSOR = Cursor.getDefaultCursor();
+    public static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+
     // ========================================
     // Komponenten-Erzeugung
     // ========================================
+    /**
+     * Unsichtbares, nicht blinkendes Caret
+     */
+    public static Caret getNoBlinkCaret () {
+        Caret caret = new DefaultCaret() {
+            @Override
+            public void paint(Graphics g) {
+                // Unsichtbares Caret
+            }
+        };
+        caret.setBlinkRate(0);
+        return caret;
+    }
+
     public static JCheckBox createCheckBox(String text, Consumer<Boolean> listener) {
         JCheckBox checkBox = new JCheckBox(text);
         checkBox.setFocusPainted(true);

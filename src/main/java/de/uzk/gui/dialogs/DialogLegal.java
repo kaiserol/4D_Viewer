@@ -2,6 +2,7 @@ package de.uzk.gui.dialogs;
 
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.SelectableText;
+import de.uzk.utils.ColorUtils;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
@@ -90,7 +91,7 @@ public class DialogLegal {
         SelectableText subTitleText = new SelectableText(StringUtils.wrapHtml(htmlContent));
         subTitleText.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
         subTitleText.setOpaque(true);
-        subTitleText.setBackground(GuiUtils.COLOR_BLUE);
+        subTitleText.setBackground(ColorUtils.COLOR_BLUE);
         subTitleText.setForeground(Color.WHITE);
         return subTitleText;
     }
