@@ -1,4 +1,4 @@
-package de.uzk.gui;
+package de.uzk.gui.observer;
 
 public interface AppFocusListener {
     void appGainedFocus();

@@ -1,8 +1,8 @@
 package de.uzk.gui.areas;
 
 import de.uzk.action.ActionType;
-import de.uzk.action.HandleActionListener;
-import de.uzk.gui.*;
+import de.uzk.gui.Gui;
+import de.uzk.gui.observer.*;
 import de.uzk.image.Axis;
 
 import java.awt.*;

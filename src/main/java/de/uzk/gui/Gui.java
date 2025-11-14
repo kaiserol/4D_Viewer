@@ -2,13 +2,17 @@ package de.uzk.gui;
 
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
-import de.uzk.action.HandleActionListener;
+import de.uzk.gui.observer.HandleActionListener;
 import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.gui.areas.AreaImageViewer;
 import de.uzk.gui.areas.AreaImagesDirectoryPath;
 import de.uzk.gui.areas.AreaTabs;
 import de.uzk.gui.dialogs.DialogLoadingImages;
 import de.uzk.gui.menubar.AppMenuBar;
+import de.uzk.gui.observer.AppFocusListener;
+import de.uzk.gui.observer.ToggleListener;
+import de.uzk.gui.observer.UpdateImageListener;
+import de.uzk.gui.observer.UpdateThemeListener;
 import de.uzk.image.Axis;
 import de.uzk.image.ImageFileType;
 import de.uzk.image.LoadingResult;
