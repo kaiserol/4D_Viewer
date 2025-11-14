@@ -1,6 +1,7 @@
-package de.uzk.utils;
+package de.uzk.gui;
 
-import de.uzk.gui.SnapshotCropper;
+import de.uzk.io.PathManager;
+import de.uzk.utils.NumberUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -16,8 +17,8 @@ import java.util.Date;
 import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
-import static de.uzk.utils.PathManager.SNAPSHOTS_DIRECTORY;
-import static de.uzk.utils.PathManager.resolveProjectPath;
+import static de.uzk.io.PathManager.SNAPSHOTS_DIRECTORY;
+import static de.uzk.io.PathManager.resolveProjectPath;
 
 public class SnapshotHelper {
     // Format und Pattern

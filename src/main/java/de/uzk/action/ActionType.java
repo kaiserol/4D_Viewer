@@ -52,37 +52,15 @@ public enum ActionType {
     SHORTCUT_SHOW_HISTORY,
     SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F12));
 
-    /**
-     * Mögliche KeyEvents
-     */
-    public enum KeyEventType {
-        NONE(-1),
-        PRESSED(KeyEvent.KEY_PRESSED),
-        RELEASED(KeyEvent.KEY_RELEASED);
-
-        private final int id;
-
-        KeyEventType(int id) {
-            this.id = id;
-        }
-
-        public int getID() {
-            return id;
-        }
-    }
-
-    // ========================================
-    // Enum Deklaration
-    // ========================================
-    private final KeyEventType keyEventType;
     private final List<Shortcut> shortcuts;
+    private final KeyEventType keyEventType;
 
     ActionType(KeyEventType keyEventType, Shortcut... shortcuts) {
-        if (keyEventType == null) throw new NullPointerException("KeyEventType is null.");
         if (shortcuts == null) throw new NullPointerException("Shortcuts are null.");
         if (Arrays.stream(shortcuts).anyMatch(Objects::isNull)) throw new NullPointerException("Shortcut is null.");
-        this.keyEventType = keyEventType;
+        if (keyEventType == null) throw new NullPointerException("KeyEventType is null.");
         this.shortcuts = List.of(shortcuts);
+        this.keyEventType = keyEventType;
     }
 
     ActionType(Shortcut... shortcuts) {
@@ -92,12 +70,12 @@ public enum ActionType {
         this.keyEventType = !this.shortcuts.isEmpty() ? KeyEventType.RELEASED : KeyEventType.NONE;
     }
 
-    public KeyEventType getKeyEventType() {
-        return this.keyEventType;
-    }
-
     public List<Shortcut> getShortcuts() {
         return this.shortcuts;
+    }
+
+    private KeyEventType getKeyEventType() {
+        return this.keyEventType;
     }
 
     public static ActionType fromKeyEvent(KeyEvent e) {
@@ -111,5 +89,24 @@ public enum ActionType {
             }
         }
         return null;
+    }
+
+    /**
+     * Mögliche KeyEvents
+     */
+    private enum KeyEventType {
+        NONE(-1),
+        PRESSED(KeyEvent.KEY_PRESSED),
+        RELEASED(KeyEvent.KEY_RELEASED);
+
+        private final int id;
+
+        KeyEventType(int id) {
+            this.id = id;
+        }
+
+        public int getID() {
+            return id;
+        }
     }
 }

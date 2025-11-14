@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Utility-Klasse zur Erkennung des wahrscheinlichsten Charsets einer Textdatei.
+ * Der {@code CharsetDetector} dient dazu den wahrscheinlichsten Charsets einer Textdatei zu ermitteln.
  * <p>
  * Diese Implementierung:
  * <ul>
@@ -17,9 +17,16 @@ import java.nio.file.Path;
  *   <li>Erkennt UTF-16 durch BOM</li>
  *   <li>Fällt auf ISO-8859-1 (Latin-1) zurück, falls keine sichere Erkennung möglich ist</li>
  * </ul>
- * <p>
+ *
+ * <br>
  * Hinweis: Diese Erkennung ist heuristisch und nicht 100 % zuverlässig.
  * Für sicher reproduzierbare Ergebnisse sollten alle Textdateien konsequent in UTF-8 gespeichert werden.
+ *
+ * <br><br>
+ * Die Klasse ist als {@code final} deklariert, um eine Vererbung zu verhindern.
+ * Da sämtliche Funktionalitäten über statische Methoden bereitgestellt werden,
+ * besitzt die Klasse einen privaten Konstruktor, um eine Instanziierung zu
+ * unterbinden.
  */
 public final class CharsetDetector {
 
@@ -34,8 +41,11 @@ public final class CharsetDetector {
         StandardCharsets.UTF_16LE,
     };
 
+    /**
+     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
+     */
     private CharsetDetector() {
-        // Utility class – keine Instanzen erlaubt
+        // Verhindert Instanziierung dieser Klasse
     }
 
     /**

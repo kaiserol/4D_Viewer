@@ -4,7 +4,7 @@ import java.util.ResourceBundle;
 
 import static de.uzk.Main.logger;
 
-public final class LanguageHandler {
+public class LanguageHandler {
     private static ResourceBundle resources;
 
     private LanguageHandler() {

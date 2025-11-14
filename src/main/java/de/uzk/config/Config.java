@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.uzk.image.ImageFileType;
 import de.uzk.utils.NumberUtils;
-import de.uzk.utils.PathManager;
+import de.uzk.io.PathManager;
 
 import java.nio.file.Path;
 
-import static de.uzk.utils.PathManager.CONFIG_FILE_NAME;
-import static de.uzk.utils.PathManager.resolveProjectPath;
+import static de.uzk.io.PathManager.CONFIG_FILE_NAME;
+import static de.uzk.io.PathManager.resolveProjectPath;
 
 public class Config {
     // Konfigurationen

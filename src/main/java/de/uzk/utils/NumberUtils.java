@@ -1,9 +1,9 @@
 package de.uzk.utils;
 
 /**
- * Die Hilfsklasse für numerische Operationen und Berechnungen.
+ * Utility-Klasse für numerische Operationen und Berechnungen.
  *
- * <p>
+ * <br><br>
  * Die Klasse ist als {@code final} deklariert, um eine Vererbung zu verhindern.
  * Da sämtliche Funktionalitäten über statische Methoden bereitgestellt werden,
  * besitzt die Klasse einen privaten Konstruktor, um eine Instanziierung zu
@@ -15,6 +15,9 @@ public final class NumberUtils {
      */
     private static final double EPSILON = 1e-10;
 
+    /**
+     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
+     */
     private NumberUtils() {
         // Verhindert die Instanziierung dieser Hilfsklasse
     }
@@ -71,7 +74,15 @@ public final class NumberUtils {
      */
     public static int snapToLeft90(int rotationAngle) {
         int angle = normalizeAngle(rotationAngle);
-        return (angle / 90) * 90; // integer division → floor
+        int mod = angle % 90;
+
+        // Wenn bereits exakt auf einem 90°-Raster: 90° nach links springen
+        if (mod == 0) {
+            return (angle + 270) % 360;
+        }
+
+        // Ansonsten: nach links auf das vorherige 90°-Raster runden
+        return (angle - mod + 360) % 360;
     }
 
     /**
@@ -82,7 +93,15 @@ public final class NumberUtils {
      */
     public static int snapToRight90(int rotationAngle) {
         int angle = normalizeAngle(rotationAngle);
-        return ((angle + 89) / 90) * 90; // trick → ceil-artig
+        int mod = angle % 90;
+
+        // Wenn bereits exakt auf einem 90°-Raster: 90° nach rechts springen
+        if (mod == 0) {
+            return (angle + 90) % 360;
+        }
+
+        // Ansonsten: nach rechts auf das nächste 90°-Raster runden
+        return (angle + (90 - mod)) % 360;
     }
 
     /**

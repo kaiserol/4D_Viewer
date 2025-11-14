@@ -3,11 +3,11 @@ package de.uzk.config;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.uzk.utils.NumberUtils;
-import de.uzk.utils.PathManager;
+import de.uzk.io.PathManager;
 
 import java.nio.file.Path;
 
-import static de.uzk.utils.PathManager.*;
+import static de.uzk.io.PathManager.*;
 
 public class Settings {
     // Einstellungen

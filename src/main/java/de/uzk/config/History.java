@@ -1,14 +1,14 @@
 package de.uzk.config;
 
-import de.uzk.utils.PathManager;
+import de.uzk.io.PathManager;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
-import static de.uzk.utils.PathManager.HISTORY_FILE_NAME;
-import static de.uzk.utils.PathManager.resolveConfigPath;
+import static de.uzk.io.PathManager.HISTORY_FILE_NAME;
+import static de.uzk.io.PathManager.resolveConfigPath;
 
 public class History {
     // Historie

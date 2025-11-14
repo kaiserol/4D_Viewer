@@ -11,7 +11,7 @@ public enum Theme {
     DARK_MODE,
     LIGHT_MODE;
 
-    public boolean isLight() {
+    public boolean isLightMode() {
         return this == LIGHT_MODE;
     }
 

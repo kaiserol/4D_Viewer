@@ -6,9 +6,9 @@ import java.awt.*;
 import java.io.File;
 
 /**
- * Die Hilfsklasse für Zeichenkettenoperationen und HTML-Formatierungen.
+ * Utility-Klasse für Zeichenkettenoperationen und HTML-Formatierungen.
  *
- * <p>
+ * <br><br>
  * Die Klasse ist als {@code final} deklariert, um eine Vererbung zu verhindern.
  * Da sämtliche Funktionalitäten über statische Methoden bereitgestellt werden,
  * besitzt die Klasse einen privaten Konstruktor, um eine Instanziierung zu
@@ -16,17 +16,20 @@ import java.io.File;
  */
 public final class StringUtils {
     /**
-     * Systemabhängiges Dateitrennzeichen (z.&nbsp;B. "/" oder "\\").
+     * Systemabhängiges Dateitrennzeichen (z.&nbsp;B. "/" oder "\\")
      */
     public static final String FILE_SEP = File.separator;
 
     /**
-     * Systemabhängiger Zeilenumbruch (z.&nbsp;B. "\n" oder "\r\n").
+     * Systemabhängiger Zeilenumbruch (z.&nbsp;B. "\n" oder "\r\n")
      */
     public static final String NEXT_LINE = System.lineSeparator();
 
+    /**
+     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
+     */
     private StringUtils() {
-        // Verhindert Instanziierung dieser Hilfsklasse
+        // Verhindert Instanziierung dieser Klasse
     }
 
     /**

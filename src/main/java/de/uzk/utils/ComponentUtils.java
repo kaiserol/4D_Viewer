@@ -15,28 +15,60 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class ComponentUtils {
-    // Cursor
+/**
+ * Utility-Klasse für häufig verwendete Swing-Komponenten und deren Handhabung.
+ *
+ * <br><br>
+ * Die Klasse ist als {@code final} deklariert, um eine Vererbung zu verhindern.
+ * Da sämtliche Funktionalitäten über statische Methoden bereitgestellt werden,
+ * besitzt die Klasse einen privaten Konstruktor, um eine Instanziierung zu
+ * unterbinden.
+ */
+public final class ComponentUtils {
+    /**
+     * Standard-Cursor
+     */
     public static final Cursor DEFAULT_CURSOR = Cursor.getDefaultCursor();
+    /**
+     * Hand-Cursor (z. B. für klickbare Elemente)
+     */
     public static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
 
     // ========================================
     // Komponenten-Erzeugung
     // ========================================
+
     /**
-     * Unsichtbares, nicht blinkendes Caret
+     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
      */
-    public static Caret getNoBlinkCaret () {
+    private ComponentUtils() {
+        // Verhindert Instanziierung dieser Klasse
+    }
+
+    /**
+     * Gibt ein unsichtbares, nicht blinkendes Caret zurück.
+     * Nützlich z. B. für JTextFields, die keine blinkende Eingabemarke haben sollen.
+     *
+     * @return Caret ohne Sichtbarkeit und ohne Blinken
+     */
+    public static Caret getNoBlinkCaret() {
         Caret caret = new DefaultCaret() {
             @Override
             public void paint(Graphics g) {
-                // Unsichtbares Caret
+                // Caret bleibt unsichtbar
             }
         };
         caret.setBlinkRate(0);
         return caret;
     }
 
+    /**
+     * Erstellt ein JCheckBox mit einem Listener.
+     *
+     * @param text     Text der Checkbox
+     * @param listener Consumer, der beim Ändern des Auswahlstatus aufgerufen wird; kann null sein
+     * @return die erstellte JCheckBox
+     */
     public static JCheckBox createCheckBox(String text, Consumer<Boolean> listener) {
         JCheckBox checkBox = new JCheckBox(text);
         checkBox.setFocusPainted(true);
@@ -47,6 +79,14 @@ public class ComponentUtils {
         return checkBox;
     }
 
+    /**
+     * Erstellt ein JComboBox mit Listener.
+     *
+     * @param items    Elemente des Drop-Downs
+     * @param listener Consumer, der beim Auswählen eines Elements aufgerufen wird; kann null sein
+     * @param <E>      Typ der Elemente
+     * @return die erstellte JComboBox
+     */
     public static <E> JComboBox<E> createComboBox(E[] items, Consumer<E> listener) {
         JComboBox<E> comboBox = new JComboBox<>(items);
 
@@ -60,6 +100,13 @@ public class ComponentUtils {
         return comboBox;
     }
 
+    /**
+     * Erstellt eine JScrollBar mit Listener.
+     *
+     * @param orientation JScrollBar.HORIZONTAL oder JScrollBar.VERTICAL
+     * @param listener    Consumer, der beim Ändern der Position aufgerufen wird; kann null sein
+     * @return die erstellte JScrollBar
+     */
     public static JScrollBar createScrollBar(int orientation, Consumer<Integer> listener) {
         @SuppressWarnings("MagicConstant")
         JScrollBar scrollBar = new JScrollBar(orientation);
@@ -73,6 +120,14 @@ public class ComponentUtils {
         return scrollBar;
     }
 
+    /**
+     * Erstellt einen JSlider mit Listener.
+     *
+     * @param min      Minimalwert
+     * @param max      Maximalwert
+     * @param listener Consumer, der beim Ändern des Werts aufgerufen wird; kann null sein
+     * @return der erstellte JSlider
+     */
     public static JSlider createSlider(int min, int max, Consumer<Integer> listener) {
         JSlider slider = new JSlider(min, max, min);
         slider.setSnapToTicks(true);
@@ -85,6 +140,15 @@ public class ComponentUtils {
         return slider;
     }
 
+    /**
+     * Erstellt einen JSpinner mit optionalem Cycling und Listener.
+     *
+     * @param min      Minimalwert
+     * @param max      Maximalwert
+     * @param cycling  True, wenn der Spinner am Ende wieder von vorn beginnt
+     * @param listener Consumer, der beim Ändern des Werts aufgerufen wird; kann null sein
+     * @return der erstellte JSpinner
+     */
     public static JSpinner createSpinner(int min, int max, boolean cycling, Consumer<Integer> listener) {
         JSpinner spinner = new JSpinner(new CyclingSpinnerNumberModel(min, min, max, 1, cycling));
         if (spinner.getEditor() instanceof JSpinner.DefaultEditor editor) {
@@ -100,23 +164,48 @@ public class ComponentUtils {
     // ========================================
     // RunWithoutListeners: Standardvarianten
     // ========================================
+
+    /**
+     * Setzt den Wert einer JCheckBox, ohne Auslösen von Listenern.
+     *
+     * @param checkBox Die zu ändernde Checkbox
+     * @param newValue Neuer Wert
+     */
     public static void setValueSecurely(JCheckBox checkBox, boolean newValue) {
         if (checkBox.isSelected() == newValue) return;
         runWithoutListeners(checkBox, c -> c.setSelected(newValue));
     }
 
+    /**
+     * Setzt den Wert einer JScrollBar, ohne Auslösen von Listenern.
+     *
+     * @param scrollBar Die zu ändernde ScrollBar
+     * @param newValue  Neuer Wert
+     */
     public static void setValueSecurely(JScrollBar scrollBar, int newValue) {
         if (scrollBar.getValueIsAdjusting()) return;
         if (scrollBar.getValue() == newValue) return;
         runWithoutListeners(scrollBar, sb -> sb.setValue(newValue));
     }
 
+    /**
+     * Setzt den Wert eines Sliders, ohne Auslösen von Listenern.
+     *
+     * @param slider   Der zu ändernde Slider
+     * @param newValue Neuer Wert
+     */
     public static void setValueSecurely(JSlider slider, int newValue) {
         if (slider.getValueIsAdjusting()) return;
         if (slider.getValue() == newValue) return;
         runWithoutListeners(slider, s -> s.setValue(newValue));
     }
 
+    /**
+     * Setzt den Wert eines Spinners, ohne Auslösen von Listenern.
+     *
+     * @param spinner  Der zu ändernde Spinner
+     * @param newValue Neuer Wert
+     */
     public static void setValueSecurely(JSpinner spinner, int newValue) {
         if (spinner.getValue() instanceof Number value && value.intValue() == newValue) return;
         runWithoutListeners(spinner, s -> {
@@ -128,8 +217,12 @@ public class ComponentUtils {
     }
 
     // ========================================
-    // RunWithoutListeners
+    // RunWithoutListeners generisch
     // ========================================
+
+    /**
+     * Führt eine Aktion an einer JCheckBox aus, ohne die registrierten ActionListener auszulösen.
+     */
     public static void runWithoutListeners(JCheckBox component, Consumer<JCheckBox> action) {
         runWithoutListeners(component, action, ActionListener.class,
             component::addActionListener,
@@ -137,6 +230,9 @@ public class ComponentUtils {
         );
     }
 
+    /**
+     * Führt eine Aktion an einer JScrollBar aus, ohne die registrierten AdjustmentListener auszulösen.
+     */
     public static void runWithoutListeners(JScrollBar component, Consumer<JScrollBar> action) {
         runWithoutListeners(component, action, AdjustmentListener.class,
             component::removeAdjustmentListener,
@@ -144,6 +240,9 @@ public class ComponentUtils {
         );
     }
 
+    /**
+     * Führt eine Aktion an einem JSlider aus, ohne die registrierten ChangeListener auszulösen.
+     */
     public static void runWithoutListeners(JSlider component, Consumer<JSlider> action) {
         runWithoutListeners(component, action, ChangeListener.class,
             component::removeChangeListener,
@@ -151,6 +250,9 @@ public class ComponentUtils {
         );
     }
 
+    /**
+     * Führt eine Aktion an einem JSpinner aus, ohne die registrierten ChangeListener auszulösen.
+     */
     public static void runWithoutListeners(JSpinner component, Consumer<JSpinner> action) {
         runWithoutListeners(component, action, ChangeListener.class,
             component::removeChangeListener,
@@ -158,6 +260,17 @@ public class ComponentUtils {
         );
     }
 
+    /**
+     * Generische Implementierung zum temporären Entfernen und Wiederherstellen von Listenern.
+     *
+     * @param component      Komponente, auf der die Aktion ausgeführt wird
+     * @param action         Aktion, die ausgeführt werden soll
+     * @param listenerType   Klasse des Listeners
+     * @param removeListener Funktion zum Entfernen eines Listeners
+     * @param addListener    Funktion zum Hinzufügen eines Listeners
+     * @param <E>            Typ der Komponente
+     * @param <L>            Typ des Listeners
+     */
     private static <E extends Component, L extends EventListener> void runWithoutListeners(
         E component, Consumer<E> action, Class<L> listenerType,
         Consumer<L> removeListener, Consumer<L> addListener) {
@@ -174,6 +287,13 @@ public class ComponentUtils {
     // ========================================
     // Komponenten Ermittlung
     // ========================================
+
+    /**
+     * Gibt die direkten Kind-Komponenten eines Containers zurück.
+     *
+     * @param container Container, aus dem Komponenten geholt werden sollen
+     * @return Array der Kind-Komponenten; leer, falls null
+     */
     public static Component[] getComponents(Container container) {
         if (container == null) return new Component[0];
         else if (container instanceof JWindow window) return window.getOwnedWindows();
@@ -187,6 +307,13 @@ public class ComponentUtils {
     // ========================================
     // Komponenten Hilfsmethoden
     // ========================================
+
+    /**
+     * Aktiviert oder deaktiviert alle Kind-Komponenten rekursiv.
+     *
+     * @param root    Container, deren Kind-Komponenten gesetzt werden
+     * @param enabled True, wenn aktiviert, false, wenn deaktiviert
+     */
     public static void setEnabled(Container root, boolean enabled) {
         if (root == null) return;
 
@@ -198,6 +325,14 @@ public class ComponentUtils {
         }
     }
 
+    /**
+     * Findet alle Komponenten eines bestimmten Typs rekursiv in einem Container.
+     *
+     * @param type Klasse der gesuchten Komponente
+     * @param root Wurzel-Komponente
+     * @param <T>  Typ der Komponente
+     * @return Liste der gefundenen Komponenten
+     */
     public static <T extends Component> List<T> findComponentsRecursively(Class<T> type, Component root) {
         List<T> result = new ArrayList<>();
 
@@ -214,11 +349,18 @@ public class ComponentUtils {
         return result;
     }
 
+    /**
+     * Gleicht die Breite aller Komponenten eines bestimmten Typs in einem Container an.
+     *
+     * @param root  Container, dessen Komponenten angepasst werden
+     * @param clazz Klasse der Komponenten, die angepasst werden sollen
+     * @param <T>   Typ der Komponente
+     */
     public static <T extends Component> void equalizeComponentSizes(Container root, Class<T> clazz) {
         int maxWidth = 0;
 
         // Maximale Breite bestimmen
-        for (Component child : root.getComponents()) {
+        for (Component child : ComponentUtils.getComponents(root)) {
             if (Objects.equals(child.getClass(), clazz)) {
                 Dimension pref = child.getPreferredSize();
                 maxWidth = Math.max(maxWidth, pref.width);
@@ -226,7 +368,7 @@ public class ComponentUtils {
         }
 
         // Einheitliche Größe setzen
-        for (Component child : root.getComponents()) {
+        for (Component child : ComponentUtils.getComponents(root)) {
             if (Objects.equals(child.getClass(), clazz)) {
                 Dimension size = child.getPreferredSize();
                 child.setPreferredSize(new Dimension(maxWidth, size.height));
@@ -237,6 +379,12 @@ public class ComponentUtils {
     // ========================================
     // GridBag Layout Methoden
     // ========================================
+
+    /**
+     * Erstellt Standard-GridBagConstraints für west-gerichtete, horizontal skalierende Komponenten.
+     *
+     * @return neue GridBagConstraints
+     */
     public static GridBagConstraints createGridBagConstraints() {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -247,10 +395,28 @@ public class ComponentUtils {
         return gbc;
     }
 
+    /**
+     * Fügt eine beschriftete Komponente als neue Zeile in ein GridBagLayout ein.
+     *
+     * @param container Container, in den eingefügt wird
+     * @param gbc       GridBagConstraints
+     * @param labelText Text für das JLabel
+     * @param component Komponente, die eingefügt wird
+     * @param topInset  Oberer Abstand
+     */
     public static void addLabeledRow(Container container, GridBagConstraints gbc, String labelText, JComponent component, int topInset) {
         addLabeledRow(container, gbc, new JLabel(labelText + ":"), component, topInset);
     }
 
+    /**
+     * Fügt eine beschriftete Komponente als neue Zeile in ein GridBagLayout ein.
+     *
+     * @param container Container, in den eingefügt wird
+     * @param gbc       GridBagConstraints
+     * @param label     JLabel für die Zeile
+     * @param component Komponente, die eingefügt wird
+     * @param topInset  Oberer Abstand
+     */
     public static void addLabeledRow(Container container, GridBagConstraints gbc, JLabel label, JComponent component, int topInset) {
         gbc.gridx = 0;
         gbc.weightx = 0;
@@ -266,6 +432,14 @@ public class ComponentUtils {
         gbc.gridy++;
     }
 
+    /**
+     * Fügt eine Komponente als neue Zeile in ein GridBagLayout ein.
+     *
+     * @param container Container, in den eingefügt wird
+     * @param gbc       GridBagConstraints
+     * @param component Komponente, die eingefügt wird
+     * @param topInset  Oberer Abstand
+     */
     public static void addRow(Container container, GridBagConstraints gbc, JComponent component, int topInset) {
         gbc.gridx = 0;
         gbc.insets.top = topInset;

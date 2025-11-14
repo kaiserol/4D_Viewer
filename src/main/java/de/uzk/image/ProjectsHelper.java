@@ -1,8 +1,7 @@
-package de.uzk.utils;
+package de.uzk.image;
 
 import de.uzk.gui.Gui;
 import de.uzk.gui.dialogs.DialogDirectoryChooser;
-import de.uzk.image.ImageFileType;
 
 import javax.swing.*;
 import java.io.File;

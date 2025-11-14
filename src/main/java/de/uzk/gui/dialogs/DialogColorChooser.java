@@ -138,8 +138,6 @@ public class DialogColorChooser {
 
         // Layout Manager
         GridBagConstraints gbc = ComponentUtils.createGridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
         gbc.weighty = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.BOTH;
@@ -395,7 +393,7 @@ public class DialogColorChooser {
             int y = 1;
 
             // Statusfarben
-            boolean light = settings.getTheme().isLight();
+            boolean light = settings.getTheme().isLightMode();
             Color border = GuiUtils.adjustColor((light ? Color.BLACK : Color.WHITE), this.hover ? 0.5f : 0, light);
             Color background = isAddButton ? (light ? Color.WHITE : Color.BLACK) : color;
 

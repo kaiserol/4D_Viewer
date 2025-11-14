@@ -12,9 +12,10 @@ public enum Language {
     ENGLISH("English", "en", "UK"),
     GERMAN("German", "de", "DE");
 
-    // ========================================
-    // Enum Deklaration
-    // ========================================
+    public boolean isGerman() {
+        return this == GERMAN;
+    }
+
     private final String value;
     private final Locale locale;
 

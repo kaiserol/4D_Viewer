@@ -101,7 +101,7 @@ public class DialogHistory {
                 String bracketPart = matcher.group(0).trim();
 
                 // Zusatzinfo farblich leicht absetzen
-                Color highlightColor = GuiUtils.adjustColor(GuiUtils.getTextColor(), 0.3f, settings.getTheme().isLight());
+                Color highlightColor = GuiUtils.adjustColor(GuiUtils.getTextColor(), 0.3f, settings.getTheme().isLightMode());
                 formattedText = StringUtils.wrapHtml(mainText + " " +
                     StringUtils.applyColor(bracketPart, highlightColor));
             } else {

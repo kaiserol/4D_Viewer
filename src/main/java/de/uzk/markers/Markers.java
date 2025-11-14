@@ -1,7 +1,7 @@
 package de.uzk.markers;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import de.uzk.utils.PathManager;
+import de.uzk.io.PathManager;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.DeserializationContext;
@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.uzk.utils.PathManager.*;
+import static de.uzk.io.PathManager.*;
 
 public class Markers {
     @JsonGetter("markers")

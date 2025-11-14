@@ -5,7 +5,7 @@ import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.dialogs.*;
 import de.uzk.image.Axis;
-import de.uzk.utils.ProjectsHelper;
+import de.uzk.image.ProjectsHelper;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

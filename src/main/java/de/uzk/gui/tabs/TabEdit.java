@@ -6,7 +6,7 @@ import de.uzk.gui.Gui;
 import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.NumberUtils;
-import de.uzk.utils.SnapshotHelper;
+import de.uzk.gui.SnapshotHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,8 +33,8 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
 
         // Layout Manager
         GridBagConstraints gbc = ComponentUtils.createGridBagConstraints();
-        gbc.fill = GridBagConstraints.NONE;
         gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
 
         // Kontrollkästchen (Horizontales und Vertikales spiegeln) hinzufügen
         this.mirrorXBox = ComponentUtils.createCheckBox(getWord("menu.edit.mirrorX"), newValue ->
@@ -64,9 +64,9 @@ public class TabEdit extends AreaContainerInteractive<JPanel> {
             setConfigValue(newValue, workspace.getConfig()::getRotation, workspace.getConfig()::setRotation));
         ComponentUtils.addLabeledRow(this.container, gbc, getWord("menu.edit.rotation"), degreeSpinner, 10);
 
-        gbc.anchor = GridBagConstraints.SOUTHWEST;
-        gbc.weighty = 1;
         gbc.gridwidth = 2;
+        gbc.weighty = 1;
+        gbc.anchor = GridBagConstraints.SOUTHWEST;
 
         // Label (Momentaufnahmen) hinzufügen
         JPanel snapshotsPanel = new JPanel(new BorderLayout(10, 0));

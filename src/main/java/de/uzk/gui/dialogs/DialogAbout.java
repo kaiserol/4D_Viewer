@@ -1,9 +1,8 @@
 package de.uzk.gui.dialogs;
 
-import de.uzk.config.Language;
 import de.uzk.gui.GuiUtils;
-import de.uzk.gui.Icons;
 import de.uzk.gui.SelectableText;
+import de.uzk.io.Icons;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.StringUtils;
 
@@ -61,7 +60,6 @@ public class DialogAbout {
         GridBagConstraints gbc = ComponentUtils.createGridBagConstraints();
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.insets = GuiUtils.INSETS_DEFAULT;
-        gbc.gridy = 0;
 
         // App-Icon
         ImageIcon appIcon = getAppIcon();
@@ -114,7 +112,7 @@ public class DialogAbout {
     private static String formatDate(String dateStr) {
         try {
             Date date = new SimpleDateFormat("dd.MM.yyyy").parse(dateStr);
-            String dateFormat = settings.getLanguage() == Language.GERMAN ? "dd. MMMM yyyy" : "MMMM dd, yyyy";
+            String dateFormat = settings.getLanguage().isGerman() ? "dd. MMMM yyyy" : "MMMM dd, yyyy";
             return new SimpleDateFormat(dateFormat).format(date);
         } catch (ParseException e) {
             return dateStr;

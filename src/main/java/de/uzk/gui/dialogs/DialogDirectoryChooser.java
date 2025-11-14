@@ -13,7 +13,7 @@ import java.nio.file.Path;
 import static de.uzk.Main.history;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
-import static de.uzk.utils.PathManager.USER_DIRECTORY;
+import static de.uzk.io.PathManager.USER_DIRECTORY;
 
 public class DialogDirectoryChooser {
     // Dialoge

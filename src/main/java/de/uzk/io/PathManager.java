@@ -1,4 +1,4 @@
-package de.uzk.utils;
+package de.uzk.io;
 
 import tools.jackson.databind.ObjectMapper;
 

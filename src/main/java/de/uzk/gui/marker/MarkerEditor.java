@@ -1,6 +1,6 @@
 package de.uzk.gui.marker;
 
-import de.uzk.gui.Icons;
+import de.uzk.io.Icons;
 import de.uzk.gui.OGridBagConstraints;
 import de.uzk.gui.dialogs.DialogColorChooser;
 import de.uzk.image.ImageFile;

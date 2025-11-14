@@ -6,19 +6,21 @@ import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.image.Workspace;
 import de.uzk.logger.LogEntryHandler;
-import de.uzk.utils.OperatingSystem;
+import de.uzk.config.OperatingSystem;
 
 import javax.swing.*;
 
-/*
- * Copyright © 2025 Oliver Kaiser
- *
+/**
+ * <b>Copyright © 2025 Oliver Kaiser</b>
+ * <p>
  * Lizenziert unter der Apache License, Version 2.0 (die "Lizenz");
  * Sie dürfen diese Datei nur im Einklang mit der Lizenz verwenden.
  * Eine Kopie der Lizenz erhalten Sie unter:
+ * <br>
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
  *
+ * <br><br>
  * Sofern nicht gesetzlich vorgeschrieben oder schriftlich vereinbart,
  * wird die Software unter dieser Lizenz "wie besehen" bereitgestellt,
  * ohne jegliche ausdrückliche oder stillschweigende Gewährleistung.
@@ -39,6 +41,9 @@ public class Main {
         workspace = new Workspace();
     }
 
+    /**
+     * Hauptmethode
+     */
     public static void main(String[] args) {
         // Systemeigenschaften initialisieren
         GuiUtils.initSystemProperties();

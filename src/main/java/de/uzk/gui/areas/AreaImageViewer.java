@@ -3,12 +3,12 @@ package de.uzk.gui.areas;
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
-import de.uzk.gui.Icons;
+import de.uzk.io.Icons;
 import de.uzk.image.Axis;
 import de.uzk.markers.Marker;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
-import de.uzk.utils.SnapshotHelper;
+import de.uzk.gui.SnapshotHelper;
 
 import javax.swing.*;
 import java.awt.*;

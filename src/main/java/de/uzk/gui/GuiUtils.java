@@ -7,6 +7,7 @@ import com.formdev.flatlaf.util.ColorFunctions;
 import de.uzk.action.ActionType;
 import de.uzk.config.Language;
 import de.uzk.config.Theme;
+import de.uzk.io.Icons;
 import de.uzk.markers.Marker;
 import de.uzk.utils.ColorUtils;
 
@@ -55,7 +56,7 @@ public final class GuiUtils {
     private static Font font;
 
     private GuiUtils() {
-        // Verhindert Instanziierung dieser Hilfsklasse
+        // Verhindert Instanziierung dieser Klasse
     }
 
     // ========================================
@@ -228,7 +229,7 @@ public final class GuiUtils {
     // ========================================
     public static void updateFlatLaf() {
         // Setup Theme
-        FlatLaf.setup(settings.getTheme().isLight() ? getLightMode() : getDarkMode());
+        FlatLaf.setup(settings.getTheme().isLightMode() ? getLightMode() : getDarkMode());
         JFrame.setDefaultLookAndFeelDecorated(true);
         JDialog.setDefaultLookAndFeelDecorated(true);
 
@@ -353,7 +354,7 @@ public final class GuiUtils {
 
         // Linienfarbe
         UIManager.put("TabbedPane.underlineColor", ColorUtils.COLOR_BLUE);
-        UIManager.put("TabbedPane.inactiveUnderlineColor", settings.getTheme().isLight() ? Color.GRAY : Color.WHITE);
+        UIManager.put("TabbedPane.inactiveUnderlineColor", settings.getTheme().isLightMode() ? Color.GRAY : Color.WHITE);
 
         // Scroll-Eigenschaften
         UIManager.put("TabbedPane.tabsPopupPolicy", "never");
@@ -389,7 +390,7 @@ public final class GuiUtils {
         UIManager.put("SplitPane.supportsOneTouchButtons", true);
 
         // Pfeilfarben
-        boolean isLight = settings.getTheme().isLight();
+        boolean isLight = settings.getTheme().isLightMode();
         UIManager.put("SplitPaneDivider.oneTouchArrowColor", adjustColor(arrowColor, 0.3f, isLight));
         UIManager.put("SplitPaneDivider.oneTouchHoverArrowColor", adjustColor(arrowColor, 0.2f, isLight));
         UIManager.put("SplitPaneDivider.oneTouchPressedArrowColor", adjustColor(arrowColor, 0.0f, !isLight));

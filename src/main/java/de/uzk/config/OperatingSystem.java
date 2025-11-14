@@ -1,4 +1,4 @@
-package de.uzk.utils;
+package de.uzk.config;
 
 import com.formdev.flatlaf.util.SystemInfo;
 
@@ -8,20 +8,8 @@ public enum OperatingSystem {
     MACOS,
     OTHER;
 
-    public boolean isWindows() {
-        return this == WINDOWS;
-    }
-
-    public boolean isLinux() {
-        return this == LINUX;
-    }
-
     public boolean isMacOS() {
         return this == MACOS;
-    }
-
-    public boolean isOther() {
-        return this == OTHER;
     }
 
     public static OperatingSystem load() {

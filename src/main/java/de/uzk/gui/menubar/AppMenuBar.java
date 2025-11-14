@@ -13,7 +13,7 @@ import java.awt.*;
 import static de.uzk.Main.settings;
 import static de.uzk.action.ActionType.*;
 import static de.uzk.config.LanguageHandler.getWord;
-import static de.uzk.gui.Icons.*;
+import static de.uzk.io.Icons.*;
 
 public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     // MenuBar Elemente

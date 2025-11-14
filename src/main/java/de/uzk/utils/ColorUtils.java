@@ -3,15 +3,15 @@ package de.uzk.utils;
 import java.awt.*;
 
 /**
- * Die Hilfsklasse für Farboperationen und Farbkonvertierungen.
+ * Utility-Klasse für Farboperationen und Farbkonvertierungen.
  *
- * <p>
+ * <br><br>
  * Die Klasse ist als {@code final} deklariert, um eine Vererbung zu verhindern.
  * Da sämtliche Funktionalitäten über statische Methoden bereitgestellt werden,
  * besitzt die Klasse einen privaten Konstruktor, um eine Instanziierung zu
  * unterbinden.
  */
-public class ColorUtils {
+public final class ColorUtils {
     /**
      * Farben
      */
@@ -21,6 +21,9 @@ public class ColorUtils {
     public static final Color COLOR_RED = new Color(255, 86, 86);
     public static final Color COLOR_DARK_RED = new Color(148, 0, 0);
 
+    /**
+     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
+     */
     private ColorUtils() {
         // Verhindert die Instanziierung dieser Hilfsklasse
     }

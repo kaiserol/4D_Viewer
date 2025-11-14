@@ -9,8 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import static de.uzk.utils.PathManager.PROPERTIES_FILE_NAME_PATTERN;
-import static de.uzk.utils.PathManager.RESOURCES_DIRECTORY;
+import static de.uzk.io.PathManager.PROPERTIES_FILE_NAME_PATTERN;
+import static de.uzk.io.PathManager.RESOURCES_DIRECTORY;
 
 /**
  * Der {@code PropertiesSorter} dient dazu {@code .properties-Dateien} im Resource-Verzeichnis einzulesen
@@ -24,25 +24,28 @@ import static de.uzk.utils.PathManager.RESOURCES_DIRECTORY;
  *   <li>Die Abschnitte selbst werden ebenfalls alphabetisch (case-insensitive) sortiert.</li>
  * </ul>
  *
- * <p>Die Klasse kann über die {@link #main(String[])}-Methode eigenständig gestartet werden.
+ * <br>
+ * Die Klasse ist als {@code final} deklariert, um eine Vererbung zu verhindern.
+ * Da sämtliche Funktionalitäten über statische Methoden bereitgestellt werden,
+ * besitzt die Klasse einen privaten Konstruktor, um eine Instanziierung zu
+ * unterbinden.
  */
-public class PropertiesSorter {
-
+public final class PropertiesSorter {
     /**
      * Hauptmethode zum Testen.
      * <p>
      * Liest alle {@code .properties-Dateien} aus dem Ressourcenordner, sortiert sie und überschreibt sie bei Zustimmung.
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         boolean skipConfirmations = (args.length == 1 && "--skip-confirm".equalsIgnoreCase(args[0]));
         Path[] propertiesPaths = getPropertiesPaths();
 
         for (Path propertyPath : propertiesPaths) {
-            System.out.printf("Reading file '%s'%n", propertyPath.toAbsolutePath());
+            printLine(String.format("Reading file '%s'", propertyPath.toAbsolutePath()));
 
             // Charset ermitteln
             Charset charset = CharsetDetector.detectCharset(propertyPath);
-            System.out.println("Detected charset: " + charset.displayName());
+            printLine(String.format("Detected charset '%s'", charset.displayName()));
 
             List<String> originalLines = readAllLines(propertyPath, charset);
             List<String> sortedLines = sortProperties(originalLines);
@@ -52,27 +55,42 @@ public class PropertiesSorter {
 
             // Wenn Datei bereits sortiert → überspringen
             if (Objects.equals(originalLines, sortedLines)) {
-                System.out.printf("⏭️ File ‘%s’ is already sorted.%n%n", propertyPath);
+                printLine(String.format("⏭️ File ‘%s’ is already sorted.%n", propertyPath));
                 continue;
             }
 
-
             if (skipConfirmations) {
-                System.out.println("⚠️ File will be overwritten. (Confirmation was skipped)");
+                printLine("⚠️ File will be overwritten. (Confirmation was skipped)");
             } else {
                 // Nutzer fragen, ob die Datei überschrieben werden soll
                 String question = "⚠️ Should the file be overwritten?";
                 if (!askUserForConfirmation(question)) {
-                    System.out.printf("❌ File ‘%s’ is skipped.%n%n", propertyPath);
+                    printLine(String.format("❌ File ‘%s’ is skipped.%n", propertyPath));
                     continue;
                 }
             }
 
             // Datei überschreiben
             if (writeAllLines(propertyPath, sortedLines, charset)) {
-                System.out.printf("✅ File ‘%s’ has been successfully overwritten.%n%n", propertyPath);
+                printLine(String.format("✅ File ‘%s’ has been successfully overwritten.%n", propertyPath));
             }
         }
+    }
+
+    /**
+     * Gibt das angegebene Objekt an die Standardausgabe aus.
+     *
+     * @param object Das auszugebende Objekt. Seine Zeichenfolgendarstellung wird an die Standardausgabe gesendet.
+     */
+    private static void printLine(Object object) {
+        System.out.println(object);
+    }
+
+    /**
+     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
+     */
+    private PropertiesSorter() {
+        // Verhindert Instanziierung dieser Klasse
     }
 
     /**
