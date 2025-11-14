@@ -62,8 +62,8 @@ public class DialogLoadingImages implements LoadingImageListener {
         // Inhalt hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout(0, 20));
         contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
-        contentPanel.add(createProgressPanel(), BorderLayout.CENTER);
-        contentPanel.add(createFileDirectoryPanel(imagesDirectory), BorderLayout.SOUTH);
+        contentPanel.add(createProgressBarPanel(), BorderLayout.CENTER);
+        contentPanel.add(createFileNamesPanel(imagesDirectory), BorderLayout.SOUTH);
 
         this.dialog.add(contentPanel, BorderLayout.CENTER);
 
@@ -86,27 +86,27 @@ public class DialogLoadingImages implements LoadingImageListener {
     // ========================================
     // Komponenten-Erzeugung
     // ========================================
-    private JPanel createProgressPanel() {
-        JPanel panel = new JPanel(new BorderLayout(0, 10));
+    private JPanel createProgressBarPanel() {
+        JPanel progressBarPanel = new JPanel(new BorderLayout(0, 10));
 
         // Fortschrittsbalken hinzufügen
         this.progressBar = new JProgressBar();
         this.progressBar.setStringPainted(true);
         this.progressBar.setIndeterminate(true);
         this.progressBar.setPreferredSize(new Dimension(0, 20));
-        panel.add(this.progressBar, BorderLayout.SOUTH);
+        progressBarPanel.add(this.progressBar, BorderLayout.SOUTH);
 
         // Anzahl gefundener Bilder hinzufügen
         JPanel imagesFoundPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
         imagesFoundPanel.add(new JLabel(getWord("dialog.loadingImages.foundImages") + ":"));
         imagesFoundPanel.add(this.labelImagesCount = new JLabel("0"));
-        panel.add(imagesFoundPanel, BorderLayout.CENTER);
+        progressBarPanel.add(imagesFoundPanel, BorderLayout.CENTER);
 
-        return panel;
+        return progressBarPanel;
     }
 
-    private JPanel createFileDirectoryPanel(Path imagesDirectory) {
-        JPanel panel = new JPanel(new GridBagLayout());
+    private JPanel createFileNamesPanel(Path imagesDirectory) {
+        JPanel fileNamesPanel = new JPanel(new GridBagLayout());
 
         // Layout Manager
         GridBagConstraints gbc = ComponentUtils.createGridBagConstraints();
@@ -114,14 +114,14 @@ public class DialogLoadingImages implements LoadingImageListener {
         // Dateiname hinzufügen
         this.textFieldFileName = createTextField();
         this.textFieldFileName.setFocusable(false);
-        ComponentUtils.addLabeledRow(panel, gbc, getWord("name.file"), this.textFieldFileName, 0);
+        ComponentUtils.addLabeledRow(fileNamesPanel, gbc, getWord("name.file"), this.textFieldFileName, 0);
 
         // Verzeichnisname hinzufügen
         JTextField textFieldDirectoryName = createTextField();
         textFieldDirectoryName.setText(imagesDirectory.toAbsolutePath().toString());
-        ComponentUtils.addLabeledRow(panel, gbc, getWord("name.directory"), textFieldDirectoryName, 5);
+        ComponentUtils.addLabeledRow(fileNamesPanel, gbc, getWord("name.directory"), textFieldDirectoryName, 5);
 
-        return panel;
+        return fileNamesPanel;
     }
 
     private JTextField createTextField() {

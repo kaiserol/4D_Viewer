@@ -52,10 +52,10 @@ public class DialogLegal {
     // Komponenten-Erzeugung
     // ========================================
     private JPanel createUsagePanel() {
-        JPanel panel = new JPanel(new BorderLayout(0, 10));
+        JPanel usagePanel = new JPanel(new BorderLayout(0, 10));
 
         // Untertitel hinzufügen
-        panel.add(createSelectableSubTitle(getWord("dialog.legal.subtitle.usage")), BorderLayout.NORTH);
+        usagePanel.add(createSelectableSubTitle(getWord("dialog.legal.subtitle.usage")), BorderLayout.NORTH);
 
         // Text hinzufügen
         SelectableText text = new SelectableText(
@@ -65,15 +65,15 @@ public class DialogLegal {
                 MAX_WIDTH
             )
         );
-        panel.add(text, BorderLayout.CENTER);
-        return panel;
+        usagePanel.add(text, BorderLayout.CENTER);
+        return usagePanel;
     }
 
     private JPanel createDisclaimerPanel() {
-        JPanel panel = new JPanel(new BorderLayout(0, 10));
+        JPanel disclaimerPanel = new JPanel(new BorderLayout(0, 10));
 
         // Untertitel hinzufügen
-        panel.add(createSelectableSubTitle(getWord("dialog.legal.subtitle.disclaimer")), BorderLayout.NORTH);
+        disclaimerPanel.add(createSelectableSubTitle(getWord("dialog.legal.subtitle.disclaimer")), BorderLayout.NORTH);
 
         // Text hinzufügen
         SelectableText text = new SelectableText(
@@ -82,8 +82,8 @@ public class DialogLegal {
                 "justify",
                 MAX_WIDTH
             ));
-        panel.add(text, BorderLayout.CENTER);
-        return panel;
+        disclaimerPanel.add(text, BorderLayout.CENTER);
+        return disclaimerPanel;
     }
 
     private SelectableText createSelectableSubTitle(String title) {

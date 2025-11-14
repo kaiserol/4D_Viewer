@@ -76,15 +76,15 @@ public class DialogLogViewer {
         for (LogEntry logEntry : logger.getLogs()) {
             logContent.append(logEntry.getFormattedText(true));
         }
-        return createTextPanel(StringUtils.wrapHtml(logContent.toString(), "monospaced"));
+        return createTextInScrollPane(StringUtils.wrapHtml(logContent.toString(), "monospaced"));
     }
 
     private JComponent createMissingImagesPanel() {
         String missingImages = StringUtils.wrapPre(workspace.getMissingImagesReport());
-        return createTextPanel(StringUtils.wrapHtml(missingImages, "monospaced"));
+        return createTextInScrollPane(StringUtils.wrapHtml(missingImages, "monospaced"));
     }
 
-    private JComponent createTextPanel(String htmlContent) {
+    private JComponent createTextInScrollPane(String htmlContent) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 

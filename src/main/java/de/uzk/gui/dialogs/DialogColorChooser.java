@@ -94,12 +94,12 @@ public class DialogColorChooser {
     // Komponenten-Erzeugung
     // ========================================
     private JPanel createFavoritesPanel() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        panel.setBorder(BorderFactory.createCompoundBorder(
+        JPanel favoritesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        favoritesPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createTitledBorder(getWord("label.favorites")),
             GuiUtils.BORDER_EMPTY_SMALL
         ));
-        panel.setOpaque(false);
+        favoritesPanel.setOpaque(false);
 
         // Plus Button
         FavoriteColorButton addButton = new FavoriteColorButton(null, true);
@@ -107,32 +107,32 @@ public class DialogColorChooser {
             if (!SwingUtilities.isLeftMouseButton(e)) return;
 
             Color currentColor = this.colorChooser.getColor();
-            FavoriteColorButton colorButton = createColorButton(currentColor, panel);
+            FavoriteColorButton colorButton = createColorButton(currentColor, favoritesPanel);
 
             // Nach dem Plus einfügen
-            panel.add(colorButton, 1);
+            favoritesPanel.add(colorButton, 1);
             this.favoriteColors.add(0, colorButton);
             if (this.favoriteColors.size() > MAX_FAVORITES) {
                 FavoriteColorButton lastButton = this.favoriteColors.get(this.favoriteColors.size() - 1);
-                panel.remove(lastButton);
+                favoritesPanel.remove(lastButton);
                 this.favoriteColors.remove(lastButton);
             }
 
             // Revalidierung
-            panel.revalidate();
-            panel.repaint();
+            favoritesPanel.revalidate();
+            favoritesPanel.repaint();
         });
-        panel.add(addButton);
+        favoritesPanel.add(addButton);
 
         // Favoriten Panel füllen
-        this.favoriteColors.forEach(button -> panel.add(createColorButton(button.color, panel)));
+        this.favoriteColors.forEach(button -> favoritesPanel.add(createColorButton(button.color, favoritesPanel)));
 
-        return panel;
+        return favoritesPanel;
     }
 
     private JPanel createPreviewPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createCompoundBorder(
+        JPanel previewPanel = new JPanel(new GridBagLayout());
+        previewPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createTitledBorder(getWord("label.preview")),
             GuiUtils.BORDER_EMPTY_SMALL
         ));
@@ -150,9 +150,9 @@ public class DialogColorChooser {
         JLabel label2 = createSampleTextLabel(this.initialColor, Color.BLACK);
         JLabel label3 = createSampleTextLabel(Color.WHITE, this.initialColor);
 
-        ComponentUtils.addRow(panel, gbc, label1, 0);
-        ComponentUtils.addRow(panel, gbc, label2, 5);
-        ComponentUtils.addRow(panel, gbc, label3, 5);
+        ComponentUtils.addRow(previewPanel, gbc, label1, 0);
+        ComponentUtils.addRow(previewPanel, gbc, label2, 5);
+        ComponentUtils.addRow(previewPanel, gbc, label3, 5);
 
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -163,9 +163,9 @@ public class DialogColorChooser {
         JLabel currentColorField = createColorField(this.initialColor, this.colorChooser::setColor);
         JLabel previousColorField = createColorField(this.initialColor, this.colorChooser::setColor);
 
-        panel.add(currentColorField, gbc);
+        previewPanel.add(currentColorField, gbc);
         gbc.gridx++;
-        panel.add(previousColorField, gbc);
+        previewPanel.add(previousColorField, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 2;
@@ -173,9 +173,9 @@ public class DialogColorChooser {
         gbc.insets.top = 5;
 
         // ---- Linker Bereich (unten): 2 Farbfelder Labels ----
-        panel.add(createCenteredLabel(getWord("label.current")), gbc);
+        previewPanel.add(createCenteredLabel(getWord("label.current")), gbc);
         gbc.gridx++;
-        panel.add(createCenteredLabel(getWord("label.previous")), gbc);
+        previewPanel.add(createCenteredLabel(getWord("label.previous")), gbc);
 
         // ---- Listener für dynamisches Update ----
         this.colorChooser.getSelectionModel().addChangeListener(e -> {
@@ -194,42 +194,42 @@ public class DialogColorChooser {
             currentColorField.setText(ColorUtils.colorToHex(color, true));
 
             // Revalidierung
-            panel.revalidate();
-            panel.repaint();
+            previewPanel.revalidate();
+            previewPanel.repaint();
         });
 
-        // ---- Vorschau Panel erstellen ----
-        JPanel previewPanel = new JPanel(new BorderLayout());
-        previewPanel.add(this.colorChooser, BorderLayout.CENTER);
-        previewPanel.add(panel, BorderLayout.SOUTH);
-        return previewPanel;
+        // ---- Vorschau Panel mit ColorChooser erstellen ----
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(this.colorChooser, BorderLayout.CENTER);
+        panel.add(previewPanel, BorderLayout.SOUTH);
+        return panel;
     }
 
     private JPanel createButtonsPanel() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         // Schaltfläche (Zurücksetzen)
         JButton resetButton = new JButton(getWord("button.reset"));
         resetButton.addActionListener(e -> this.colorChooser.setColor(this.initialColor));
-        panel.add(resetButton);
+        buttonsPanel.add(resetButton);
 
         // Schaltfläche (Abbrechen)
         JButton cancelButton = new JButton(getWord("button.cancel"));
         cancelButton.addActionListener(e -> closeDialog(this.initialColor));
-        panel.add(cancelButton);
+        buttonsPanel.add(cancelButton);
 
         // Schaltfläche (OK)
         JButton okButton = new JButton(getWord("button.ok"));
         okButton.addActionListener(e -> closeDialog(this.colorChooser.getColor()));
-        panel.add(okButton);
+        buttonsPanel.add(okButton);
 
         // Gleicht die Größen aller Buttons an
-        ComponentUtils.equalizeComponentSizes(panel, JButton.class);
+        ComponentUtils.equalizeComponentSizes(buttonsPanel, JButton.class);
 
         // Den OK-Button als Default-Button setzen
         this.dialog.getRootPane().setDefaultButton(okButton);
 
-        return panel;
+        return buttonsPanel;
     }
 
     // ========================================

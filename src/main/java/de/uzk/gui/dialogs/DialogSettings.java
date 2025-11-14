@@ -85,7 +85,7 @@ public class DialogSettings {
     // Komponenten-Erzeugung
     // ========================================
     private JPanel createSettingsPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
+        JPanel settingsPanel = new JPanel(new GridBagLayout());
 
         // Layout Manager
         GridBagConstraints gbc = ComponentUtils.createGridBagConstraints();
@@ -94,49 +94,49 @@ public class DialogSettings {
         gbc.insets.right = 100;
 
         // 1. Abschnitt: Erscheinungsbild hinzufügen
-        ComponentUtils.addRow(panel, gbc, createBoldLabel(getWord("dialog.settings.section.appearance")), 0);
+        ComponentUtils.addRow(settingsPanel, gbc, createBoldLabel(getWord("dialog.settings.section.appearance")), 0);
 
         gbc.gridwidth = 1;
 
         // Auswahlfeld (Sprache) hinzufügen
         this.selectLanguage = ComponentUtils.createComboBox(Language.sortedValues(), null);
         this.selectLanguage.setSelectedItem(this.oldLanguage);
-        ComponentUtils.addLabeledRow(panel, gbc, getWord("settings.language"), this.selectLanguage, 10);
+        ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("settings.language"), this.selectLanguage, 10);
 
         // Auswahlfeld (Farbschema) hinzufügen
         this.selectTheme = ComponentUtils.createComboBox(Theme.sortedValues(), null);
         this.selectTheme.setSelectedItem(this.oldTheme);
-        ComponentUtils.addLabeledRow(panel, gbc, getWord("settings.theme"), this.selectTheme, 10);
+        ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("settings.theme"), this.selectTheme, 10);
 
         // Drehfeld (Schriftgröße) hinzufügen
         this.fontSizeSpinner = ComponentUtils.createSpinner(Settings.MIN_FONT_SIZE, Settings.MAX_FONT_SIZE, false, null);
         this.fontSizeSpinner.setValue(this.oldFontSize);
-        ComponentUtils.addLabeledRow(panel, gbc, getWord("settings.fontSize"), this.fontSizeSpinner, 10);
+        ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("settings.fontSize"), this.fontSizeSpinner, 10);
 
         gbc.gridwidth = 2;
         gbc.weightx = 1;
         gbc.insets.right = 100;
 
         // 2. Abschnitt: Fenster-Verhalten hinzufügen
-        ComponentUtils.addRow(panel, gbc, createBoldLabel(getWord("dialog.settings.section.windowBehavior")), 20);
+        ComponentUtils.addRow(settingsPanel, gbc, createBoldLabel(getWord("dialog.settings.section.windowBehavior")), 20);
 
         gbc.weightx = 0;
 
         // Kontrollkästchen (Beenden bestätigen) hinzufügen
         this.checkConfirmExit = ComponentUtils.createCheckBox(getWord("dialog.settings.checkBox.confirmExit"), null);
         this.checkConfirmExit.setSelected(this.oldConfirmExit);
-        ComponentUtils.addRow(panel, gbc, this.checkConfirmExit, 10);
+        ComponentUtils.addRow(settingsPanel, gbc, this.checkConfirmExit, 10);
 
-        return panel;
+        return settingsPanel;
     }
 
     private JPanel createButtonsPanel() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         // Schaltfläche (Abbrechen)
         JButton cancelButton = new JButton(getWord("button.cancel"));
         cancelButton.addActionListener(e -> this.dialog.dispose());
-        panel.add(cancelButton);
+        buttonsPanel.add(cancelButton);
 
         // Schaltfläche (OK)
         this.okButton = new JButton(getWord("button.ok"));
@@ -144,15 +144,15 @@ public class DialogSettings {
             applySettings();
             this.dialog.dispose();
         });
-        panel.add(this.okButton);
+        buttonsPanel.add(this.okButton);
 
         // Gleicht die Größen aller Buttons an
-        ComponentUtils.equalizeComponentSizes(panel, JButton.class);
+        ComponentUtils.equalizeComponentSizes(buttonsPanel, JButton.class);
 
         // Den OK-Button als Default-Button setzen
         this.dialog.getRootPane().setDefaultButton(this.okButton);
 
-        return panel;
+        return buttonsPanel;
     }
 
     // ========================================

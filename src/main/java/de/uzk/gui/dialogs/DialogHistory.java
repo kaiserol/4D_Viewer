@@ -50,30 +50,30 @@ public class DialogHistory {
     // Komponenten-Erzeugung
     // ========================================
     private JPanel createHistoryPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
+        JPanel historyPanel = new JPanel(new GridBagLayout());
 
         // Layout Manager
         GridBagConstraints gbc = ComponentUtils.createGridBagConstraints();
 
         // Version 1.* hinzufügen
-        addLabeledRow(panel, gbc, getWord("app.v1"), String.format(getWord("app.v1.date"), getWord("date.unknown")), 0);
-        addLabeledRow(panel, gbc, getWord("people.developers"), getWord("dialog.history.v1.developer"), 5);
-        addLabeledRow(panel, gbc, getWord("people.contributors"), getWord("dialog.history.v1.contributor"), 5);
+        addLabeledRow(historyPanel, gbc, getWord("app.v1"), String.format(getWord("app.v1.date"), getWord("date.unknown")), 0);
+        addLabeledRow(historyPanel, gbc, getWord("people.developers"), getWord("dialog.history.v1.developer"), 5);
+        addLabeledRow(historyPanel, gbc, getWord("people.contributors"), getWord("dialog.history.v1.contributor"), 5);
 
         // Version 2.0 hinzufügen
-        addLabeledRow(panel, gbc, getWord("app.v2_0"), getWord("app.v2_0.date"), 20);
-        addLabeledRow(panel, gbc, getWord("people.developers"), getWord("dialog.history.v2_0.developer"), 5);
-        addLabeledRow(panel, gbc, getWord("people.contributors"), getWord("dialog.history.v2_0.contributor-1"), 5);
-        addLabeledRow(panel, gbc, null, getWord("dialog.history.v2_0.contributor-2"), 5);
+        addLabeledRow(historyPanel, gbc, getWord("app.v2_0"), getWord("app.v2_0.date"), 20);
+        addLabeledRow(historyPanel, gbc, getWord("people.developers"), getWord("dialog.history.v2_0.developer"), 5);
+        addLabeledRow(historyPanel, gbc, getWord("people.contributors"), getWord("dialog.history.v2_0.contributor-1"), 5);
+        addLabeledRow(historyPanel, gbc, null, getWord("dialog.history.v2_0.contributor-2"), 5);
 
         // Version 2.1 hinzufügen
-        addLabeledRow(panel, gbc, getWord("app.v2_1"), String.format(getWord("app.v2_1.date"), getWord("date.today")), 20);
-        addLabeledRow(panel, gbc, getWord("people.developers"), getWord("dialog.history.v2_1.developer-1"), 5);
-        addLabeledRow(panel, gbc, null, getWord("dialog.history.v2_1.developer-2"), 5);
-        addLabeledRow(panel, gbc, getWord("people.contributors"), getWord("dialog.history.v2_1.contributor-1"), 5);
-        addLabeledRow(panel, gbc, null, getWord("dialog.history.v2_1.contributor-2"), 5);
+        addLabeledRow(historyPanel, gbc, getWord("app.v2_1"), String.format(getWord("app.v2_1.date"), getWord("date.today")), 20);
+        addLabeledRow(historyPanel, gbc, getWord("people.developers"), getWord("dialog.history.v2_1.developer-1"), 5);
+        addLabeledRow(historyPanel, gbc, null, getWord("dialog.history.v2_1.developer-2"), 5);
+        addLabeledRow(historyPanel, gbc, getWord("people.contributors"), getWord("dialog.history.v2_1.contributor-1"), 5);
+        addLabeledRow(historyPanel, gbc, null, getWord("dialog.history.v2_1.contributor-2"), 5);
 
-        return panel;
+        return historyPanel;
     }
 
     // ========================================

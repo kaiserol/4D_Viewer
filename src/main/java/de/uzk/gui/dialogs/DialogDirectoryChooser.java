@@ -89,8 +89,8 @@ public class DialogDirectoryChooser {
     }
 
     private void addContent(JFileChooser fileChooser) {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createCompoundBorder(
+        JPanel borderPanel = new JPanel(new BorderLayout());
+        borderPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createEmptyBorder(0, 10, 0, 0),
             BorderFactory.createLineBorder(GuiUtils.getBorderColor())
         ));
@@ -99,10 +99,10 @@ public class DialogDirectoryChooser {
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
         contentPanel.setBackground(GuiUtils.getBackgroundColor());
-        panel.add(contentPanel, BorderLayout.CENTER);
+        borderPanel.add(contentPanel, BorderLayout.CENTER);
 
         // Zubehör setzen
-        fileChooser.setAccessory(panel);
+        fileChooser.setAccessory(borderPanel);
     }
 
     // ========================================
