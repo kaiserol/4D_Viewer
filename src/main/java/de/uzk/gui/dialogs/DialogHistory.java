@@ -1,6 +1,7 @@
 package de.uzk.gui.dialogs;
 
 import de.uzk.gui.GuiUtils;
+import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.StringUtils;
 
@@ -101,7 +102,7 @@ public class DialogHistory {
                 String bracketPart = matcher.group(0).trim();
 
                 // Zusatzinfo farblich leicht absetzen
-                Color highlightColor = GuiUtils.adjustColor(GuiUtils.getTextColor(), 0.3f, settings.getTheme().isLightMode());
+                Color highlightColor = ColorUtils.adjustColor(GuiUtils.getTextColor(), 0.3f, settings.getTheme().isLightMode());
                 formattedText = StringUtils.wrapHtml(mainText + " " +
                     StringUtils.applyColor(bracketPart, highlightColor));
             } else {

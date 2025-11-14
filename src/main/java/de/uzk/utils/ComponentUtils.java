@@ -67,7 +67,7 @@ public final class ComponentUtils {
      *
      * @param text     Text der Checkbox
      * @param listener Consumer, der beim Ändern des Auswahlstatus aufgerufen wird; kann null sein
-     * @return die erstellte JCheckBox
+     * @return Die erstellte JCheckBox
      */
     public static JCheckBox createCheckBox(String text, Consumer<Boolean> listener) {
         JCheckBox checkBox = new JCheckBox(text);
@@ -85,7 +85,7 @@ public final class ComponentUtils {
      * @param items    Elemente des Drop-Downs
      * @param listener Consumer, der beim Auswählen eines Elements aufgerufen wird; kann null sein
      * @param <E>      Typ der Elemente
-     * @return die erstellte JComboBox
+     * @return Die erstellte JComboBox
      */
     public static <E> JComboBox<E> createComboBox(E[] items, Consumer<E> listener) {
         JComboBox<E> comboBox = new JComboBox<>(items);
@@ -105,7 +105,7 @@ public final class ComponentUtils {
      *
      * @param orientation JScrollBar.HORIZONTAL oder JScrollBar.VERTICAL
      * @param listener    Consumer, der beim Ändern der Position aufgerufen wird; kann null sein
-     * @return die erstellte JScrollBar
+     * @return Die erstellte JScrollBar
      */
     public static JScrollBar createScrollBar(int orientation, Consumer<Integer> listener) {
         @SuppressWarnings("MagicConstant")
@@ -126,7 +126,7 @@ public final class ComponentUtils {
      * @param min      Minimalwert
      * @param max      Maximalwert
      * @param listener Consumer, der beim Ändern des Werts aufgerufen wird; kann null sein
-     * @return der erstellte JSlider
+     * @return Der erstellte JSlider
      */
     public static JSlider createSlider(int min, int max, Consumer<Integer> listener) {
         JSlider slider = new JSlider(min, max, min);
@@ -147,7 +147,7 @@ public final class ComponentUtils {
      * @param max      Maximalwert
      * @param cycling  True, wenn der Spinner am Ende wieder von vorn beginnt
      * @param listener Consumer, der beim Ändern des Werts aufgerufen wird; kann null sein
-     * @return der erstellte JSpinner
+     * @return Der erstellte JSpinner
      */
     public static JSpinner createSpinner(int min, int max, boolean cycling, Consumer<Integer> listener) {
         JSpinner spinner = new JSpinner(new CyclingSpinnerNumberModel(min, min, max, 1, cycling));
@@ -168,7 +168,7 @@ public final class ComponentUtils {
     /**
      * Setzt den Wert einer JCheckBox, ohne Auslösen von Listenern.
      *
-     * @param checkBox Die zu ändernde Checkbox
+     * @param checkBox Zu ändernde Checkbox
      * @param newValue Neuer Wert
      */
     public static void setValueSecurely(JCheckBox checkBox, boolean newValue) {
@@ -179,7 +179,7 @@ public final class ComponentUtils {
     /**
      * Setzt den Wert einer JScrollBar, ohne Auslösen von Listenern.
      *
-     * @param scrollBar Die zu ändernde ScrollBar
+     * @param scrollBar Zu ändernde ScrollBar
      * @param newValue  Neuer Wert
      */
     public static void setValueSecurely(JScrollBar scrollBar, int newValue) {
@@ -191,7 +191,7 @@ public final class ComponentUtils {
     /**
      * Setzt den Wert eines Sliders, ohne Auslösen von Listenern.
      *
-     * @param slider   Der zu ändernde Slider
+     * @param slider   Zu ändernder Slider
      * @param newValue Neuer Wert
      */
     public static void setValueSecurely(JSlider slider, int newValue) {
@@ -203,7 +203,7 @@ public final class ComponentUtils {
     /**
      * Setzt den Wert eines Spinners, ohne Auslösen von Listenern.
      *
-     * @param spinner  Der zu ändernde Spinner
+     * @param spinner  Zu ändernder Spinner
      * @param newValue Neuer Wert
      */
     public static void setValueSecurely(JSpinner spinner, int newValue) {

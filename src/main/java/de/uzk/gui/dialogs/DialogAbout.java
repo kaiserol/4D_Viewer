@@ -2,7 +2,7 @@ package de.uzk.gui.dialogs;
 
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.SelectableText;
-import de.uzk.io.Icons;
+import de.uzk.io.ImageLoader;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.StringUtils;
 
@@ -105,7 +105,7 @@ public class DialogAbout {
     // Hilfsmethoden
     // ========================================
     private static ImageIcon getAppIcon() {
-        Image scaled = Icons.APP_IMAGE.getScaledInstance(APP_ICON_SIZE, APP_ICON_SIZE, Image.SCALE_SMOOTH);
+        Image scaled = ImageLoader.APP_IMAGE.getScaledInstance(APP_ICON_SIZE, APP_ICON_SIZE, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
     }
 

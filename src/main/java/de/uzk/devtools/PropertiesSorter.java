@@ -405,8 +405,8 @@ public final class PropertiesSorter {
          * überflüssige Leerzeichen um Schlüssel und Wert. Enthält die Zeile
          * kein "=", wird sie unverändert zurückgegeben.
          *
-         * @param line die zu verarbeitende Zeile (nicht {@code null})
-         * @return die bereinigte Property-Zeile
+         * @param line Zu verarbeitende Zeile (nicht {@code null})
+         * @return Die bereinigte Property-Zeile
          */
         private static String processPropertyLine(String line) {
             if (line == null) return "";
@@ -426,8 +426,8 @@ public final class PropertiesSorter {
          * Falls kein Gleichheitszeichen vorhanden ist, wird die gesamte Zeile
          * getrimmt zurückgegeben.
          *
-         * @param line die zu analysierende Zeile (nicht {@code null})
-         * @return den bereinigten Property-Namen
+         * @param line Zu analysierende Zeile (nicht {@code null})
+         * @return Die bereinigten Property-Namen
          */
         private static String extractKey(String line) {
             if (line == null) return "";

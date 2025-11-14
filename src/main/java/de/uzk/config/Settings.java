@@ -92,9 +92,10 @@ public class Settings {
         return confirmExit;
     }
 
-    public void setConfirmExit(boolean confirmExit) {
-        if (this.confirmExit == confirmExit) return;
+    public boolean setConfirmExit(boolean confirmExit) {
+        if (this.confirmExit == confirmExit) return false;
         this.confirmExit = confirmExit;
+        return true;
     }
 
     public void save() {

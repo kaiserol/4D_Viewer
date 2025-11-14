@@ -39,9 +39,6 @@ public class Workspace {
         reset();
     }
 
-    // ========================================
-    // Getter und Setter
-    // ========================================
     public Path getImagesDirectory() {
         return this.imagesDirectory;
     }

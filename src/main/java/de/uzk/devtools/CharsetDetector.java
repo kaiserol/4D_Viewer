@@ -52,7 +52,7 @@ public final class CharsetDetector {
      * Bestimmt das wahrscheinlichste Charset einer Datei.
      *
      * @param filePath Pfad zur Datei
-     * @return erkannter Charset oder {@link StandardCharsets#ISO_8859_1}, falls nicht ermittelbar
+     * @return Erkannter Charset oder {@link StandardCharsets#ISO_8859_1}, falls nicht ermittelbar
      */
     public static Charset detectCharset(Path filePath) {
         if (filePath == null || !Files.isRegularFile(filePath)) {

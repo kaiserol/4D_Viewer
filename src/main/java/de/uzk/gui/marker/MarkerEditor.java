@@ -1,6 +1,6 @@
 package de.uzk.gui.marker;
 
-import de.uzk.io.Icons;
+import de.uzk.io.ImageLoader;
 import de.uzk.gui.OGridBagConstraints;
 import de.uzk.gui.dialogs.DialogColorChooser;
 import de.uzk.image.ImageFile;
@@ -29,7 +29,7 @@ public class MarkerEditor extends Container {
 
     public MarkerEditor(ImageFile onto, Marker marker) {
         this.marker = marker;
-        this.preview = new MarkerPreview(Icons.loadImage(onto.getFilePath(), true), marker, this);
+        this.preview = new MarkerPreview(ImageLoader.loadImage(onto.getFilePath(), true), marker, this);
         this.dialogColorChooser = new DialogColorChooser(null);
         init();
     }

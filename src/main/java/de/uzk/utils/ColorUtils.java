@@ -1,5 +1,7 @@
 package de.uzk.utils;
 
+import com.formdev.flatlaf.util.ColorFunctions;
+
 import java.awt.*;
 
 /**
@@ -32,7 +34,7 @@ public final class ColorUtils {
      * Berechnet die wahrgenommene Helligkeit einer Farbe nach der NTSC-Formel.
      * (Berücksichtigt die Empfindlichkeit des menschlichen Auges für R, G und B unterschiedlich.)
      *
-     * @param color Die zu analysierende Farbe
+     * @param color Zu analysierende Farbe
      * @return Wahrgenommene Helligkeit (0 = dunkel, 1 = hell)
      */
     public static double calculatePerceivedBrightness(Color color) {
@@ -44,9 +46,29 @@ public final class ColorUtils {
     }
 
     /**
+     * Passt einen Farbwert an, indem er entweder aufgehellt oder abgedunkelt wird.
+     *
+     * @param color   Die Ausgangsfarbe, darf nicht {@code null} sein
+     * @param factor  Der Intensitätsfaktor der Anpassung im Bereich von {@code 0} bis {@code 1}
+     * @param brighten Wenn {@code true}, wird die Farbe aufgehellt; andernfalls wird sie abgedunkelt
+     * @return Die angepasste Farbe
+     * @throws NullPointerException     Falls {@code color} {@code null} ist
+     * @throws IllegalArgumentException Falls der Faktor kleiner als {@code 0} oder größer als {@code 1} ist
+     */
+    public static Color adjustColor(Color color, float factor, boolean brighten) {
+        if (color == null) throw new NullPointerException("Color is null.");
+        if (factor < 0) throw new IllegalArgumentException("Factor must be greater than or equal to 0.");
+        if (factor > 1) throw new IllegalArgumentException("Factor must be less than or equal to 1.");
+        if (factor == 0) return color;
+
+        if (brighten) return ColorFunctions.lighten(color, factor);
+        else return ColorFunctions.darken(color, factor);
+    }
+
+    /**
      * Wandelt eine AWT-Farbe in eine Hexadezimaldarstellung um.
      *
-     * @param color Die zu konvertierende Farbe. Ist der Wert {@code null}, wird {@code "#000000"} zurückgegeben.
+     * @param color Zu konvertierende Farbe. Ist der Wert {@code null}, wird {@code "#000000"} zurückgegeben.
      * @return Hexadezimaldarstellung im Format {@code "#RRGGBB"} oder {@code "#AARRGGBB"} bei Transparenz
      */
     public static String colorToHex(Color color) {
@@ -57,7 +79,7 @@ public final class ColorUtils {
      * Wandelt eine AWT-Farbe in eine Hexadezimaldarstellung um und erlaubt die explizite
      * Steuerung, ob der Alphakanal berücksichtigt werden soll.
      *
-     * @param color       Die zu konvertierende Farbe. Ist der Wert {@code null}, wird {@code "#000000"} zurückgegeben.
+     * @param color       Zu konvertierende Farbe. Ist der Wert {@code null}, wird {@code "#000000"} zurückgegeben.
      * @param ignoreAlpha Wenn {@code true}, wird der Alphakanal nicht berücksichtigt
      * @return Hexadezimaldarstellung der Farbe im Format {@code "#RRGGBB"} oder {@code "#AARRGGBB"}
      */

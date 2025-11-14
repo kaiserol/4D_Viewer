@@ -5,10 +5,11 @@ import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.SnapshotHelper;
 import de.uzk.image.Axis;
-import de.uzk.io.Icons;
+import de.uzk.io.ImageLoader;
 import de.uzk.markers.Marker;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
+import de.uzk.utils.GraphicsUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -148,10 +149,10 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
 
     private void paintImage(Graphics g) {
         // Zeichnet das aktuelle Bild und Marker
-        Graphics2D g2D = GuiUtils.createHighQualityGraphics2D(g);
+        Graphics2D g2D = GraphicsUtils.createHighQualityGraphics2D(g);
         if (this.currentImage != null) {
             double zoomPercentage = workspace.getConfig().getZoom() / 100.0;
-            double scale = GuiUtils.getImageScaleFactor(this.currentImage, this.panelImage) * zoomPercentage;
+            double scale = GraphicsUtils.getImageScaleFactor(this.currentImage, this.panelImage) * zoomPercentage;
             int width = (int) (this.currentImage.getWidth() * scale);
             int height = (int) (this.currentImage.getHeight() * scale);
             int x = (this.panelImage.getWidth() - width) / 2;
@@ -162,7 +163,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         } else {
             // Eine Fehlermeldung wird angezeigt, wenn das aktuelle Bild nicht geladen werden kann (weil es nicht existiert)
             String text = workspace.getImagesDirectory() != null ? getWord("dialog.loadingImages.imageCouldNotLoad") : "";
-            GuiUtils.drawCenteredText(g2D, text, this.panelImage);
+            GraphicsUtils.drawCenteredText(g2D, text, this.panelImage);
         }
     }
 
@@ -234,11 +235,11 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
         this.currentImage = null;
         if (workspace.isLoaded()) {
             Path imagePath = workspace.getCurrentImageFile().getFilePath();
-            BufferedImage originalImage = Icons.loadImage(imagePath, false);
+            BufferedImage originalImage = ImageLoader.loadImage(imagePath, false);
             List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
             if (originalImage != null) {
 //                long t = System.nanoTime();
-                this.currentImage = GuiUtils.getEditedImage(originalImage, true, markers);
+                this.currentImage = GraphicsUtils.getEditedImage(originalImage, true, markers);
 //                long dt = System.nanoTime() - t;
                 // TODO: debug auskommentieren wenn du es wieder brauchst
 //                logger.debug(String.format("Edited image in %,d ns", dt));

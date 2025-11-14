@@ -30,7 +30,6 @@ import static de.uzk.Main.workspace;
  * </pre>
  */
 public final class PathManager {
-
     // Systemverzeichnisse Pfade
     public static final Path USER_DIRECTORY = Path.of(System.getProperty("user.dir"));
     public static final Path USER_HOME_DIRECTORY = Path.of(System.getProperty("user.home"));
@@ -61,6 +60,13 @@ public final class PathManager {
         createIfNotExist(appDirectory);
         createIfNotExist(appDirectory.resolve(CONFIG_DIRECTORY));
         createIfNotExist(appDirectory.resolve(PROJECTS_DIRECTORY));
+    }
+
+    /**
+     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
+     */
+    private PathManager() {
+        // Verhindert Instanziierung dieser Klasse
     }
 
     // ========================================

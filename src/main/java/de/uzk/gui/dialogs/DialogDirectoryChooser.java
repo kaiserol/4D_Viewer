@@ -25,6 +25,19 @@ public class DialogDirectoryChooser {
         return this.fileChooser.showOpenDialog(frame);
     }
 
+    public File getDirectory() {
+        File selected = this.fileChooser.getSelectedFile();
+        if (selected != null && selected.isFile()) {
+            return selected.getParentFile();
+        }
+        return selected;
+    }
+
+    public ImageFileType getSelectedImageFileType() {
+        FileNameExtensionFilter filter = (FileNameExtensionFilter) this.fileChooser.getFileFilter();
+        return getSelectedImageFileType(filter);
+    }
+
     // ========================================
     // Komponenten-Erzeugung
     // ========================================
@@ -103,22 +116,6 @@ public class DialogDirectoryChooser {
 
         // Zubehör setzen
         fileChooser.setAccessory(borderPanel);
-    }
-
-    // ========================================
-    // Getter
-    // ========================================
-    public File getDirectory() {
-        File selected = this.fileChooser.getSelectedFile();
-        if (selected != null && selected.isFile()) {
-            return selected.getParentFile();
-        }
-        return selected;
-    }
-
-    public ImageFileType getSelectedImageFileType() {
-        FileNameExtensionFilter filter = (FileNameExtensionFilter) this.fileChooser.getFileFilter();
-        return getSelectedImageFileType(filter);
     }
 
     // ========================================

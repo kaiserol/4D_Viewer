@@ -3,6 +3,7 @@ package de.uzk.gui.dialogs;
 import de.uzk.gui.GuiUtils;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
+import de.uzk.utils.GraphicsUtils;
 
 import javax.swing.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
@@ -385,7 +386,7 @@ public class DialogColorChooser {
 
         @Override
         protected void paintComponent(Graphics g) {
-            Graphics2D g2 = GuiUtils.createHighQualityGraphics2D(g);
+            Graphics2D g2 = GraphicsUtils.createHighQualityGraphics2D(g);
             int size = Math.min(getWidth(), getHeight());
             int borderThickness = 1; // 1px Padding für dickeren Rand
             int diameter = size - borderThickness * 2;
@@ -394,7 +395,7 @@ public class DialogColorChooser {
 
             // Statusfarben
             boolean light = settings.getTheme().isLightMode();
-            Color border = GuiUtils.adjustColor((light ? Color.BLACK : Color.WHITE), this.hover ? 0.5f : 0, light);
+            Color border = ColorUtils.adjustColor((light ? Color.BLACK : Color.WHITE), this.hover ? 0.5f : 0, light);
             Color background = isAddButton ? (light ? Color.WHITE : Color.BLACK) : color;
 
             // Kreis füllen

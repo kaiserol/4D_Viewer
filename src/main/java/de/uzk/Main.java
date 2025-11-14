@@ -1,12 +1,12 @@
 package de.uzk;
 
 import de.uzk.config.History;
+import de.uzk.config.OperatingSystem;
 import de.uzk.config.Settings;
 import de.uzk.gui.Gui;
 import de.uzk.gui.GuiUtils;
 import de.uzk.image.Workspace;
 import de.uzk.logger.LogEntryHandler;
-import de.uzk.config.OperatingSystem;
 
 import javax.swing.*;
 
@@ -45,13 +45,13 @@ public class Main {
      * Hauptmethode
      */
     public static void main(String[] args) {
-        // Systemeigenschaften initialisieren
-        GuiUtils.initSystemProperties();
+        // App Eigenschaften initialisieren
+        GuiUtils.setupAppProperties();
 
         // Gui erstellen und anzeigen
         SwingUtilities.invokeLater(() -> {
             Gui gui = new Gui();
-            GuiUtils.initDesktopHandlers(gui);
+            GuiUtils.setupApp(gui);
         });
     }
 }

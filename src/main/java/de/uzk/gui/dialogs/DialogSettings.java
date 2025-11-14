@@ -190,6 +190,6 @@ public class DialogSettings {
         GuiUtils.updateLanguage(this.gui, (Language) this.selectLanguage.getSelectedItem());
         GuiUtils.updateTheme(this.gui, (Theme) this.selectTheme.getSelectedItem());
         GuiUtils.updateFontSize(this.gui, (int) this.fontSizeSpinner.getValue());
-        settings.setConfirmExit(this.checkConfirmExit.isSelected());
+        GuiUtils.updateConfirmExit(this.checkConfirmExit.isSelected());
     }
 }

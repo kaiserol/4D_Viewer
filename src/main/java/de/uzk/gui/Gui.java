@@ -2,28 +2,19 @@ package de.uzk.gui;
 
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
-import de.uzk.gui.observer.HandleActionListener;
 import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.gui.areas.AreaImageViewer;
 import de.uzk.gui.areas.AreaImagesDirectoryPath;
 import de.uzk.gui.areas.AreaTabs;
-import de.uzk.gui.dialogs.DialogLoadingImages;
 import de.uzk.gui.menubar.AppMenuBar;
-import de.uzk.gui.observer.AppFocusListener;
-import de.uzk.gui.observer.ToggleListener;
-import de.uzk.gui.observer.UpdateImageListener;
-import de.uzk.gui.observer.UpdateThemeListener;
+import de.uzk.gui.observer.*;
 import de.uzk.image.Axis;
-import de.uzk.image.ImageFileType;
-import de.uzk.image.LoadingResult;
-import de.uzk.utils.ComponentUtils;
+import de.uzk.utils.AppUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +22,6 @@ import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class Gui extends AreaContainerInteractive<JFrame> {
-    // Dialoge
-    private final DialogLoadingImages dialogLoadingImages;
-
     // Gui Elemente
     private final ActionHandler actionHandler;
 
@@ -63,46 +51,54 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         // ActionHandler erstellen
         this.actionHandler = new ActionHandler(this);
 
-        // Dialog für das Laden von Bildern erstellen
-        this.dialogLoadingImages = new DialogLoadingImages(this.container);
-
         // Gui erstellen
         build();
 
         this.registerConfigSaved();
     }
 
-    public void registerUnsavedChange() {
-        if (!this.hasUnsavedChanges) {
-            this.container.setTitle(this.container.getTitle() + "*");
-        }
-
-        this.hasUnsavedChanges = true;
+    public ActionHandler getActionHandler() {
+        return actionHandler;
     }
 
-    public void registerConfigSaved() {
-        if (this.hasUnsavedChanges) {
-            this.container.setTitle(this.container.getTitle().replace("*", ""));
-        }
-        this.hasUnsavedChanges = false;
-    }
-
+    // ========================================
+    // Komponenten-Erzeugung
+    // ========================================
     private void build() {
         logger.info("Building UI ...");
 
         // Fenster initialisieren
-        initFrame();
+        GuiUtils.updateFlatLaf();
+        GuiUtils.setImageIcon(this.container);
+
+        this.container.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        this.container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.container.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                AppUtils.closeApp(container);
+            }
+        });
+        this.container.addWindowFocusListener(new WindowAdapter() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                appGainedFocus();
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                appLostFocus();
+            }
+        });
 
         // Menüleiste & Inhalt hinzufügen
-        addMenuBar();
-        addContent();
-        updateTheme();
+        createMenuBar();
+        createContent();
 
         // Bilder laden
-
         // TODO: Warum rausgenommen (für mich)
 //        if (!openImagesDirectory(history.getLastIfExists(), workspace.getConfig().getImageFileType(), true))
-        if (!loadImagesDirectory(history.getLastIfExists(), null, true)) {
+        if (!AppUtils.loadImagesDirectory(this, history.getLastIfExists(), null, true)) {
             toggleOff();
         }
 
@@ -126,9 +122,8 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.getContentPane().removeAll();
 
         // Menüleiste & Inhalt hinzufügen
-        addMenuBar();
-        addContent();
-        updateTheme();
+        createMenuBar();
+        createContent();
 
         // Prüfe, ob Bilder geladen sind
         if (workspace.isLoaded()) toggleOn();
@@ -138,37 +133,12 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.pack();
     }
 
-    private void initFrame() {
-        GuiUtils.updateFlatLaf();
-        GuiUtils.setImageIcon(this.container);
-
-        this.container.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
-        this.container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        this.container.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                closeApp();
-            }
-        });
-        this.container.addWindowFocusListener(new WindowAdapter() {
-            @Override
-            public void windowGainedFocus(WindowEvent e) {
-                appGainedFocus();
-            }
-
-            @Override
-            public void windowLostFocus(WindowEvent e) {
-                appLostFocus();
-            }
-        });
-    }
-
-    private void addMenuBar() {
+    private void createMenuBar() {
         AppMenuBar menuBar = new AppMenuBar(this);
         this.container.setJMenuBar(menuBar.getContainer());
     }
 
-    private void addContent() {
+    private void createContent() {
         this.container.setTitle(getWord("app.name"));
         this.container.setLayout(new BorderLayout());
 
@@ -193,13 +163,9 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
         // Panel zum Container hinzufügen
         this.container.add(mainPanel);
-    }
 
-    // ========================================
-    // Getter und Setter
-    // ========================================
-    public ActionHandler getActionHandler() {
-        return actionHandler;
+        // Theme aktualisieren
+        updateTheme();
     }
 
     // ========================================
@@ -296,81 +262,18 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         this.container.repaint();
     }
 
-    public boolean loadImagesDirectory(Path imagesDirectory, ImageFileType imageFileType, boolean isGuiBeingBuilt) {
-        // Wenn eine "gültige Datei" übergeben wird, wird ins Elternverzeichnis navigiert
-        imagesDirectory = imagesDirectory != null && Files.isRegularFile(imagesDirectory) ? imagesDirectory.getParent() : imagesDirectory;
-
-        // Prüfe, ob das Verzeichnis passende Bilder hat
-        LoadingResult result = this.dialogLoadingImages.load(imagesDirectory, imageFileType);
-
-        switch (result) {
-            case LOADING_SUCCESSFUL -> {
-                toggleOn();
-                handleAction(ActionType.ACTION_ADD_MARKER);
-                return true;
-            }
-            case DIRECTORY_ALREADY_LOADED -> {
-                if (isGuiBeingBuilt) return false;
-                String message = getWord("result.directoryAlreadyLoaded")
-                    .formatted(imageFileType.getType(), imagesDirectory);
-                JOptionPane.showMessageDialog(
-                    this.container,
-                    message,
-                    getWord("optionPane.title.error"),
-                    JOptionPane.ERROR_MESSAGE
-                );
-            }
-            case DIRECTORY_DOES_NOT_EXIST -> {
-                if (isGuiBeingBuilt) return false;
-                String message = getWord("result.directoryDoesNotExist")
-                    .formatted(imagesDirectory);
-                JOptionPane.showMessageDialog(
-                    this.container,
-                    message,
-                    getWord("optionPane.title.error"),
-                    JOptionPane.ERROR_MESSAGE
-                );
-            }
-            case DIRECTORY_HAS_NO_IMAGES -> {
-                if (isGuiBeingBuilt) return false;
-                String message = getWord("result.directoryHasNoImages")
-                    .formatted(imagesDirectory, imageFileType.getType());
-                JOptionPane.showMessageDialog(
-                    this.container,
-                    message,
-                    getWord("optionPane.title.error"),
-                    JOptionPane.ERROR_MESSAGE
-                );
-            }
+    public void registerUnsavedChange() {
+        if (!this.hasUnsavedChanges) {
+            this.container.setTitle(this.container.getTitle() + "*");
         }
-        return false;
+
+        this.hasUnsavedChanges = true;
     }
 
-    public void closeApp() {
-        if (settings.isConfirmExit()) {
-            JCheckBox checkBox = ComponentUtils.createCheckBox(getWord("optionPane.closeApp.checkBox"), null);
-            Object[] message = new Object[]{getWord("optionPane.closeApp.question"), checkBox};
-            int option = JOptionPane.showConfirmDialog(
-                this.container,
-                message,
-                getWord("optionPane.title.confirm"),
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE
-            );
-
-            // Wenn der Benutzer "Nein" klickt → Abbrechen
-            if (option != JOptionPane.YES_OPTION) return;
-
-            // Wenn Checkbox aktiv → Einstellung merken
-            if (checkBox.isSelected()) settings.setConfirmExit(false);
+    public void registerConfigSaved() {
+        if (this.hasUnsavedChanges) {
+            this.container.setTitle(this.container.getTitle().replace("*", ""));
         }
-
-        // Dateien abspeichern
-        settings.save();
-        history.save();
-        workspace.saveConfigs();
-
-        // Anwendung beenden
-        System.exit(0);
+        this.hasUnsavedChanges = false;
     }
 }

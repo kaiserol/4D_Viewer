@@ -35,7 +35,7 @@ public final class StringUtils {
     /**
      * Formatiert ein Array als Zeichenkette mit Trennzeichen und Begrenzern.
      *
-     * @param arr         Das zu formatierende Array
+     * @param arr         Zu formatierende Array
      * @param arrSep      Trennzeichen zwischen den Elementen
      * @param leftBorder  Linke Begrenzung (z.&nbsp;B. '[')
      * @param rightBorder Rechte Begrenzung (z.&nbsp;B. ']')
@@ -89,7 +89,7 @@ public final class StringUtils {
      * Die Schriftgröße wird in Prozent angegeben (relativ zur Standardgröße)
      * und intern in <code>em</code>-Einheiten umgesetzt.
      *
-     * @param text       Der zu formatierende Text
+     * @param text       Zu formatierendem Text
      * @param percentage Schriftgröße in Prozent (0–500)
      * @return HTML-formatierter Text mit angepasster Schriftgröße
      * @throws IllegalArgumentException Falls der Prozentwert außerhalb des gültigen Bereichs liegt
@@ -138,7 +138,7 @@ public final class StringUtils {
      * Umgibt Text mit einem &lt;pre&gt;-Tag und ersetzt
      * Zeilenumbrüche durch &lt;br&gt; sowie Tabs durch Leerzeichen.
      *
-     * @param text Der zu formatierende Text
+     * @param text Zu formatierendem Text
      * @return HTML-String im &lt;pre&gt;-Format
      */
     public static String wrapPre(String text) {

@@ -16,7 +16,10 @@ import java.util.Objects;
 import static de.uzk.Main.logger;
 import static de.uzk.Main.settings;
 
-public final class Icons {
+public final class ImageLoader {
+    // App Image
+    public static final Image APP_IMAGE = Objects.requireNonNull(loadResourceSVG("images/4D.svg")).getImage();
+
     // Bearbeiten Icons
     public static final FlatSVGIcon ICON_PIN = loadResourceSVG("images/icons/pin.svg");
     public static final FlatSVGIcon ICON_ARROW_LEFT_TURN = loadResourceSVG("images/icons/arrow_left_turn.svg");
@@ -33,9 +36,6 @@ public final class Icons {
     public static final FlatSVGIcon ICON_ARROW_UP = loadResourceSVG("images/icons/arrow_up.svg");
     public static final FlatSVGIcon ICON_ARROW_DOWN = loadResourceSVG("images/icons/arrow_down.svg");
     public static final FlatSVGIcon ICON_ARROW_DOWN_END = loadResourceSVG("images/icons/arrow_down_end.svg");
-
-    // App Image
-    public static final Image APP_IMAGE = Objects.requireNonNull(loadResourceSVG("images/4D.svg")).getImage();
 
     // Icons Arrays
     private static final FlatSVGIcon[] ICONS_COLOR_BLUE = {
@@ -60,7 +60,11 @@ public final class Icons {
         ICON_ARROW_DOWN_END,
     };
 
-    private Icons() {
+    /**
+     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
+     */
+    private ImageLoader() {
+        // Verhindert Instanziierung dieser Klasse
     }
 
     public static BufferedImage loadImage(Path imagePath, boolean showErrorIfNotFound) {
@@ -78,7 +82,7 @@ public final class Icons {
 
     private static FlatSVGIcon loadResourceSVG(String svgPath) {
         String svgFilePathCleaned = svgPath.replace("/", StringUtils.FILE_SEP);
-        URL svgUrl = Icons.class.getClassLoader().getResource(svgFilePathCleaned);
+        URL svgUrl = ImageLoader.class.getClassLoader().getResource(svgFilePathCleaned);
 
         try {
             if (svgUrl == null) throw new IOException();
