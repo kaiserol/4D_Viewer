@@ -21,14 +21,29 @@ public final class NumberUtils {
 
     /**
      * Prüft, ob ein Wert innerhalb eines bestimmten Bereichs liegt.
+     * <p>
+     * Aufgrund von möglichen Gleitkomma-Rundungsfehlern wird ein kleiner Toleranzwert (EPSILON)
+     * berücksichtigt, sodass Werte knapp außerhalb der Grenzen dennoch als gültig gelten.
+     *
+     * @param value    Zu prüfender Wert
+     * @param minValue Untere Grenze (einschließlich)
+     * @param maxValue Obere Grenze (einschließlich)
+     * @return True, wenn der Wert im Bereich liegt (mit EPSILON-Toleranz)
+     */
+    public static boolean valueInRange(double value, double minValue, double maxValue) {
+        return minValue - EPSILON <= value && value <= maxValue + EPSILON;
+    }
+
+    /**
+     * Prüft, ob ein Wert innerhalb eines bestimmten Bereichs liegt.
      *
      * @param value    Zu prüfender Wert
      * @param minValue Untere Grenze (einschließlich)
      * @param maxValue Obere Grenze (einschließlich)
      * @return True, wenn der Wert im Bereich liegt
      */
-    public static boolean valueInRange(double value, double minValue, double maxValue) {
-        return value >= minValue - EPSILON && value <= maxValue + EPSILON;
+    public static boolean valueInRange(int value, int minValue, int maxValue) {
+        return minValue <= value && value <= maxValue;
     }
 
     /**

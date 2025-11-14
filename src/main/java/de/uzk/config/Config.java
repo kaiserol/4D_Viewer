@@ -3,6 +3,7 @@ package de.uzk.config;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.uzk.image.ImageFileType;
+import de.uzk.utils.NumberUtils;
 import de.uzk.utils.PathManager;
 
 import java.nio.file.Path;
@@ -128,12 +129,12 @@ public class Config {
     }
 
     public boolean setTimeUnit(double timeUnit) {
-        if (MIN_TIME_UNIT <= timeUnit && timeUnit <= MAX_TIME_UNIT) {
+        if (NumberUtils.valueInRange(timeUnit, MIN_TIME_UNIT, MAX_TIME_UNIT)) {
             if (this.timeUnit == timeUnit) return false;
             this.timeUnit = timeUnit;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_TIME_UNIT <= this.timeUnit && this.timeUnit <= MAX_TIME_UNIT) return false;
+            if (NumberUtils.valueInRange(this.timeUnit, MIN_TIME_UNIT, MAX_TIME_UNIT)) return false;
             this.timeUnit = DEFAULT_TIME_UNIT;
         }
         return true;
@@ -144,12 +145,12 @@ public class Config {
     }
 
     public boolean setLevelUnit(double levelUnit) {
-        if (MIN_LEVEL_UNIT <= levelUnit && levelUnit <= MAX_LEVEL_UNIT) {
+        if (NumberUtils.valueInRange(levelUnit, MIN_LEVEL_UNIT, MAX_LEVEL_UNIT)) {
             if (this.levelUnit == levelUnit) return false;
             this.levelUnit = levelUnit;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_LEVEL_UNIT <= this.levelUnit && this.levelUnit <= MAX_LEVEL_UNIT) return false;
+            if (NumberUtils.valueInRange(this.levelUnit, MIN_LEVEL_UNIT, MAX_LEVEL_UNIT)) return false;
             this.levelUnit = DEFAULT_LEVEL_UNIT;
         }
         return true;
@@ -180,12 +181,12 @@ public class Config {
     }
 
     public boolean setBrightness(int brightness) {
-        if (MIN_BRIGHTNESS <= brightness && brightness <= MAX_BRIGHTNESS) {
+        if (NumberUtils.valueInRange(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS)) {
             if (this.brightness == brightness) return false;
             this.brightness = brightness;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_BRIGHTNESS <= this.brightness && this.brightness <= MAX_BRIGHTNESS) return false;
+            if (NumberUtils.valueInRange(this.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS)) return false;
             this.brightness = DEFAULT_BRIGHTNESS;
         }
         return true;
@@ -196,12 +197,12 @@ public class Config {
     }
 
     public boolean setContrast(int contrast) {
-        if (MIN_CONTRAST <= contrast && contrast <= MAX_CONTRAST) {
+        if (NumberUtils.valueInRange(contrast, MIN_CONTRAST, MAX_CONTRAST)) {
             if (this.contrast == contrast) return false;
             this.contrast = contrast;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_CONTRAST <= this.contrast && this.contrast <= MAX_CONTRAST) return false;
+            if (NumberUtils.valueInRange(this.contrast, MIN_CONTRAST, MAX_CONTRAST)) return false;
             this.contrast = DEFAULT_CONTRAST;
         }
         return true;
@@ -212,12 +213,12 @@ public class Config {
     }
 
     public boolean setZoom(int zoom) {
-        if (MIN_ZOOM <= zoom && zoom <= MAX_ZOOM) {
+        if (NumberUtils.valueInRange(zoom, MIN_ZOOM, MAX_ZOOM)) {
             if (this.zoom == zoom) return false;
             this.zoom = zoom;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_ZOOM <= this.zoom && this.zoom <= MAX_ZOOM) return false;
+            if (NumberUtils.valueInRange(this.zoom, MIN_ZOOM, MAX_ZOOM)) return false;
             this.zoom = DEFAULT_ZOOM;
         }
         return true;
@@ -228,12 +229,12 @@ public class Config {
     }
 
     public boolean setRotation(int rotation) {
-        if (MIN_ROTATION <= rotation && rotation <= MAX_ROTATION) {
+        if (NumberUtils.valueInRange(rotation, MIN_ROTATION, MAX_ROTATION)) {
             if (this.rotation == rotation) return false;
             this.rotation = rotation;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_ROTATION <= this.rotation && this.rotation <= MAX_ROTATION) return false;
+            if (NumberUtils.valueInRange(this.rotation, MIN_ROTATION, MAX_ROTATION)) return false;
             this.rotation = DEFAULT_ROTATION;
         }
         return true;
