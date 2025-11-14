@@ -2,6 +2,7 @@ package de.uzk.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.uzk.utils.NumberUtils;
 import de.uzk.utils.PathManager;
 
 import java.nio.file.Path;
@@ -76,12 +77,12 @@ public class Settings {
     }
 
     public boolean setFontSize(int fontSize) {
-        if (MIN_FONT_SIZE <= fontSize && fontSize <= MAX_FONT_SIZE) {
+        if (NumberUtils.valueInRange(fontSize, MIN_FONT_SIZE, MAX_FONT_SIZE)) {
             if (this.fontSize == fontSize) return false;
             this.fontSize = fontSize;
         } else {
             // Setzt den Defaultwert, wenn der Wert nicht innerhalb der MinMax-Grenzen liegt
-            if (MIN_FONT_SIZE <= this.fontSize && this.fontSize <= MAX_FONT_SIZE) return false;
+            if (NumberUtils.valueInRange(this.fontSize, MIN_FONT_SIZE, MAX_FONT_SIZE)) return false;
             this.fontSize = DEFAULT_FONT_SIZE;
         }
         return true;
