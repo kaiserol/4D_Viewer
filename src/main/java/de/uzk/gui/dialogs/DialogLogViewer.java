@@ -3,6 +3,7 @@ package de.uzk.gui.dialogs;
 import de.uzk.gui.GuiUtils;
 import de.uzk.gui.SelectableText;
 import de.uzk.logger.LogEntry;
+import de.uzk.utils.NumberUtils;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
@@ -135,7 +136,7 @@ public class DialogLogViewer {
     }
 
     private JScrollPane findTabScrollPane(JTabbedPane tabbedPane, int tabIndex) {
-        if (tabIndex < 0 || tabIndex >= tabbedPane.getTabCount()) return null;
+        if (!NumberUtils.valueInRange(tabIndex, 0, tabbedPane.getTabCount() - 1)) return null;
 
         // ScrollPane ermitteln
         JComponent component = (JComponent) tabbedPane.getComponentAt(tabIndex);

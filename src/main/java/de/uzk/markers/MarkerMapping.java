@@ -3,6 +3,7 @@ package de.uzk.markers;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.uzk.utils.NumberUtils;
 
 public class MarkerMapping {
     private Marker marker;
@@ -43,7 +44,7 @@ public class MarkerMapping {
     }
 
     public boolean shouldRender(int imageTime) {
-        return imageTime >= this.from && imageTime <= this.to;
+        return NumberUtils.valueInRange(imageTime, this.from, this.to);
     }
 
     public Marker getMarker() {

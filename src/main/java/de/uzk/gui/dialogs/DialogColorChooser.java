@@ -36,7 +36,6 @@ public class DialogColorChooser {
         this.dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                System.out.println("closed");
                 closeDialog(initialColor);
             }
         });

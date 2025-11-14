@@ -101,7 +101,7 @@ public class Workspace {
     }
 
     private boolean isTimeInvalid(int time) {
-        if (time >= 0 && time <= this.maxTime) return false;
+        if (NumberUtils.valueInRange(time, 0, this.maxTime)) return false;
         logger.error("Invalid Time: " + time);
         return true;
     }
@@ -116,7 +116,7 @@ public class Workspace {
     }
 
     private boolean isLevelInvalid(int level) {
-        if (level >= 0 && level <= this.maxLevel) return false;
+        if (NumberUtils.valueInRange(level, 0, this.maxLevel)) return false;
         logger.error("Invalid Level: " + level);
         return true;
     }
@@ -293,11 +293,11 @@ public class Workspace {
                 int level = NumberUtils.parseInteger(getLevelStr(fileName));
 
                 // Grenzwert bestimmen
-                if (0 > time || time >= 10_000) {
+                if (!NumberUtils.valueInRange(time, 0, 9_999)) {
                     logger.warning("The image '%s' has an invalid time.".formatted(fileName));
                     continue;
                 }
-                if (0 > level || level >= 10_000) {
+                if (!NumberUtils.valueInRange(level, 0, 999)) {
                     logger.warning("The image '%s' has an invalid level.".formatted(fileName));
                     continue;
                 }

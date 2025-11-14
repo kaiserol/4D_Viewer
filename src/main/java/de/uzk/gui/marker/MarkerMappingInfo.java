@@ -26,6 +26,7 @@ public class MarkerMappingInfo extends JPanel {
         this.mapping = mapping;
         init();
     }
+
     @Override
     public Dimension getMaximumSize() {
         return getMinimumSize();
@@ -42,7 +43,7 @@ public class MarkerMappingInfo extends JPanel {
         c.weightx = 0.7;
         c.setInsets(5, 10, 10, 10);
 
-        JLabel nameLabel= new JLabel(this.mapping.getMarker().getLabel());
+        JLabel nameLabel = new JLabel(this.mapping.getMarker().getLabel());
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
         this.add(nameLabel, c);
 
@@ -53,10 +54,10 @@ public class MarkerMappingInfo extends JPanel {
             int newValue = fromModel.getNumber().intValue();
             this.mapping.setFrom(newValue);
             toModel.setMinimum(newValue);
-            if(toModel.getNumber().intValue() < newValue) {
+            if (toModel.getNumber().intValue() < newValue) {
                 toModel.setValue(newValue);
             }
-                gui.update(Axis.TIME);
+            gui.update(Axis.TIME);
 
         });
 
@@ -83,9 +84,9 @@ public class MarkerMappingInfo extends JPanel {
 
 
         c.setPos(2, 0);
-        c.setInsets(10,10,10,0);
+        c.setInsets(10, 10, 10, 0);
         c.anchor = GridBagConstraints.CENTER;
-        c.setSizeAndWeight(1,3,0.1,1);
+        c.setSizeAndWeight(1, 3, 0.1, 1);
         this.add(getEditButton(), c);
 
     }
@@ -96,10 +97,10 @@ public class MarkerMappingInfo extends JPanel {
 
             MarkerEditor initial = new MarkerEditor(workspace.getCurrentImageFile(), new Marker(this.mapping.getMarker()));
             int option = JOptionPane.showConfirmDialog(
-                    null,
-                    initial,
-                    getWord("dialog.markers.editMarker"),
-                    JOptionPane.OK_CANCEL_OPTION
+                null,
+                initial,
+                getWord("dialog.markers.editMarker"),
+                JOptionPane.OK_CANCEL_OPTION
             );
 
             if (option == JOptionPane.OK_OPTION) {
