@@ -1,7 +1,7 @@
 package de.uzk.gui.dialogs;
 
-import de.uzk.gui.GuiUtils;
 import de.uzk.gui.SelectableText;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.logger.LogEntry;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.NumberUtils;
@@ -47,7 +47,7 @@ public class DialogLogViewer {
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout());
-        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
+        contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
         contentPanel.add(this.tabs = createTabs(), BorderLayout.CENTER);
 
         this.dialog.add(contentPanel);
@@ -92,7 +92,7 @@ public class DialogLogViewer {
 
         // Text in ScrollPane packen
         SelectableText text = new SelectableText(htmlContent);
-        text.setMargin(GuiUtils.INSETS_SMALL);
+        text.setMargin(UIEnvironment.INSETS_SMALL);
 
         JScrollPane scrollPane = new JScrollPane(text);
         panel.add(scrollPane);

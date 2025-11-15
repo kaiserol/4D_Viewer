@@ -21,35 +21,35 @@ public final class UIManagerConfigurator {
 
     public static void setupMisc() {
         // Komponente
-        UIManager.put("Component.arrowType", GuiUtils.ARROW_TYPE);
+        UIManager.put("Component.arrowType", UIEnvironment.ARROW_TYPE);
         UIManager.put("Component.hideMnemonics", false);
-        UIManager.put("Component.arc", GuiUtils.ARC_DEFAULT);
+        UIManager.put("Component.arc", UIEnvironment.ARC_DEFAULT);
 
         // Icon
         UIManager.put("Dialog.showIcon", true);
         UIManager.put("OptionPane.showIcon", true);
 
         // Button
-        UIManager.put("Button.arc", GuiUtils.ARC_DEFAULT);
-        UIManager.put("Button.margin", GuiUtils.INSETS_MEDIUM);
+        UIManager.put("Button.arc", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("Button.margin", UIEnvironment.INSETS_MEDIUM);
 
         // Checkbox
-        UIManager.put("CheckBox.margin", GuiUtils.INSETS_NONE);
+        UIManager.put("CheckBox.margin", UIEnvironment.INSETS_NONE);
 
         // Textfeld
-        UIManager.put("TextComponent.arc", GuiUtils.ARC_DEFAULT);
-        UIManager.put("TextField.arc", GuiUtils.ARC_DEFAULT);
-        UIManager.put("TextArea.margin", GuiUtils.INSETS_MEDIUM);
-        UIManager.put("TextField.margin", GuiUtils.INSETS_MEDIUM);
-        UIManager.put("TextPane.margin", GuiUtils.INSETS_MEDIUM);
+        UIManager.put("TextComponent.arc", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("TextField.arc", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("TextArea.margin", UIEnvironment.INSETS_MEDIUM);
+        UIManager.put("TextField.margin", UIEnvironment.INSETS_MEDIUM);
+        UIManager.put("TextPane.margin", UIEnvironment.INSETS_MEDIUM);
 
         // Sonstige Komponenten
-        UIManager.put("List.selectionArc", GuiUtils.ARC_DEFAULT);
-        UIManager.put("MenuItem.selectionArc", GuiUtils.ARC_DEFAULT);
-        UIManager.put("ProgressBar.arc", GuiUtils.ARC_DEFAULT);
-        UIManager.put("TitlePane.buttonArc", GuiUtils.ARC_DEFAULT);
-        UIManager.put("ToolBar.hoverButtonGroupArc", GuiUtils.ARC_DEFAULT);
-        UIManager.put("Tree.selectionArc", GuiUtils.ARC_DEFAULT);
+        UIManager.put("List.selectionArc", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("MenuItem.selectionArc", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("ProgressBar.arc", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("TitlePane.buttonArc", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("ToolBar.hoverButtonGroupArc", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("Tree.selectionArc", UIEnvironment.ARC_DEFAULT);
     }
 
     public static void setupComboBox() {
@@ -57,14 +57,14 @@ public final class UIManagerConfigurator {
         Color textFieldBg = UIManager.getColor("TextField.background");
         Color defaultButtonBg = UIManager.getColor("Button.default.background");
 
-        UIManager.put("ComboBox.arc", GuiUtils.ARC_DEFAULT);
-        UIManager.put("ComboBox.buttonArc", GuiUtils.ARC_DEFAULT);
-        UIManager.put("ComboBox.selectionArc", GuiUtils.ARC_DEFAULT);
+        UIManager.put("ComboBox.arc", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("ComboBox.buttonArc", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("ComboBox.selectionArc", UIEnvironment.ARC_DEFAULT);
         UIManager.put("ComboBox.buttonStyle", "button");
-        UIManager.put("ComboBox.padding", GuiUtils.INSETS_MEDIUM);
+        UIManager.put("ComboBox.padding", UIEnvironment.INSETS_MEDIUM);
 
         // Pfeilfarben
-        UIManager.put("ComboBox.buttonArrowType", GuiUtils.ARROW_TYPE);
+        UIManager.put("ComboBox.buttonArrowType", UIEnvironment.ARROW_TYPE);
         UIManager.put("ComboBox.buttonArrowColor", ColorUtils.adjustColor(arrowColor, 0.0f, false));
         UIManager.put("ComboBox.buttonHoverArrowColor", ColorUtils.adjustColor(arrowColor, 0.1f, true));
         UIManager.put("ComboBox.buttonPressedArrowColor", ColorUtils.adjustColor(arrowColor, 0.3f, true));
@@ -82,14 +82,14 @@ public final class UIManagerConfigurator {
         Color textFieldBg = UIManager.getColor("TextField.background");
         Color defaultButtonBg = UIManager.getColor("Button.default.background");
 
-        UIManager.put("Spinner.arc", GuiUtils.ARC_DEFAULT);
-        UIManager.put("Spinner.buttonArc", GuiUtils.ARC_DEFAULT);
-        UIManager.put("Spinner.selectionArc", GuiUtils.ARC_DEFAULT);
+        UIManager.put("Spinner.arc", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("Spinner.buttonArc", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("Spinner.selectionArc", UIEnvironment.ARC_DEFAULT);
         UIManager.put("Spinner.buttonStyle", "roundRect");
-        UIManager.put("Spinner.padding", GuiUtils.INSETS_MEDIUM);
+        UIManager.put("Spinner.padding", UIEnvironment.INSETS_MEDIUM);
 
         // Pfeilfarben
-        UIManager.put("Spinner.buttonArrowType", GuiUtils.ARROW_TYPE);
+        UIManager.put("Spinner.buttonArrowType", UIEnvironment.ARROW_TYPE);
         UIManager.put("Spinner.buttonArrowColor", ColorUtils.adjustColor(arrowColor, 0.0f, false));
         UIManager.put("Spinner.buttonHoverArrowColor", ColorUtils.adjustColor(arrowColor, 0.1f, true));
         UIManager.put("Spinner.buttonPressedArrowColor", ColorUtils.adjustColor(arrowColor, 0.3f, true));
@@ -101,13 +101,13 @@ public final class UIManagerConfigurator {
     }
 
     public static void setupTabbedPane() {
-        UIManager.put("TabbedPane.buttonArc ", GuiUtils.ARC_DEFAULT);
-        UIManager.put("TabbedPane.closeArc", GuiUtils.ARC_DEFAULT);
+        UIManager.put("TabbedPane.buttonArc ", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("TabbedPane.closeArc", UIEnvironment.ARC_DEFAULT);
         UIManager.put("TabbedPane.tabArc", 0);
         UIManager.put("TabbedPane.tabSelectionArc", 0);
         UIManager.put("TabbedPane.tabSelectionHeight", 2);
         UIManager.put("TabbedPane.showTabSeparators", false);
-        UIManager.put("TabbedPane.arrowType", GuiUtils.ARROW_TYPE);
+        UIManager.put("TabbedPane.arrowType", UIEnvironment.ARROW_TYPE);
 
         // Linienfarbe
         UIManager.put("TabbedPane.underlineColor", ColorUtils.COLOR_BLUE);
@@ -122,11 +122,11 @@ public final class UIManagerConfigurator {
         Color trackColor = UIManager.getColor("ScrollBar.background");
         Color thumbColor = ColorUtils.COLOR_BLUE;
 
-        UIManager.put("ScrollBar.trackArc", GuiUtils.ARC_DEFAULT);
-        UIManager.put("ScrollBar.thumbArc", GuiUtils.ARC_DEFAULT);
+        UIManager.put("ScrollBar.trackArc", UIEnvironment.ARC_DEFAULT);
+        UIManager.put("ScrollBar.thumbArc", UIEnvironment.ARC_DEFAULT);
         UIManager.put("ScrollBar.width", 10);
-        UIManager.put("ScrollBar.trackInsets", GuiUtils.INSETS_NONE);
-        UIManager.put("ScrollBar.thumbInsets", GuiUtils.BORDER_EMPTY_NONE);
+        UIManager.put("ScrollBar.trackInsets", UIEnvironment.INSETS_NONE);
+        UIManager.put("ScrollBar.thumbInsets", UIEnvironment.BORDER_EMPTY_NONE);
         UIManager.put("ScrollBar.showButtons", true);
 
         // Hinter- und Vordergrundfarbe

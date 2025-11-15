@@ -4,7 +4,7 @@ import de.uzk.config.History;
 import de.uzk.config.OperatingSystem;
 import de.uzk.config.Settings;
 import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.image.Workspace;
 import de.uzk.logger.LogEntryHandler;
 
@@ -45,13 +45,13 @@ public class Main {
      * Hauptmethode
      */
     public static void main(String[] args) {
-        // App Eigenschaften initialisieren
-        GuiUtils.setupAppProperties();
+        // Platform Eigenschaften initialisieren
+        UIEnvironment.initPlatformProperties();
 
         // Gui erstellen und anzeigen
         SwingUtilities.invokeLater(() -> {
             Gui gui = new Gui();
-            GuiUtils.setupApp(gui);
+            UIEnvironment.initDesktopIntegration(gui);
         });
     }
 }

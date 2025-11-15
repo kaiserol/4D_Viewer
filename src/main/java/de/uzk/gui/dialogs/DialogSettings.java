@@ -4,7 +4,7 @@ import de.uzk.config.Language;
 import de.uzk.config.Settings;
 import de.uzk.config.Theme;
 import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.StringUtils;
 
@@ -65,7 +65,7 @@ public class DialogSettings {
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout(0, 10));
-        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
+        contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
         contentPanel.add(createSettingsPanel(), BorderLayout.CENTER);
         contentPanel.add(createButtonsPanel(), BorderLayout.SOUTH);
 
@@ -187,9 +187,9 @@ public class DialogSettings {
     }
 
     private void applySettings() {
-        GuiUtils.updateLanguage(this.gui, (Language) this.selectLanguage.getSelectedItem());
-        GuiUtils.updateTheme(this.gui, (Theme) this.selectTheme.getSelectedItem());
-        GuiUtils.updateFontSize(this.gui, (int) this.fontSizeSpinner.getValue());
-        GuiUtils.updateConfirmExit(this.checkConfirmExit.isSelected());
+        UIEnvironment.updateLanguage(this.gui, (Language) this.selectLanguage.getSelectedItem());
+        UIEnvironment.updateTheme(this.gui, (Theme) this.selectTheme.getSelectedItem());
+        UIEnvironment.updateFontSize(this.gui, (int) this.fontSizeSpinner.getValue());
+        UIEnvironment.updateConfirmExit(this.checkConfirmExit.isSelected());
     }
 }

@@ -1,7 +1,7 @@
 package de.uzk.gui.areas;
 
 import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.image.Axis;
 import de.uzk.utils.StringUtils;
 
@@ -24,7 +24,7 @@ public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
 
     private void init() {
         this.container.setLayout(new BorderLayout());
-        this.container.setBorder(GuiUtils.BORDER_EMPTY_MEDIUM);
+        this.container.setBorder(UIEnvironment.BORDER_EMPTY_MEDIUM);
 
         // Zeit-Label
         this.labelTime = new JLabel("", SwingConstants.CENTER);

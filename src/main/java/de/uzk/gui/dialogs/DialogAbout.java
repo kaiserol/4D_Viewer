@@ -1,7 +1,7 @@
 package de.uzk.gui.dialogs;
 
-import de.uzk.gui.GuiUtils;
 import de.uzk.gui.SelectableText;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.io.ImageLoader;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.StringUtils;
@@ -40,7 +40,7 @@ public class DialogAbout {
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout());
-        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
+        contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
         contentPanel.add(createAboutPanel(), BorderLayout.CENTER);
 
         this.dialog.add(contentPanel, BorderLayout.CENTER);
@@ -59,7 +59,7 @@ public class DialogAbout {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = ComponentUtils.createGridBagConstraints();
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.insets = GuiUtils.INSETS_DEFAULT;
+        gbc.insets = UIEnvironment.INSETS_DEFAULT;
 
         // App-Icon
         ImageIcon appIcon = getAppIcon();

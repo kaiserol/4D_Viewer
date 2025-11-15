@@ -12,7 +12,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.uzk.io.PathManager.*;
+import static de.uzk.io.PathManager.MARKERS_FILE_NAME;
+import static de.uzk.io.PathManager.resolveProjectPath;
 
 public class Markers {
     @JsonGetter("markers")

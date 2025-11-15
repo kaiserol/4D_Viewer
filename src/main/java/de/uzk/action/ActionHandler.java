@@ -2,10 +2,10 @@ package de.uzk.action;
 
 import de.uzk.config.Settings;
 import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.dialogs.*;
 import de.uzk.image.Axis;
-import de.uzk.utils.AppUtils;
+import de.uzk.image.ProjectHelper;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -75,9 +75,9 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         if (actionType == null) return;
         switch (actionType) {
             // Projekte Shortcuts
-            case SHORTCUT_OPEN_FOLDER -> AppUtils.openProject(gui);
-            case SHORTCUT_OPEN_RECENT -> AppUtils.openRecents(gui);
-            case SHORTCUT_CLOSE_PROJECT -> AppUtils.closeProject(gui);
+            case SHORTCUT_OPEN_FOLDER -> ProjectHelper.openProject(gui);
+            case SHORTCUT_OPEN_RECENT -> ProjectHelper.openRecents(gui);
+            case SHORTCUT_CLOSE_PROJECT -> ProjectHelper.closeProject(gui);
             case SHORTCUT_SAVE_PROJECT -> {
                 workspace.saveConfigs();
                 gui.registerConfigSaved();
@@ -101,9 +101,9 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_GO_TO_LAST_LEVEL -> scrollToBoundary(Axis.LEVEL, false);
 
             // Fenster Shortcuts
-            case SHORTCUT_FONT_SIZE_DECREASE -> GuiUtils.updateFontSize(gui, settings.getFontSize() - 1);
-            case SHORTCUT_FONT_SIZE_INCREASE -> GuiUtils.updateFontSize(gui, settings.getFontSize() + 1);
-            case SHORTCUT_FONT_SIZE_RESTORE -> GuiUtils.updateFontSize(gui, Settings.DEFAULT_FONT_SIZE);
+            case SHORTCUT_FONT_SIZE_DECREASE -> UIEnvironment.updateFontSize(gui, settings.getFontSize() - 1);
+            case SHORTCUT_FONT_SIZE_INCREASE -> UIEnvironment.updateFontSize(gui, settings.getFontSize() + 1);
+            case SHORTCUT_FONT_SIZE_RESTORE -> UIEnvironment.updateFontSize(gui, Settings.DEFAULT_FONT_SIZE);
             case SHORTCUT_OPEN_SETTINGS -> dialogSettings.show();
 
             // Hilfe Shortcuts

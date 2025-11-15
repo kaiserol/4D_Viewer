@@ -1,6 +1,6 @@
 package de.uzk.gui.dialogs;
 
-import de.uzk.gui.GuiUtils;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.image.ImageFileType;
 import de.uzk.utils.ComponentUtils;
 
@@ -105,13 +105,13 @@ public class DialogDirectoryChooser {
         JPanel borderPanel = new JPanel(new BorderLayout());
         borderPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createEmptyBorder(0, 10, 0, 0),
-            BorderFactory.createLineBorder(GuiUtils.getBorderColor())
+            BorderFactory.createLineBorder(UIEnvironment.getBorderColor())
         ));
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout());
-        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
-        contentPanel.setBackground(GuiUtils.getBackgroundColor());
+        contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
+        contentPanel.setBackground(UIEnvironment.getBackgroundColor());
         borderPanel.add(contentPanel, BorderLayout.CENTER);
 
         // Zubehör setzen
@@ -137,7 +137,7 @@ public class DialogDirectoryChooser {
         ComponentUtils.findComponentsRecursively(AbstractButton.class, root).forEach(button -> {
             // Nur Buttons ohne Text (also IconButtons) zurücksetzen
             if (button.getText() == null || button.getText().isEmpty()) {
-                button.setMargin(GuiUtils.INSETS_SMALL);
+                button.setMargin(UIEnvironment.INSETS_SMALL);
             }
         });
     }

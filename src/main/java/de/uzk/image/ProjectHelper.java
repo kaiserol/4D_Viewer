@@ -1,25 +1,36 @@
-package de.uzk.utils;
+package de.uzk.image;
 
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
 import de.uzk.gui.dialogs.DialogDirectoryChooser;
 import de.uzk.gui.dialogs.DialogLoadingImages;
-import de.uzk.image.ImageFileType;
-import de.uzk.image.LoadingResult;
 
 import javax.swing.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static de.uzk.Main.*;
-import static de.uzk.Main.settings;
-import static de.uzk.Main.workspace;
+import static de.uzk.Main.history;
+import static de.uzk.Main.logger;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class AppUtils {
-    private AppUtils() {
+public class ProjectHelper {
+    private ProjectHelper() {
+    }
+
+    public static void openProject(Gui gui) {
+        // Dialog öffnen
+        DialogDirectoryChooser directoryChooser = new DialogDirectoryChooser();
+        int option = directoryChooser.showOpenDialog(gui.getContainer());
+
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File directory = directoryChooser.getDirectory();
+            if (directory == null) return;
+
+            // Bilder laden
+            ImageFileType imageFileType = directoryChooser.getSelectedImageFileType();
+            loadImagesDirectory(gui, directory.toPath(), imageFileType, false);
+        }
     }
 
     public static void openRecents(Gui gui) {
@@ -47,21 +58,23 @@ public class AppUtils {
         }
     }
 
-    public static void openProject(Gui gui) {
-        // Dialog öffnen
-        DialogDirectoryChooser directoryChooser = new DialogDirectoryChooser();
-        int option = directoryChooser.showOpenDialog(gui.getContainer());
+    public static void closeProject(Gui gui) {
+        int option = JOptionPane.showConfirmDialog(gui.getContainer(),
+            getWord("dialog.loadingImages.closeProject"),
+            getWord("optionPane.title.confirm"),
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
 
-        if (option == JFileChooser.APPROVE_OPTION) {
-            File directory = directoryChooser.getDirectory();
-            if (directory == null) return;
-
-            // Bilder laden
-            ImageFileType imageFileType = directoryChooser.getSelectedImageFileType();
-            loadImagesDirectory(gui, directory.toPath(), imageFileType, false);
+        if (option == JOptionPane.YES_OPTION) {
+            logger.info("Clear images...");
+            gui.toggleOff();
         }
     }
 
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
     public static boolean loadImagesDirectory(Gui gui, Path imagesDirectory, ImageFileType imageFileType, boolean isGuiBeingBuilt) {
         // Wenn eine "gültige Datei" übergeben wird, wird ins Elternverzeichnis navigiert
         imagesDirectory = imagesDirectory != null && Files.isRegularFile(imagesDirectory) ? imagesDirectory.getParent() : imagesDirectory;
@@ -110,47 +123,5 @@ public class AppUtils {
             }
         }
         return false;
-    }
-
-    public static void closeProject(Gui gui) {
-        int option = JOptionPane.showConfirmDialog(gui.getContainer(),
-            getWord("dialog.loadingImages.closeProject"),
-            getWord("optionPane.title.confirm"),
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE
-        );
-
-        if (option == JOptionPane.YES_OPTION) {
-            logger.info("Clear images...");
-            gui.toggleOff();
-        }
-    }
-
-    public static void closeApp(JFrame frame) {
-        if (settings.isConfirmExit()) {
-            JCheckBox checkBox = ComponentUtils.createCheckBox(getWord("optionPane.closeApp.checkBox"), null);
-            Object[] message = new Object[]{getWord("optionPane.closeApp.question"), checkBox};
-            int option = JOptionPane.showConfirmDialog(
-                frame,
-                message,
-                getWord("optionPane.title.confirm"),
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE
-            );
-
-            // Wenn der Benutzer "Nein" klickt → Abbrechen
-            if (option != JOptionPane.YES_OPTION) return;
-
-            // Wenn Checkbox aktiv → Einstellung merken
-            if (checkBox.isSelected()) GuiUtils.updateConfirmExit(false);
-        }
-
-        // Dateien abspeichern
-        settings.save();
-        history.save();
-        workspace.saveConfigs();
-
-        // Anwendung beenden
-        System.exit(0);
     }
 }

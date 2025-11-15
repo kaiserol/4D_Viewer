@@ -30,7 +30,7 @@ import static javax.swing.event.HyperlinkEvent.EventType.*;
  *   <li>Zeigt den Standard-Cursor, solange sich die Maus über dem Text befindet.</li>
  *   <li>Wenn sich die Maus über einem Hyperlink befindet und die Command- (bzw. Ctrl-)Taste gedrückt ist,
  *       erscheint der Hand-Cursor (Pointer).</li>
- *   <li>Beim Klicken auf einen Link wird der Standardbrowser über {@link GuiUtils#openWebLink(java.net.URL)} geöffnet.</li>
+ *   <li>Beim Klicken auf einen Link wird der Standardbrowser über {@link UIEnvironment#openWebLink(java.net.URL)} geöffnet.</li>
  *   <li>Zeigt einen Tooltip („Open in browser“), wenn sich die Maus über einem Link befindet.</li>
  * </ul>
  */
@@ -80,7 +80,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         setText(htmlContent);
         setEditable(false);
         setOpaque(false);
-        setMargin(GuiUtils.INSETS_NONE);
+        setMargin(UIEnvironment.INSETS_NONE);
 
         // Unsichtbares Caret (kein blinkender Balken)
         setCaret(ComponentUtils.getNoBlinkCaret());
@@ -97,7 +97,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         SwingUtilities.invokeLater(() -> {
             if (getDocument() instanceof HTMLDocument htmlDoc) {
                 StyleSheet styleSheet = htmlDoc.getStyleSheet();
-                String hexDefaultColor = ColorUtils.colorToHex(GuiUtils.getTextColor());
+                String hexDefaultColor = ColorUtils.colorToHex(UIEnvironment.getTextColor());
                 styleSheet.addRule(String.format("a { color: %s; }", hexDefaultColor));
                 styleSheet.addRule(String.format("a:visited { color: %s; }", hexDefaultColor));
                 styleSheet.addRule(String.format("a:hover { color: %s; }", hexDefaultColor));
@@ -135,7 +135,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
             resetLinkElement();
         } else if (Objects.equals(e.getEventType(), ACTIVATED)) {
             if (commandPressed) {
-                GuiUtils.openWebLink(e.getURL());
+                UIEnvironment.openWebLink(e.getURL());
                 updateCursor();
                 commandPressed = false;
             }
@@ -188,19 +188,19 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
             switch (newMode) {
                 case LINK_CTRL_HOVER -> {
                     applyLinkHoverStyle(true);
-                    GuiUtils.setCursor(this, ComponentUtils.HAND_CURSOR);
-                    GuiUtils.setToolTipText(this, getWord("tooltip.openInBrowser"));
+                    UIEnvironment.setCursor(this, ComponentUtils.HAND_CURSOR);
+                    UIEnvironment.setToolTipText(this, getWord("tooltip.openInBrowser"));
                 }
                 case LINK_HOVER -> {
                     applyLinkHoverStyle(false);
-                    GuiUtils.setCursor(this, ComponentUtils.HAND_CURSOR);
+                    UIEnvironment.setCursor(this, ComponentUtils.HAND_CURSOR);
 
                     String tooltipText = String.format("%s (%s %s)",
                         getWord("tooltip.openInBrowser"),
                         Shortcut.getModifiersList(Shortcut.CTRL_DOWN).get(0),
                         getWord("tooltip.click")
                     );
-                    GuiUtils.setToolTipText(this, tooltipText);
+                    UIEnvironment.setToolTipText(this, tooltipText);
                 }
                 default -> setDefaultCursor();
             }
@@ -225,7 +225,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         int length = Math.max(0, endIndex - startIndex);
 
         SimpleAttributeSet set = new SimpleAttributeSet();
-        Color color = active ? COLOR_ACTIVE_LINK : GuiUtils.getTextColor();
+        Color color = active ? COLOR_ACTIVE_LINK : UIEnvironment.getTextColor();
         StyleConstants.setForeground(set, color);
 
         // Farbe ändern
@@ -241,8 +241,8 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      */
     private void setDefaultCursor() {
         applyLinkHoverStyle(false);
-        GuiUtils.setCursor(this, ComponentUtils.DEFAULT_CURSOR);
-        GuiUtils.setToolTipText(this, null);
+        UIEnvironment.setCursor(this, ComponentUtils.DEFAULT_CURSOR);
+        UIEnvironment.setToolTipText(this, null);
     }
 
     /**

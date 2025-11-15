@@ -1,7 +1,7 @@
 package de.uzk.gui.dialogs;
 
-import de.uzk.gui.GuiUtils;
 import de.uzk.gui.SelectableText;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.StringUtils;
 
@@ -35,7 +35,7 @@ public class DialogLegal {
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout(0, 20));
-        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
+        contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
         contentPanel.add(createUsagePanel(), BorderLayout.CENTER);
         contentPanel.add(createDisclaimerPanel(), BorderLayout.SOUTH);
 

@@ -4,7 +4,7 @@ import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
 import de.uzk.config.Settings;
 import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.areas.AreaContainerInteractive;
 
 import javax.swing.*;
@@ -85,7 +85,7 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
         menuWindow.add(itemFontRestore = new CustomMenuItem(getWord("menu.window.fontSizeRestore"), actionHandler, SHORTCUT_FONT_SIZE_RESTORE));
         updateFontItems();
 
-        Desktop desktop = GuiUtils.getDesktopSecurely();
+        Desktop desktop = UIEnvironment.getDesktopSecurely();
         if (desktop == null || !desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
             menuWindow.addSeparator();
             menuWindow.add(new CustomMenuItem(getWord("menu.window.openSettings"), actionHandler, SHORTCUT_OPEN_SETTINGS));
@@ -96,7 +96,7 @@ public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
     private CustomMenu getMenuHelp(ActionHandler actionHandler) {
         CustomMenu menuHelp = new CustomMenu(getWord("menu.help"));
 
-        Desktop desktop = GuiUtils.getDesktopSecurely();
+        Desktop desktop = UIEnvironment.getDesktopSecurely();
         if (desktop == null || !desktop.isSupported(Desktop.Action.APP_ABOUT)) {
             String name = getWord("dialog.about").formatted(getWord("app.name"));
             menuHelp.add(new CustomMenuItem(name, actionHandler, SHORTCUT_SHOW_ABOUT));

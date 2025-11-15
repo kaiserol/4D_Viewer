@@ -1,6 +1,6 @@
 package de.uzk.utils;
 
-import de.uzk.gui.GuiUtils;
+import de.uzk.gui.UIEnvironment;
 
 import java.awt.*;
 import java.io.File;
@@ -150,14 +150,14 @@ public final class StringUtils {
      * und verwendet dabei die Standard-Schriftart des Systems.
      * <p>
      * Diese Methode ist eine bequeme Kurzform von
-     * {@link #wrapHtml(String, String)} und nutzt {@link GuiUtils#getFontName()}
+     * {@link #wrapHtml(String, String)} und nutzt {@link UIEnvironment#getFontName()}
      * als Standardfont.
      *
      * @param htmlContent Der einzubettende HTML-Inhalt
      * @return Vollständiger HTML-String inklusive &lt;html&gt;-, &lt;head&gt;- und &lt;body&gt;-Tags
      */
     public static String wrapHtml(String htmlContent) {
-        return wrapHtml(htmlContent, GuiUtils.getFontName());
+        return wrapHtml(htmlContent, UIEnvironment.getFontName());
     }
 
     /**

@@ -9,7 +9,7 @@ import de.uzk.gui.areas.AreaTabs;
 import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.gui.observer.*;
 import de.uzk.image.Axis;
-import de.uzk.utils.AppUtils;
+import de.uzk.image.ProjectHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -68,15 +68,15 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         logger.info("Building UI ...");
 
         // Fenster initialisieren
-        GuiUtils.updateFlatLaf();
-        GuiUtils.setImageIcon(this.container);
+        UIEnvironment.updateFlatLaf();
+        UIEnvironment.initImageIcon(this);
 
         this.container.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         this.container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.container.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                AppUtils.closeApp(container);
+                UIEnvironment.closeApp(Gui.this);
             }
         });
         this.container.addWindowFocusListener(new WindowAdapter() {
@@ -98,7 +98,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
         // Bilder laden
         // TODO: Warum rausgenommen (für mich)
 //        if (!openImagesDirectory(history.getLastIfExists(), workspace.getConfig().getImageFileType(), true))
-        if (!AppUtils.loadImagesDirectory(this, history.getLastIfExists(), null, true)) {
+        if (!ProjectHelper.loadImagesDirectory(this, history.getLastIfExists(), null, true)) {
             toggleOff();
         }
 
@@ -144,7 +144,7 @@ public class Gui extends AreaContainerInteractive<JFrame> {
 
         // Panel erstellen
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-        mainPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
+        mainPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
 
         // Bilder Verzeichnis Pfad hinzufügen
         AreaImagesDirectoryPath imagesDirectoryPath = new AreaImagesDirectoryPath(this);

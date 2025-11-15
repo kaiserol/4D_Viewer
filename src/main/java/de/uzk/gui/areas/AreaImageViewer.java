@@ -2,7 +2,7 @@ package de.uzk.gui.areas;
 
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.SnapshotHelper;
 import de.uzk.image.Axis;
 import de.uzk.io.ImageLoader;
@@ -260,7 +260,7 @@ public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
     // Hilfsmethoden
     // ========================================
     private void setBorder(boolean focusedPanel) {
-        Color borderColor = focusedPanel ? ColorUtils.COLOR_BLUE : GuiUtils.getBorderColor();
+        Color borderColor = focusedPanel ? ColorUtils.COLOR_BLUE : UIEnvironment.getBorderColor();
         this.container.setBorder(BorderFactory.createLineBorder(borderColor));
         this.panelView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
     }

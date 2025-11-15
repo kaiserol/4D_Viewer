@@ -1,7 +1,7 @@
 package de.uzk.gui.areas;
 
 import de.uzk.gui.Gui;
-import de.uzk.gui.GuiUtils;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.tabs.TabEdit;
 import de.uzk.gui.tabs.TabMarkers;
 import de.uzk.gui.tabs.TabNavigate;
@@ -45,10 +45,10 @@ public class AreaTabs extends AreaContainerInteractive<JPanel> {
     @Override
     public void updateTheme() {
         // TabbedPane Border aktualisieren
-        this.container.setBorder(BorderFactory.createLineBorder(GuiUtils.getBorderColor()));
+        this.container.setBorder(BorderFactory.createLineBorder(UIEnvironment.getBorderColor()));
 
         // Tabs Border aktualisieren
-        Border emptyBorder = GuiUtils.BORDER_EMPTY_DEFAULT;
+        Border emptyBorder = UIEnvironment.BORDER_EMPTY_DEFAULT;
         for (int i = 0; i < this.tabbedPane.getTabCount(); i++) {
             if (this.tabbedPane.getComponentAt(i) instanceof JPanel panel) {
                 panel.setBorder(emptyBorder);

@@ -7,7 +7,7 @@ import de.uzk.action.ActionType;
 import de.uzk.config.Language;
 import de.uzk.config.Theme;
 import de.uzk.io.ImageLoader;
-import de.uzk.utils.AppUtils;
+import de.uzk.utils.ComponentUtils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -21,7 +21,7 @@ import java.util.Locale;
 import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public final class GuiUtils {
+public final class UIEnvironment {
     // Farben & Schriftart
     private static Color textColor;
     private static Color borderColor;
@@ -48,7 +48,7 @@ public final class GuiUtils {
     /**
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
      */
-    private GuiUtils() {
+    private UIEnvironment() {
         // Verhindert Instanziierung dieser Klasse
     }
 
@@ -68,11 +68,6 @@ public final class GuiUtils {
         return font.getName();
     }
 
-    public static Desktop getDesktopSecurely() {
-        if (!Desktop.isDesktopSupported()) return null;
-        return Desktop.getDesktop();
-    }
-
     private static FlatLaf getDarkMode() {
         return new FlatMacDarkLaf();
     }
@@ -81,15 +76,15 @@ public final class GuiUtils {
         return new FlatMacLightLaf();
     }
 
-    // ========================================
-    // Aktualisierungen
-    // ========================================
+    public static Desktop getDesktopSecurely() {
+        if (!Desktop.isDesktopSupported()) return null;
+        return Desktop.getDesktop();
+    }
 
-    /**
-     * Initialisiert plattformspezifische Eigenschaften.
-     * Sollte vor Erstellen der GUI aufgerufen werden.
-     */
-    public static void setupAppProperties() {
+    // ========================================
+    // Initialisierungen
+    // ========================================
+    public static void initPlatformProperties() {
         // macOS Eigenschaften
         if (operationSystem.isMacOS()) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -97,7 +92,7 @@ public final class GuiUtils {
         }
     }
 
-    public static void setupApp(Gui gui) {
+    public static void initDesktopIntegration(Gui gui) {
         Desktop desktop = getDesktopSecurely();
         if (gui == null || desktop == null) return;
 
@@ -119,11 +114,27 @@ public final class GuiUtils {
         if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
             desktop.setQuitHandler((QuitEvent e, QuitResponse response) -> {
                 response.cancelQuit();
-                AppUtils.closeApp(gui.getContainer());
+                closeApp(gui);
             });
         }
     }
 
+    public static void initImageIcon(Gui gui) {
+        gui.getContainer().setIconImage(ImageLoader.APP_IMAGE);
+
+        // App-Icon (plattformübergreifend) setzen
+        if (Taskbar.isTaskbarSupported()) {
+            try {
+                Taskbar.getTaskbar().setIconImage(ImageLoader.APP_IMAGE);
+            } catch (Exception e) {
+                logger.error("Failed setting taskbar icon");
+            }
+        }
+    }
+
+    // ========================================
+    // Aktualisierungen
+    // ========================================
     public static void updateFlatLaf() {
         // Setup Theme
         FlatLaf.setup(settings.getTheme().isLightMode() ? getLightMode() : getDarkMode());
@@ -198,28 +209,32 @@ public final class GuiUtils {
     // ========================================
     // Hilfsmethoden
     // ========================================
-    public static void openWebLink(URL url) {
-        Desktop desktop = getDesktopSecurely();
-        if (desktop == null) return;
+    public static void closeApp(Gui gui) {
+        if (settings.isConfirmExit()) {
+            JCheckBox checkBox = ComponentUtils.createCheckBox(getWord("optionPane.closeApp.checkBox"), null);
+            Object[] message = new Object[]{getWord("optionPane.closeApp.question"), checkBox};
+            int option = JOptionPane.showConfirmDialog(
+                gui.getContainer(),
+                message,
+                getWord("optionPane.title.confirm"),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
 
-        try {
-            desktop.browse(url.toURI());
-        } catch (Exception e) {
-            logger.error(String.format("Failed opening web link '%s'", url));
+            // Wenn der Benutzer "Nein" klickt → Abbrechen
+            if (option != JOptionPane.YES_OPTION) return;
+
+            // Wenn Checkbox aktiv → Einstellung merken
+            if (checkBox.isSelected()) UIEnvironment.updateConfirmExit(false);
         }
-    }
 
-    public static void setImageIcon(JFrame frame) {
-        frame.setIconImage(ImageLoader.APP_IMAGE);
+        // Dateien abspeichern
+        settings.save();
+        history.save();
+        workspace.saveConfigs();
 
-        // App-Icon (plattformübergreifend) setzen
-        if (Taskbar.isTaskbarSupported()) {
-            try {
-                Taskbar.getTaskbar().setIconImage(ImageLoader.APP_IMAGE);
-            } catch (Exception e) {
-                logger.error("Failed setting taskbar icon");
-            }
-        }
+        // Anwendung beenden
+        System.exit(0);
     }
 
     public static void setToolTipText(JComponent component, String text) {
@@ -241,5 +256,16 @@ public final class GuiUtils {
     public static void setCursor(JComponent component, Cursor cursor) {
         if (component == null) return;
         SwingUtilities.invokeLater(() -> component.setCursor(cursor));
+    }
+
+    public static void openWebLink(URL url) {
+        Desktop desktop = getDesktopSecurely();
+        if (desktop == null) return;
+
+        try {
+            desktop.browse(url.toURI());
+        } catch (Exception e) {
+            logger.error(String.format("Failed opening web link '%s'", url));
+        }
     }
 }

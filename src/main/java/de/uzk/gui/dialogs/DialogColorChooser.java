@@ -1,6 +1,6 @@
 package de.uzk.gui.dialogs;
 
-import de.uzk.gui.GuiUtils;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.GraphicsUtils;
@@ -73,7 +73,7 @@ public class DialogColorChooser {
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout(0, 10));
-        contentPanel.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
+        contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
         contentPanel.add(createFavoritesPanel(), BorderLayout.NORTH);
         contentPanel.add(createPreviewPanel(), BorderLayout.CENTER);
         contentPanel.add(createButtonsPanel(), BorderLayout.SOUTH);
@@ -97,7 +97,7 @@ public class DialogColorChooser {
         JPanel favoritesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         favoritesPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createTitledBorder(getWord("label.favorites")),
-            GuiUtils.BORDER_EMPTY_SMALL
+            UIEnvironment.BORDER_EMPTY_SMALL
         ));
         favoritesPanel.setOpaque(false);
 
@@ -134,7 +134,7 @@ public class DialogColorChooser {
         JPanel previewPanel = new JPanel(new GridBagLayout());
         previewPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createTitledBorder(getWord("label.preview")),
-            GuiUtils.BORDER_EMPTY_SMALL
+            UIEnvironment.BORDER_EMPTY_SMALL
         ));
 
         // Layout Manager
@@ -273,7 +273,7 @@ public class DialogColorChooser {
 
     private static JLabel createSampleTextLabel(Color background, Color foreground) {
         JLabel label = new JLabel(getWord("label.sampleText"));
-        label.setBorder(GuiUtils.BORDER_EMPTY_TINY);
+        label.setBorder(UIEnvironment.BORDER_EMPTY_TINY);
         if (background != null) {
             label.setOpaque(true);
             label.setBackground(background);
@@ -293,7 +293,7 @@ public class DialogColorChooser {
     private static JLabel createColorField(Color background, Consumer<Color> clicked) {
         JLabel colorField = new JLabel();
         colorField.setHorizontalAlignment(SwingConstants.CENTER);
-        colorField.setBorder(GuiUtils.BORDER_EMPTY_DEFAULT);
+        colorField.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
         colorField.setPreferredSize(new Dimension(100, 0));
         colorField.setOpaque(true);
         colorField.addMouseListener(new MouseAdapter() {
@@ -354,14 +354,14 @@ public class DialogColorChooser {
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     hover = true;
-                    GuiUtils.setToolTipText(FavoriteColorButton.this, isAddButton ? getWord("label.favorite.add") : null);
+                    UIEnvironment.setToolTipText(FavoriteColorButton.this, isAddButton ? getWord("label.favorite.add") : null);
                     repaint();
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
                     hover = false;
-                    GuiUtils.setToolTipText(FavoriteColorButton.this, null);
+                    UIEnvironment.setToolTipText(FavoriteColorButton.this, null);
                     repaint();
                 }
             });
