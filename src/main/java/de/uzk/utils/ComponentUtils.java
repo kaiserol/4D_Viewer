@@ -151,9 +151,6 @@ public final class ComponentUtils {
      */
     public static JSpinner createSpinner(int min, int max, boolean cycling, Consumer<Integer> listener) {
         JSpinner spinner = new JSpinner(new CyclingSpinnerNumberModel(min, min, max, 1, cycling));
-        if (spinner.getEditor() instanceof JSpinner.DefaultEditor editor) {
-            editor.getTextField().setHorizontalAlignment(JTextField.LEFT);
-        }
 
         if (listener != null) {
             spinner.addChangeListener(e -> listener.accept((int) spinner.getValue()));

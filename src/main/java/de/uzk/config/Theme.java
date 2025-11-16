@@ -49,8 +49,8 @@ public enum Theme {
     @Override
     public String toString() {
         return switch (this) {
-            case DARK_MODE -> getWord("settings.theme.darkMode");
-            case LIGHT_MODE -> getWord("settings.theme.lightMode");
+            case DARK_MODE -> getWord("theme.darkMode");
+            case LIGHT_MODE -> getWord("theme.lightMode");
         };
     }
 }

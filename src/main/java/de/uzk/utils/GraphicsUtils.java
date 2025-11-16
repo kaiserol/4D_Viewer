@@ -11,7 +11,7 @@ import java.util.List;
 
 import static de.uzk.Main.workspace;
 
-// TODO: Verbessere die Methoden, falls nötig
+// TODO: Verbessere die Methoden
 public final class GraphicsUtils {
 
     /**
@@ -24,8 +24,8 @@ public final class GraphicsUtils {
     public static BufferedImage getEditedImage(BufferedImage image, boolean transparentBackground, java.util.List<Marker> appliedMarkers) {
         int imageType = transparentBackground ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
         float offset = 128 * ((workspace.getConfig().getBrightness() - 100) / 100f);
-        // TODO: debug auskommentieren wenn du es wieder brauchst
-//        System.out.printf("Brightness %d creates offset %f%n", workspace.getConfig().getBrightness(), offset);
+        // TODO: Debug auskommentieren?
+//        logger.debug(String.format("Brightness %d creates offset %f", workspace.getConfig().getBrightness(), offset));
         float scale = workspace.getConfig().getContrast() / 100f;
 
         BufferedImage transformed = transformImage(image, imageType, workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), appliedMarkers);

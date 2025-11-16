@@ -87,6 +87,7 @@ public final class UIManagerConfigurator {
         UIManager.put("Spinner.selectionArc", UIEnvironment.ARC_DEFAULT);
         UIManager.put("Spinner.buttonStyle", "roundRect");
         UIManager.put("Spinner.padding", UIEnvironment.INSETS_MEDIUM);
+        UIManager.put("Spinner.editorAlignment", SwingConstants.LEFT);
 
         // Pfeilfarben
         UIManager.put("Spinner.buttonArrowType", UIEnvironment.ARROW_TYPE);

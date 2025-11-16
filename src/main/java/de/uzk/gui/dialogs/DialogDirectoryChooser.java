@@ -87,7 +87,6 @@ public class DialogDirectoryChooser {
     }
 
     private void setTitel(JFileChooser fileChooser) {
-        // TODO: Verändere... (openDirectory soll da nicht stehen)
         String dialogTitle = String.format("%s", getWord("menu.project.openDirectory"));
         fileChooser.setDialogTitle(dialogTitle);
 

@@ -239,10 +239,10 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
             BufferedImage originalImage = ImageLoader.loadImage(imagePath, false);
             List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
             if (originalImage != null) {
+                // TODO: Debug auskommentieren?
 //                long t = System.nanoTime();
                 this.currentImage = GraphicsUtils.getEditedImage(originalImage, true, markers);
 //                long dt = System.nanoTime() - t;
-                // TODO: debug auskommentieren wenn du es wieder brauchst
 //                logger.debug(String.format("Edited image in %,d ns", dt));
             }
         }
