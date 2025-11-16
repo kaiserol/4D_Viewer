@@ -11,6 +11,7 @@ import de.uzk.markers.Marker;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.GraphicsUtils;
+import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.List;
 
+import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
@@ -239,11 +241,10 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
             BufferedImage originalImage = ImageLoader.loadImage(imagePath, false);
             List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
             if (originalImage != null) {
-                // TODO: Debug auskommentieren?
-//                long t = System.nanoTime();
-                this.currentImage = GraphicsUtils.getEditedImage(originalImage, true, markers);
-//                long dt = System.nanoTime() - t;
-//                logger.debug(String.format("Edited image in %,d ns", dt));
+                this.currentImage = NumberUtils.measureTime(
+                    () -> GraphicsUtils.getEditedImage(originalImage, true, markers),
+                    time -> logger.debug("Edited image in " + time)
+                );
             }
         }
 
