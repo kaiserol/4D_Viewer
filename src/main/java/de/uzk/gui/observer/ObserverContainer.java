@@ -1,17 +1,16 @@
-package de.uzk.gui.areas;
+package de.uzk.gui.observer;
 
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
-import de.uzk.gui.observer.*;
 import de.uzk.image.Axis;
 
 import java.awt.*;
 
-public abstract class AreaContainerInteractive<T extends Container> implements HandleActionListener, ToggleListener, UpdateImageListener, UpdateThemeListener, AppFocusListener {
+public abstract class ObserverContainer<T extends Container> implements HandleActionListener, ToggleListener, UpdateImageListener, UpdateThemeListener, AppFocusListener {
     protected T container;
     protected final Gui gui;
 
-    public AreaContainerInteractive(T container, Gui gui) {
+    public ObserverContainer(T container, Gui gui) {
         setContainer(container);
         this.gui = gui;
         if (gui != null) {
@@ -23,7 +22,7 @@ public abstract class AreaContainerInteractive<T extends Container> implements H
         }
     }
 
-    public final void setContainer(T container) {
+    private void setContainer(T container) {
         if (container == null) throw new NullPointerException("Container is null.");
         this.container = container;
     }

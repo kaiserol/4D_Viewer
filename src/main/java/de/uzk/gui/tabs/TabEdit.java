@@ -3,7 +3,7 @@ package de.uzk.gui.tabs;
 import de.uzk.action.ActionType;
 import de.uzk.config.Config;
 import de.uzk.gui.Gui;
-import de.uzk.gui.areas.AreaContainerInteractive;
+import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.NumberUtils;
 import de.uzk.gui.SnapshotHelper;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class TabEdit extends AreaContainerInteractive<JPanel> {
+public class TabEdit extends ObserverContainer<JPanel> {
     // Gui Elemente
     private JCheckBox mirrorXBox, mirrorYBox;
     private JSlider contrastSlider, brightnessSlider, zoomSlider;

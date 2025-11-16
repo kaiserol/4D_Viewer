@@ -1,11 +1,11 @@
 package de.uzk.gui.tabs;
 
 import de.uzk.config.Config;
-import de.uzk.utils.ComponentUtils;
 import de.uzk.gui.Gui;
 import de.uzk.gui.OGridBagConstraints;
-import de.uzk.gui.areas.AreaContainerInteractive;
+import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
+import de.uzk.utils.ComponentUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 // TODO: Überarbeite Klasse
-public class TabNavigate extends AreaContainerInteractive<JPanel> {
+public class TabNavigate extends ObserverContainer<JPanel> {
     // Gui Elemente
     private JSlider timeSlider;
     private JSlider levelSlider;

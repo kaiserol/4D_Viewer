@@ -1,6 +1,7 @@
 package de.uzk.gui.areas;
 
 import de.uzk.gui.Gui;
+import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.Axis;
 import de.uzk.utils.StringUtils;
@@ -11,7 +12,7 @@ import java.awt.*;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class AreaStatsBar extends AreaContainerInteractive<JPanel> {
+public class AreaStatsBar extends ObserverContainer<JPanel> {
     // Gui Elemente
     private JLabel labelTime;
     private JLabel labelLevel;

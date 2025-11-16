@@ -2,6 +2,7 @@ package de.uzk.gui.areas;
 
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
+import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.SnapshotHelper;
 import de.uzk.image.Axis;
@@ -24,7 +25,7 @@ import java.util.List;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class AreaImageViewer extends AreaContainerInteractive<JPanel> {
+public class AreaImageViewer extends ObserverContainer<JPanel> {
     // Gui Elemente
     private JPanel panelView, panelImage;
     private JScrollBar scrollBarTime, scrollBarLevel;

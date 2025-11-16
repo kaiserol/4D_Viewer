@@ -1,13 +1,13 @@
 package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionType;
-import de.uzk.utils.ComponentUtils;
 import de.uzk.gui.Gui;
-import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.gui.marker.MarkerEditor;
 import de.uzk.gui.marker.MarkerMappingInfo;
+import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
 import de.uzk.markers.MarkerMapping;
+import de.uzk.utils.ComponentUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,7 @@ import java.awt.*;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class TabMarkers extends AreaContainerInteractive<JPanel> {
+public class TabMarkers extends ObserverContainer<JPanel> {
     public TabMarkers(Gui gui) {
         super(new JPanel(), gui);
         this.rerender();

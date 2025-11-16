@@ -2,7 +2,6 @@ package de.uzk.gui;
 
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
-import de.uzk.gui.areas.AreaContainerInteractive;
 import de.uzk.gui.areas.AreaImageViewer;
 import de.uzk.gui.areas.AreaImagesDirectoryPath;
 import de.uzk.gui.areas.AreaTabs;
@@ -21,7 +20,7 @@ import java.util.List;
 import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class Gui extends AreaContainerInteractive<JFrame> {
+public class Gui extends ObserverContainer<JFrame> {
     // Gui Elemente
     private final ActionHandler actionHandler;
 

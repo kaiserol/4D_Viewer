@@ -5,7 +5,7 @@ import de.uzk.action.ActionType;
 import de.uzk.config.Settings;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
-import de.uzk.gui.areas.AreaContainerInteractive;
+import de.uzk.gui.observer.ObserverContainer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,7 @@ import static de.uzk.action.ActionType.*;
 import static de.uzk.config.LanguageHandler.getWord;
 import static de.uzk.io.ImageLoader.*;
 
-public class AppMenuBar extends AreaContainerInteractive<JMenuBar> {
+public class AppMenuBar extends ObserverContainer<JMenuBar> {
     // MenuBar Elemente
     private final CustomMenuBar menuBar;
     private CustomMenuItem itemFontDecrease;

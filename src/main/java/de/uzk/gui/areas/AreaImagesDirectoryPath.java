@@ -1,6 +1,7 @@
 package de.uzk.gui.areas;
 
 import de.uzk.gui.Gui;
+import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
 
 import javax.swing.*;
@@ -10,7 +11,7 @@ import java.nio.file.Path;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class AreaImagesDirectoryPath extends AreaContainerInteractive<JPanel> {
+public class AreaImagesDirectoryPath extends ObserverContainer<JPanel> {
     // Gui Elemente
     private JTextField txtFieldDirectory;
 

@@ -1,6 +1,7 @@
 package de.uzk.gui.areas;
 
 import de.uzk.gui.Gui;
+import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.tabs.TabEdit;
 import de.uzk.gui.tabs.TabMarkers;
@@ -12,7 +13,7 @@ import java.awt.*;
 
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class AreaTabs extends AreaContainerInteractive<JPanel> {
+public class AreaTabs extends ObserverContainer<JPanel> {
     // Gui Elemente
     private JTabbedPane tabbedPane;
 
