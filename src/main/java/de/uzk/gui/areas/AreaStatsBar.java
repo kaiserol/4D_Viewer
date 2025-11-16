@@ -1,8 +1,8 @@
 package de.uzk.gui.areas;
 
 import de.uzk.gui.Gui;
-import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.gui.UIEnvironment;
+import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
 import de.uzk.utils.StringUtils;
 
@@ -76,29 +76,29 @@ public class AreaStatsBar extends ObserverContainer<JPanel> {
     // Hilfsmethoden
     // ========================================
     private void updateTime() {
-        int time =  (int) (workspace.getTime() * workspace.getConfig().getTimeUnit());
-        int seconds = time % 60;
-        int minute = time / 60 % 60;
-        int hour = time / 60 / 60;
+        int totalSeconds = (int) (workspace.getTime() * workspace.getConfig().getTimeUnit());
+        int seconds = totalSeconds % 60;
+        int minute = totalSeconds / 60 % 60;
+        int hour = totalSeconds / 3_600;
 
         String timeString = String.format("%02d:%02d:%02d", hour, minute, seconds);
         this.labelTime.setText(StringUtils.wrapHtml(StringUtils.wrapBold(StringUtils.applyFontSize(
-                timeString, 175))));
+            timeString, 175))));
     }
 
     private void updateLevel() {
-        double level =  (int) (workspace.getLevel() * workspace.getConfig().getLevelUnit());
+        double level = (int) (workspace.getLevel() * workspace.getConfig().getLevelUnit());
         String levelString = String.format("%.01f μm", level);
         this.labelLevel.setText(StringUtils.wrapHtml(StringUtils.applyFontSize(
-                levelString, 75)));
+            levelString, 75)));
     }
 
     private void updateTimeLevel() {
         int time = workspace.getTime();
-        int level =  workspace.getLevel();
+        int level = workspace.getLevel();
         String timeString = String.format("%s: %d", getWord("menu.nav.time"), time);
         String levelString = String.format("%s: %d", getWord("menu.nav.level"), level);
         this.labelTimeLevel.setText(StringUtils.wrapHtml(StringUtils.wrapItalic(StringUtils.applyFontSize(
-                timeString + " / " + levelString, 75))));
+            timeString + " / " + levelString, 75))));
     }
 }
