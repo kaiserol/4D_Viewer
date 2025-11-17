@@ -6,7 +6,9 @@ import de.uzk.config.Settings;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.Workspace;
-import de.uzk.logger.LogEntryHandler;
+import de.uzk.logger.Logger;
+import de.uzk.logger.output.ConsoleOutput;
+import de.uzk.logger.output.HtmlOutput;
 
 import javax.swing.*;
 
@@ -27,14 +29,19 @@ import javax.swing.*;
  * Einzelheiten finden Sie in der Lizenz.
  */
 public class Main {
-    public static final LogEntryHandler logger;
+    public static final Logger logger;
+    public static final HtmlOutput htmlOutput;
+
     public static final OperatingSystem operationSystem;
     public static final Settings settings;
     public static final History history;
     public static final Workspace workspace;
 
     static {
-        logger = new LogEntryHandler(Main.class.getName());
+        logger = new Logger();
+        logger.addOutput(new ConsoleOutput());
+        logger.addOutput(htmlOutput = new HtmlOutput());
+
         operationSystem = OperatingSystem.load();
         settings = Settings.load();
         history = History.load();

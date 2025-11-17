@@ -19,9 +19,8 @@ public final class ColorUtils {
      */
     public static final Color COLOR_BLUE = new Color(0, 122, 255);
     public static final Color COLOR_GREEN = new Color(8, 166, 52);
-    public static final Color COLOR_YELLOW = new Color(252, 204, 78);
-    public static final Color COLOR_RED = new Color(255, 86, 86);
-    public static final Color COLOR_DARK_RED = new Color(148, 0, 0);
+    public static final Color COLOR_ORANGE = new Color(255, 170, 60);
+    public static final Color COLOR_RED = new Color(148, 0, 0);
 
     /**
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.

@@ -2,7 +2,6 @@ package de.uzk.gui.dialogs;
 
 import de.uzk.gui.SelectableText;
 import de.uzk.gui.UIEnvironment;
-import de.uzk.logger.LogEntry;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.NumberUtils;
 import de.uzk.utils.StringUtils;
@@ -11,8 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-import static de.uzk.Main.logger;
-import static de.uzk.Main.workspace;
+import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogLogViewer {
@@ -74,16 +72,11 @@ public class DialogLogViewer {
     }
 
     private JComponent createLogsPanel() {
-        StringBuilder logContent = new StringBuilder();
-        for (LogEntry logEntry : logger.getLogs()) {
-            logContent.append(logEntry.getFormattedText(true));
-        }
-        return createTextInScrollPane(StringUtils.wrapHtml(logContent.toString(), "monospaced"));
+        return createTextInScrollPane(htmlOutput.exportHtml());
     }
 
     private JComponent createMissingImagesPanel() {
-        String missingImages = StringUtils.wrapPre(workspace.getMissingImagesReport());
-        return createTextInScrollPane(StringUtils.wrapHtml(missingImages, "monospaced"));
+        return createTextInScrollPane(StringUtils.wrapPre(workspace.getMissingImagesReport()));
     }
 
     private JComponent createTextInScrollPane(String htmlContent) {
@@ -91,7 +84,7 @@ public class DialogLogViewer {
         panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
         // Text in ScrollPane packen
-        SelectableText text = new SelectableText(htmlContent);
+        SelectableText text = new SelectableText(StringUtils.wrapHtml(htmlContent, "monospaced"));
         text.setMargin(UIEnvironment.INSETS_SMALL);
 
         JScrollPane scrollPane = new JScrollPane(text);

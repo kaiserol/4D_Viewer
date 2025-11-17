@@ -104,7 +104,7 @@ public class MissingImagesReport {
 
             // Report ausgeben
             String headerText = createReportHeader(newlyMissingImages.size(), "newly missing");
-            logger.warning(headerText + reportBuilder);
+            logger.warn(headerText + reportBuilder);
         }
     }
 
@@ -173,7 +173,7 @@ public class MissingImagesReport {
 
     public static void logReport(int count, String type, StringBuilder report) {
         if (count > 0) {
-            logger.warning(createReportHeader(count, type) + report);
+            logger.warn(createReportHeader(count, type) + report);
         }
     }
 }

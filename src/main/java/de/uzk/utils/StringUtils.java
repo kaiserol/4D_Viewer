@@ -123,6 +123,16 @@ public final class StringUtils {
         return "<i>" + text + "</i>";
     }
 
+
+    /**
+     * Hebt den angegebenen Text unterstrichen hervor.
+     * @param text Der Text, der unterstrichen dargestellt werden soll
+     * @return HTML-String mit &lt;u&gt;-Tag
+     */
+    public static String wrapUnderlined(String text) {
+        return "<u>" + text + "</u>";
+    }
+
     /**
      * Erstellt einen klickbaren Hyperlink aus Text und URL.
      *
