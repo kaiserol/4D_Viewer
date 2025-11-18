@@ -15,18 +15,30 @@ import java.awt.*;
  */
 public final class ColorUtils {
     /**
-     * Farben
+     * Blauton zur Visualisierung von Debug-Informationen und primäre Standardfarbe für UI-Elemente.
      */
     public static final Color COLOR_BLUE = new Color(0, 122, 255);
+
+    /**
+     * Grünton zur Visualisierung von Standard-Informationen oder Erfolgszuständen.
+     */
     public static final Color COLOR_GREEN = new Color(8, 166, 52);
+
+    /**
+     * Orangeton zur Visualisierung von Warnhinweisen.
+     */
     public static final Color COLOR_ORANGE = new Color(255, 170, 60);
+
+    /**
+     * Rotton zur Visualisierung von Ausnahmen oder Fehlfunktion.
+     */
     public static final Color COLOR_RED = new Color(148, 0, 0);
 
     /**
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
      */
     private ColorUtils() {
-        // Verhindert die Instanziierung dieser Hilfsklasse
+        // Verhindert die Instanziierung dieser Klasse
     }
 
     /**
@@ -47,8 +59,8 @@ public final class ColorUtils {
     /**
      * Passt einen Farbwert an, indem er entweder aufgehellt oder abgedunkelt wird.
      *
-     * @param color   Die Ausgangsfarbe, darf nicht {@code null} sein
-     * @param factor  Der Intensitätsfaktor der Anpassung im Bereich von {@code 0} bis {@code 1}
+     * @param color    Die Ausgangsfarbe, darf nicht {@code null} sein
+     * @param factor   Der Intensitätsfaktor der Anpassung im Bereich von {@code 0} bis {@code 1}
      * @param brighten Wenn {@code true}, wird die Farbe aufgehellt; andernfalls wird sie abgedunkelt
      * @return Die angepasste Farbe
      * @throws NullPointerException     Falls {@code color} {@code null} ist
@@ -85,10 +97,10 @@ public final class ColorUtils {
     public static String colorToHex(Color color, boolean ignoreAlpha) {
         if (color == null) return "#000000";
 
+        int alpha = color.getAlpha();
         int red = color.getRed();
         int green = color.getGreen();
         int blue = color.getBlue();
-        int alpha = color.getAlpha();
 
         if (ignoreAlpha || alpha == 255) {
             return String.format("#%02X%02X%02X", red, green, blue);

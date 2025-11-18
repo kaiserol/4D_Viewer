@@ -49,7 +49,7 @@ public final class UIEnvironment {
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
      */
     private UIEnvironment() {
-        // Verhindert Instanziierung dieser Klasse
+        // Verhindert die Instanziierung dieser Klasse
     }
 
     public static Color getTextColor() {

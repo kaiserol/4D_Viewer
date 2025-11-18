@@ -64,7 +64,7 @@ public final class ImageLoader {
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
      */
     private ImageLoader() {
-        // Verhindert Instanziierung dieser Klasse
+        // Verhindert die Instanziierung dieser Klasse
     }
 
     public static BufferedImage loadImage(Path imagePath, boolean showErrorIfNotFound) {

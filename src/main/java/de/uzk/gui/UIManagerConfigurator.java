@@ -16,7 +16,7 @@ public final class UIManagerConfigurator {
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
      */
     private UIManagerConfigurator() {
-        // Verhindert Instanziierung dieser Klasse
+        // Verhindert die Instanziierung dieser Klasse
     }
 
     public static void setupMisc() {

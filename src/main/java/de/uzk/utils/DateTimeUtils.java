@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * Utility-Klasse für Datum- und Zeitformatierungen.
+ * Utility-Klasse zur einheitlichen Formatierung von Datum, Zeit und Dauer sowie zur einfachen Zeitmessung.
  *
  * <br><br>
  * Die Klasse ist als {@code final} deklariert, um eine Vererbung zu verhindern.

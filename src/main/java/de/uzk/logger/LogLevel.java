@@ -17,12 +17,12 @@ import java.awt.*;
  */
 public enum LogLevel {
     /**
-     * Ausführliche Diagnose-Informationen für Entwickler.
+     * Debug-Informationen für Entwickler.
      */
     DEBUG("DEBUG", ColorUtils.COLOR_BLUE),
 
     /**
-     * Standard-Informationen zum Programmablauf.
+     * Standard-Informationen.
      */
     INFO("INFO", ColorUtils.COLOR_GREEN),
 
@@ -32,7 +32,7 @@ public enum LogLevel {
     WARN("WARN", ColorUtils.COLOR_ORANGE),
 
     /**
-     * Schwere Fehler, die eine Ausnahme oder Fehlfunktion darstellen.
+     * Fehler, die eine Ausnahme oder Fehlfunktion darstellen.
      */
     ERROR("ERROR", ColorUtils.COLOR_RED);
 

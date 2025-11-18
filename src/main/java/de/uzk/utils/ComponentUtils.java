@@ -42,7 +42,7 @@ public final class ComponentUtils {
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
      */
     private ComponentUtils() {
-        // Verhindert Instanziierung dieser Klasse
+        // Verhindert die Instanziierung dieser Klasse
     }
 
     /**

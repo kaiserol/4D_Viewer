@@ -29,7 +29,7 @@ public final class StringUtils {
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
      */
     private StringUtils() {
-        // Verhindert Instanziierung dieser Klasse
+        // Verhindert die Instanziierung dieser Klasse
     }
 
     /**

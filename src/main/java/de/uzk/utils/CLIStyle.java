@@ -16,7 +16,7 @@ import java.util.List;
  * besitzt die Klasse einen privaten Konstruktor, um eine Instanziierung zu
  * unterbinden.
  */
-public class CLIStyle {
+public final class CLIStyle {
     // ANSI Escape Prefix für die Formatierung
     private static final String ESC = "\033[";
 
@@ -63,8 +63,11 @@ public class CLIStyle {
         printLine("=== Ende der Demo ===");
     }
 
+    /**
+     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
+     */
     private CLIStyle() {
-        // Verhindert die Instanziierung dieser Hilfsklasse
+        // Verhindert die Instanziierung dieser Klasse
     }
 
     /**

@@ -18,7 +18,7 @@ public final class GraphicsUtils {
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
      */
     private GraphicsUtils() {
-        // Verhindert Instanziierung dieser Klasse
+        // Verhindert die Instanziierung dieser Klasse
     }
 
     public static BufferedImage getEditedImage(BufferedImage image, boolean transparentBackground, java.util.List<Marker> appliedMarkers) {

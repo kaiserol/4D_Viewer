@@ -45,7 +45,7 @@ public final class CharsetDetector {
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
      */
     private CharsetDetector() {
-        // Verhindert Instanziierung dieser Klasse
+        // Verhindert die Instanziierung dieser Klasse
     }
 
     /**
