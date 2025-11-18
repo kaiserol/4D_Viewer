@@ -8,7 +8,7 @@ import de.uzk.gui.areas.AreaTabs;
 import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.gui.observer.*;
 import de.uzk.image.Axis;
-import de.uzk.image.ProjectHelper;
+import de.uzk.utils.ProjectUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -97,7 +97,7 @@ public class Gui extends ObserverContainer<JFrame> {
         // Bilder laden
         // TODO: Warum rausgenommen (für mich)
 //        if (!openImagesDirectory(history.getLastIfExists(), workspace.getConfig().getImageFileType(), true))
-        if (!ProjectHelper.loadImagesDirectory(this, history.getLastIfExists(), null, true)) {
+        if (!ProjectUtils.loadImagesDirectory(this, history.getLastIfExists(), null, true)) {
             toggleOff();
         }
 

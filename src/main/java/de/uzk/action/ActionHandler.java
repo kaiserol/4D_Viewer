@@ -5,7 +5,7 @@ import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.dialogs.*;
 import de.uzk.image.Axis;
-import de.uzk.image.ProjectHelper;
+import de.uzk.utils.ProjectUtils;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -75,9 +75,9 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
         if (actionType == null) return;
         switch (actionType) {
             // Projekte Shortcuts
-            case SHORTCUT_OPEN_FOLDER -> ProjectHelper.openProject(gui);
-            case SHORTCUT_OPEN_RECENT -> ProjectHelper.openRecents(gui);
-            case SHORTCUT_CLOSE_PROJECT -> ProjectHelper.closeProject(gui);
+            case SHORTCUT_OPEN_FOLDER -> ProjectUtils.openProject(gui);
+            case SHORTCUT_OPEN_RECENT -> ProjectUtils.openRecents(gui);
+            case SHORTCUT_CLOSE_PROJECT -> ProjectUtils.closeProject(gui);
             case SHORTCUT_SAVE_PROJECT -> {
                 workspace.saveConfigs();
                 gui.registerConfigSaved();
