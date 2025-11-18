@@ -1,6 +1,5 @@
 package de.uzk.utils;
 
-import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
 import de.uzk.gui.dialogs.DialogDirectoryChooser;
 import de.uzk.gui.dialogs.DialogLoadingImages;
@@ -156,7 +155,6 @@ public final class ProjectUtils {
         switch (result) {
             case LOADING_SUCCESSFUL -> {
                 gui.toggleOn();
-                gui.handleAction(ActionType.ACTION_ADD_MARKER);
                 return true;
             }
             case DIRECTORY_ALREADY_LOADED -> {

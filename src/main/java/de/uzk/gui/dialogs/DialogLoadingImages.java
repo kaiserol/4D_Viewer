@@ -50,12 +50,19 @@ public class DialogLoadingImages implements LoadingImageListener {
         );
     }
 
+
     public LoadingResult load(Path imagesDirectory, ImageFileType imageFileType) {
         if (imagesDirectory == null || !Files.exists(imagesDirectory)) return LoadingResult.DIRECTORY_DOES_NOT_EXIST;
 
-        // TODO: Warum rausgenommen (für mich)
-//        this.dialog.setTitle(getWord("dialog.imageLoading") + " (" + imageFileType.getDescription() + ")");
-        this.dialog.setTitle(getWord("dialog.loadingImages"));
+
+        String title = getWord("dialog.loadingImages");
+        if(imageFileType != null) {
+            // Wenn wir ein bestehendes Projekt öffnen, wird der imageFileType erst später aus der Config ausgelesen.
+            // Um ihn jetzt schon anzeigen zu können, müssten wir die Config vorher schon einlesen.
+
+             title  += " (" + imageFileType.getDescription() + ")";
+        }
+        this.dialog.setTitle(title);
         this.dialog.getContentPane().removeAll();
         this.dialog.setLayout(new BorderLayout());
 
