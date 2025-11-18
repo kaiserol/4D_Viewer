@@ -2,11 +2,11 @@ package de.uzk.gui.areas;
 
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
-import de.uzk.gui.SnapshotHelper;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
 import de.uzk.io.ImageLoader;
+import de.uzk.io.SnapshotHelper;
 import de.uzk.markers.Marker;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;

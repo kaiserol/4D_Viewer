@@ -37,12 +37,12 @@ import static javax.swing.event.HyperlinkEvent.EventType.*;
 public class SelectableText extends JEditorPane implements HyperlinkListener {
 
     /**
-     * True, wenn die Command-/Strg-Taste aktuell gedrückt ist
+     * {@code true}, wenn die Command-/Strg-Taste aktuell gedrückt ist
      */
     private volatile boolean commandPressed = false;
 
     /**
-     * True, wenn sich der Mauszeiger aktuell über einem Hyperlink befindet
+     * {@code true}, wenn sich der Mauszeiger aktuell über einem Hyperlink befindet
      */
     private boolean overLink = false;
 
@@ -214,7 +214,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     /**
      * Färbt den Hyperlink nur dann ein, wenn Command/Ctrl gedrückt ist.
      *
-     * @param active True, wenn Link aktiv ist, sonst false
+     * @param active {@code true}, wenn Link aktiv ist, sonst false
      */
     private void applyLinkHoverStyle(boolean active) {
         if (currentLinkElement == null) return;

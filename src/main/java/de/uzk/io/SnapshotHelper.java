@@ -1,6 +1,6 @@
-package de.uzk.gui;
+package de.uzk.io;
 
-import de.uzk.io.PathManager;
+import de.uzk.gui.SnapshotCropper;
 import de.uzk.utils.DateTimeUtils;
 import de.uzk.utils.NumberUtils;
 

@@ -145,7 +145,7 @@ public final class ComponentUtils {
      *
      * @param min      Minimalwert
      * @param max      Maximalwert
-     * @param cycling  True, wenn der Spinner am Ende wieder von vorn beginnt
+     * @param cycling  {@code true}, wenn der Spinner am Ende wieder von vorn beginnt
      * @param listener Consumer, der beim Ändern des Werts aufgerufen wird; kann null sein
      * @return Der erstellte JSpinner
      */
@@ -309,7 +309,7 @@ public final class ComponentUtils {
      * Aktiviert oder deaktiviert alle Kind-Komponenten rekursiv.
      *
      * @param root    Container, deren Kind-Komponenten gesetzt werden
-     * @param enabled True, wenn aktiviert, false, wenn deaktiviert
+     * @param enabled {@code true}, wenn aktiviert, false, wenn deaktiviert
      */
     public static void setEnabled(Container root, boolean enabled) {
         if (root == null) return;

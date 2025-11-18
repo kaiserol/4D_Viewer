@@ -31,7 +31,7 @@ public final class NumberUtils {
      * @param value    Zu prüfender Wert
      * @param minValue Untere Grenze (einschließlich)
      * @param maxValue Obere Grenze (einschließlich)
-     * @return True, wenn der Wert im Bereich liegt (mit EPSILON-Toleranz)
+     * @return {@code true}, wenn der Wert im Bereich liegt (mit EPSILON-Toleranz)
      */
     public static boolean valueInRange(double value, double minValue, double maxValue) {
         return minValue - EPSILON <= value && value <= maxValue + EPSILON;
@@ -43,7 +43,7 @@ public final class NumberUtils {
      * @param value    Zu prüfender Wert
      * @param minValue Untere Grenze (einschließlich)
      * @param maxValue Obere Grenze (einschließlich)
-     * @return True, wenn der Wert im Bereich liegt
+     * @return {@code true}, wenn der Wert im Bereich liegt
      */
     public static boolean valueInRange(int value, int minValue, int maxValue) {
         return minValue <= value && value <= maxValue;
