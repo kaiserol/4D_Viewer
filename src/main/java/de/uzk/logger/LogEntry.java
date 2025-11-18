@@ -1,9 +1,8 @@
 package de.uzk.logger;
 
+import de.uzk.utils.DateTimeUtils;
 import de.uzk.utils.StringUtils;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,12 +40,6 @@ public class LogEntry {
      * Die Quelle des Log-Eintrags, aus der der Log-Aufruf stammt.
      */
     private final String source;
-
-    /**
-     * Der Formatierer für den Zeitstempel (inklusive Millisekunden).
-     */
-    private static final DateTimeFormatter DATE_TIME_FORMAT =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
     /**
      * Erstellt einen neuen LogEntry.
@@ -104,7 +97,7 @@ public class LogEntry {
      * @return Formatierter Zeitstempel
      */
     private String initTimeStamp() {
-        return LocalDateTime.now().format(DATE_TIME_FORMAT);
+        return DateTimeUtils.formatDateTime(DateTimeUtils.DATE_TIME_FORMAT);
     }
 
     /**

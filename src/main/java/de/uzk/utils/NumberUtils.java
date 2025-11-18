@@ -1,8 +1,5 @@
 package de.uzk.utils;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 /**
  * Utility-Klasse für numerische Operationen und Berechnungen.
  *
@@ -22,7 +19,7 @@ public final class NumberUtils {
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
      */
     private NumberUtils() {
-        // Verhindert die Instanziierung dieser Hilfsklasse
+        // Verhindert die Instanziierung dieser Klasse
     }
 
     /**
@@ -116,59 +113,5 @@ public final class NumberUtils {
     private static int normalizeAngle(int rotationAngle) {
         int a = rotationAngle % 360;
         return a < 0 ? a + 360 : a;
-    }
-
-    /**
-     * Führt eine Aktion aus, misst dabei die Ausführungszeit und gibt das Ergebnis der Aktion zurück.
-     * Die gemessene Zeit wird über den angegebenen {@link Consumer} als formatierter String ausgegeben.
-     *
-     * @param action       Die auszuführende Aktion, deren Laufzeit gemessen wird.
-     * @param timeConsumer Ein Konsument, der den formatierten Zeit-String erhält.
-     * @param <T>          Rückgabetyp der Aktion.
-     * @return Das Ergebnis der ausgeführten Aktion.
-     */
-    public static <T> T measureTime(Supplier<T> action, Consumer<String> timeConsumer) {
-        long start = System.nanoTime();
-        T result = action.get();
-        long duration = System.nanoTime() - start;
-        timeConsumer.accept(formatDuration(duration));
-        return result;
-    }
-
-    /**
-     * Formatiert eine Zeitdauer in Nanosekunden in einen gut lesbaren Zeit-String.
-     * Das Ausgabeformat richtet sich automatisch nach der Länge der Dauer:
-     *
-     * <ul>
-     *     <li>< 1 Sekunde → Millisekunden (z. B. {@code 87 ms})</li>
-     *     <li>< 1 Minute → Sekunden.millisekunden (z. B. {@code 4.087 s})</li>
-     *     <li>< 1 Stunde → mm:ss (z. B. {@code 02:15})</li>
-     *     <li>≥ 1 Stunde → HH:mm:ss (z. B. {@code 01:02:45})</li>
-     * </ul>
-     *
-     * @param nanos Die Dauer in Nanosekunden.
-     * @return Ein formatierter Zeit-String entsprechend der gemessenen Dauer.
-     */
-    private static String formatDuration(long nanos) {
-        long totalMillis = nanos / 1_000_000;
-        long millis = totalMillis % 1_000;
-
-        long totalSeconds = totalMillis / 1_000;
-        long seconds = totalSeconds % 60;
-
-        long totalMinutes = totalSeconds / 60;
-        long minutes = totalMinutes % 60;
-
-        long totalHours = totalMinutes / 60;
-
-        if (totalSeconds == 0) {
-            return millis + " ms";
-        } else if (totalMinutes == 0) {
-            return String.format("%d.%03d s", seconds, millis);
-        } else if (totalHours == 0) {
-            return String.format("%02d:%02d", minutes, seconds);
-        } else {
-            return String.format("%02d:%02d:%02d", totalHours, minutes, seconds);
-        }
     }
 }

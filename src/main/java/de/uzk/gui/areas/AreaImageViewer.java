@@ -10,8 +10,8 @@ import de.uzk.io.ImageLoader;
 import de.uzk.markers.Marker;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
+import de.uzk.utils.DateTimeUtils;
 import de.uzk.utils.GraphicsUtils;
-import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -241,7 +241,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
             BufferedImage originalImage = ImageLoader.loadImage(imagePath, false);
             List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
             if (originalImage != null) {
-                this.currentImage = NumberUtils.measureTime(
+                this.currentImage = DateTimeUtils.measureTime(
                     () -> GraphicsUtils.getEditedImage(originalImage, true, markers),
                     time -> logger.debug("Edited image in " + time)
                 );
