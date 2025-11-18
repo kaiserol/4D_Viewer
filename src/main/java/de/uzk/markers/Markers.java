@@ -12,9 +12,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.uzk.io.PathManager.MARKERS_FILE_NAME;
-import static de.uzk.io.PathManager.resolveProjectPath;
-
 public class Markers {
     @JsonGetter("markers")
     public List<MarkerMapping> getAllMarkers() {
@@ -38,12 +35,12 @@ public class Markers {
     }
 
     public void save() {
-        Path filePath = resolveProjectPath(MARKERS_FILE_NAME);
+        Path filePath = PathManager.resolveProjectPath(PathManager.MARKERS_FILE_NAME);
         PathManager.save(filePath, this);
     }
 
     public static Markers load() {
-        Path filePath = resolveProjectPath(MARKERS_FILE_NAME);
+        Path filePath = PathManager.resolveProjectPath(PathManager.MARKERS_FILE_NAME);
 
         Object object = PathManager.load(filePath, Markers.class);
         if (object instanceof Markers markers) {

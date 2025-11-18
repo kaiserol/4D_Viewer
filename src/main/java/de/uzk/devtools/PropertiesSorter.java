@@ -1,5 +1,6 @@
 package de.uzk.devtools;
 
+import de.uzk.io.PathManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -8,9 +9,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-
-import static de.uzk.io.PathManager.PROPERTIES_FILE_NAME_PATTERN;
-import static de.uzk.io.PathManager.RESOURCES_DIRECTORY;
 
 /**
  * Der {@code PropertiesSorter} dient dazu {@code .properties-Dateien} im Resource-Verzeichnis einzulesen
@@ -90,7 +88,7 @@ public final class PropertiesSorter {
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
      */
     private PropertiesSorter() {
-        // Verhindert Instanziierung dieser Klasse
+        // Verhindert die Instanziierung dieser Klasse
     }
 
     /**
@@ -186,15 +184,17 @@ public final class PropertiesSorter {
      */
     private static Path[] getPropertiesPaths() {
         Set<Path> propertyPaths = new TreeSet<>();
-        if (!Files.isDirectory(RESOURCES_DIRECTORY)) return new Path[0];
+        if (!Files.isDirectory(PathManager.RESOURCES_DIRECTORY)) return new Path[0];
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(RESOURCES_DIRECTORY, PROPERTIES_FILE_NAME_PATTERN)) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(PathManager.RESOURCES_DIRECTORY,
+            PathManager.PROPERTIES_FILE_NAME_PATTERN)) {
+
             for (Path filePath : stream) {
                 if (!Files.isRegularFile(filePath)) continue;
                 propertyPaths.add(filePath);
             }
         } catch (IOException e) {
-            System.err.printf("Failed reading the directory '%s'%n", RESOURCES_DIRECTORY);
+            System.err.printf("Failed reading the directory '%s'%n", PathManager.RESOURCES_DIRECTORY);
         }
 
         return propertyPaths.toArray(Path[]::new);

@@ -1,9 +1,9 @@
 package de.uzk.gui.marker;
 
-import de.uzk.io.ImageLoader;
 import de.uzk.gui.OGridBagConstraints;
 import de.uzk.gui.dialogs.DialogColorChooser;
 import de.uzk.image.ImageFile;
+import de.uzk.io.ImageLoader;
 import de.uzk.markers.Marker;
 import de.uzk.markers.MarkerShape;
 

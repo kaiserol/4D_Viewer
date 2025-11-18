@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,37 +21,44 @@ import static de.uzk.Main.workspace;
  * <pre>
  *  ~/4D_Viewer/
  *  ├── .config/
- *      ├── history.txt
- *      └── settings.json
+ *  │   ├── history.txt
+ *  │   └── settings.json
+ *  │
+ *  ├── .logs/
+ *  │   ├── &lt;Log-Datei&gt;
+ *  │   └── ...
+ *  │
  *  ├── projects/
  *  │   └── &lt;ProjektName&gt;/
+ *  │       ├── snapshots/
  *  │       ├── config.json
- *  │       ├── markers.json
- *  │       └── snapshots/
+ *  │       └── markers.json
  * </pre>
  */
 public final class PathManager {
-    // Systemverzeichnisse Pfade
+    // Hauptpfade im Systemverzeichnis
     public static final Path USER_DIRECTORY = Path.of(System.getProperty("user.dir"));
     public static final Path USER_HOME_DIRECTORY = Path.of(System.getProperty("user.home"));
 
-    // Ressourcenverzeichnis Pfad
+    // Hauptpfade im Ressourcenverzeichnis
     public static final Path RESOURCES_DIRECTORY = Paths.get("src/main/resources");
-
-    // Ordner- und Dateinamen im Ressourcenverzeichnis
     public static final String PROPERTIES_FILE_NAME_PATTERN = "*.properties";
 
-    // Ordner und Dateinamen im App-Verzeichnis
+    // Hauptpfade im Benutzerverzeichnis
     private static final Path APP_DIRECTORY = Path.of("4D_Viewer");
     private static final Path CONFIG_DIRECTORY = Path.of(".config");
+    private static final Path LOGS_DIRECTORY = Path.of(".logs");
     private static final Path PROJECTS_DIRECTORY = Path.of("projects");
 
+    // Pfade im Konfigurationsverzeichnis
     public static final Path SETTINGS_FILE_NAME = Path.of("settings.json");
     public static final Path HISTORY_FILE_NAME = Path.of("history.txt");
 
-    // Ordner- und Dateinamen im Projekte-Verzeichnis
-    public static final Path SNAPSHOTS_DIRECTORY = Path.of("snapshots");
+    // Pfade im Protokollverzeichnis
+    public static final Path DAILY_LOG_FILE_NAME = Path.of("app_yyyy-MM-dd.log");
 
+    // Pfade im Projektverzeichnis
+    public static final Path SNAPSHOTS_DIRECTORY = Path.of("snapshots");
     public static final Path CONFIG_FILE_NAME = Path.of("config.json");
     public static final Path MARKERS_FILE_NAME = Path.of("markers.json");
 
@@ -59,6 +67,7 @@ public final class PathManager {
         Path appDirectory = getAppRoot();
         createIfNotExist(appDirectory);
         createIfNotExist(appDirectory.resolve(CONFIG_DIRECTORY));
+        createIfNotExist(appDirectory.resolve(LOGS_DIRECTORY));
         createIfNotExist(appDirectory.resolve(PROJECTS_DIRECTORY));
     }
 
@@ -66,11 +75,11 @@ public final class PathManager {
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
      */
     private PathManager() {
-        // Verhindert Instanziierung dieser Klasse
+        // Verhindert die Instanziierung dieser Klasse
     }
 
     // ========================================
-    // Pfad Erstellungsmethoden
+    // Hauptpfad-Auflösungen
     // ========================================
     private static Path getAppRoot() {
         return USER_HOME_DIRECTORY.resolve(APP_DIRECTORY);
@@ -80,12 +89,23 @@ public final class PathManager {
         return getAppRoot().resolve(CONFIG_DIRECTORY);
     }
 
+    private static Path getLogsPath() {
+        return getAppRoot().resolve(LOGS_DIRECTORY);
+    }
+
     private static Path getProjectsPath() {
         return getAppRoot().resolve(PROJECTS_DIRECTORY);
     }
 
+    // ========================================
+    // Pfad-Auflösungen
+    // ========================================
     public static Path resolveConfigPath(Path relativePath) {
         return getConfigPath().resolve(relativePath);
+    }
+
+    public static Path resolveLogsPath(Path relativePath) {
+        return getLogsPath().resolve(relativePath);
     }
 
     public static Path resolveProjectPath(Path relativePath) {
@@ -99,6 +119,14 @@ public final class PathManager {
         createIfNotExist(projectPath);
 
         return projectPath.resolve(relativePath);
+    }
+
+    // ========================================
+    // Pfad Erstellungsmethoden
+    // ========================================
+    public static Path getDailyLogFile() {
+        String date = LocalDate.now().toString(); // yyyy-MM-dd
+        return getLogsPath().resolve("app_" + date + ".log");
     }
 
     // ========================================
@@ -173,6 +201,7 @@ public final class PathManager {
 
         if (Objects.equals(directoryName, APP_DIRECTORY.getFileName().toString())) return "app";
         else if (Objects.equals(directoryName, CONFIG_DIRECTORY.getFileName().toString())) return "config";
+        else if (Objects.equals(directoryName, LOGS_DIRECTORY.getFileName().toString())) return "logs";
         else if (Objects.equals(directoryName, PROJECTS_DIRECTORY.getFileName().toString())) return "projects";
         else if (Objects.equals(directoryName, SNAPSHOTS_DIRECTORY.getFileName().toString())) return "snapshots";
         else {

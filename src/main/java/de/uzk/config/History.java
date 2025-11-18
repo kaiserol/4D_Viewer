@@ -7,9 +7,6 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
-import static de.uzk.io.PathManager.HISTORY_FILE_NAME;
-import static de.uzk.io.PathManager.resolveConfigPath;
-
 public class History {
     // Historie
     private final LinkedList<Path> history;
@@ -55,7 +52,7 @@ public class History {
     }
 
     public void save() {
-        Path filePath = resolveConfigPath(HISTORY_FILE_NAME);
+        Path filePath = PathManager.resolveConfigPath(PathManager.HISTORY_FILE_NAME);
         List<String> lines = this.history.stream()
             .map(p -> p.toAbsolutePath().toString())
             .toList();
@@ -63,7 +60,7 @@ public class History {
     }
 
     public static History load() {
-        Path filePath = resolveConfigPath(HISTORY_FILE_NAME);
+        Path filePath = PathManager.resolveConfigPath(PathManager.HISTORY_FILE_NAME);
 
         Object object = PathManager.load(filePath, History.class);
         if (object instanceof List<?> list) {

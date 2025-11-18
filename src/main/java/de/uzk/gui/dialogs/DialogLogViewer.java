@@ -10,7 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-import static de.uzk.Main.*;
+import static de.uzk.Main.htmlOutput;
+import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogLogViewer {

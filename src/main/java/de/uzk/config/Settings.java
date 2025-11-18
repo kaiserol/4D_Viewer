@@ -2,12 +2,10 @@ package de.uzk.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.uzk.utils.NumberUtils;
 import de.uzk.io.PathManager;
+import de.uzk.utils.NumberUtils;
 
 import java.nio.file.Path;
-
-import static de.uzk.io.PathManager.*;
 
 public class Settings {
     // Einstellungen
@@ -99,12 +97,12 @@ public class Settings {
     }
 
     public void save() {
-        Path filePath = resolveConfigPath(SETTINGS_FILE_NAME);
+        Path filePath = PathManager.resolveConfigPath(PathManager.SETTINGS_FILE_NAME);
         PathManager.save(filePath, this);
     }
 
     public static Settings load() {
-        Path filePath = resolveConfigPath(SETTINGS_FILE_NAME);
+        Path filePath = PathManager.resolveConfigPath(PathManager.SETTINGS_FILE_NAME);
 
         Object object = PathManager.load(filePath, Settings.class);
         if (object instanceof Settings settings) return settings;

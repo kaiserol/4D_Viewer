@@ -3,13 +3,10 @@ package de.uzk.config;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.uzk.image.ImageFileType;
-import de.uzk.utils.NumberUtils;
 import de.uzk.io.PathManager;
+import de.uzk.utils.NumberUtils;
 
 import java.nio.file.Path;
-
-import static de.uzk.io.PathManager.CONFIG_FILE_NAME;
-import static de.uzk.io.PathManager.resolveProjectPath;
 
 public class Config {
     // Konfigurationen
@@ -241,12 +238,12 @@ public class Config {
     }
 
     public void save() {
-        Path filePath = resolveProjectPath(CONFIG_FILE_NAME);
+        Path filePath = PathManager.resolveProjectPath(PathManager.CONFIG_FILE_NAME);
         PathManager.save(filePath, this);
     }
 
     public static Config load() {
-        Path filePath = resolveProjectPath(CONFIG_FILE_NAME);
+        Path filePath = PathManager.resolveProjectPath(PathManager.CONFIG_FILE_NAME);
 
         Object object = PathManager.load(filePath, Config.class);
         if (object instanceof Config config) return config;

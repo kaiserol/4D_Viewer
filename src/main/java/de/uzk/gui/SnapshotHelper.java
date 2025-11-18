@@ -1,6 +1,7 @@
 package de.uzk.gui;
 
 import de.uzk.io.PathManager;
+import de.uzk.utils.DateTimeUtils;
 import de.uzk.utils.NumberUtils;
 
 import javax.imageio.ImageIO;
@@ -10,24 +11,15 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
-import static de.uzk.io.PathManager.SNAPSHOTS_DIRECTORY;
-import static de.uzk.io.PathManager.resolveProjectPath;
 
 public class SnapshotHelper {
-    // Format und Pattern
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-dd-MM");
-    private static final String DATE_PATTERN = "\\d{4}-\\d{2}-\\d{2}";
-
     public static boolean saveSnapshot(BufferedImage image) {
         if (image == null || !workspace.isLoaded()) return false;
-        Path directory = resolveProjectPath(SNAPSHOTS_DIRECTORY);
+        Path directory = PathManager.resolveProjectPath(PathManager.SNAPSHOTS_DIRECTORY);
         PathManager.createIfNotExist(directory);
 
         // Bild zuschneiden
@@ -53,7 +45,7 @@ public class SnapshotHelper {
         if (!workspace.isLoaded()) return 0;
 
         // Wenn das Verzeichnis nicht existiert, wird 0 zurückgegeben
-        Path directory = resolveProjectPath(SNAPSHOTS_DIRECTORY);
+        Path directory = PathManager.resolveProjectPath(PathManager.SNAPSHOTS_DIRECTORY);
         if (!Files.isDirectory(directory)) {
             PathManager.createIfNotExist(directory);
             return 0;
@@ -61,7 +53,7 @@ public class SnapshotHelper {
 
         int count = 0;
         try (DirectoryStream<Path> paths = Files.newDirectoryStream(directory)) {
-            String fileNamePattern = DATE_PATTERN + "\\(\\d+\\)_" + workspace.getImageFileNamePattern();
+            String fileNamePattern = DateTimeUtils.DATE_PATTERN + "\\(\\d+\\)_" + workspace.getImageFileNamePattern();
 
             // Durchlaufe alle Pfade
             for (Path path : paths) {
@@ -80,7 +72,7 @@ public class SnapshotHelper {
     // Hilfsmethoden
     // ========================================
     private static Path buildSnapshotFile(Path directory) {
-        String formattedDate = DATE_FORMAT.format(new Date());
+        String formattedDate = DateTimeUtils.formatDateTime(DateTimeUtils.DATE_FORMAT);
         int count = getNextSnapshotIndex(directory, formattedDate);
 
         String imageFileName = workspace.getCurrentImageFile().getFileName();

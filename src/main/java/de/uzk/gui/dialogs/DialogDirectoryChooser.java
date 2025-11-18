@@ -2,6 +2,7 @@ package de.uzk.gui.dialogs;
 
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.ImageFileType;
+import de.uzk.io.PathManager;
 import de.uzk.utils.ComponentUtils;
 
 import javax.swing.*;
@@ -13,7 +14,6 @@ import java.nio.file.Path;
 import static de.uzk.Main.history;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
-import static de.uzk.io.PathManager.USER_DIRECTORY;
 
 public class DialogDirectoryChooser {
     // Dialoge
@@ -122,7 +122,7 @@ public class DialogDirectoryChooser {
     // ========================================
     private static File getLastDirectory() {
         Path lastDirectory = history.getLastIfExists();
-        return lastDirectory == null ? USER_DIRECTORY.toFile() : lastDirectory.toFile();
+        return lastDirectory == null ? PathManager.USER_DIRECTORY.toFile() : lastDirectory.toFile();
     }
 
     private static ImageFileType getSelectedImageFileType(FileNameExtensionFilter filter) {

@@ -3,10 +3,10 @@ package de.uzk.gui.tabs;
 import de.uzk.action.ActionType;
 import de.uzk.config.Config;
 import de.uzk.gui.Gui;
+import de.uzk.gui.SnapshotHelper;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.NumberUtils;
-import de.uzk.gui.SnapshotHelper;
 
 import javax.swing.*;
 import java.awt.*;
