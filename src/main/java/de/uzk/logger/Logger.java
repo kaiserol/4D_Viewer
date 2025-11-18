@@ -1,25 +1,19 @@
 package de.uzk.logger;
 
+import de.uzk.logger.output.ConsoleOutput;
+import de.uzk.logger.output.FileOutput;
+import de.uzk.logger.output.HtmlOutput;
 import de.uzk.logger.output.LogOutput;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Repräsentiert die zentrale Komponente des Logging-Systems.
- * <p>
- * Ein {@code Logger} verwaltet eine Liste von {@link LogOutput}-Instanzen.
- * Jede dieser Ausgaben repräsentiert ein konkretes Ziel, z.&nbsp;B.:
- *
- * <ul>
- *     <li>Dateiausgabe</li>
- *     <li>Konsolenausgabe</li>
- *     <li>HTML-generierte Log-Ausgabe</li>
- * </ul>
+ * Repräsentiert die Logger-Klasse für das Erfassen und Ausgeben von Logeinträgen über verschiedene Kanäle.
  *
  * <p>
- * Bei jedem Log-Aufruf wird ein {@link LogEntry} erzeugt und automatisch
- * an alle registrierten Ausgabekanäle weitergereicht.
+ * Standardmäßig werden Logs auf der Konsole, in einer HTML-Ausgabe sowie in einer Datei
+ * gespeichert. Weitere Ausgabekanäle können über {@link #addOutput(LogOutput)} hinzugefügt werden.
  */
 public class Logger {
     /**
@@ -28,11 +22,49 @@ public class Logger {
     private final List<LogOutput> outputs;
 
     /**
-     * Erstellt einen neuen Logger ohne voreingestellte Ausgabekanäle.
-     * Mithilfe der Methode {@link #addOutput(LogOutput)} können LogOutput-Instanzen hinzugefügt werden.
+     * HTML-Ausgabekanal für Logeinträge.
+     */
+    private final HtmlOutput htmlOutput;
+
+    /**
+     * Dateibasierter Ausgabekanal für Logeinträge.
+     */
+    private final FileOutput fileOutput;
+
+    /**
+     * Erstellt einen neuen Logger mit voreingestellten Ausgabekanälen.
+     * <p>
+     * Standardmäßig werden folgende Ausgaben aktiviert:
+     * <ul>
+     *     <li>Konsole ({@link ConsoleOutput})</li>
+     *     <li>HTML-Ausgabe ({@link HtmlOutput})</li>
+     *     <li>Dateiausgabe ({@link FileOutput})</li>
+     * </ul>
+     *
+     * <p>
+     * Weitere Ausgabekanäle können über {@link #addOutput(LogOutput)} hinzugefügt werden.
      */
     public Logger() {
         this.outputs = new ArrayList<>();
+        addOutput(new ConsoleOutput());
+        addOutput(this.htmlOutput = new HtmlOutput());
+        addOutput(this.fileOutput = new FileOutput());
+    }
+
+    /**
+     * Exportiert alle bisher erfassten Logeinträge im HTML-Format.
+     *
+     * @return Die HTML-Darstellung aller Logeinträge
+     */
+    public String exportHtml() {
+        return this.htmlOutput.exportHtml();
+    }
+
+    /**
+     * Exportiert alle bisher erfassten Logeinträge in eine Datei.
+     */
+    public void exportToFile() {
+        this.fileOutput.exportToFile();
     }
 
     /**
@@ -41,7 +73,7 @@ public class Logger {
      * @param output Konkrete {@link LogOutput}-Implementierung
      * @throws NullPointerException Falls {@code output} null ist
      */
-    public void addOutput(LogOutput output) {
+    private void addOutput(LogOutput output) {
         if (output == null) throw new NullPointerException("Output is null.");
         this.outputs.add(output);
     }

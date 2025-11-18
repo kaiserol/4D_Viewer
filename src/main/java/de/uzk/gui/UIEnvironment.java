@@ -228,10 +228,13 @@ public final class UIEnvironment {
             if (checkBox.isSelected()) UIEnvironment.updateConfirmExit(false);
         }
 
-        // Dateien abspeichern
+        // Konfigurationen und Einstellungen abspeichern
+        workspace.saveConfigs();
         settings.save();
         history.save();
-        workspace.saveConfigs();
+
+        // Protokolle in eine Datei schreiben
+        logger.exportToFile();
 
         // Anwendung beenden
         System.exit(0);

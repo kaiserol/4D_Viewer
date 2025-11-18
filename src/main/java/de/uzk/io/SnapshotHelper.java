@@ -16,7 +16,14 @@ import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
-public class SnapshotHelper {
+public final class SnapshotHelper {
+    /**
+     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
+     */
+    private SnapshotHelper() {
+        // Verhindert die Instanziierung dieser Klasse
+    }
+
     public static boolean saveSnapshot(BufferedImage image) {
         if (image == null || !workspace.isLoaded()) return false;
         Path directory = PathManager.resolveProjectPath(PathManager.SNAPSHOTS_DIRECTORY);

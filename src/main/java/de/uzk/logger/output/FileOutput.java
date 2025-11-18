@@ -32,4 +32,8 @@ public class FileOutput implements LogOutput {
             System.err.println("Failed writing to file '" + FILE_NAME + "'");
         }
     }
+
+    public void exportToFile() {
+
+    }
 }
