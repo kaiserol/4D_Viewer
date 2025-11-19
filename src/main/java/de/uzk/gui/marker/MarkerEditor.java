@@ -1,11 +1,11 @@
 package de.uzk.gui.marker;
 
 import de.uzk.gui.OGridBagConstraints;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.dialogs.DialogColorChooser;
 import de.uzk.image.ImageFile;
 import de.uzk.io.ImageLoader;
 import de.uzk.markers.Marker;
-import de.uzk.markers.MarkerShape;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
+import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class MarkerEditor extends Container {
@@ -40,45 +41,71 @@ public class MarkerEditor extends Container {
 
     private void init() {
         this.setLayout(new GridBagLayout());
-        OGridBagConstraints gbc = new OGridBagConstraints();
-        gbc.fill = GridBagConstraints.NONE;
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = UIEnvironment.INSETS_DEFAULT;
 
-        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-        gbc.setPos(1, 0);
-        gbc.weightx = 0.1;
-        this.add(new JLabel(getWord("dialog.markers.shape")), gbc);
-
-        gbc.setPos(2, 0);
-        gbc.weightx = 0.2;
-        JComboBox<MarkerShape> selectShape = new JComboBox<>(MarkerShape.sortedValues());
-        selectShape.setSelectedItem(this.marker.getShape());
-        selectShape.addActionListener(l -> {
-            this.marker.setShape((MarkerShape) selectShape.getSelectedItem());
-            this.preview.repaint();
-        });
-        this.add(selectShape, gbc);
-
-
-        gbc.setPos(1, 1);
-        gbc.weightx = 0.1;
-        this.add(new JLabel(getWord("dialog.markers.color")), gbc);
-
-        gbc.setPos(2, 1);
-        gbc.weightx = 0.2;
-        gbc.ipady = 10;
-        gbc.ipadx = 30;
-        JButton buttonColor = new JButton();
-        buttonColor.setBackground(this.marker.getColor());
-        buttonColor.addActionListener(a -> selectColor(buttonColor));
-        this.add(buttonColor, gbc);
-
-        gbc.setPos(1, 2);
-        gbc.setSizeAndWeight(1, 1, 0.1, 0);
-        gbc.weightx = 0.1;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
         this.add(new JLabel(getWord("dialog.markers.label")), gbc);
 
-        gbc.gridx = 2;
-        gbc.weightx = 0.2;
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        this.add(getLabelInput(), gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        this.add(new JLabel(getWord("dialog.markers.color")), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        this.add(getColorButton(), gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        this.add(new JLabel("start"), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        TimeInput ti = new TimeInput(marker.getFrom(), workspace.getMaxTime());
+        this.add(ti, gbc);
+        //TODO: Restliche Felder hinzufügen
+
+    }
+
+    private class TimeInput extends JPanel {
+
+        private final SpinnerNumberModel model;
+        private final JLabel label;
+
+        public TimeInput(int value , int maxTime) {
+
+            this.model = new SpinnerNumberModel(value, 0, maxTime, 1);
+            JSpinner numberInput = new JSpinner(this.model);
+            this.label = new JLabel("todo");
+
+            this.setLayout(new GridLayout(1, 2));
+            this.add(this.label);
+            this.add(numberInput);
+
+
+        }
+
+        public int getValue() {
+            return this.model.getNumber().intValue();
+        }
+
+        public void setValue(int value) {
+            this.model.setValue(value);
+        }
+
+
+    }
+
+    private JTextField getLabelInput() {
         JTextField nameInput = new JTextField(this.marker.getLabel());
         nameInput.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -102,20 +129,14 @@ public class MarkerEditor extends Container {
                 preview.repaint();
             }
         });
-        this.add(nameInput, gbc);
+        return nameInput;
+    }
 
-        gbc.setPos(1, 3);
-        gbc.setSizeAndWeight(2, 4, 0.3, 0);
-        JPanel valuesPanel = this.createValuesPanel();
-        this.add(valuesPanel, gbc);
-
-
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.setPos(0, 0);
-
-        gbc.setSizeAndWeight(1, 4, 0.7, 1.0);
-        this.add(this.preview, gbc);
-
+    private JButton getColorButton() {
+        JButton button = new JButton();
+        button.setBackground(this.marker.getColor());
+        button.addActionListener(a -> selectColor(button));
+        return button;
     }
 
     private void selectColor(JButton color) {

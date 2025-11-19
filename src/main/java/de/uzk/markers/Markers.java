@@ -11,22 +11,23 @@ import tools.jackson.databind.deser.std.StdDeserializer;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Markers {
     @JsonGetter("markers")
-    public List<MarkerMapping> getAllMarkers() {
+    public List<Marker> getAllMarkers() {
         return this.markers;
     }
 
-    public void addMarker(Marker marker, int image) {
-        this.markers.add(new MarkerMapping(marker, image, image));
+    public void addMarker(Marker marker) {
+        this.markers.add(marker);
     }
 
     // Markierungen
     @JsonDeserialize(contentUsing = NullInvalidMarkers.class)
-    private final List<MarkerMapping> markers;
+    private final List<Marker> markers;
 
-    private Markers(MarkerMapping[] markers) {
+    private Markers(Marker[] markers) {
         this.markers = List.of(markers);
     }
 
@@ -44,29 +45,29 @@ public class Markers {
 
         Object object = PathManager.load(filePath, Markers.class);
         if (object instanceof Markers markers) {
-            markers.markers.removeIf(m -> m == null || m.getMarker() == null);
+            markers.markers.removeIf(Objects::isNull);
             return markers;
         } else return new Markers();
     }
 
-    public void remove(MarkerMapping mapping) {
+    public void remove(Marker marker) {
 
     }
 
     public List<Marker> getMarkersForImage(int image) {
-        return this.markers.stream().filter(m -> m.shouldRender(image)).map(MarkerMapping::getMarker).toList();
+        return this.markers.stream().filter(m -> m.shouldRender(image)).toList();
     }
 
     // Helferklasse, die ungültige Marker zu nulls macht, die herausgefiltert werden können
-    private static class NullInvalidMarkers extends StdDeserializer<MarkerMapping> {
+    private static class NullInvalidMarkers extends StdDeserializer<Marker> {
         public NullInvalidMarkers() {
-            super(MarkerMapping.class);
+            super(Marker.class);
         }
 
         @Override
-        public MarkerMapping deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
+        public Marker deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
             try {
-                return p.readValueAs(MarkerMapping.class);
+                return p.readValueAs(Marker.class);
             } catch (Exception e) {
                 return null;
             }

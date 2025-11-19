@@ -2,13 +2,10 @@ package de.uzk.gui.marker;
 
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
-import de.uzk.gui.OGridBagConstraints;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.Axis;
 import de.uzk.io.ImageLoader;
 import de.uzk.markers.Marker;
-import de.uzk.markers.MarkerMapping;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -22,13 +19,13 @@ import static de.uzk.config.LanguageHandler.getWord;
 /* Nur JPanel erweitern, da diese Komponente dynamisch während UI Updates erstellt wird.
 AreaContainerInteractive würde während der initialisierung eventhandler registrieren, was eine Exception
  auslöst. */
-public class MarkerMappingInfo extends JPanel {
+public class MarkerInfo extends JPanel {
     private final Gui gui;
-    private final MarkerMapping mapping;
+    private final Marker marker;
 
-    public MarkerMappingInfo(MarkerMapping mapping, Gui gui) {
+    public MarkerInfo(Marker marker, Gui gui) {
         this.gui = gui;
-        this.mapping = mapping;
+        this.marker = marker;
         init();
     }
 
@@ -71,10 +68,10 @@ public class MarkerMappingInfo extends JPanel {
     }
 
     private JLabel getJumpLink() {
-        JLabel link = new JLabel(mapping.getMarker().getLabel());
+        JLabel link = new JLabel(marker.getLabel());
         link.setAlignmentY(Component.CENTER_ALIGNMENT);
 
-        link.setToolTipText("Jump to " + mapping.getMarker().getLabel());
+        link.setToolTipText("Jump to " + marker.getLabel());
         link.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -85,7 +82,7 @@ public class MarkerMappingInfo extends JPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                workspace.setTime(mapping.getFrom());
+                workspace.setTime(marker.getFrom());
                 gui.update(Axis.TIME);
             }
 
@@ -103,7 +100,7 @@ public class MarkerMappingInfo extends JPanel {
         edit.setForeground(Color.BLUE);
         edit.addActionListener(a -> {
 
-            MarkerEditor initial = new MarkerEditor(workspace.getCurrentImageFile(), new Marker(this.mapping.getMarker()));
+            MarkerEditor initial = new MarkerEditor(workspace.getCurrentImageFile(), this.marker);
             int option = JOptionPane.showConfirmDialog(
                 null,
                 initial,
@@ -112,11 +109,12 @@ public class MarkerMappingInfo extends JPanel {
             );
 
             if (option == JOptionPane.OK_OPTION) {
-                this.mapping.setMarker(initial.getMarker());
+
                 gui.handleAction(ActionType.ACTION_ADD_MARKER);
 
                 gui.updateUI();
             }
+            //TODO: Alle Markerwerte resetten wenn der Nutzer abbrechen will
         });
         return edit;
     }
@@ -125,7 +123,7 @@ public class MarkerMappingInfo extends JPanel {
         JButton deleteButton = new JButton(ImageLoader.ICON_DELETE);
         deleteButton.setForeground(Color.RED);
         deleteButton.addActionListener(a -> {
-            workspace.getMarkers().remove(mapping);
+            workspace.getMarkers().remove(marker);
             gui.handleAction(ActionType.ACTION_REMOVE_MARKER);
         });
         return deleteButton;

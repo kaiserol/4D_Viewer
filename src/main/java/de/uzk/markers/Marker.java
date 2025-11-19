@@ -14,6 +14,8 @@ public class Marker {
 
     private int x;
     private int y;
+    private int from;
+    private int to;
     private int width;
     private int height;
     private MarkerShape shape;
@@ -21,7 +23,7 @@ public class Marker {
     private String label;
 
     public Marker() {
-        this(0, 0, 0, 0, MarkerShape.RECTANGLE, Color.RED, "Marker");
+        this(0, 0, 0, 0, 0, 0, MarkerShape.RECTANGLE, Color.RED, "Marker");
     }
 
     public Marker(Marker other) {
@@ -30,13 +32,15 @@ public class Marker {
             other.y,
             other.width,
             other.height,
+            other.from,
+            other.to,
             other.shape,
             other.color,
             other.label
         );
     }
 
-    public Marker(int x, int y, int width, int height, MarkerShape shape, Color color, String label) {
+    public Marker(int x, int y, int width, int height, int from, int to, MarkerShape shape, Color color, String label) {
         this.setX(x);
         this.setY(y);
         this.setWidth(width);
@@ -52,6 +56,10 @@ public class Marker {
         int x,
         @JsonProperty("y")
         int y,
+        @JsonProperty("from")
+        int from,
+        @JsonProperty("to")
+        int to,
         @JsonProperty("width")
         int width,
         @JsonProperty("height")
@@ -62,7 +70,7 @@ public class Marker {
         String color,
         @JsonProperty("label")
         String label) {
-        this(x, y, width, height, shape, Color.decode(color), label);
+        this(x, y, width, height, from, to, shape, Color.decode(color), label);
     }
 
     public int getY() {
@@ -97,6 +105,23 @@ public class Marker {
         this.height = height;
     }
 
+    public int getFrom() {
+        return from;
+    }
+
+    public void setFrom(int from) {
+        this.from = from;
+    }
+
+    public int getTo() {
+        return to;
+    }
+
+    public void setTo(int to) {
+        this.to = to;
+    }
+
+
     public MarkerShape getShape() {
         return shape;
     }
@@ -111,6 +136,10 @@ public class Marker {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public boolean shouldRender(int at) {
+        return this.from <= at && this.to >= at;
     }
 
     public void draw(Graphics2D to, Rectangle imageArea, double scaleFactor) {

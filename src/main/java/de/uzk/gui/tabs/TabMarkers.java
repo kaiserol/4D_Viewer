@@ -3,10 +3,10 @@ package de.uzk.gui.tabs;
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
 import de.uzk.gui.marker.MarkerEditor;
-import de.uzk.gui.marker.MarkerMappingInfo;
+import de.uzk.gui.marker.MarkerInfo;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
-import de.uzk.markers.MarkerMapping;
+import de.uzk.markers.Marker;
 import de.uzk.utils.ComponentUtils;
 
 import javax.swing.*;
@@ -22,7 +22,7 @@ public class TabMarkers extends ObserverContainer<JPanel> {
     }
 
     private void rerender() {
-        java.util.List<MarkerMapping> currentMarkers =  workspace.getMarkers().getAllMarkers();
+        java.util.List<Marker> currentMarkers =  workspace.getMarkers().getAllMarkers();
 
         this.container.removeAll();
         this.container.setLayout(new BorderLayout());
@@ -38,7 +38,7 @@ public class TabMarkers extends ObserverContainer<JPanel> {
             );
 
             if (option == JOptionPane.OK_OPTION) {
-                workspace.getMarkers().addMarker(initial.getMarker(), workspace.getTime());
+                workspace.getMarkers().addMarker(initial.getMarker());
                 gui.handleAction(ActionType.ACTION_ADD_MARKER);
                 gui.updateUI();
             }
@@ -48,8 +48,8 @@ public class TabMarkers extends ObserverContainer<JPanel> {
 
         if (!currentMarkers.isEmpty()) {
             Box panel = new Box(BoxLayout.Y_AXIS);
-            for (MarkerMapping currentMarker : currentMarkers) {
-                JPanel next = new MarkerMappingInfo(currentMarker, this.gui);
+            for (Marker currentMarker : currentMarkers) {
+                JPanel next = new MarkerInfo(currentMarker, this.gui);
 
                 panel.add(next);
                 panel.add(Box.createRigidArea(new Dimension(0, 10)));
