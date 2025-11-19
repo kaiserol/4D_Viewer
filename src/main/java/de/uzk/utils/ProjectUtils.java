@@ -3,6 +3,7 @@ package de.uzk.utils;
 import de.uzk.gui.Gui;
 import de.uzk.gui.dialogs.DialogDirectoryChooser;
 import de.uzk.gui.dialogs.DialogLoadingImages;
+import de.uzk.image.Axis;
 import de.uzk.image.ImageFileType;
 import de.uzk.image.LoadingResult;
 
@@ -155,6 +156,10 @@ public final class ProjectUtils {
         switch (result) {
             case LOADING_SUCCESSFUL -> {
                 gui.toggleOn();
+
+                // Das neue Projekt wird immer bei Bild 0, Ebene 0 geöffnet
+                gui.update(Axis.TIME);
+                gui.update(Axis.LEVEL);
                 return true;
             }
             case DIRECTORY_ALREADY_LOADED -> {
