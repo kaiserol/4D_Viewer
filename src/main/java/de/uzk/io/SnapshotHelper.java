@@ -53,7 +53,11 @@ public final class SnapshotHelper {
         logger.info(String.format("Saving snapshot as '%s'", filePath.toAbsolutePath()));
 
         try {
-            return ImageIO.write(image, fileType.getType(), filePath.toFile());
+            boolean success = ImageIO.write(image, fileType.getType(), filePath.toFile());
+            if(!success) {
+                logger.error(String.format("Failed saving snapshot as '%s'", filePath.toAbsolutePath()));
+            }
+            return success;
         } catch (IOException e) {
             logger.error(String.format("Failed saving snapshot '%s'", filePath.toAbsolutePath()));
         }
