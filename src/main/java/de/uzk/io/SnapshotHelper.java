@@ -1,7 +1,9 @@
 package de.uzk.io;
 
 import de.uzk.gui.SnapshotCropper;
+import de.uzk.image.ImageFileType;
 import de.uzk.utils.DateTimeUtils;
+import de.uzk.utils.GraphicsUtils;
 import de.uzk.utils.NumberUtils;
 
 import javax.imageio.ImageIO;
@@ -33,15 +35,25 @@ public final class SnapshotHelper {
         SnapshotCropper cropper = new SnapshotCropper(image);
         int option = JOptionPane.showConfirmDialog(null, cropper, getWord("dialog.snapshot"), JOptionPane.OK_CANCEL_OPTION);
         if (option != JOptionPane.OK_OPTION) return false;
+
+        // Manche formate (z.B. JPEG) unterstützen keine Transparenz.
+
         image = cropper.getCroppedImage();
+
+        ImageFileType fileType = workspace.getConfig().getImageFileType();
+        if(fileType == ImageFileType.GIF || fileType == ImageFileType.JPEG) {
+            /* Diese Formate unterstützen keine Transparenz (ARGB).
+               Der Speichervorgang scheitert bei transparenten Bildern dann, ohne eine Exception zu werfen.
+               Deshalb wandeln wir sicherheitshalber zu RGB um */
+            image = GraphicsUtils.transformToRGB(image);
+        }
 
         // Dateiname bauen
         Path filePath = buildSnapshotFile(directory);
         logger.info(String.format("Saving snapshot as '%s'", filePath.toAbsolutePath()));
 
         try {
-            ImageIO.write(image, workspace.getConfig().getImageFileType().getType(), filePath.toFile());
-            return true;
+            return ImageIO.write(image, fileType.getType(), filePath.toFile());
         } catch (IOException e) {
             logger.error(String.format("Failed saving snapshot '%s'", filePath.toAbsolutePath()));
         }

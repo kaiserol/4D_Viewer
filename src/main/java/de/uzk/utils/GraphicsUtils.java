@@ -75,6 +75,24 @@ public final class GraphicsUtils {
         return transformedImage;
     }
 
+    /**
+     * Wandelt das übergebene {@link BufferedImage} ins RGB-Format um.
+     * Diese Methode tut nichts, wenn `image.getType() == BufferedImage.TYPE_INT_RGB`.
+     *
+     * @param image Bild, welches transformiert werden soll.
+     * */
+    public static BufferedImage transformToRGB(BufferedImage image) {
+        if(image.getType() == BufferedImage.TYPE_INT_RGB) {
+            // Hintergrund ist bereits intransparent
+            return image;
+        }
+        BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = createHighQualityGraphics2D(newImage.getGraphics());
+        g2d.drawImage(image, 0, 0, null);
+        g2d.dispose();
+        return newImage;
+    }
+
     public static void drawCenteredText(Graphics2D g2D, String text, Container container) {
         FontMetrics metrics = g2D.getFontMetrics(g2D.getFont());
         int textWidth = metrics.stringWidth(text);
