@@ -4,6 +4,7 @@ import de.uzk.markers.Marker;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.util.ArrayList;
@@ -61,8 +62,7 @@ public final class GraphicsUtils {
         at.translate((newWidth - width) / 2.0, (newHeight - height) / 2.0);
         at.rotate(radians, width / 2.0, height / 2.0);
 
-
-        g2d.transform(at);
+        image = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR).filter(image, null);
 
         g2d.drawRenderedImage(image, null);
 

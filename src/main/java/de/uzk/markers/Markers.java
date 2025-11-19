@@ -49,6 +49,10 @@ public class Markers {
         } else return new Markers();
     }
 
+    public void remove(MarkerMapping mapping) {
+
+    }
+
     public List<Marker> getMarkersForImage(int image) {
         return this.markers.stream().filter(m -> m.shouldRender(image)).map(MarkerMapping::getMarker).toList();
     }

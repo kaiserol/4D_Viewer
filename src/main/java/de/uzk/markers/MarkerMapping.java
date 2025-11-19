@@ -54,4 +54,12 @@ public class MarkerMapping {
     public void setMarker(Marker marker) {
         this.marker = marker;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof MarkerMapping other) {
+            return this.marker.equals(other.marker) && this.from == other.from && this.to == other.to;
+        }
+        return false;
+    }
 }

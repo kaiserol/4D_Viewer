@@ -32,7 +32,6 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
     private JPanel panelView, panelImage;
     private JScrollBar scrollBarTime, scrollBarLevel;
     private BufferedImage currentImage;
-    private int insetX, insetY;
 
     public AreaImageViewer(Gui gui) {
         super(new JPanel(), gui);
@@ -46,10 +45,6 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         this.container.addMouseListener(new FocusMouseListener());
         this.container.addMouseWheelListener(gui.getActionHandler());
         this.container.addKeyListener(gui.getActionHandler());
-
-        DragListener dl = new DragListener();
-        this.container.addMouseListener(dl);
-        this.container.addMouseMotionListener(dl);
 
         // 1. Kopfbereich mit Statusinformationen hinzufügen
         JPanel statsBarPanel = new AreaStatsBar(this.gui).getContainer();
@@ -96,29 +91,6 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         }
     }
 
-    private class DragListener extends MouseAdapter {
-        private Point start;
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            this.start = e.getPoint();
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            super.mouseDragged(e);
-            if (this.start != null) {
-                insetX = this.start.x - e.getX();
-                insetY = this.start.y - e.getY();
-                container.repaint();
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            this.start = null;
-        }
-    }
 
     // ========================================
     // Komponenten-Erzeugung
@@ -162,7 +134,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
             int y = (this.panelImage.getHeight() - height) / 2;
 
             // Bild zeichnen
-            g2D.drawImage(this.currentImage, x - this.insetX, y - this.insetY, width, height, null);
+            g2D.drawImage(this.currentImage, x, y, width, height, null);
         } else {
             // Eine Fehlermeldung wird angezeigt, wenn das aktuelle Bild nicht geladen werden kann (weil es nicht existiert)
             String text = workspace.getImagesDirectory() != null ? getWord("dialog.loadingImages.imageCouldNotLoad") : "";
