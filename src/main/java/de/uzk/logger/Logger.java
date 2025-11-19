@@ -12,7 +12,7 @@ import java.util.List;
  * Repräsentiert die Logger-Klasse für das Erfassen und Ausgeben von Logeinträgen über verschiedene Kanäle.
  *
  * <p>
- * Standardmäßig werden Logs auf der Konsole, in einer HTML-Ausgabe sowie in einer Datei
+ * Standardmäßig werden Logs auf der Konsole, in einer Datei sowie in einer HTML-Ausgabe
  * gespeichert. Weitere Ausgabekanäle können über {@link #addOutput(LogOutput)} hinzugefügt werden.
  */
 public class Logger {
@@ -27,18 +27,13 @@ public class Logger {
     private final HtmlOutput htmlOutput;
 
     /**
-     * Dateibasierter Ausgabekanal für Logeinträge.
-     */
-    private final FileOutput fileOutput;
-
-    /**
      * Erstellt einen neuen Logger mit voreingestellten Ausgabekanälen.
      * <p>
      * Standardmäßig werden folgende Ausgaben aktiviert:
      * <ul>
      *     <li>Konsole ({@link ConsoleOutput})</li>
-     *     <li>HTML-Ausgabe ({@link HtmlOutput})</li>
      *     <li>Dateiausgabe ({@link FileOutput})</li>
+     *     <li>HTML-Ausgabe ({@link HtmlOutput})</li>
      * </ul>
      *
      * <p>
@@ -47,8 +42,8 @@ public class Logger {
     public Logger() {
         this.outputs = new ArrayList<>();
         addOutput(new ConsoleOutput());
+        addOutput(new FileOutput());
         addOutput(this.htmlOutput = new HtmlOutput());
-        addOutput(this.fileOutput = new FileOutput());
     }
 
     /**
@@ -61,19 +56,12 @@ public class Logger {
     }
 
     /**
-     * Exportiert alle bisher erfassten Logeinträge in eine Datei.
-     */
-    public void exportToFile() {
-        this.fileOutput.exportToFile();
-    }
-
-    /**
      * Registriert einen neuen Ausgabekanal.
      *
      * @param output Konkrete {@link LogOutput}-Implementierung
      * @throws NullPointerException Falls {@code output} null ist
      */
-    private void addOutput(LogOutput output) {
+    public void addOutput(LogOutput output) {
         if (output == null) throw new NullPointerException("Output is null.");
         this.outputs.add(output);
     }

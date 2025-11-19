@@ -1,39 +1,29 @@
 package de.uzk.logger.output;
 
+import de.uzk.io.LogsHelper;
 import de.uzk.logger.LogEntry;
 import de.uzk.logger.LogLevel;
-import de.uzk.utils.StringUtils;
-
-import java.io.FileWriter;
-import java.io.IOException;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Schreibt {@link LogEntry}-Daten zeilenweise in eine Logdatei.
+ * Implementierung eines {@link LogOutput}, die {@link LogEntry}-Objekte
+ * zeilenweise in eine Logdatei schreibt.
  */
 public class FileOutput implements LogOutput {
-    /**
-     * Standard-Dateiname für die Logdatei.
-     */
-    private static final String FILE_NAME = "app.log";
 
     /**
-     * Gibt den formatierten Logeintrag in der Log-Datei aus. Ignoriert die Debug-Protokollebene.
+     * Schreibt den übergebenen {@link LogEntry} in die Logdatei.
      *
-     * @param entry Der zu schreibende Logeintrag
+     * <p>
+     * Logeinträge mit der Protokollebene {@link LogLevel#DEBUG} werden
+     * ignoriert und nicht in die Datei geschrieben.
+     *
+     * @param entry Der zu schreibende Logeintrag; darf nicht {@code null} sein
      */
     @Override
-    public void write(LogEntry entry) {
+    public void write(@NotNull LogEntry entry) {
         if (entry.getLevel() == LogLevel.DEBUG) return;
-
-        try (FileWriter writer = new FileWriter(FILE_NAME, true)) {
-            String result = String.join("", entry.formatEntry(true));
-            writer.write(result + StringUtils.NEXT_LINE);
-        } catch (IOException ex) {
-            System.err.println("Failed writing to file '" + FILE_NAME + "'");
-        }
-    }
-
-    public void exportToFile() {
-
+        String result = String.join("", entry.formatEntry(true));
+        LogsHelper.writeInLogFile(result);
     }
 }

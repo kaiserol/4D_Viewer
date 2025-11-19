@@ -1,6 +1,7 @@
 package de.uzk.logger.output;
 
 import de.uzk.logger.LogEntry;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Schnittstelle für verschiedene Log-Ausgabeziele.
@@ -8,9 +9,9 @@ import de.uzk.logger.LogEntry;
 public interface LogOutput {
 
     /**
-     * Schreibt den angegebenen Logeintrag in das jeweilige Ausgabeziel.
+     * Schreibt den übergebenen {@code LogEntry} in das jeweilige Ausgabeziel.
      *
-     * @param entry Der zu schreibende Logeintrag
+     * @param entry Der zu schreibende Logeintrag; darf nicht {@code null} sein
      */
-    void write(LogEntry entry);
+    void write(@NotNull LogEntry entry);
 }

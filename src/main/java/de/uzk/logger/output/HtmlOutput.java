@@ -3,23 +3,30 @@ package de.uzk.logger.output;
 import de.uzk.logger.LogEntry;
 import de.uzk.logger.LogLevel;
 import de.uzk.utils.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 /**
- * Konvertiert {@link LogEntry}-Daten in HTML-darstellbare Blöcke.
+ * Implementierung eines {@link LogOutput}, die {@link LogEntry}-Objekte in HTML-formatierte und
+ * farblich hervorgehobene Ausgabeblöcke umwandelt.
  *
- * <p>Alle generierten HTML-Fragmente werden in einem internen Buffer gesammelt und können
- * über {@link #exportHtml()} als kompletter HTML-String abgerufen werden.</p>
+ * <p>
+ * Die Darstellung erfolgt mittels {@link StringUtils}, wodurch Farben,
+ * Hervorhebungen und Strukturierungen konsistent über HTML-Tags umgesetzt werden.
+ *
+ * <p>
+ * Alle erzeugten HTML-Fragmente werden in einem internen Buffer gesammelt und können über
+ * {@link #exportHtml()} als vollständige HTML-Ausgabe abgerufen werden.
  */
 public class HtmlOutput implements LogOutput {
     /**
-     * Interner Buffer, der sukzessive mit formatierten HTML-Fragmenten befüllt wird.
+     * Interner Puffer für sukzessive generierte HTML-Fragmente.
      */
     private final StringBuilder buffer;
 
     /**
-     * Erzeugt eine neue Instanz von {@code HtmlOutput} und initialisiert
+     * Erstellt eine neue {@code HtmlOutput}-Instanz und initialisiert
      * den internen Ausgabepuffer.
      */
     public HtmlOutput() {
@@ -27,13 +34,16 @@ public class HtmlOutput implements LogOutput {
     }
 
     /**
-     * Gibt den Logeintrag farbig, formatiert und strukturiert aus und fügt ihn im
-     * HTML-Stil dem internen Buffer hinzu. Ignoriert die Debug-Protokollebene.
+     * Formatiert den übergebenen {@link LogEntry} und fügt ihn dem internen Buffer hinzu.
      *
-     * @param entry Der zu schreibende Logeintrag
+     * <p>
+     * Einträge mit der Protokollebene {@link LogLevel#DEBUG} werden ignoriert und
+     * nicht in das HTML-Protokoll aufgenommen.
+     *
+     * @param entry Der zu verarbeitende Logeintrag; darf nicht {@code null} sein
      */
     @Override
-    public void write(LogEntry entry) {
+    public void write(@NotNull LogEntry entry) {
         if (entry.getLevel() == LogLevel.DEBUG) return;
 
         List<String> formattedEntry = entry.formatEntry(false);
@@ -57,9 +67,10 @@ public class HtmlOutput implements LogOutput {
     }
 
     /**
-     * Liefert den gesamten Buffer als String.
+     * Gibt alle bisher hinzugefügten HTML-Fragmente als zusammenhängenden
+     * HTML-String zurück.
      *
-     * @return HTML-String aller bisher geschriebenen Logeinträge
+     * @return vollständige HTML-Ausgabe aller geschriebenen Logeinträge
      */
     public String exportHtml() {
         return this.buffer.toString();

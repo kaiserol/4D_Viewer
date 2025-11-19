@@ -233,9 +233,6 @@ public final class UIEnvironment {
         settings.save();
         history.save();
 
-        // Protokolle in eine Datei schreiben
-        logger.exportToFile();
-
         // Anwendung beenden
         System.exit(0);
     }

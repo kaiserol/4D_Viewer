@@ -2,21 +2,28 @@ package de.uzk.logger.output;
 
 import de.uzk.logger.LogEntry;
 import de.uzk.utils.CLIStyle;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 /**
- * Schreibt {@link LogEntry}-Daten zeilenweise formartiert in die Konsole.
+ * Implementierung eines {@link LogOutput}, die {@link LogEntry}-Objekte formatiert und
+ * farblich hervorgehoben in der Konsole ausgibt.
+ *
+ * <p>
+ * Die Darstellung erfolgt mittels {@link CLIStyle}, wodurch Farben,
+ * Hervorhebungen und Strukturierungen konsistent über ANSI-Stile umgesetzt werden.
  */
 public class ConsoleOutput implements LogOutput {
 
     /**
-     * Gibt den Logeintrag farbig, formatiert und strukturiert aus.
+     * Formatiert den übergebenen {@link LogEntry} und gibt ihn direkt
+     * in der Konsole aus.
      *
-     * @param entry Der zu schreibende Logeintrag
+     * @param entry Der auszugebende Logeintrag; darf nicht {@code null} sein
      */
     @Override
-    public void write(LogEntry entry) {
+    public void write(@NotNull LogEntry entry) {
         List<String> formattedEntry = entry.formatEntry(true);
         String result =
             // Zeitstempel

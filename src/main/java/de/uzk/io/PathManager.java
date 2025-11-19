@@ -1,12 +1,12 @@
 package de.uzk.io;
 
+import de.uzk.utils.DateTimeUtils;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,29 +36,29 @@ import static de.uzk.Main.workspace;
  * </pre>
  */
 public final class PathManager {
-    // Hauptpfade im Systemverzeichnis
+    // ---- Hauptpfade im Systemverzeichnis ----
     public static final Path USER_DIRECTORY = Path.of(System.getProperty("user.dir"));
     public static final Path USER_HOME_DIRECTORY = Path.of(System.getProperty("user.home"));
 
-    // Hauptpfade im Ressourcenverzeichnis
+    // ---- Hauptpfade im Ressourcenverzeichnis ----
     public static final Path RESOURCES_DIRECTORY = Paths.get("src/main/resources");
     public static final String PROPERTIES_FILE_NAME_PATTERN = "*.properties";
 
-    // Hauptpfade im Benutzerverzeichnis
+    // ---- Pfade für das Appverzeichnis ----
     private static final Path APP_DIRECTORY = Path.of("4D_Viewer");
     private static final Path CONFIG_DIRECTORY = Path.of(".config");
     private static final Path LOGS_DIRECTORY = Path.of(".logs");
     private static final Path PROJECTS_DIRECTORY = Path.of("projects");
+    private static final Path SNAPSHOTS_DIRECTORY = Path.of("snapshots");
 
-    // Pfade im Konfigurationsverzeichnis
+    // ---- Pfade für das Konfigurationsverzeichnis ----
     public static final Path SETTINGS_FILE_NAME = Path.of("settings.json");
     public static final Path HISTORY_FILE_NAME = Path.of("history.txt");
 
-    // Pfade im Protokollverzeichnis
-    public static final Path DAILY_LOG_FILE_NAME = Path.of("app_yyyy-MM-dd.log");
+    // ---- Pfade für das Protokollverzeichnis ----
+    public static final String LOG_FILE_NAME_PATTERN = "logger_%s.log";
 
-    // Pfade im Projektverzeichnis
-    public static final Path SNAPSHOTS_DIRECTORY = Path.of("snapshots");
+    // ---- Pfade für das Projektverzeichnis ----
     public static final Path CONFIG_FILE_NAME = Path.of("config.json");
     public static final Path MARKERS_FILE_NAME = Path.of("markers.json");
 
@@ -69,6 +69,12 @@ public final class PathManager {
         createIfNotExist(appDirectory.resolve(CONFIG_DIRECTORY));
         createIfNotExist(appDirectory.resolve(LOGS_DIRECTORY));
         createIfNotExist(appDirectory.resolve(PROJECTS_DIRECTORY));
+
+        // Alte Log-Dateien löschen
+        LogsHelper.cleanUpOldLogs();
+
+        // Lade Log-Datei
+        loadLogFile(true);
     }
 
     /**
@@ -79,54 +85,54 @@ public final class PathManager {
     }
 
     // ========================================
-    // Hauptpfad-Auflösungen
+    // Hauptpfade
     // ========================================
-    private static Path getAppRoot() {
+    public static Path getAppRoot() {
         return USER_HOME_DIRECTORY.resolve(APP_DIRECTORY);
     }
 
-    private static Path getConfigPath() {
+    public static Path getConfigDirectory() {
         return getAppRoot().resolve(CONFIG_DIRECTORY);
     }
 
-    private static Path getLogsPath() {
+    public static Path getLogsDirectory() {
         return getAppRoot().resolve(LOGS_DIRECTORY);
     }
 
-    private static Path getProjectsPath() {
+    public static Path getProjectsDirectory() {
         return getAppRoot().resolve(PROJECTS_DIRECTORY);
     }
 
-    // ========================================
-    // Pfad-Auflösungen
-    // ========================================
-    public static Path resolveConfigPath(Path relativePath) {
-        return getConfigPath().resolve(relativePath);
-    }
-
-    public static Path resolveLogsPath(Path relativePath) {
-        return getLogsPath().resolve(relativePath);
-    }
-
-    public static Path resolveProjectPath(Path relativePath) {
+    public static Path getProjectDirectory() {
         if (workspace.getImagesDirectory() == null) {
             throw new NullPointerException("The images directory is null.");
         }
 
-        // Erstelle ein Projektverzeichnis, falls es noch nicht existiert
+        // Erstelle das Projektverzeichnis, falls es noch nicht existiert
         Path imagesDirectoryName = workspace.getImagesDirectory().getFileName();
-        Path projectPath = getProjectsPath().resolve(imagesDirectoryName);
+        Path projectPath = getProjectsDirectory().resolve(imagesDirectoryName);
         createIfNotExist(projectPath);
 
-        return projectPath.resolve(relativePath);
+        return projectPath;
+    }
+
+    public static Path getProjectSnapshotsDirectory() {
+        return getProjectDirectory().resolve(SNAPSHOTS_DIRECTORY);
     }
 
     // ========================================
-    // Pfad Erstellungsmethoden
+    // Pfad Auflösungen
     // ========================================
-    public static Path getDailyLogFile() {
-        String date = LocalDate.now().toString(); // yyyy-MM-dd
-        return getLogsPath().resolve("app_" + date + ".log");
+    public static Path resolveConfigPath(Path relativePath) {
+        return getConfigDirectory().resolve(relativePath);
+    }
+
+    public static Path resolveLogsPath(Path relativePath) {
+        return getLogsDirectory().resolve(relativePath);
+    }
+
+    public static Path resolveProjectPath(Path relativePath) {
+        return getProjectDirectory().resolve(relativePath);
     }
 
     // ========================================
@@ -179,6 +185,24 @@ public final class PathManager {
             logger.error(String.format("Failed loading %s file '%s'", fileBaseName, filePath.toAbsolutePath()));
             return null;
         }
+    }
+
+    public static Path loadLogFile(boolean allowLoggerInfo) {
+        // Dateiname bauen
+        String formattedDate = DateTimeUtils.getFormattedDateToday();
+        String logFileName = PathManager.LOG_FILE_NAME_PATTERN.formatted(formattedDate);
+        Path filePath = PathManager.resolveLogsPath(Path.of(logFileName));
+
+        if (allowLoggerInfo) logger.info(String.format("Loading logs file '%s'", filePath.toAbsolutePath()));
+        if (!Files.exists(filePath)) {
+            try {
+                Files.createFile(filePath);
+            } catch (IOException e) {
+                logger.error(String.format("Failed loading logs file '%s'", filePath.toAbsolutePath()));
+                return null;
+            }
+        }
+        return filePath;
     }
 
     // ========================================

@@ -49,7 +49,7 @@ public class LogEntry {
      * @throws NullPointerException Wenn {@code level} null ist
      */
     public LogEntry(LogLevel level, String msg) {
-        if (level == null) throw new NullPointerException("level is null");
+        if (level == null) throw new NullPointerException("Level is null");
         this.level = level;
         this.message = msg == null ? "" : msg;
         this.timestamp = initTimeStamp();
@@ -86,18 +86,17 @@ public class LogEntry {
         return this.source;
     }
 
-
     // ========================================
     // Initialisierungen
     // ========================================
 
     /**
-     * Erzeugt den aktuellen Zeitstempel im Format {@code yyyy-MM-dd HH:mm:ss.SSS}.
+     * Erzeugt den aktuellen Zeitstempel.
      *
      * @return Formatierter Zeitstempel
      */
     private String initTimeStamp() {
-        return DateTimeUtils.formatDateTime(DateTimeUtils.DATE_TIME_FORMAT);
+        return DateTimeUtils.getFormattedLoggerDateTimeNow();
     }
 
     /**
@@ -125,7 +124,7 @@ public class LogEntry {
             StackTraceElement caller = stackTrace[5];
             String abbrClassName = abbreviateClassName(caller.getClassName());
             String methodName = extractMethodName(caller.getMethodName());
-            return abbrClassName + "." + methodName + "()";
+            return "#" + abbrClassName + "." + methodName + "()";
         }
         return "unknown";
     }
@@ -189,16 +188,17 @@ public class LogEntry {
      * index 1 → " "
      * index 2 → level (rechtsbündig gepolstert)
      * index 3 → " "
-     * index 4 → "#" + source
+     * index 4 → source
      * index 5 → ": "
      * index 6 → message (optional mit Einrückung)
      * </pre>
      *
      * <p>
      * <b>Einrückung:</b>
+     *
      * <p>
      * Wenn {@code indentedMessage = true}, werden Folgezeilen der Nachricht unterhalb
-     * der eigentlichen Nachrichtenposition eingerückt.</p>
+     * der eigentlichen Nachrichtenposition eingerückt.
      *
      * @param indentedMessage {@code true}, wenn mehrzeilige Nachrichten eingerückt werden sollen;
      *                        {@code false}, wenn die Nachricht unverändert ausgegeben wird
@@ -209,7 +209,7 @@ public class LogEntry {
         String timestampStr = "[" + getTimeStamp() + "]";
         String levelRaw = getLevel().toString();
         String levelStr = levelRaw + " ".repeat(LogLevel.maxLevelLength() - levelRaw.length());
-        String sourceStr = "#" + getSource();
+        String sourceStr = getSource();
         String messageStr = indentedMessage ? getIndentedMessage(timestampStr, levelStr, sourceStr, getMessage()) : getMessage();
 
         // Rückgabe als Liste
