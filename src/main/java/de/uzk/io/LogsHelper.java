@@ -27,7 +27,7 @@ import static de.uzk.Main.logger;
  */
 public final class LogsHelper {
 
-    private static final int DEFAULT_MAX_LOG_AGE_DAYS = 14;
+    private static final int DEFAULT_MAX_LOG_AGE_DAYS = 30;
 
     /**
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
