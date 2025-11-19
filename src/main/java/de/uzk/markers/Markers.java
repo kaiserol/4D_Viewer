@@ -51,7 +51,7 @@ public class Markers {
     }
 
     public void remove(Marker marker) {
-
+        this.markers.remove(marker);
     }
 
     public List<Marker> getMarkersForImage(int image) {

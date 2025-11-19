@@ -227,7 +227,11 @@ public class Marker {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Marker other) {
-            return this.x == other.x && this.y == other.y && this.width == other.width && this.height == other.height && this.shape == other.shape && this.color.equals(other.color) && this.label.equals(other.label);
+            return this.x == other.x && this.y == other.y &&
+                this.width == other.width && this.height == other.height &&
+                this.from == other.from && this.to == other.to &&
+                this.shape == other.shape && this.color.equals(other.color) &&
+                this.label.equals(other.label);
         }
         return false;
     }
