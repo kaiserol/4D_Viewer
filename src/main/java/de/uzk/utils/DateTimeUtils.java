@@ -1,9 +1,12 @@
 package de.uzk.utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import static de.uzk.Main.settings;
 
 /**
  * Utility-Klasse zur einheitlichen Formatierung von Datum, Zeit und Dauer sowie zur einfachen Zeitmessung.
@@ -16,19 +19,45 @@ import java.util.function.Supplier;
  */
 public final class DateTimeUtils {
     /**
-     * Der Formatierer für einen vollständigen Zeitstempel inklusive Millisekunden.
+     * Der Formatierer für einen vollständigen Zeitstempel inklusive Millisekunden.<br>
+     * Typisches Einsatzgebiet: Log-Ausgaben.
+     * <p>
+     * Format: {@code yyyy-MM-dd HH:mm:ss.SSS}<br>
+     * Beispiel: {@code 2025-11-19 10:00:00.000}
      */
-    public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final DateTimeFormatter LOGGING_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
     /**
      * Der Formatierer für ein Datum ohne Zeitanteil.
+     * <p>
+     * Format: {@code yyyy-MM-dd}<br>
+     * Beispiel: {@code 2025-11-19}
      */
-    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-dd-MM");
+    private static final DateTimeFormatter DATE_ONLY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
-     * Reguläres Ausdrucksmuster zur Validierung eines Datums im Format {@code yyyy-MM-dd}.
+     * Der Formatierer für ein langes deutsches Datumsformat.
+     * <p>
+     * Format: {@code dd. MMMM yyyy}<br>
+     * Beispiel: {@code 19. November 2025}
      */
-    public static final String DATE_PATTERN = "\\d{4}-\\d{2}-\\d{2}";
+    private static final DateTimeFormatter DATE_LONG_DE_FORMATTER = DateTimeFormatter.ofPattern("dd. MMMM yyyy");
+
+    /**
+     * Der Formatierer für ein langes englisches Datumsformat.
+     * <p>
+     * Format: {@code MMMM dd, yyyy}<br>
+     * Beispiel: {@code November 19, 2025}
+     */
+    private static final DateTimeFormatter DATE_LONG_EN_FORMATTER = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+
+    /**
+     * Regulärer Ausdruck zur Validierung von Datumsangaben.
+     * <p>
+     * Format: {@code yyyy-MM-dd} (ISO-8601-Format)<br>
+     * Beispiel: {@code 2025-11-19}
+     */
+    public static final String DATE_ONLY_PATTERN = "\\d{4}-\\d{2}-\\d{2}";
 
     /**
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
@@ -38,13 +67,62 @@ public final class DateTimeUtils {
     }
 
     /**
-     * Formatiert den aktuellen Zeitpunkt mithilfe des übergebenen Formatierers.
+     * Formatiert ein Datum anhand der aktuellen Spracheinstellung.
+     * Erwartet wird ein Eingangsdatum im Format {@code yyyy-MM-dd}.
+     * <p>
+     * Bei deutscher Sprache wird {@link #DATE_LONG_DE_FORMATTER},
+     * bei englischer Sprache {@link #DATE_LONG_EN_FORMATTER} verwendet.
+     * <p>
+     * Falls das Eingangsformat nicht geparst werden kann,
+     * wird der ursprüngliche String unverändert zurückgegeben.
      *
-     * @param formatter Der zu verwendende {@link DateTimeFormatter}
-     * @return Eine formatierte Zeichenkette des aktuellen Datums bzw. Zeitstempels
+     * @param dateStr Datum als String im Format {@code yyyy-MM-dd}
+     * @return Formatiertes Datum in Langform oder unveränderter Eingabestring
      */
-    public static String formatDateTime(DateTimeFormatter formatter) {
-        return LocalDateTime.now().format(formatter);
+    public static String formatDate(String dateStr) {
+        try {
+            LocalDate date = LocalDate.parse(dateStr, DATE_ONLY_FORMATTER);
+            DateTimeFormatter formatter = settings.getLanguage().isGerman() ? DATE_LONG_DE_FORMATTER : DATE_LONG_EN_FORMATTER;
+            return date.format(formatter);
+        } catch (Exception e) {
+            return dateStr;
+        }
+    }
+
+    /**
+     * Liefert das heutige Datum und die aktuelle Uhrzeit im Log-Format {@code yyyy-MM-dd HH:mm:ss.SSS}.
+     *
+     * @return Heutiges Datum und Uhrzeit
+     */
+    public static String getFormattedLoggerDateTimeNow() {
+        return dateTimeToday().format(LOGGING_DATE_TIME_FORMATTER);
+    }
+
+    /**
+     * Liefert das heutige Datum im Format {@code yyyy-MM-dd}.
+     *
+     * @return Heutiges Datum
+     */
+    public static String getFormattedDateToday() {
+        return dateToday().format(DATE_ONLY_FORMATTER);
+    }
+
+    /**
+     * Liefert das heutige Datum und die aktuelle Uhrzeit als {@link LocalDateTime}.
+     *
+     * @return Heutiges Datum und Uhrzeit
+     */
+    public static LocalDateTime dateTimeToday() {
+        return LocalDateTime.now();
+    }
+
+    /**
+     * Liefert das heutige Datum als {@link LocalDate}.
+     *
+     * @return Heutiges Datum
+     */
+    public static LocalDate dateToday() {
+        return LocalDate.now();
     }
 
     /**

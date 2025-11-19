@@ -4,16 +4,13 @@ import de.uzk.gui.SelectableText;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.io.ImageLoader;
 import de.uzk.utils.ComponentUtils;
+import de.uzk.utils.DateTimeUtils;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import static de.uzk.Main.settings;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogAbout {
@@ -78,7 +75,7 @@ public class DialogAbout {
         textPanel.add(Box.createVerticalStrut(20));
 
         // Build, Java Version
-        String formattedDate = formatDate(getWord("app.buildDate"));
+        String formattedDate = DateTimeUtils.formatDate(getWord("app.buildDate"));
         String versionText = getWord("dialog.about.buildOn").formatted(formattedDate) + "<br>" +
             getWord("dialog.about.build").formatted(getWord("app.build")) + "<br>" +
             getWord("dialog.about.usedRuntime").formatted(getWord("app.runtime"));
@@ -107,15 +104,5 @@ public class DialogAbout {
     private static ImageIcon getAppIcon() {
         Image scaled = ImageLoader.APP_IMAGE.getScaledInstance(APP_ICON_SIZE, APP_ICON_SIZE, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
-    }
-
-    private static String formatDate(String dateStr) {
-        try {
-            Date date = new SimpleDateFormat("dd.MM.yyyy").parse(dateStr);
-            String dateFormat = settings.getLanguage().isGerman() ? "dd. MMMM yyyy" : "MMMM dd, yyyy";
-            return new SimpleDateFormat(dateFormat).format(date);
-        } catch (ParseException e) {
-            return dateStr;
-        }
     }
 }
