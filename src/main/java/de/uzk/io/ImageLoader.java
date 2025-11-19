@@ -40,15 +40,15 @@ public final class ImageLoader {
     public static final FlatSVGIcon ICON_ARROW_DOWN = loadResourceSVG("images/icons/arrow_down.svg");
     public static final FlatSVGIcon ICON_ARROW_DOWN_END = loadResourceSVG("images/icons/arrow_down_end.svg");
 
-    // Icons Arrays
+    /**
+     * Icons, deren Farbe in der Methode {@link #updateSVGIcons} geändert wird.
+     */
     private static final Map<FlatSVGIcon, Color> COLORED_ICONS = new HashMap<>();
 
-    static {
-        COLORED_ICONS.put(ICON_PIN, Color.BLUE);
-        COLORED_ICONS.put(ICON_EDIT, Color.BLUE);
-        COLORED_ICONS.put(ICON_DELETE, Color.RED);
-    }
-
+    /**
+     * Icons, deren Farbe in der Methode {@link #updateSVGIcons} geändert wird.
+     * Die Farbauswahl wird auf Basis des Themes festgelegt.
+     */
     private static final FlatSVGIcon[] ICONS_COLOR_ON_THEME_SWITCH = {
         // Bearbeiten Icons
         ICON_ARROW_LEFT_TURN,
@@ -65,6 +65,13 @@ public final class ImageLoader {
         ICON_ARROW_DOWN,
         ICON_ARROW_DOWN_END,
     };
+
+    // Statische Initialisierung
+    static {
+        COLORED_ICONS.put(ICON_PIN, ColorUtils.COLOR_BLUE);
+        COLORED_ICONS.put(ICON_EDIT, ColorUtils.COLOR_BLUE);
+        COLORED_ICONS.put(ICON_DELETE, Color.RED);
+    }
 
     /**
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
@@ -111,9 +118,10 @@ public final class ImageLoader {
         }
 
         for (FlatSVGIcon svgIcon : ICONS_COLOR_ON_THEME_SWITCH) {
+            Color newColor = settings.getTheme().isLightMode() ? Color.GRAY : Color.WHITE;
             // Tausche Farben aus
             updateSVGIconsColor(svgIcon, new FlatSVGIcon.ColorFilter(color -> {
-                if (Objects.equals(color, Color.BLACK)) return settings.getTheme().isLightMode() ? Color.GRAY : Color.WHITE;
+                if (Objects.equals(color, Color.BLACK)) return newColor;
                 return color;
             }));
         }

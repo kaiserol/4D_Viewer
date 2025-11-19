@@ -33,6 +33,7 @@ public class Main {
     public static final History history;
     public static final Workspace workspace;
 
+    // Statische Initialisierung
     static {
         logger = new Logger();
         operationSystem = OperatingSystem.load();

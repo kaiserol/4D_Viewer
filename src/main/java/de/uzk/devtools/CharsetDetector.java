@@ -8,6 +8,8 @@ import java.nio.charset.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static de.uzk.Main.logger;
+
 /**
  * Der {@code CharsetDetector} dient dazu den wahrscheinlichsten Charsets einer Textdatei zu ermitteln.
  * <p>
@@ -77,7 +79,7 @@ public final class CharsetDetector {
                 }
             }
         } catch (IOException e) {
-            System.err.printf("Failed reading file '%s%n", filePath);
+            logger.error(String.format("Failed reading file '%s'", filePath));
         }
         // Fallback
         return StandardCharsets.ISO_8859_1;

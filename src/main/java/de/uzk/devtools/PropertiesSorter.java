@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+import static de.uzk.Main.logger;
+
 /**
  * Der {@code PropertiesSorter} dient dazu {@code .properties-Dateien} im Resource-Verzeichnis einzulesen
  * und deren Inhalt strukturiert und alphabetisch zu sortieren.
@@ -111,7 +113,7 @@ public final class PropertiesSorter {
                 lines.add(line);
             }
         } catch (IOException e) {
-            System.err.printf("Failed reading file '%s'%n", filePath);
+            logger.error(String.format("Failed reading file '%s'", filePath));
         }
         return lines;
     }
@@ -143,7 +145,7 @@ public final class PropertiesSorter {
             }
 
         } catch (IOException e) {
-            System.err.printf("Failed writing file '%s'%n", filePath);
+            logger.error(String.format("Failed writing file '%s'", filePath));
             return false;
         }
         return true;
@@ -194,7 +196,7 @@ public final class PropertiesSorter {
                 propertyPaths.add(filePath);
             }
         } catch (IOException e) {
-            System.err.printf("Failed reading the directory '%s'%n", PathManager.RESOURCES_DIRECTORY);
+            logger.error(String.format("Failed reading the directory '%s'", PathManager.RESOURCES_DIRECTORY));
         }
 
         return propertyPaths.toArray(Path[]::new);
