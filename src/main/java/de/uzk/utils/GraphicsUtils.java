@@ -62,7 +62,7 @@ public final class GraphicsUtils {
         at.translate((newWidth - width) / 2.0, (newHeight - height) / 2.0);
         at.rotate(radians, width / 2.0, height / 2.0);
 
-        new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR).filter(image, image);
+        image = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR).filter(image, null);
 
         g2d.drawRenderedImage(image, null);
 
