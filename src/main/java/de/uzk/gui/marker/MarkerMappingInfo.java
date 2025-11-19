@@ -5,11 +5,16 @@ import de.uzk.gui.Gui;
 import de.uzk.gui.OGridBagConstraints;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.Axis;
+import de.uzk.io.ImageLoader;
 import de.uzk.markers.Marker;
 import de.uzk.markers.MarkerMapping;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -29,71 +34,74 @@ public class MarkerMappingInfo extends JPanel {
 
     @Override
     public Dimension getMaximumSize() {
-        return getMinimumSize();
+        int height = this.getMinimumSize().height;
+        int width = super.getMaximumSize().width;
+        return new Dimension(width, height);
     }
 
     private void init() {
-        this.setBorder(BorderFactory.createLineBorder(UIEnvironment.getBorderColor()));
-        this.setLayout(new GridBagLayout());
+        this.setBorder(new CompoundBorder(
+            BorderFactory.createLineBorder(UIEnvironment.getBorderColor()), // Tatsächliche bBorder
+            BorderFactory.createEmptyBorder(5, 5, 5, 5) // Padding
+        ));
+        this.setLayout(new GridLayout(1, 3, 5, 0));
 
-        OGridBagConstraints c = new OGridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.VERTICAL;
+
+        c.weightx = 2;
+        c.gridheight = 1;
         c.gridwidth = 2;
-        c.weightx = 0.7;
-        c.setInsets(5, 10, 10, 10);
 
-        JLabel nameLabel = new JLabel(this.mapping.getMarker().getLabel());
-        nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
-        this.add(nameLabel, c);
+        this.add(getJumpLink());
 
-        SpinnerNumberModel fromModel = new SpinnerNumberModel(this.mapping.getFrom(), 0, workspace.getMaxTime(), 1);
-        SpinnerNumberModel toModel = new SpinnerNumberModel(this.mapping.getTo(), this.mapping.getFrom(), workspace.getMaxTime(), 1);
-
-        fromModel.addChangeListener(e -> {
-            int newValue = fromModel.getNumber().intValue();
-            this.mapping.setFrom(newValue);
-            toModel.setMinimum(newValue);
-            if (toModel.getNumber().intValue() < newValue) {
-                toModel.setValue(newValue);
-            }
-            gui.update(Axis.TIME);
-
-        });
-
-        toModel.addChangeListener(e -> {
-            int newValue = toModel.getNumber().intValue();
-            this.mapping.setTo(newValue);
-        });
-
-
-        c.gridy = 1;
+        c.weightx = 1;
         c.gridwidth = 1;
-        this.add(new JLabel(getWord("menu.markers.visibleFromImage") + ":"), c);
-
-        c.gridx = 1;
-        JSpinner minimum = new JSpinner(fromModel);
-        this.add(minimum, c);
-
-        c.setPos(0, 2);
-        this.add(new JLabel(getWord("menu.markers.visibleToImage") + ":"), c);
-
-        c.gridx = 1;
-        JSpinner maximum = new JSpinner(toModel);
-        this.add(maximum, c);
+        c.anchor = GridBagConstraints.NORTHEAST;
 
 
-        c.setPos(2, 0);
-        c.setInsets(10, 10, 10, 0);
-        c.anchor = GridBagConstraints.CENTER;
-        c.setSizeAndWeight(1, 3, 0.1, 1);
-        this.add(getEditButton(), c);
+        c.gridx += 1;
+        this.add(getEditButton());
+
+        c.gridx += 1;
+        this.add(getDeleteButton());
 
     }
 
-    private GenericMarkerPreview getEditButton() {
-        GenericMarkerPreview edit = new GenericMarkerPreview(this.mapping.getMarker().getShape(), this.mapping.getMarker().getColor());
-        edit.setOnClick(() -> {
+    private JLabel getJumpLink() {
+        JLabel link = new JLabel(mapping.getMarker().getLabel());
+        link.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+        link.setToolTipText("Jump to " + mapping.getMarker().getLabel());
+        link.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                link.setFont(link.getFont().deriveFont(Font.BOLD));
+                link.setForeground(Color.BLUE);
+
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                workspace.setTime(mapping.getFrom());
+                gui.update(Axis.TIME);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                link.setFont(link.getFont().deriveFont(Font.PLAIN));
+                link.setForeground(UIEnvironment.getTextColor());
+            }
+        });
+        return link;
+    }
+
+    private JButton getEditButton() {
+        JButton edit = new JButton(ImageLoader.ICON_EDIT);
+        edit.setForeground(Color.BLUE);
+        edit.addActionListener(a -> {
 
             MarkerEditor initial = new MarkerEditor(workspace.getCurrentImageFile(), new Marker(this.mapping.getMarker()));
             int option = JOptionPane.showConfirmDialog(
@@ -111,6 +119,16 @@ public class MarkerMappingInfo extends JPanel {
             }
         });
         return edit;
+    }
+
+    private JButton getDeleteButton() {
+        JButton deleteButton = new JButton(ImageLoader.ICON_DELETE);
+        deleteButton.setForeground(Color.RED);
+        deleteButton.addActionListener(a -> {
+            workspace.getMarkers().remove(mapping);
+            gui.handleAction(ActionType.ACTION_REMOVE_MARKER);
+        });
+        return deleteButton;
     }
 
 

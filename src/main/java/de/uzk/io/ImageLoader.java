@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static de.uzk.Main.logger;
@@ -21,6 +23,7 @@ public final class ImageLoader {
     public static final Image APP_IMAGE = Objects.requireNonNull(loadResourceSVG("images/4D.svg")).getImage();
 
     // Bearbeiten Icons
+    public static final FlatSVGIcon ICON_EDIT = loadResourceSVG("images/icons/edit.svg");
     public static final FlatSVGIcon ICON_PIN = loadResourceSVG("images/icons/pin.svg");
     public static final FlatSVGIcon ICON_ARROW_LEFT_TURN = loadResourceSVG("images/icons/arrow_left_turn.svg");
     public static final FlatSVGIcon ICON_ARROW_RIGHT_TURN = loadResourceSVG("images/icons/arrow_right_turn.svg");
@@ -38,15 +41,18 @@ public final class ImageLoader {
     public static final FlatSVGIcon ICON_ARROW_DOWN_END = loadResourceSVG("images/icons/arrow_down_end.svg");
 
     // Icons Arrays
-    private static final FlatSVGIcon[] ICONS_COLOR_BLUE = {
-        // Bearbeiten Icons
-        ICON_PIN,
-    };
+    private static final Map<FlatSVGIcon, Color> COLORED_ICONS = new HashMap<>();
+
+    static {
+        COLORED_ICONS.put(ICON_PIN, Color.BLUE);
+        COLORED_ICONS.put(ICON_EDIT, Color.BLUE);
+        COLORED_ICONS.put(ICON_DELETE, Color.RED);
+    }
+
     private static final FlatSVGIcon[] ICONS_COLOR_ON_THEME_SWITCH = {
         // Bearbeiten Icons
         ICON_ARROW_LEFT_TURN,
         ICON_ARROW_RIGHT_TURN,
-        ICON_DELETE,
 
         // Navigieren Icons
         ICON_ARROW_LEFT_START,
@@ -95,10 +101,11 @@ public final class ImageLoader {
     }
 
     public static void updateSVGIcons() {
-        for (FlatSVGIcon svgIcon : ICONS_COLOR_BLUE) {
+        for (Map.Entry<FlatSVGIcon, Color> entry : COLORED_ICONS.entrySet()) {
+            Color newColor = entry.getValue();
             // Tausche Farben aus
-            updateSVGIconsColor(svgIcon, new FlatSVGIcon.ColorFilter(color -> {
-                if (Objects.equals(color, Color.BLACK)) return ColorUtils.COLOR_BLUE;
+            updateSVGIconsColor(entry.getKey(), new FlatSVGIcon.ColorFilter(color -> {
+                if (Objects.equals(color, Color.BLACK)) return newColor;
                 else return color;
             }));
         }
