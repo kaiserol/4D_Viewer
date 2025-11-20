@@ -291,11 +291,11 @@ public class Workspace {
 
                 // Grenzwert bestimmen
                 if (!NumberUtils.valueInRange(time, 0, 9_999)) {
-                    logger.warn("The image '%s' has an invalid time.".formatted(fileName));
+                    logger.warn("The image '%s' has an invalid time. (Max Time: 9.999)".formatted(fileName));
                     continue;
                 }
                 if (!NumberUtils.valueInRange(level, 0, 999)) {
-                    logger.warn("The image '%s' has an invalid level.".formatted(fileName));
+                    logger.warn("The image '%s' has an invalid level. (Max Level: 999)".formatted(fileName));
                     continue;
                 }
 

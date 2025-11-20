@@ -45,7 +45,7 @@ public final class LogsHelper {
         try (FileWriter writer = new FileWriter(filePath.toFile(), true)) {
             writer.write(logEntry + StringUtils.NEXT_LINE);
         } catch (IOException ex) {
-            logger.error("Failed writing to file '%s'".formatted(filePath.toAbsolutePath()));
+            logger.error("Failed to write in the file '%s'.".formatted(filePath.toAbsolutePath()));
         }
     }
 
@@ -65,7 +65,7 @@ public final class LogsHelper {
                 }
             }
         } catch (IOException e) {
-            logger.error("Failed to scan logs directory '%s'".formatted(logsDirectory.toAbsolutePath()));
+            logger.error("Failed to stream the logs-directory '%s'.".formatted(logsDirectory.toAbsolutePath()));
         }
     }
 
@@ -86,7 +86,7 @@ public final class LogsHelper {
             try {
                 Files.createFile(filePath);
             } catch (IOException e) {
-                logger.error("Failed loading logs file '%s'".formatted(filePath.toAbsolutePath()));
+                logger.error("Failed to load the log-file '%s'.".formatted(filePath.toAbsolutePath()));
                 return null;
             }
         }
@@ -107,10 +107,10 @@ public final class LogsHelper {
         if (fileDate.isBefore(threshold)) {
             long daysOld = ChronoUnit.DAYS.between(fileDate, today);
             try {
-                logger.info("Deleting log file '%s' (%d days old, threshold: %d days)".formatted(path.toAbsolutePath(), daysOld, daysToKeep));
+                logger.info("Deleting the log-file '%s' ... (%d days old, threshold: %d days)".formatted(path.toAbsolutePath(), daysOld, daysToKeep));
                 Files.deleteIfExists(path);
             } catch (IOException e) {
-                logger.error("Failed deleting log file '%s'".formatted(path.toAbsolutePath()));
+                logger.error("Failed to delete the log-file '%s'.".formatted(path.toAbsolutePath()));
             }
         }
     }

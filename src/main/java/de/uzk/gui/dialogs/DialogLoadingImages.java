@@ -155,7 +155,7 @@ public class DialogLoadingImages implements LoadingImageListener {
             try {
                 this.thread.join();
             } catch (InterruptedException e) {
-                logger.error("Failed to join loading images thread");
+                logger.error("Failed to join the thread. (Process: Loading images ...)");
             }
         }
         this.dialog.dispose();
@@ -166,7 +166,7 @@ public class DialogLoadingImages implements LoadingImageListener {
     // ========================================
     @Override
     public void onLoadingStart() {
-        logger.info("Loading images from the directory '%s'".formatted(workspace.getImagesDirectory().toAbsolutePath()));
+        logger.info("Loading images from the directory '%s' ...".formatted(workspace.getImagesDirectory().toAbsolutePath()));
     }
 
     @Override
@@ -199,12 +199,15 @@ public class DialogLoadingImages implements LoadingImageListener {
 
     @Override
     public void onLoadingComplete(int imageFiles) {
-        if (imageFiles == 0) logger.info("Loaded images: " + imageFiles);
+        if (imageFiles == 0) {
+            logger.info("Loaded Images: " + imageFiles);
+            return;
+        }
 
         int maxTime = workspace.getMaxTime();
         int maxLevel = workspace.getMaxLevel();
         String loadedImages = "%d (%dx%d)".formatted(imageFiles, maxTime + 1, maxLevel + 1);
-        logger.info("Loaded images: " + loadedImages);
+        logger.info("Loaded Images: " + loadedImages);
     }
 
     private void updateProgress(int filesCount, int currentFileNumber, int imagesCount) {

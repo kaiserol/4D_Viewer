@@ -145,7 +145,7 @@ public final class PathManager {
         createIfNotExist(parentDirectory);
 
         String fileBaseName = getFileBaseName(filePath.getFileName());
-        logger.info("Saving %s file '%s'".formatted(fileBaseName, filePath.toAbsolutePath()));
+        logger.info("Saving the %s-file '%s' ...".formatted(fileBaseName, filePath.toAbsolutePath()));
 
         try {
             if (filePath.toString().endsWith(".json")) {
@@ -158,10 +158,10 @@ public final class PathManager {
                     .map(Object::toString)
                     .toList());
             } else {
-                throw new IllegalArgumentException("Unsupported data type for file: " + filePath.getFileName());
+                throw new IllegalArgumentException("Unsupported data type for the file: " + filePath.getFileName());
             }
         } catch (Exception e) {
-            logger.error("Failed saving %s file '%s'".formatted(fileBaseName, filePath.toAbsolutePath()));
+            logger.error("Failed to save the %s-file '%s'.".formatted(fileBaseName, filePath.toAbsolutePath()));
         }
     }
 
@@ -172,7 +172,7 @@ public final class PathManager {
         if (!Files.exists(filePath)) return null;
 
         String fileBaseName = getFileBaseName(filePath.getFileName());
-        logger.info("Loading %s file '%s'".formatted(fileBaseName, filePath.toAbsolutePath()));
+        logger.info("Loading the %s-file '%s' ...".formatted(fileBaseName, filePath.toAbsolutePath()));
 
         try {
             if (filePath.toString().endsWith(".json")) {
@@ -184,7 +184,7 @@ public final class PathManager {
                 return Files.readAllLines(filePath);
             }
         } catch (Exception e) {
-            logger.error("Failed loading %s file '%s'".formatted(fileBaseName, filePath.toAbsolutePath()));
+            logger.error("Failed to load the %s-file '%s'.".formatted(fileBaseName, filePath.toAbsolutePath()));
             return null;
         }
     }
@@ -196,10 +196,10 @@ public final class PathManager {
         if (!Files.exists(directory)) {
             String directoryIdentifier = getDirectoryIdentifier(directory);
             try {
-                logger.info("Creating %s directory '%s'".formatted(directoryIdentifier, directory.toAbsolutePath()));
+                logger.info("Creating the %s-directory '%s' ...".formatted(directoryIdentifier, directory.toAbsolutePath()));
                 Files.createDirectories(directory);
             } catch (IOException e) {
-                logger.error("Failed creating %s directory '%s'".formatted(directoryIdentifier, directory.toAbsolutePath()));
+                logger.error("Failed to create the %s-directory '%s'.".formatted(directoryIdentifier, directory.toAbsolutePath()));
             }
         }
     }

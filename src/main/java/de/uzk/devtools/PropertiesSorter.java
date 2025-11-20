@@ -113,7 +113,7 @@ public final class PropertiesSorter {
                 lines.add(line);
             }
         } catch (IOException e) {
-            logger.error("Failed reading file '%s'".formatted(filePath));
+            logger.error("Failed to read from the property-file '%s'.".formatted(filePath));
         }
         return lines;
     }
@@ -145,7 +145,7 @@ public final class PropertiesSorter {
             }
 
         } catch (IOException e) {
-            logger.error("Failed writing file '%s'".formatted(filePath));
+            logger.error("Failed to write in the property-file '%s'.".formatted(filePath));
             return false;
         }
         return true;
@@ -196,7 +196,7 @@ public final class PropertiesSorter {
                 propertyPaths.add(filePath);
             }
         } catch (IOException e) {
-            logger.error("Failed reading the directory '%s'".formatted(PathManager.RESOURCES_DIRECTORY));
+            logger.error("Failed to stream the resources-directory '%s'.".formatted(PathManager.RESOURCES_DIRECTORY));
         }
 
         return propertyPaths.toArray(Path[]::new);

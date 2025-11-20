@@ -120,7 +120,7 @@ public final class ProjectUtils {
         );
 
         if (option == JOptionPane.YES_OPTION) {
-            logger.info("Clear images...");
+            logger.info("Clear Images ...");
             gui.toggleOff();
         }
     }
