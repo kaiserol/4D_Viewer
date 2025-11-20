@@ -133,9 +133,11 @@ public class MissingImagesReport {
 
             int maxTime = workspace.getMaxTime();
             int maxLevel = workspace.getMaxLevel();
-            String loadedImages = String.format("%d images (%dx%d)", (maxTime + 1) * (maxLevel + 1), maxTime + 1, maxLevel + 1);
+            String loadedImages = "%d Images (%dx%d)".formatted((maxTime + 1) * (maxLevel + 1), maxTime + 1, maxLevel + 1);
             reportBuilder.append(loadedImages).append(StringUtils.NEXT_LINE).append(StringUtils.NEXT_LINE);
-            reportBuilder.append(StringUtils.wrapBold("Further information:")).append(StringUtils.NEXT_LINE);
+
+            String formattedSection = StringUtils.applyColor(StringUtils.wrapBold("Further Information:"), ColorUtils.COLOR_BLUE);
+            reportBuilder.append(formattedSection).append(StringUtils.NEXT_LINE);
             reportBuilder.append("Max Time: ").append(maxTime).append(StringUtils.NEXT_LINE);
             reportBuilder.append("Max Level: ").append(maxLevel).append(StringUtils.NEXT_LINE);
 
@@ -157,7 +159,7 @@ public class MissingImagesReport {
         int time = imageFile.getTime();
         int level = imageFile.getLevel();
 
-        String text = String.format("- Image: '%s' (time=%s, level=%s)", fileName, time, level);
+        String text = "- Image: '%s' (Time=%s, Level=%s)".formatted(fileName, time, level);
         return text + StringUtils.NEXT_LINE;
     }
 
@@ -167,7 +169,7 @@ public class MissingImagesReport {
     }
 
     public static String createReportHeader(int count, String type) {
-        String base = count + " " + (count == 1 ? "image is" : "images are");
+        String base = count + " " + (count == 1 ? "Image is" : "Images are");
         return base + " " + type + ":" + StringUtils.NEXT_LINE;
     }
 

@@ -103,8 +103,8 @@ public final class ColorUtils {
         int blue = color.getBlue();
 
         if (ignoreAlpha || alpha == 255) {
-            return String.format("#%02X%02X%02X", red, green, blue);
+            return "#%02X%02X%02X".formatted(red, green, blue);
         }
-        return String.format("#%02X%02X%02X%02X", alpha, red, green, blue);
+        return "#%02X%02X%02X%02X".formatted(alpha, red, green, blue);
     }
 }

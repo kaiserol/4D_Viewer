@@ -79,7 +79,7 @@ public final class CharsetDetector {
                 }
             }
         } catch (IOException e) {
-            logger.error(String.format("Failed reading file '%s'", filePath));
+            logger.error("Failed to read from the file '%s'.".formatted(filePath));
         }
         // Fallback
         return StandardCharsets.ISO_8859_1;

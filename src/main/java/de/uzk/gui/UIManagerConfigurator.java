@@ -164,7 +164,7 @@ public final class UIManagerConfigurator {
 
         for (Object key : keys) {
             Object value = UIManager.get(key).toString().replaceAll("\\n", " ");
-            sb.append(String.format("%-40s : %s%n", key, value));
+            sb.append("%-40s : %s%n".formatted(key, value));
         }
 
         return sb.toString();

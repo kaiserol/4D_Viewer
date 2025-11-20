@@ -86,7 +86,7 @@ public final class ImageLoader {
                 return ImageIO.read(imagePath.toFile());
             } catch (Exception e) {
                 if (showErrorIfNotFound) {
-                    logger.error(String.format("Failed loading image '%s'", imagePath.toAbsolutePath()));
+                    logger.error("Failed to load the image '%s'.".formatted(imagePath.toAbsolutePath()));
                 }
             }
         }
@@ -102,7 +102,7 @@ public final class ImageLoader {
             InputStream svgStream = svgUrl.openStream();
             return new FlatSVGIcon(svgStream);
         } catch (IOException e) {
-            logger.error(String.format("Failed loading SVG ressource '%s'", svgFilePathCleaned));
+            logger.error("Failed to load the SVG ressource '%s'.".formatted(svgFilePathCleaned));
             return null;
         }
     }

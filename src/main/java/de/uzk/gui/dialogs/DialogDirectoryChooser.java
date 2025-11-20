@@ -87,14 +87,14 @@ public class DialogDirectoryChooser {
     }
 
     private void setTitel(JFileChooser fileChooser) {
-        String dialogTitle = String.format("%s", getWord("menu.project.openDirectory"));
+        String dialogTitle = "%s".formatted(getWord("menu.project.openDirectory"));
         fileChooser.setDialogTitle(dialogTitle);
 
         // Dialogtitel dynamisch setzen, wenn der Filter geändert wird
         fileChooser.addPropertyChangeListener(evt -> {
             if (evt.getNewValue() instanceof FileNameExtensionFilter filter) {
                 ImageFileType imageFileType = getSelectedImageFileType(filter);
-                String newTitle = String.format("%s (%s)", getWord("menu.project.openDirectory"), imageFileType.getDescription());
+                String newTitle = "%s (%s)".formatted(getWord("menu.project.openDirectory"), imageFileType.getDescription());
                 fileChooser.setDialogTitle(newTitle);
             }
         });

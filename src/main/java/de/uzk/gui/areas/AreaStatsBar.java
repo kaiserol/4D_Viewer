@@ -81,14 +81,14 @@ public class AreaStatsBar extends ObserverContainer<JPanel> {
         int minute = totalSeconds / 60 % 60;
         int hour = totalSeconds / 3_600;
 
-        String timeString = String.format("%02d:%02d:%02d", hour, minute, seconds);
+        String timeString = "%02d:%02d:%02d".formatted(hour, minute, seconds);
         this.labelTime.setText(StringUtils.wrapHtml(StringUtils.wrapBold(StringUtils.applyFontSize(
             timeString, 175))));
     }
 
     private void updateLevel() {
         double level = (int) (workspace.getLevel() * workspace.getConfig().getLevelUnit());
-        String levelString = String.format("%.01f μm", level);
+        String levelString = "%.01f μm".formatted(level);
         this.labelLevel.setText(StringUtils.wrapHtml(StringUtils.applyFontSize(
             levelString, 75)));
     }
@@ -96,8 +96,8 @@ public class AreaStatsBar extends ObserverContainer<JPanel> {
     private void updateTimeLevel() {
         int time = workspace.getTime();
         int level = workspace.getLevel();
-        String timeString = String.format("%s: %d", getWord("menu.nav.time"), time);
-        String levelString = String.format("%s: %d", getWord("menu.nav.level"), level);
+        String timeString = "%s: %d".formatted(getWord("menu.nav.time"), time);
+        String levelString = "%s: %d".formatted(getWord("menu.nav.level"), level);
         this.labelTimeLevel.setText(StringUtils.wrapHtml(StringUtils.wrapItalic(StringUtils.applyFontSize(
             timeString + " / " + levelString, 75))));
     }

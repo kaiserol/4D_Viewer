@@ -50,7 +50,7 @@ public final class SnapshotHelper {
 
         // Dateiname bauen
         Path filePath = buildSnapshotFile(snapshotsDirectory);
-        logger.info(String.format("Saving snapshot as '%s'", filePath.toAbsolutePath()));
+        logger.info("Saving the snapshot as '%s' ...".formatted(filePath.toAbsolutePath()));
 
         try {
             boolean success = ImageIO.write(image, fileType.getType(), filePath.toFile());
@@ -58,7 +58,7 @@ public final class SnapshotHelper {
         } catch (IOException ignore) {
         }
 
-        logger.error(String.format("Failed saving snapshot '%s'", filePath.toAbsolutePath()));
+        logger.error("Failed to save the snapshot as '%s'.".formatted(filePath.toAbsolutePath()));
         return false;
     }
 
@@ -84,7 +84,7 @@ public final class SnapshotHelper {
                 if (Files.isRegularFile(path) && fileName.matches(snapShotNamePattern)) count++;
             }
         } catch (IOException e) {
-            logger.error(String.format("Failed getting snapshot count in the directory '%s'", snapshotsDirectory));
+            logger.error("Failed to stream the snapshots-directory '%s'.".formatted(snapshotsDirectory.toAbsolutePath()));
         }
         return count;
     }
@@ -121,7 +121,7 @@ public final class SnapshotHelper {
                 }
             }
         } catch (IOException e) {
-            logger.error(String.format("Failed getting next snapshot index in the directory '%s'", snapshotsDirectory.toAbsolutePath()));
+            logger.error("Failed to stream the snapshots-directory '%s'.".formatted(snapshotsDirectory.toAbsolutePath()));
         }
         return index;
     }
