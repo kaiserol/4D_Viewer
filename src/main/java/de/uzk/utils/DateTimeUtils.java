@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static de.uzk.Main.settings;
 
@@ -18,46 +20,47 @@ import static de.uzk.Main.settings;
  * unterbinden.
  */
 public final class DateTimeUtils {
+
     /**
      * Der Formatierer für einen vollständigen Zeitstempel inklusive Millisekunden.<br>
      * Typisches Einsatzgebiet: Log-Ausgaben.
      * <p>
      * Format: {@code yyyy-MM-dd HH:mm:ss.SSS}<br>
-     * Beispiel: {@code 2025-11-19 10:00:00.000}
+     * Beispiel: {@code 2025-01-01 00:00:00.000}
      */
-    private static final DateTimeFormatter LOGGING_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    public static final DateTimeFormatter LOGGING_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
     /**
      * Der Formatierer für ein Datum ohne Zeitanteil.
      * <p>
      * Format: {@code yyyy-MM-dd}<br>
-     * Beispiel: {@code 2025-11-19}
+     * Beispiel: {@code 2025-01-01}
      */
-    private static final DateTimeFormatter DATE_ONLY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final DateTimeFormatter DATE_ONLY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
      * Der Formatierer für ein langes deutsches Datumsformat.
      * <p>
      * Format: {@code dd. MMMM yyyy}<br>
-     * Beispiel: {@code 19. November 2025}
+     * Beispiel: {@code 01. Januar 2025}
      */
-    private static final DateTimeFormatter DATE_LONG_DE_FORMATTER = DateTimeFormatter.ofPattern("dd. MMMM yyyy");
+    public static final DateTimeFormatter DATE_LONG_DE_FORMATTER = DateTimeFormatter.ofPattern("dd. MMMM yyyy");
 
     /**
      * Der Formatierer für ein langes englisches Datumsformat.
      * <p>
      * Format: {@code MMMM dd, yyyy}<br>
-     * Beispiel: {@code November 19, 2025}
+     * Beispiel: {@code January 01, 2025}
      */
-    private static final DateTimeFormatter DATE_LONG_EN_FORMATTER = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+    public static final DateTimeFormatter DATE_LONG_EN_FORMATTER = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
 
     /**
      * Regulärer Ausdruck zur Validierung von Datumsangaben.
      * <p>
      * Format: {@code yyyy-MM-dd} (ISO-8601-Format)<br>
-     * Beispiel: {@code 2025-11-19}
+     * Beispiel: {@code 2025-01-01}
      */
-    public static final String DATE_ONLY_PATTERN = "\\d{4}-\\d{2}-\\d{2}";
+    public static final String DATE_ONLY_PATTERN = "\\d{4}-\\d{1,2}-\\d{1,2}";
 
     /**
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
@@ -67,25 +70,58 @@ public final class DateTimeUtils {
     }
 
     /**
-     * Formatiert ein Datum anhand der aktuellen Spracheinstellung.
-     * Erwartet wird ein Eingangsdatum im Format {@code yyyy-MM-dd}.
+     * Formatiert ein Datum anhand der aktuellen Spracheinstellung der Anwendung.
      * <p>
-     * Bei deutscher Sprache wird {@link #DATE_LONG_DE_FORMATTER},
-     * bei englischer Sprache {@link #DATE_LONG_EN_FORMATTER} verwendet.
-     * <p>
-     * Falls das Eingangsformat nicht geparst werden kann,
-     * wird der ursprüngliche String unverändert zurückgegeben.
+     * Erwartet wird ein Datum im Format {@code yyyy-MM-dd}. Das Datum wird
+     * zunächst mittels {@link #parseDate(String)} geparst und anschließend in ein
+     * sprachabhängiges Langformat umgewandelt:
+     * <ul>
+     *     <li>Deutsch: {@link #DATE_LONG_DE_FORMATTER}</li>
+     *     <li>Englisch: {@link #DATE_LONG_EN_FORMATTER}</li>
+     * </ul>
+     * Kann das Eingabedatum nicht geparst werden, wird der ursprüngliche String
+     * unverändert zurückgegeben.
      *
-     * @param dateStr Datum als String im Format {@code yyyy-MM-dd}
-     * @return Formatiertes Datum in Langform oder unveränderter Eingabestring
+     * @param dateStr Datum im Format {@code yyyy-MM-dd}
+     * @return Sprachabhängig formatiertes Datum oder unveränderter Eingabestring
      */
-    public static String formatDate(String dateStr) {
+    public static String parseAndReformatDate(String dateStr) {
+        LocalDate date = parseDate(dateStr);
+
+        if (date == null) return dateStr;
+        DateTimeFormatter formatter = settings.getLanguage().isGerman() ? DATE_LONG_DE_FORMATTER : DATE_LONG_EN_FORMATTER;
+        return date.format(formatter);
+    }
+
+    /**
+     * Parst ein Datum im Format {@code yyyy-MM-dd} zu einem {@link LocalDate}.
+     * <p>
+     * Ein- oder zweistellige Monate und Tage werden automatisch auf zwei Ziffern normalisiert.
+     * Schlägt das Parsen fehl (ungültiges Format oder Inhalt), wird {@code null} zurückgegeben.
+     *
+     * @param dateStr Ein Text, der ein Datum enthält (z. B. {@code 2025-1-1} oder {@code 2025-01-01})
+     * @return Geparstes {@link LocalDate} oder {@code null}, wenn das Datum ungültig ist oder nicht gefunden wurde
+     */
+    public static LocalDate parseDate(String dateStr) {
+        if (dateStr == null) return null;
+
+        // Datum extrahieren (Abbrechen, wenn Muster nicht gefunden wurde)
+        Pattern datePattern = Pattern.compile(DATE_ONLY_PATTERN);
+        Matcher matcher = datePattern.matcher(dateStr);
+        if (!matcher.find()) return null;
+
+        String matchedDate = matcher.group();
+
+        // Ein- oder zweistellige Werte normalisieren
         try {
-            LocalDate date = LocalDate.parse(dateStr, DATE_ONLY_FORMATTER);
-            DateTimeFormatter formatter = settings.getLanguage().isGerman() ? DATE_LONG_DE_FORMATTER : DATE_LONG_EN_FORMATTER;
-            return date.format(formatter);
+            String[] parts = matchedDate.split("-");
+            String normalized = String.format("%04d-%02d-%02d",
+                Integer.parseInt(parts[0]),
+                Integer.parseInt(parts[1]),
+                Integer.parseInt(parts[2]));
+            return LocalDate.parse(normalized, DATE_ONLY_FORMATTER);
         } catch (Exception e) {
-            return dateStr;
+            return null;
         }
     }
 

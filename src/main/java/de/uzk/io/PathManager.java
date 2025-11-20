@@ -1,6 +1,5 @@
 package de.uzk.io;
 
-import de.uzk.utils.DateTimeUtils;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -34,6 +33,12 @@ import static de.uzk.Main.workspace;
  *  │       ├── config.json
  *  │       └── markers.json
  * </pre>
+ *
+ * <p>
+ * Die Klasse ist als {@code final} deklariert, um eine Vererbung zu verhindern.
+ * Da sämtliche Funktionalitäten über statische Methoden bereitgestellt werden,
+ * besitzt die Klasse einen privaten Konstruktor, um eine Instanziierung zu
+ * unterbinden.
  */
 public final class PathManager {
     // ---- Hauptpfade im Systemverzeichnis ----
@@ -56,7 +61,7 @@ public final class PathManager {
     public static final Path HISTORY_FILE_NAME = Path.of("history.txt");
 
     // ---- Pfade für das Protokollverzeichnis ----
-    public static final String LOG_FILE_NAME_PATTERN = "logger_%s.log";
+    public static final String LOG_FILE_NAME_PATTERN = "runtime_%s.log";
 
     // ---- Pfade für das Projektverzeichnis ----
     public static final Path CONFIG_FILE_NAME = Path.of("config.json");
@@ -72,9 +77,6 @@ public final class PathManager {
 
         // Alte Log-Dateien löschen
         LogsHelper.cleanUpOldLogs();
-
-        // Lade Log-Datei
-        loadLogFile(true);
     }
 
     /**
@@ -185,24 +187,6 @@ public final class PathManager {
             logger.error(String.format("Failed loading %s file '%s'", fileBaseName, filePath.toAbsolutePath()));
             return null;
         }
-    }
-
-    public static Path loadLogFile(boolean allowLoggerInfo) {
-        // Dateiname bauen
-        String formattedDate = DateTimeUtils.getFormattedDateToday();
-        String logFileName = PathManager.LOG_FILE_NAME_PATTERN.formatted(formattedDate);
-        Path filePath = PathManager.resolveLogsPath(Path.of(logFileName));
-
-        if (allowLoggerInfo) logger.info(String.format("Loading logs file '%s'", filePath.toAbsolutePath()));
-        if (!Files.exists(filePath)) {
-            try {
-                Files.createFile(filePath);
-            } catch (IOException e) {
-                logger.error(String.format("Failed loading logs file '%s'", filePath.toAbsolutePath()));
-                return null;
-            }
-        }
-        return filePath;
     }
 
     // ========================================

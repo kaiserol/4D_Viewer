@@ -75,7 +75,7 @@ public class DialogAbout {
         textPanel.add(Box.createVerticalStrut(20));
 
         // Build, Java Version
-        String formattedDate = DateTimeUtils.formatDate(getWord("app.buildDate"));
+        String formattedDate = DateTimeUtils.parseAndReformatDate(getWord("app.buildDate"));
         String versionText = getWord("dialog.about.buildOn").formatted(formattedDate) + "<br>" +
             getWord("dialog.about.build").formatted(getWord("app.build")) + "<br>" +
             getWord("dialog.about.usedRuntime").formatted(getWord("app.runtime"));
