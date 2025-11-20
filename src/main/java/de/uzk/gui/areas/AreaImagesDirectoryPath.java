@@ -1,5 +1,6 @@
 package de.uzk.gui.areas;
 
+import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
@@ -28,6 +29,11 @@ public class AreaImagesDirectoryPath extends ObserverContainer<JPanel> {
         this.txtFieldDirectory.setEditable(false);
         this.txtFieldDirectory.putClientProperty("JTextField.placeholderText", getWord("imagesDirectory"));
         this.container.add(this.txtFieldDirectory, BorderLayout.CENTER);
+
+        JButton btnChooseDirectory = new JButton(getWord("menu.project.open"));
+        btnChooseDirectory.addActionListener(a -> gui.getActionHandler().executeAction(ActionType.SHORTCUT_OPEN_FOLDER));
+        this.container.add(btnChooseDirectory, BorderLayout.EAST);
+
     }
 
     // ========================================
