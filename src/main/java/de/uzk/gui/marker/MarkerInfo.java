@@ -98,9 +98,11 @@ public class MarkerInfo extends JPanel {
     private JButton getEditButton() {
         JButton edit = new JButton(ImageLoader.ICON_EDIT);
         edit.setForeground(Color.BLUE);
+        edit.setToolTipText(getWord("menu.markers.tooltipEditMarker"));
         edit.addActionListener(a -> {
 
-            MarkerEditor initial = new MarkerEditor(workspace.getCurrentImageFile(), this.marker);
+            Marker copy = new Marker(marker);
+            MarkerEditor initial = new MarkerEditor(workspace.getCurrentImageFile(), marker);
             int option = JOptionPane.showConfirmDialog(
                 null,
                 initial,
@@ -113,8 +115,10 @@ public class MarkerInfo extends JPanel {
                 gui.handleAction(ActionType.ACTION_ADD_MARKER);
 
                 gui.updateUI();
+            } else {
+                // Resetten
+                marker.cloneFrom(copy);
             }
-            //TODO: Alle Markerwerte resetten wenn der Nutzer abbrechen will
         });
         return edit;
     }
@@ -122,6 +126,7 @@ public class MarkerInfo extends JPanel {
     private JButton getDeleteButton() {
         JButton deleteButton = new JButton(ImageLoader.ICON_DELETE);
         deleteButton.setForeground(Color.RED);
+        deleteButton.setToolTipText(getWord("menu.markers.tooltipRemoveMarker"));
         deleteButton.addActionListener(a -> {
             workspace.getMarkers().remove(marker);
             gui.handleAction(ActionType.ACTION_REMOVE_MARKER);

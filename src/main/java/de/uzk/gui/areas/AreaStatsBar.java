@@ -4,6 +4,7 @@ import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
+import de.uzk.utils.DateTimeUtils;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
@@ -76,12 +77,7 @@ public class AreaStatsBar extends ObserverContainer<JPanel> {
     // Hilfsmethoden
     // ========================================
     private void updateTime() {
-        int totalSeconds = (int) (workspace.getTime() * workspace.getConfig().getTimeUnit());
-        int seconds = totalSeconds % 60;
-        int minute = totalSeconds / 60 % 60;
-        int hour = totalSeconds / 3_600;
-
-        String timeString = "%02d:%02d:%02d".formatted(hour, minute, seconds);
+        String timeString = DateTimeUtils.getFrameTimestamp(workspace.getTime());
         this.labelTime.setText(StringUtils.wrapHtml(StringUtils.wrapBold(StringUtils.applyFontSize(
             timeString, 175))));
     }

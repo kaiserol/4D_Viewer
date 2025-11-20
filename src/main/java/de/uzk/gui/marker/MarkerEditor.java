@@ -6,12 +6,14 @@ import de.uzk.gui.dialogs.DialogColorChooser;
 import de.uzk.image.ImageFile;
 import de.uzk.io.ImageLoader;
 import de.uzk.markers.Marker;
+import de.uzk.utils.DateTimeUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
@@ -63,50 +65,96 @@ public class MarkerEditor extends Container {
         gbc.gridwidth = 2;
         this.add(getColorButton(), gbc);
 
+        TimeInput fromInput = new TimeInput(marker.getFrom(), 0, marker.getTo());
+        TimeInput toInput = new TimeInput(marker.getTo(), marker.getFrom(), workspace.getMaxTime());
+
+        fromInput.onChange(value -> {
+            this.marker.setFrom(value);
+            toInput.setMinimum(value);
+        });
+        toInput.onChange(value -> {
+            this.marker.setTo(value);
+            fromInput.setMaximum(value);
+        });
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        this.add(new JLabel("start"), gbc);
+        this.add(new JLabel(getWord("menu.markers.visibleFromImage")), gbc);
 
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        TimeInput ti = new TimeInput(marker.getFrom(), workspace.getMaxTime());
-        this.add(ti, gbc);
-        //TODO: Restliche Felder hinzufügen
+        this.add(fromInput, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        this.add(new JLabel(getWord("menu.markers.visibleToImage")), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        this.add(toInput, gbc);
 
     }
 
-    private class TimeInput extends JPanel {
+    private static class TimeInput extends JPanel {
 
         private final SpinnerNumberModel model;
-        private final JLabel label;
+        private transient Consumer<Integer> changed;
 
-        public TimeInput(int value , int maxTime) {
+        public TimeInput(int value , int minTime, int maxTime) {
+            model = new SpinnerNumberModel(value, minTime, maxTime, 1);
+            init();
+        }
 
-            this.model = new SpinnerNumberModel(value, 0, maxTime, 1);
+        private void init() {
+            setLayout(new GridLayout(1, 2));
+
             JSpinner numberInput = new JSpinner(this.model);
-            this.label = new JLabel("todo");
+            JLabel label = new JLabel("(" + DateTimeUtils.getFrameTimestamp(getValue()) + ")", SwingConstants.RIGHT);
+            numberInput.addChangeListener(e -> {
+                label.setText("(" + DateTimeUtils.getFrameTimestamp(getValue()) + ")");
+                changed.accept(getValue());
+            });
 
-            this.setLayout(new GridLayout(1, 2));
-            this.add(this.label);
-            this.add(numberInput);
+            add(numberInput);
+            add(label);
+        }
 
-
+        public void onChange(Consumer<Integer> consumer) {
+            changed = consumer;
         }
 
         public int getValue() {
-            return this.model.getNumber().intValue();
+            return model.getNumber().intValue();
         }
 
         public void setValue(int value) {
-            this.model.setValue(value);
+            if(value >= (Integer)model.getMinimum() && value <= (Integer)model.getMaximum()) {
+                model.setValue(value);
+                if(changed != null) {
+                    changed.accept(value);
+                }
+            }
         }
 
+        public void setMinimum(int min) {
+            model.setMinimum(min);
+            if(getValue() < min) {
+                setValue(min);
+            }
+        }
 
+        public void setMaximum(int max) {
+            model.setMaximum(max);
+            if(getValue() > max) {
+                setValue(max);
+            }
+        }
     }
 
     private JTextField getLabelInput() {
-        JTextField nameInput = new JTextField(this.marker.getLabel());
+        JTextField nameInput = new JTextField(marker.getLabel());
         nameInput.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override

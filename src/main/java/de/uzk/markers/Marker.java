@@ -3,6 +3,7 @@ package de.uzk.markers;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import de.uzk.utils.ColorUtils;
 
 import java.awt.*;
@@ -27,17 +28,7 @@ public class Marker {
     }
 
     public Marker(Marker other) {
-        this(
-            other.x,
-            other.y,
-            other.width,
-            other.height,
-            other.from,
-            other.to,
-            other.shape,
-            other.color,
-            other.label
-        );
+        this.cloneFrom(other);
     }
 
     public Marker(int x, int y, int width, int height, int from, int to, MarkerShape shape, Color color, String label) {
@@ -48,35 +39,18 @@ public class Marker {
         this.setShape(shape);
         this.setLabel(label);
         this.setColor(color);
+        this.setFrom(from);
+        this.setTo(to);
     }
 
-    @JsonCreator
-    public Marker(
-        @JsonProperty("x")
-        int x,
-        @JsonProperty("y")
-        int y,
-        @JsonProperty("from")
-        int from,
-        @JsonProperty("to")
-        int to,
-        @JsonProperty("width")
-        int width,
-        @JsonProperty("height")
-        int height,
-        @JsonProperty(value = "shape", defaultValue = "RECTANGLE")
-        MarkerShape shape,
-        @JsonProperty(value = "color", defaultValue = "#000000")
-        String color,
-        @JsonProperty("label")
-        String label) {
-        this(x, y, width, height, from, to, shape, Color.decode(color), label);
-    }
+
+    //region Getter- und Settermethoden
 
     public int getY() {
         return y;
     }
 
+    @JsonSetter("y")
     public void setY(int y) {
         this.y = y;
     }
@@ -85,6 +59,7 @@ public class Marker {
         return x;
     }
 
+    @JsonSetter("x")
     public void setX(int x) {
         this.x = x;
     }
@@ -93,6 +68,7 @@ public class Marker {
         return width;
     }
 
+    @JsonSetter("width")
     public void setWidth(int width) {
         this.width = width;
     }
@@ -101,6 +77,7 @@ public class Marker {
         return height;
     }
 
+    @JsonSetter("height")
     public void setHeight(int height) {
         this.height = height;
     }
@@ -109,6 +86,7 @@ public class Marker {
         return from;
     }
 
+    @JsonSetter("from")
     public void setFrom(int from) {
         this.from = from;
     }
@@ -117,15 +95,16 @@ public class Marker {
         return to;
     }
 
+    @JsonSetter("to")
     public void setTo(int to) {
         this.to = to;
     }
-
 
     public MarkerShape getShape() {
         return shape;
     }
 
+    @JsonSetter("shape")
     public void setShape(MarkerShape shape) {
         this.shape = shape;
     }
@@ -134,9 +113,32 @@ public class Marker {
         return color;
     }
 
+    @JsonGetter("color")
+    private String getHexColor() {
+        return ColorUtils.colorToHex(this.color);
+    }
+
+    @JsonSetter("color")
+    private void setHexColor(String color) {
+        setColor(Color.decode(color));
+    }
+
     public void setColor(Color color) {
         this.color = color;
     }
+
+    public String getLabel() {
+        return label;
+    }
+
+    @JsonSetter("label")
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    //endregion
+
+    //region Eigene öffentliche Methoden
 
     public boolean shouldRender(int at) {
         return this.from <= at && this.to >= at;
@@ -164,27 +166,39 @@ public class Marker {
 
     }
 
-    public void drawWithTransform(Graphics2D to, Rectangle imageArea, double scaleFactor, AffineTransform at) {
-        Rectangle actualBounds = this.getActualBounds(imageArea, scaleFactor);
-        Shape finalShape = switch (this.shape) {
-            case RECTANGLE -> actualBounds;
-            case ELLIPSE ->
-                new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
-
-        };
-
-        to = (Graphics2D) to.create();
-        to.transform(at);
-        to.setColor(this.color);
-        to.setStroke(new BasicStroke(LINE_WIDTH * (float) scaleFactor));
-
-
-        to.draw(finalShape);
-
-        this.drawName(to, actualBounds.x, actualBounds.y);
-
-
+    public void cloneFrom(Marker other) {
+        this.setX(other.getX());
+        this.setY(other.getY());
+        this.setWidth(other.getWidth());
+        this.setHeight(other.getHeight());
+        this.setShape(other.getShape());
+        this.setLabel(other.getLabel());
+        this.setColor(other.getColor());
+        this.setFrom(other.getFrom());
+        this.setTo(other.getTo());
     }
+
+    //endregion
+
+    //region Overrides
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Marker other) {
+            return this.x == other.x && this.y == other.y &&
+                this.width == other.width && this.height == other.height &&
+                this.from == other.from && this.to == other.to &&
+                this.shape == other.shape && this.color.equals(other.color) &&
+                this.label.equals(other.label);
+        }
+        return false;
+    }
+
+    
+    //endregion
+
+    //region Private- und Helfermethoden
+
+
 
     private void drawName(Graphics2D to, int x, int y) {
 
@@ -211,28 +225,6 @@ public class Marker {
         return new Rectangle(x, y, width, height);
     }
 
-    public String getLabel() {
-        return label;
-    }
+    //endregion
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @JsonGetter("color")
-    private String getHexColor() {
-        return ColorUtils.colorToHex(this.color);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Marker other) {
-            return this.x == other.x && this.y == other.y &&
-                this.width == other.width && this.height == other.height &&
-                this.from == other.from && this.to == other.to &&
-                this.shape == other.shape && this.color.equals(other.color) &&
-                this.label.equals(other.label);
-        }
-        return false;
-    }
 }

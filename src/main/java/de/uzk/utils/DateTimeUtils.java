@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static de.uzk.Main.settings;
+import static de.uzk.Main.workspace;
 
 /**
  * Utility-Klasse zur einheitlichen Formatierung von Datum, Zeit und Dauer sowie zur einfachen Zeitmessung.
@@ -214,5 +215,14 @@ public final class DateTimeUtils {
         } else {
             return "%02d:%02d:%02d".formatted(totalHours, minutes, seconds);
         }
+    }
+
+    public static String getFrameTimestamp(int frame) {
+        int totalSeconds = (int)(frame * workspace.getConfig().getTimeUnit());
+        int seconds = totalSeconds % 60;
+        int minute = totalSeconds / 60 % 60;
+        int hour = totalSeconds / 3_600;
+
+        return String.format("%02d:%02d:%02d", hour, minute, seconds);
     }
 }
