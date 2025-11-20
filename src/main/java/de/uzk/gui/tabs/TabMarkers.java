@@ -31,7 +31,7 @@ public class TabMarkers extends ObserverContainer<JPanel> {
         add.addActionListener(e -> {
             MarkerEditor initial = new MarkerEditor(workspace.getCurrentImageFile());
             int option = JOptionPane.showConfirmDialog(
-                    null,
+                    gui.getContainer(),
                     initial,
                     getWord("dialog.markers.newMarker"),
                     JOptionPane.OK_CANCEL_OPTION

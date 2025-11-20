@@ -104,7 +104,7 @@ public class MarkerInfo extends JPanel {
             Marker copy = new Marker(marker);
             MarkerEditor initial = new MarkerEditor(workspace.getCurrentImageFile(), marker);
             int option = JOptionPane.showConfirmDialog(
-                null,
+                gui.getContainer(),
                 initial,
                 getWord("dialog.markers.editMarker"),
                 JOptionPane.OK_CANCEL_OPTION
