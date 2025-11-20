@@ -41,11 +41,11 @@ public final class PropertiesSorter {
         Path[] propertiesPaths = getPropertiesPaths();
 
         for (Path propertyPath : propertiesPaths) {
-            printLine(String.format("Reading file '%s'", propertyPath.toAbsolutePath()));
+            printLine("Reading file '%s'".formatted(propertyPath.toAbsolutePath()));
 
             // Charset ermitteln
             Charset charset = CharsetDetector.detectCharset(propertyPath);
-            printLine(String.format("Detected charset '%s'", charset.displayName()));
+            printLine("Detected charset '%s'".formatted(charset.displayName()));
 
             List<String> originalLines = readAllLines(propertyPath, charset);
             List<String> sortedLines = sortProperties(originalLines);
@@ -55,7 +55,7 @@ public final class PropertiesSorter {
 
             // Wenn Datei bereits sortiert → überspringen
             if (Objects.equals(originalLines, sortedLines)) {
-                printLine(String.format("⏭️ File ‘%s’ is already sorted.%n", propertyPath));
+                printLine("⏭️ File ‘%s’ is already sorted.%n".formatted(propertyPath));
                 continue;
             }
 
@@ -65,14 +65,14 @@ public final class PropertiesSorter {
                 // Nutzer fragen, ob die Datei überschrieben werden soll
                 String question = "⚠️ Should the file be overwritten?";
                 if (!askUserForConfirmation(question)) {
-                    printLine(String.format("❌ File ‘%s’ is skipped.%n", propertyPath));
+                    printLine("❌ File ‘%s’ is skipped.%n".formatted(propertyPath));
                     continue;
                 }
             }
 
             // Datei überschreiben
             if (writeAllLines(propertyPath, sortedLines, charset)) {
-                printLine(String.format("✅ File ‘%s’ has been successfully overwritten.%n", propertyPath));
+                printLine("✅ File ‘%s’ has been successfully overwritten.%n".formatted(propertyPath));
             }
         }
     }
@@ -113,7 +113,7 @@ public final class PropertiesSorter {
                 lines.add(line);
             }
         } catch (IOException e) {
-            logger.error(String.format("Failed reading file '%s'", filePath));
+            logger.error("Failed reading file '%s'".formatted(filePath));
         }
         return lines;
     }
@@ -145,7 +145,7 @@ public final class PropertiesSorter {
             }
 
         } catch (IOException e) {
-            logger.error(String.format("Failed writing file '%s'", filePath));
+            logger.error("Failed writing file '%s'".formatted(filePath));
             return false;
         }
         return true;
@@ -196,7 +196,7 @@ public final class PropertiesSorter {
                 propertyPaths.add(filePath);
             }
         } catch (IOException e) {
-            logger.error(String.format("Failed reading the directory '%s'", PathManager.RESOURCES_DIRECTORY));
+            logger.error("Failed reading the directory '%s'".formatted(PathManager.RESOURCES_DIRECTORY));
         }
 
         return propertyPaths.toArray(Path[]::new);

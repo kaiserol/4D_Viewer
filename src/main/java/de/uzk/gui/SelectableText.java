@@ -98,9 +98,9 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
             if (getDocument() instanceof HTMLDocument htmlDoc) {
                 StyleSheet styleSheet = htmlDoc.getStyleSheet();
                 String hexDefaultColor = ColorUtils.colorToHex(UIEnvironment.getTextColor());
-                styleSheet.addRule(String.format("a { color: %s; }", hexDefaultColor));
-                styleSheet.addRule(String.format("a:visited { color: %s; }", hexDefaultColor));
-                styleSheet.addRule(String.format("a:hover { color: %s; }", hexDefaultColor));
+                styleSheet.addRule("a { color: %s; }".formatted(hexDefaultColor));
+                styleSheet.addRule("a:visited { color: %s; }".formatted(hexDefaultColor));
+                styleSheet.addRule("a:hover { color: %s; }".formatted(hexDefaultColor));
             }
         });
     }
@@ -108,6 +108,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     // ========================================
     // Innere Klassen
     // ========================================
+
     /**
      * Listener, der Cursor bei Mausbewegungen aktualisiert
      */
@@ -195,7 +196,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
                     applyLinkHoverStyle(false);
                     UIEnvironment.setCursor(this, ComponentUtils.HAND_CURSOR);
 
-                    String tooltipText = String.format("%s (%s %s)",
+                    String tooltipText = "%s (%s %s)".formatted(
                         getWord("tooltip.openInBrowser"),
                         Shortcut.getModifiersList(Shortcut.CTRL_DOWN).get(0),
                         getWord("tooltip.click")

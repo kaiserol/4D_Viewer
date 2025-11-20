@@ -166,7 +166,7 @@ public class DialogLoadingImages implements LoadingImageListener {
     // ========================================
     @Override
     public void onLoadingStart() {
-        logger.info(String.format("Loading images from the directory '%s'", workspace.getImagesDirectory().toAbsolutePath()));
+        logger.info("Loading images from the directory '%s'".formatted(workspace.getImagesDirectory().toAbsolutePath()));
     }
 
     @Override
@@ -203,7 +203,7 @@ public class DialogLoadingImages implements LoadingImageListener {
 
         int maxTime = workspace.getMaxTime();
         int maxLevel = workspace.getMaxLevel();
-        String loadedImages = String.format("%d (%dx%d)", imageFiles, maxTime + 1, maxLevel + 1);
+        String loadedImages = "%d (%dx%d)".formatted(imageFiles, maxTime + 1, maxLevel + 1);
         logger.info("Loaded images: " + loadedImages);
     }
 

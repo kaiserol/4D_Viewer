@@ -167,7 +167,7 @@ public final class UIEnvironment {
         // Wenn sich der Wert nicht ändert, abbrechen
         Language oldLanguage = settings.getLanguage();
         if (!settings.setLanguage(language)) return;
-        logger.info(String.format("Updating Language from '%s' to '%s'", oldLanguage.getValue(), language.getValue()));
+        logger.info("Updating Language from '%s' to '%s'".formatted(oldLanguage.getValue(), language.getValue()));
 
         // UI aktualisieren
         Locale.setDefault(language.getLocale());
@@ -179,7 +179,7 @@ public final class UIEnvironment {
         // Wenn sich der Wert nicht ändert, abbrechen
         Theme oldTheme = settings.getTheme();
         if (!settings.setTheme(theme)) return;
-        logger.info(String.format("Updating Theme from '%s' to '%s'", oldTheme.getValue(), theme.getValue()));
+        logger.info("Updating Theme from '%s' to '%s'".formatted(oldTheme.getValue(), theme.getValue()));
 
         // FlatLaf und Theme aktualisieren
         updateFlatLaf();
@@ -190,7 +190,7 @@ public final class UIEnvironment {
         // Wenn sich der Wert nicht ändert, abbrechen
         int oldFontSize = settings.getFontSize();
         if (!settings.setFontSize(fontSize)) return;
-        logger.info(String.format("Updating Font Size from '%s' to '%s'", oldFontSize, fontSize));
+        logger.info("Updating Font Size from '%s' to '%s'".formatted(oldFontSize, fontSize));
         font = font.deriveFont((float) fontSize);
 
         // FlatLaf und Font aktualisieren
@@ -203,7 +203,7 @@ public final class UIEnvironment {
         // Wenn sich der Wert nicht ändert, abbrechen
         boolean oldConfirmExit = settings.isConfirmExit();
         if (!settings.setConfirmExit(confirmExit)) return;
-        logger.info(String.format("Updating Confirm Exit from '%s' to '%s'", oldConfirmExit, confirmExit));
+        logger.info("Updating Confirm Exit from '%s' to '%s'".formatted(oldConfirmExit, confirmExit));
     }
 
     // ========================================
@@ -265,7 +265,7 @@ public final class UIEnvironment {
         try {
             desktop.browse(url.toURI());
         } catch (Exception e) {
-            logger.error(String.format("Failed opening web link '%s'", url));
+            logger.error("Failed opening web link '%s'".formatted(url));
         }
     }
 }

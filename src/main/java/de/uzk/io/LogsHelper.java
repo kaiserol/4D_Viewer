@@ -45,7 +45,7 @@ public final class LogsHelper {
         try (FileWriter writer = new FileWriter(filePath.toFile(), true)) {
             writer.write(logEntry + StringUtils.NEXT_LINE);
         } catch (IOException ex) {
-            logger.error(String.format("Failed writing to file '%s'", filePath.toAbsolutePath()));
+            logger.error("Failed writing to file '%s'".formatted(filePath.toAbsolutePath()));
         }
     }
 
@@ -60,10 +60,12 @@ public final class LogsHelper {
                 String fileName = path.getFileName().toString();
 
                 // Prüft, ob der Pfad eine reguläre Datei ist und der Name dem Muster entspricht
-                if (Files.isRegularFile(path) && fileName.matches(fileNamePattern)) deleteLogFileIfOld(path, daysToKeep);
+                if (Files.isRegularFile(path) && fileName.matches(fileNamePattern)) {
+                    deleteLogFileIfOld(path, daysToKeep);
+                }
             }
         } catch (IOException e) {
-            logger.error(String.format("Failed to scan logs directory '%s'", logsDirectory.toAbsolutePath()));
+            logger.error("Failed to scan logs directory '%s'".formatted(logsDirectory.toAbsolutePath()));
         }
     }
 
@@ -84,7 +86,7 @@ public final class LogsHelper {
             try {
                 Files.createFile(filePath);
             } catch (IOException e) {
-                logger.error(String.format("Failed loading logs file '%s'", filePath.toAbsolutePath()));
+                logger.error("Failed loading logs file '%s'".formatted(filePath.toAbsolutePath()));
                 return null;
             }
         }
@@ -105,10 +107,10 @@ public final class LogsHelper {
         if (fileDate.isBefore(threshold)) {
             long daysOld = ChronoUnit.DAYS.between(fileDate, today);
             try {
-                logger.info(String.format("Deleting log file '%s' (%d days old, threshold: %d days)", path.toAbsolutePath(), daysOld, daysToKeep));
+                logger.info("Deleting log file '%s' (%d days old, threshold: %d days)".formatted(path.toAbsolutePath(), daysOld, daysToKeep));
                 Files.deleteIfExists(path);
             } catch (IOException e) {
-                logger.error(String.format("Failed deleting log file '%s'", path.toAbsolutePath()));
+                logger.error("Failed deleting log file '%s'".formatted(path.toAbsolutePath()));
             }
         }
     }

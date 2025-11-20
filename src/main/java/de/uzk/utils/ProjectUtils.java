@@ -164,8 +164,7 @@ public final class ProjectUtils {
             }
             case DIRECTORY_ALREADY_LOADED -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("result.directoryAlreadyLoaded")
-                    .formatted(imageFileType.getType(), imagesDirectory);
+                String message = getWord("result.directoryAlreadyLoaded").formatted(imageFileType.getType(), imagesDirectory);
                 JOptionPane.showMessageDialog(
                     gui.getContainer(),
                     message,
@@ -175,8 +174,7 @@ public final class ProjectUtils {
             }
             case DIRECTORY_DOES_NOT_EXIST -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("result.directoryDoesNotExist")
-                    .formatted(imagesDirectory);
+                String message = getWord("result.directoryDoesNotExist").formatted(imagesDirectory);
                 JOptionPane.showMessageDialog(
                     gui.getContainer(),
                     message,
@@ -186,8 +184,7 @@ public final class ProjectUtils {
             }
             case DIRECTORY_HAS_NO_IMAGES -> {
                 if (isGuiBeingBuilt) return false;
-                String message = getWord("result.directoryHasNoImages")
-                    .formatted(imagesDirectory, imageFileType.getType());
+                String message = getWord("result.directoryHasNoImages").formatted(imagesDirectory, imageFileType.getType());
                 JOptionPane.showMessageDialog(
                     gui.getContainer(),
                     message,

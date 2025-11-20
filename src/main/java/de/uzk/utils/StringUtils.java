@@ -66,10 +66,7 @@ public final class StringUtils {
      * @return HTML-String mit entsprechendem Stil
      */
     public static String applyDivAlignment(String text, String align, int maxWidth) {
-        return String.format(
-            "<div style=\"text-align:%s; width:%dpx; word-wrap:break-word;\">%s</div>",
-            align, maxWidth, text
-        );
+        return "<div style=\"text-align:%s; width:%dpx; word-wrap:break-word;\">%s</div>".formatted(align, maxWidth, text);
     }
 
     /**
@@ -80,7 +77,7 @@ public final class StringUtils {
      * @return HTML-String mit farbigem Text
      */
     public static String applyColor(String text, Color color) {
-        return String.format("<span style=\"color:%s;\">%s</span>", ColorUtils.colorToHex(color), text);
+        return "<span style=\"color:%s;\">%s</span>".formatted(ColorUtils.colorToHex(color), text);
     }
 
     /**
@@ -100,7 +97,7 @@ public final class StringUtils {
         }
 
         String fontSize = (percentage / 100.0) + "em";
-        return String.format("<span style=\"font-size:%s;\">%s</span>", fontSize, text);
+        return "<span style=\"font-size:%s;\">%s</span>".formatted(fontSize, text);
     }
 
     /**
@@ -126,6 +123,7 @@ public final class StringUtils {
 
     /**
      * Hebt den angegebenen Text unterstrichen hervor.
+     *
      * @param text Der Text, der unterstrichen dargestellt werden soll
      * @return HTML-String mit &lt;u&gt;-Tag
      */
@@ -141,7 +139,7 @@ public final class StringUtils {
      * @return HTML-Link (&lt;a href=""&gt;text&lt;/a&gt;)
      */
     public static String wrapA(String text, String url) {
-        return String.format("<a href=\"%s\">%s</a>", url, text);
+        return "<a href=\"%s\">%s</a>".formatted(url, text);
     }
 
     /**
@@ -185,10 +183,10 @@ public final class StringUtils {
      * @return Vollständiger HTML-String mit eingebettetem CSS-Stil
      */
     public static String wrapHtml(String htmlContent, String fontName) {
-        String style = String.format("""
+        String style = """
             body { font-family: %s; }
             pre { margin: 5px 0; }
-            """, fontName);
+            """.formatted(fontName);
 
         return "<html><head><style>" + style + "</style></head><body>" + htmlContent + "</body></html>";
     }

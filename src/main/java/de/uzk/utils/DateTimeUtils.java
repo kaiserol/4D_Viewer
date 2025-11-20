@@ -115,10 +115,11 @@ public final class DateTimeUtils {
         // Ein- oder zweistellige Werte normalisieren
         try {
             String[] parts = matchedDate.split("-");
-            String normalized = String.format("%04d-%02d-%02d",
+            String normalized = "%04d-%02d-%02d".formatted(
                 Integer.parseInt(parts[0]),
                 Integer.parseInt(parts[1]),
-                Integer.parseInt(parts[2]));
+                Integer.parseInt(parts[2])
+            );
             return LocalDate.parse(normalized, DATE_ONLY_FORMATTER);
         } catch (Exception e) {
             return null;
@@ -207,11 +208,11 @@ public final class DateTimeUtils {
         if (totalSeconds == 0) {
             return millis + " ms";
         } else if (totalMinutes == 0) {
-            return String.format("%d.%03d s", seconds, millis);
+            return "%d.%03d s".formatted(seconds, millis);
         } else if (totalHours == 0) {
-            return String.format("%02d:%02d", minutes, seconds);
+            return "%02d:%02d".formatted(minutes, seconds);
         } else {
-            return String.format("%02d:%02d:%02d", totalHours, minutes, seconds);
+            return "%02d:%02d:%02d".formatted(totalHours, minutes, seconds);
         }
     }
 }

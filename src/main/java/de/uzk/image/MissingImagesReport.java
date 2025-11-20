@@ -133,7 +133,7 @@ public class MissingImagesReport {
 
             int maxTime = workspace.getMaxTime();
             int maxLevel = workspace.getMaxLevel();
-            String loadedImages = String.format("%d images (%dx%d)", (maxTime + 1) * (maxLevel + 1), maxTime + 1, maxLevel + 1);
+            String loadedImages = "%d images (%dx%d)".formatted((maxTime + 1) * (maxLevel + 1), maxTime + 1, maxLevel + 1);
             reportBuilder.append(loadedImages).append(StringUtils.NEXT_LINE).append(StringUtils.NEXT_LINE);
             reportBuilder.append(StringUtils.wrapBold("Further information:")).append(StringUtils.NEXT_LINE);
             reportBuilder.append("Max Time: ").append(maxTime).append(StringUtils.NEXT_LINE);
@@ -157,7 +157,7 @@ public class MissingImagesReport {
         int time = imageFile.getTime();
         int level = imageFile.getLevel();
 
-        String text = String.format("- Image: '%s' (time=%s, level=%s)", fileName, time, level);
+        String text = "- Image: '%s' (time=%s, level=%s)".formatted(fileName, time, level);
         return text + StringUtils.NEXT_LINE;
     }
 

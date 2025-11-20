@@ -57,7 +57,7 @@ public class DialogHistory {
         GridBagConstraints gbc = ComponentUtils.createGridBagConstraints();
 
         // Version 1.* hinzufügen
-        addLabeledRow(historyPanel, gbc, getWord("app.v1"), String.format(getWord("app.v1.date"), getWord("date.unknown")), 0);
+        addLabeledRow(historyPanel, gbc, getWord("app.v1"), getWord("app.v1.date").formatted(getWord("date.unknown")), 0);
         addLabeledRow(historyPanel, gbc, getWord("people.developers"), getWord("dialog.history.v1.developer"), 5);
         addLabeledRow(historyPanel, gbc, getWord("people.contributors"), getWord("dialog.history.v1.contributor"), 5);
 
@@ -68,7 +68,7 @@ public class DialogHistory {
         addLabeledRow(historyPanel, gbc, null, getWord("dialog.history.v2_0.contributor-2"), 5);
 
         // Version 2.1 hinzufügen
-        addLabeledRow(historyPanel, gbc, getWord("app.v2_1"), String.format(getWord("app.v2_1.date"), getWord("date.today")), 20);
+        addLabeledRow(historyPanel, gbc, getWord("app.v2_1"), getWord("app.v2_1.date").formatted(getWord("date.today")), 20);
         addLabeledRow(historyPanel, gbc, getWord("people.developers"), getWord("dialog.history.v2_1.developer-1"), 5);
         addLabeledRow(historyPanel, gbc, null, getWord("dialog.history.v2_1.developer-2"), 5);
         addLabeledRow(historyPanel, gbc, getWord("people.contributors"), getWord("dialog.history.v2_1.contributor-1"), 5);
