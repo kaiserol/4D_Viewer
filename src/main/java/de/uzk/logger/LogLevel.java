@@ -3,6 +3,10 @@ package de.uzk.logger;
 import de.uzk.utils.ColorUtils;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Comparator;
+
+import static de.uzk.config.LanguageHandler.getWord;
 
 /**
  * Repräsentiert die verschiedenen Protokollebenen für Log-Einträge.
@@ -58,6 +62,20 @@ public enum LogLevel {
     }
 
     /**
+     * Gibt den Klartext-Namen der Protokollebene zurück.
+     *
+     * @return Klartext-Name der Protokollebene
+     */
+    public String getName() {
+        return switch (this) {
+            case DEBUG -> getWord("logLevel.debug");
+            case INFO -> getWord("logLevel.info");
+            case WARN -> getWord("logLevel.warn");
+            case ERROR -> getWord("logLevel.error");
+        };
+    }
+
+    /**
      * Gibt die Textdarstellung der Protokollebene zurück.
      *
      * @return Die Textdarstellung der Protokollebene
@@ -87,6 +105,24 @@ public enum LogLevel {
             maxLevelLength = Math.max(maxLevelLength, level.toString().length());
         }
         return maxLevelLength;
+    }
+
+    /**
+     * Liefert alle {@link LogLevel}-Werte alphabetisch sortiert nach ihrer
+     * Textdarstellung zurück.
+     *
+     * <p>
+     * Die Sortierung erfolgt anhand des Rückgabewerts von {@link #toString()},
+     * also nach den Klartext-Namen der Protokollebenen, unabhängig von
+     * Groß- und Kleinschreibung.
+     *
+     * @return Ein alphabetisch sortiertes Array aller definierten {@link LogLevel}-Konstanten
+     */
+    public static LogLevel[] sortedValues() {
+        LogLevel[] values = LogLevel.values();
+        Arrays.sort(values, (logLevel1, level2) -> logLevel1.getName().compareToIgnoreCase(level2.getName()));
+        Arrays.sort(values, Comparator.comparing(LogLevel::getName, String.CASE_INSENSITIVE_ORDER));
+        return values;
     }
 
     /**

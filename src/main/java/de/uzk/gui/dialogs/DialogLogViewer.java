@@ -2,13 +2,15 @@ package de.uzk.gui.dialogs;
 
 import de.uzk.gui.SelectableText;
 import de.uzk.gui.UIEnvironment;
+import de.uzk.logger.LogLevel;
 import de.uzk.utils.ComponentUtils;
-import de.uzk.utils.NumberUtils;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.*;
+import java.util.List;
 
 import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
@@ -20,6 +22,7 @@ public class DialogLogViewer {
 
     // Gui Elemente
     private JTabbedPane tabs;
+    private final Map<LogLevel, JCheckBox> filterCheckboxes;
 
     // Minimale Fenstergrößen
     private static final int MIN_WIDTH = 400;
@@ -33,9 +36,14 @@ public class DialogLogViewer {
         this.dialog = new JDialog(frame, true);
         this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
+        // Map initialisieren
+        this.filterCheckboxes = new LinkedHashMap<>();
+
         // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(e -> this.dialog.dispose(),
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
+        this.dialog.getRootPane().registerKeyboardAction(
+            e -> this.dialog.dispose(),
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+            JComponent.WHEN_IN_FOCUSED_WINDOW
         );
     }
 
@@ -65,37 +73,88 @@ public class DialogLogViewer {
         JTabbedPane tabs = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 
         // Tabs hinzufügen
-        tabs.add(getWord("dialog.logViewer.tab.log"), createLogsPanel());
+        tabs.addTab(getWord("dialog.logViewer.tab.log"), createLogsPanel(LogLevel.DEBUG, LogLevel.ERROR, LogLevel.WARN));
+
         if (workspace.isLoaded()) {
-            tabs.add(getWord("dialog.logViewer.tab.imagesReport"), createMissingImagesPanel());
+            tabs.addTab(getWord("dialog.logViewer.tab.imagesReport"), createMissingImagesPanel());
         }
         return tabs;
     }
 
-    private JComponent createLogsPanel() {
-        return createTextInScrollPane(logger.exportHtml());
+    private JPanel createLogsPanel(LogLevel... blockedLevels) {
+        JPanel scrollPaneWrapper = createTextInScrollPane(logger.exportHtml(blockedLevels));
+
+        // Kontrollkästchen für Protokollebenen hinzufügen
+        JPanel logLevelsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        logLevelsPanel.add(new JLabel(getWord("label.showLogLevels") + ": "));
+        addLogLevelCheckboxes(scrollPaneWrapper, logLevelsPanel, blockedLevels);
+        scrollPaneWrapper.add(logLevelsPanel, BorderLayout.SOUTH);
+
+        return scrollPaneWrapper;
     }
 
-    private JComponent createMissingImagesPanel() {
+    private void addLogLevelCheckboxes(JPanel scrollPaneWrapper, JPanel logLevelsPanel, LogLevel... blockedLevels) {
+        for (LogLevel level : LogLevel.sortedValues()) {
+            boolean blocked = blockedLevels != null && Arrays.stream(blockedLevels).anyMatch(l -> l == level);
+            JCheckBox checkBox = new JCheckBox(level.getName(), !blocked);
+            checkBox.addActionListener(e -> refreshLogsPanel(scrollPaneWrapper));
+
+            if (level == LogLevel.DEBUG) {
+                SwingUtilities.invokeLater(() -> checkBox.setSelected(false));
+            }
+
+            logLevelsPanel.add(checkBox);
+            this.filterCheckboxes.put(level, checkBox);
+        }
+    }
+
+    private JPanel createMissingImagesPanel() {
         return createTextInScrollPane(StringUtils.wrapPre(workspace.getMissingImagesReport()));
     }
 
-    private JComponent createTextInScrollPane(String htmlContent) {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+    // ==================================================
+    // Refresh-Mechanik
+    // ==================================================
+    private void refreshLogsPanel(JPanel scrollPaneWrapper) {
+        JScrollPane scrollPane = ComponentUtils.findFirstComponentRecursively(JScrollPane.class, scrollPaneWrapper);
+        SelectableText logsText = ComponentUtils.findFirstComponentRecursively(SelectableText.class, scrollPaneWrapper);
+        if (scrollPane == null || logsText == null) return;
 
-        // Text in ScrollPane packen
-        SelectableText text = new SelectableText(StringUtils.wrapHtml(htmlContent, "monospaced"));
-        text.setMargin(UIEnvironment.INSETS_SMALL);
+        List<LogLevel> blockedLevels = new ArrayList<>();
+        for (Map.Entry<LogLevel, JCheckBox> entry : this.filterCheckboxes.entrySet()) {
+            if (!entry.getValue().isSelected()) {
+                blockedLevels.add(entry.getKey());
+            }
+        }
 
-        JScrollPane scrollPane = new JScrollPane(text);
-        panel.add(scrollPane);
-        return panel;
+        // Text aktualisieren
+        String htmlContent = logger.exportHtml(blockedLevels.toArray(new LogLevel[0]));
+        logsText.setText(StringUtils.wrapHtml(htmlContent, "monospaced"));
+
+        // Bildlaufleiste aktualisieren
+        SwingUtilities.invokeLater(() -> {
+            scrollPane.getVerticalScrollBar().setValue(0);
+            scrollPane.getHorizontalScrollBar().setValue(0);
+        });
     }
 
     // ========================================
     // Hilfsmethoden
     // ========================================
+    private JPanel createTextInScrollPane(String htmlContent) {
+        SelectableText text = new SelectableText(StringUtils.wrapHtml(htmlContent, "monospaced"));
+        text.setMargin(UIEnvironment.INSETS_SMALL);
+
+        // Text in ScrollPane packen
+        JScrollPane scrollPane = new JScrollPane(text);
+
+        // ScrollPane in Panel packen
+        JPanel panel = new JPanel(new BorderLayout(0, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        panel.add(scrollPane, BorderLayout.CENTER);
+        return panel;
+    }
+
     private void resizeWindow() {
         // Abmessungen des Bildschirms ermitteln
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -106,7 +165,9 @@ public class DialogLogViewer {
         int dialogWidth = dialog.getWidth();
         int dialogHeight = dialog.getHeight();
 
-        JScrollPane scrollPane = findTabScrollPane(this.tabs, this.tabs.getSelectedIndex());
+        // ScrollPane ermitteln
+        JComponent selectedTab = (JComponent) this.tabs.getComponentAt(this.tabs.getSelectedIndex());
+        JScrollPane scrollPane = ComponentUtils.findFirstComponentRecursively(JScrollPane.class, selectedTab);
         if (scrollPane != null) {
             dialogWidth = dialogWidth + scrollPane.getWidth() - scrollPane.getViewport().getView().getWidth();
             dialogHeight = dialogHeight + scrollPane.getHeight() - scrollPane.getViewport().getView().getHeight();
@@ -128,19 +189,5 @@ public class DialogLogViewer {
         // Neue Abmessungen setzen
         this.dialog.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         this.dialog.setSize(new Dimension(newWidth, newHeight));
-    }
-
-    private JScrollPane findTabScrollPane(JTabbedPane tabbedPane, int tabIndex) {
-        if (!NumberUtils.valueInRange(tabIndex, 0, tabbedPane.getTabCount() - 1)) return null;
-
-        // ScrollPane ermitteln
-        JComponent component = (JComponent) tabbedPane.getComponentAt(tabIndex);
-        if (component instanceof JPanel panel) {
-            Component[] panelComponents = ComponentUtils.getComponents(panel);
-            if (panelComponents.length == 1 && panelComponents[0] instanceof JScrollPane scrollPane) {
-                return scrollPane;
-            }
-        }
-        return null;
     }
 }

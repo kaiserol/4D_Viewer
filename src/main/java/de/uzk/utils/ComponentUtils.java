@@ -326,17 +326,19 @@ public final class ComponentUtils {
      * Findet alle Komponenten eines bestimmten Typs rekursiv in einem Container.
      *
      * @param type Klasse der gesuchten Komponente
-     * @param root Wurzel-Komponente
+     * @param root Wurzel-Komponente, ab der gesucht wird
      * @param <T>  Typ der Komponente
      * @return Liste der gefundenen Komponenten
      */
     public static <T extends Component> List<T> findComponentsRecursively(Class<T> type, Component root) {
         List<T> result = new ArrayList<>();
 
+        // Prüfe die Wurzel selbst
         if (type.isInstance(root)) {
             result.add(type.cast(root));
         }
 
+        // Wenn die Wurzel ein Container ist, werden alle Kinder durchsucht
         if (root instanceof Container container) {
             for (Component child : ComponentUtils.getComponents(container)) {
                 result.addAll(findComponentsRecursively(type, child));
@@ -344,6 +346,34 @@ public final class ComponentUtils {
         }
 
         return result;
+    }
+
+    /**
+     * Sucht rekursiv die erste Komponente eines bestimmten Typs in einem Container.
+     * Die Suche erfolgt in Tiefe (Depth-First) und bricht sofort ab,
+     * sobald eine passende Komponente gefunden wurde.
+     *
+     * @param type Klasse der gesuchten Komponente
+     * @param root Wurzel-Komponente, ab der gesucht wird
+     * @param <T>  Typ der Komponente
+     * @return Erste gefundene Komponente des angegebenen Typs oder {@code null}, falls keine existiert
+     */
+    public static <T extends Component> T findFirstComponentRecursively(Class<T> type, Component root) {
+        // Prüfe die Wurzel selbst
+        if (type.isInstance(root)) {
+            return type.cast(root);
+        }
+
+        // Wenn die Wurzel ein Container ist, werden alle Kinder durchsucht
+        if (root instanceof Container container) {
+            for (Component child : ComponentUtils.getComponents(container)) {
+                T found = findFirstComponentRecursively(type, child);
+                if (found != null) return found;
+            }
+        }
+
+        // Nichts gefunden
+        return null;
     }
 
     /**

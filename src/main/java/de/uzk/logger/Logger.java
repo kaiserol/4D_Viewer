@@ -12,7 +12,7 @@ import java.util.List;
  * Repräsentiert die Logger-Klasse für das Erfassen und Ausgeben von Logeinträgen über verschiedene Kanäle.
  *
  * <p>
- * Standardmäßig werden Logs auf der Konsole, in einer Datei sowie in einer HTML-Ausgabe
+ * Standardmäßig werden Logs auf der Konsole, in einer Datei sowie im HTML-Format
  * gespeichert. Weitere Ausgabekanäle können über {@link #addOutput(LogOutput)} hinzugefügt werden.
  */
 public class Logger {
@@ -31,7 +31,7 @@ public class Logger {
      * <p>
      * Standardmäßig werden folgende Ausgaben aktiviert:
      * <ul>
-     *     <li>Konsole ({@link ConsoleOutput})</li>
+     *     <li>Konsolenausgabe ({@link ConsoleOutput})</li>
      *     <li>Dateiausgabe ({@link FileOutput})</li>
      *     <li>HTML-Ausgabe ({@link HtmlOutput})</li>
      * </ul>
@@ -41,18 +41,33 @@ public class Logger {
      */
     public Logger() {
         this.outputs = new ArrayList<>();
-        addOutput(new ConsoleOutput());
-        addOutput(new FileOutput());
-        addOutput(this.htmlOutput = new HtmlOutput());
+
+        // Konsolenausgabe
+        LogOutput consoleOutput = new ConsoleOutput();
+        addOutput(consoleOutput);
+
+        // Dateiausgabe
+        LogOutput fileOutput = new FileOutput();
+        fileOutput.blockLevel(LogLevel.DEBUG);
+        addOutput(fileOutput);
+
+        // HTML-Ausgabe
+        this.htmlOutput = new HtmlOutput();
+        addOutput(this.htmlOutput);
     }
 
     /**
      * Exportiert alle bisher erfassten Logeinträge im HTML-Format.
+     * <p>
+     * Übergebene {@link LogLevel}-Werte dienen als zusätzliche Filter und
+     * bewirken, dass entsprechende Einträge nicht in der exportierten
+     * HTML-Ausgabe erscheinen.
      *
-     * @return Die HTML-Darstellung aller Logeinträge
+     * @param blockedLevels Optionale Liste von Protokollebenen, die aus der Ausgabe
+     *                      ausgeschlossen werden sollen
      */
-    public String exportHtml() {
-        return this.htmlOutput.exportHtml();
+    public String exportHtml(LogLevel... blockedLevels) {
+        return this.htmlOutput.exportHtml(blockedLevels);
     }
 
     /**
