@@ -48,15 +48,15 @@ public class HtmlOutput extends LogOutput {
         String result =
             // Zeitstempel
             StringUtils.applyColor(StringUtils.wrapBold(formattedEntry.get(0)), entry.getLevel().getColor()) +
-                formattedEntry.get(1) +
+                " " +
 
                 // Protokollebene
                 StringUtils.applyColor(formattedEntry.get(2), entry.getLevel().getColor()) +
-                formattedEntry.get(3) +
+                " " +
 
                 // Quelle
                 StringUtils.wrapUnderlined(formattedEntry.get(4)) +
-                formattedEntry.get(5) + StringUtils.NEXT_LINE +
+                ":" + StringUtils.NEXT_LINE +
 
                 // Nachricht
                 formattedEntry.get(6);
