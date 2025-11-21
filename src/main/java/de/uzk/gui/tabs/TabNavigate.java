@@ -24,7 +24,10 @@ public class TabNavigate extends ObserverContainer<JPanel> {
     }
 
     private void init() {
-        this.container.setLayout(new GridBagLayout());
+        this.container.setLayout(new BorderLayout()); //Um die Inputs ganz oben platzieren zu können
+
+        JPanel editorPanel = new JPanel(new GridBagLayout());
+
         // GridBagConstraints
         GridBagConstraints gbc = ComponentUtils.createGridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -32,7 +35,7 @@ public class TabNavigate extends ObserverContainer<JPanel> {
 
         // imageLabel
         JLabel imageLabel = new JLabel(getWord("menu.nav.time.layer") + ":");
-        this.container.add(imageLabel, gbc);
+        editorPanel.add(imageLabel, gbc);
 
         // gbc
         gbc.gridy++;
@@ -40,7 +43,7 @@ public class TabNavigate extends ObserverContainer<JPanel> {
         // timeSpinner
         SpinnerNumberModel timeSpinnerModel = new SpinnerNumberModel(30, Config.MIN_TIME_UNIT, Config.MAX_TIME_UNIT, 0.1);
         this.timeUnitSpinner = getUnitSpinner(timeSpinnerModel, Axis.TIME);
-        this.container.add(timeUnitSpinner, gbc);
+        editorPanel.add(timeUnitSpinner, gbc);
 
         // gbc
         gbc.gridx++;
@@ -49,7 +52,7 @@ public class TabNavigate extends ObserverContainer<JPanel> {
         // imageUnitLabel
         gbc.anchor = GridBagConstraints.CENTER;
         JLabel imageUnitLabel = new JLabel(getWord("menu.nav.time.unit"));
-        this.container.add(imageUnitLabel, gbc);
+        editorPanel.add(imageUnitLabel, gbc);
 
         // gbc
         gbc.gridy++;
@@ -58,7 +61,7 @@ public class TabNavigate extends ObserverContainer<JPanel> {
         gbc.anchor = GridBagConstraints.FIRST_LINE_START;
         // levelLabel
         JLabel levelLabel = new JLabel(getWord("menu.nav.level.layer") + ":");
-        this.container.add(levelLabel, gbc);
+        editorPanel.add(levelLabel, gbc);
 
         // gbc
         gbc.gridy++;
@@ -66,7 +69,7 @@ public class TabNavigate extends ObserverContainer<JPanel> {
         // timeSpinner
         SpinnerNumberModel levelSpinnerModel = new SpinnerNumberModel(1, Config.MIN_LEVEL_UNIT, Config.MAX_LEVEL_UNIT, 0.1);
         this.levelUnitSpinner = getUnitSpinner(levelSpinnerModel, Axis.LEVEL);
-        this.container.add(levelUnitSpinner, gbc);
+        editorPanel.add(levelUnitSpinner, gbc);
 
         // gbc
         gbc.gridx++;
@@ -75,9 +78,9 @@ public class TabNavigate extends ObserverContainer<JPanel> {
         // timeUnitLabel
         gbc.anchor = GridBagConstraints.CENTER;
         JLabel levelUnitLabel = new JLabel(getWord("menu.nav.level.unit"));
-        this.container.add(levelUnitLabel, gbc);
+        editorPanel.add(levelUnitLabel, gbc);
 
-
+        this.container.add(editorPanel, BorderLayout.NORTH);
     }
 
 
