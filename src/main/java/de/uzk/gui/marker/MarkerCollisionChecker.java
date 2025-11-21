@@ -10,6 +10,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.util.function.Consumer;
 
+import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
 
 public class MarkerCollisionChecker extends MouseAdapter {
@@ -81,6 +82,7 @@ public class MarkerCollisionChecker extends MouseAdapter {
         Point2D actual;
         try {
             actual= currentAffineTransform.inverseTransform(p, null);
+            logger.debug("User: %s, actual: %s".formatted(p, actual));
         } catch (NoninvertibleTransformException ex) {
             throw new RuntimeException("Nur bijektive Transformationen (Rotation, Translation, Skalierung) werden verwendet – wie konnte das passieren?", ex);
         }

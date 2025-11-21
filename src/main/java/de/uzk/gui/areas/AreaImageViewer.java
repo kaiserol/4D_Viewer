@@ -9,7 +9,6 @@ import de.uzk.image.Axis;
 import de.uzk.io.ImageLoader;
 import de.uzk.io.SnapshotHelper;
 import de.uzk.markers.Marker;
-import de.uzk.markers.Markers;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.DateTimeUtils;
@@ -139,6 +138,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
             int height = (int) (this.currentImage.getHeight() * scale);
             int x = (this.panelImage.getWidth() - width) / 2;
             int y = (this.panelImage.getHeight() - height) / 2;
+            markerCollisionChecker.updateTransform(GraphicsUtils.createImageTransform(width, height, workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY()));
 
             markerCollisionChecker.updateInsets(new Dimension(x, y), new Dimension(width, height));
 
@@ -158,10 +158,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
     public void handleAction(ActionType actionType) {
         switch (actionType) {
             case ACTION_EDIT_IMAGE-> updateCurrentImage();
-            case ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> {
-                panelImage.removeAll();
-
-            }
+            case ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> panelImage.removeAll();
             case SHORTCUT_TAKE_SNAPSHOT -> {
                 if (SnapshotHelper.saveSnapshot(this.currentImage)) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SNAPSHOT_COUNTER);
@@ -227,7 +224,6 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
             List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
 
             if (originalImage != null) {
-                this.markerCollisionChecker.updateTransform(GraphicsUtils.createImageTransform(panelImage.getWidth(), panelImage.getHeight(), workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY()));
 
                 currentImage = DateTimeUtils.measureTime(
                     () -> GraphicsUtils.getEditedImage(originalImage, true, markers),

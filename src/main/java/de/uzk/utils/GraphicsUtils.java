@@ -71,7 +71,7 @@ public final class GraphicsUtils {
         Graphics2D g2d = createHighQualityGraphics2D(newImage.getGraphics());
 
         g2d.drawImage(image, 0, 0, null);
-
+        g2d.setTransform(at);
         for (Marker marker : appliedMarkers) {
             marker.draw(g2d, new Rectangle(0, 0, image.getWidth(), image.getHeight()));
         }
