@@ -1,6 +1,8 @@
 package de.uzk.image;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
@@ -42,7 +44,7 @@ public class ImageFile implements Comparable<ImageFile> {
     }
 
     @Override
-    public int compareTo(ImageFile imageFile) {
+    public int compareTo(@NotNull ImageFile imageFile) {
         if (this.time != imageFile.time) return Integer.compare(this.time, imageFile.time);
         if (this.level != imageFile.level) return Integer.compare(this.level, imageFile.level);
         return filePath.getFileName().compareTo(imageFile.filePath.getFileName());

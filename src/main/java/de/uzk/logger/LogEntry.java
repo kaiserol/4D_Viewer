@@ -184,13 +184,13 @@ public class LogEntry {
      * <b>Rückgabeformat (Liste mit streng definierten Elementen):</b>
      *
      * <pre>
-     * index 0 → "[" + timestamp + "]"
-     * index 1 → " "
-     * index 2 → level (rechtsbündig gepolstert)
-     * index 3 → " "
-     * index 4 → source
-     * index 5 → ": "
-     * index 6 → message (optional mit Einrückung)
+     * index 0 → "[" + Zeitstempel + "]"
+     * index 1 → &lt;Trenner&gt; (z. B. "\t")
+     * index 2 → Protokollebene (rechtsbündig gepolstert)
+     * index 3 → &lt;Trenner&gt;
+     * index 4 → Quelle (z. B. Klassenname)
+     * index 5 → &lt;Trenner&gt; (typisch ": ")
+     * index 6 → Nachricht (optional mit Einrückung)
      * </pre>
      *
      * <p>
@@ -202,43 +202,62 @@ public class LogEntry {
      *
      * @param indentedMessage {@code true}, wenn mehrzeilige Nachrichten eingerückt werden sollen;
      *                        {@code false}, wenn die Nachricht unverändert ausgegeben wird
-     * @return Liste aus sieben Elementen, welche die komplette Log-Ausgabe strukturiert darstellen
+     * @return Eine Liste mit genau sieben strukturierten Einträgen zur weiteren Ausgabe
      */
     public List<String> formatEntry(boolean indentedMessage) {
-        // Komponenten vorbereiten
+        List<String> list = new ArrayList<>();
+
+        // Zeitstempel hinzufügen
         String timestampStr = "[" + getTimeStamp() + "]";
+        list.add(timestampStr);   // 0
+        list.add("\t");           // 1
+
+        // Protokollebene hinzufügen
         String levelRaw = getLevel().toString();
         String levelStr = levelRaw + " ".repeat(LogLevel.maxLevelLength() - levelRaw.length());
+        list.add(levelStr);       // 2
+        list.add("\t");           // 3
+
+        // Quelle hinzufügen
         String sourceStr = getSource();
-        String messageStr = indentedMessage ? getIndentedMessage(timestampStr, levelStr, sourceStr, getMessage()) : getMessage();
+        list.add(sourceStr);      // 4
+        list.add(": ");           // 5
+
+        // Nachricht hinzufügen
+        String messageStr = indentedMessage ? getIndentedMessage(list, getMessage()) : getMessage();
+        list.add(messageStr);     // 6
 
         // Rückgabe als Liste
-        List<String> list = new ArrayList<>();
-        list.add(timestampStr);
-        list.add(" ");
-        list.add(levelStr);
-        list.add(" ");
-        list.add(sourceStr);
-        list.add(": ");
-        list.add(messageStr);
         return list;
     }
 
     /**
-     * Erzeugt für mehrzeilige Nachrichten die korrekte Einrückung, sodass alle
-     * Folgezeilen exakt unterhalb der Nachrichtenposition beginnen.
+     * Erzeugt für mehrzeilige Nachrichten einen Einrückungstext, der exakt
+     * an der Startposition der Nachricht ausgerichtet ist.
      *
-     * @param timestampStr Der Zeitstempel des Log-Eintrags
-     * @param levelStr     Die Protokollebene des Log-Eintrags
-     * @param sourceStr    Die Quelle des Log-Eintrags
-     * @param messageStr   Die Nachricht des Log-Eintrags
+     * <p>
+     * Die Einrückung basiert ausschließlich auf den bereits formatierten
+     * Strukturelementen aus {@link #formatEntry(boolean)} und ist daher dynamisch
+     * an deren Länge gekoppelt.
+     *
+     * @param formattedEntry Die bereits erzeugte Basisstruktur (Elemente 0–5)
+     * @param messageStr     Die ursprüngliche Nachricht
      * @return Die Nachricht mit korrekt eingerückten Folgezeilen
      */
-    private String getIndentedMessage(String timestampStr, String levelStr, String sourceStr, String messageStr) {
+    private String getIndentedMessage(List<String> formattedEntry, String messageStr) {
         String indent = StringUtils.NEXT_LINE +
-            " ".repeat(timestampStr.length() + 1) +
-            " ".repeat(levelStr.length() + 1) +
-            " ".repeat(sourceStr.length() + 2);
+
+            // Zeitstempel
+            " ".repeat(formattedEntry.get(0).length()) +
+            formattedEntry.get(1) +
+
+            // Protokollebene
+            " ".repeat(formattedEntry.get(2).length()) +
+            formattedEntry.get(3) +
+
+            // Quelle
+            " ".repeat(formattedEntry.get(4).length()) +
+            formattedEntry.get(5);
         return messageStr.replace(StringUtils.NEXT_LINE, indent);
     }
 }

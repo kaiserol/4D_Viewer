@@ -3,9 +3,11 @@ package de.uzk.logger.output;
 import de.uzk.logger.LogEntry;
 import de.uzk.logger.LogLevel;
 import de.uzk.utils.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Implementierung eines {@link LogOutput}, die {@link LogEntry}-Objekte in HTML-formatierte und
@@ -17,62 +19,75 @@ import java.util.List;
  *
  * <p>
  * Alle erzeugten HTML-Fragmente werden in einem internen Buffer gesammelt und können über
- * {@link #exportHtml()} als vollständige HTML-Ausgabe abgerufen werden.
+ * {@link #exportHtml(LogLevel...)} als vollständige HTML-Ausgabe abgerufen werden.
  */
-public class HtmlOutput implements LogOutput {
+public class HtmlOutput extends LogOutput {
     /**
-     * Interner Puffer für sukzessive generierte HTML-Fragmente.
+     * Speichert formatiertes HTML als Schlüssel und die zugehörige Protokollebene als Wert.
+     * <p>
+     * Die LinkedHashMap garantiert: Einträge bleiben in Einfüge-Reihenfolge.
      */
-    private final StringBuilder buffer;
+    private final Map<String, LogLevel> entries;
 
     /**
-     * Erstellt eine neue {@code HtmlOutput}-Instanz und initialisiert
+     * Erstellt eine neue {@code HtmlOutput}-Instanz und Buffer
      * den internen Ausgabepuffer.
      */
     public HtmlOutput() {
-        this.buffer = new StringBuilder();
+        this.entries = new LinkedHashMap<>();
     }
 
     /**
      * Formatiert den übergebenen {@link LogEntry} und fügt ihn dem internen Buffer hinzu.
      *
-     * <p>
-     * Einträge mit der Protokollebene {@link LogLevel#DEBUG} werden ignoriert und
-     * nicht in das HTML-Protokoll aufgenommen.
-     *
      * @param entry Der zu verarbeitende Logeintrag; darf nicht {@code null} sein
      */
     @Override
-    public void write(@NotNull LogEntry entry) {
-        if (entry.getLevel() == LogLevel.DEBUG) return;
-
+    public void writeInternal(LogEntry entry) {
         List<String> formattedEntry = entry.formatEntry(false);
         String result =
             // Zeitstempel
             StringUtils.applyColor(StringUtils.wrapBold(formattedEntry.get(0)), entry.getLevel().getColor()) +
-                formattedEntry.get(1) +
+                " " +
 
                 // Protokollebene
                 StringUtils.applyColor(formattedEntry.get(2), entry.getLevel().getColor()) +
-                formattedEntry.get(3) +
+                " " +
 
                 // Quelle
                 StringUtils.wrapUnderlined(formattedEntry.get(4)) +
-                formattedEntry.get(5) + StringUtils.NEXT_LINE +
+                ":" + StringUtils.NEXT_LINE +
 
                 // Nachricht
                 formattedEntry.get(6);
 
-        this.buffer.append(StringUtils.wrapPre(result));
+        this.entries.put(StringUtils.wrapPre(result), entry.getLevel());
     }
 
     /**
-     * Gibt alle bisher hinzugefügten HTML-Fragmente als zusammenhängenden
-     * HTML-String zurück.
+     * Exportiert alle gespeicherten HTML-Blöcke als einen zusammenhängenden HTML-String.
+     * Optional können einzelne LogLevel ausgefiltert werden.
      *
-     * @return vollständige HTML-Ausgabe aller geschriebenen Logeinträge
+     * @param blockedLevels Optionale Liste zusätzlicher zu blockierender Ebenen
+     * @return Zusammengesetzte HTML-Ausgabe
      */
-    public String exportHtml() {
-        return this.buffer.toString();
+    public String exportHtml(LogLevel... blockedLevels) {
+        List<String> output = new ArrayList<>();
+
+        for (Map.Entry<String, LogLevel> e : this.entries.entrySet()) {
+            boolean skip = false;
+            if (blockedLevels != null) {
+                for (LogLevel level : blockedLevels) {
+                    if (level == e.getValue()) {
+                        skip = true;
+                        break;
+                    }
+                }
+            }
+            if (!skip) {
+                output.add(e.getKey());
+            }
+        }
+        return String.join("", output);
     }
 }

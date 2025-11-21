@@ -2,7 +2,6 @@ package de.uzk.logger.output;
 
 import de.uzk.logger.LogEntry;
 import de.uzk.utils.CLIStyle;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ import java.util.List;
  * Die Darstellung erfolgt mittels {@link CLIStyle}, wodurch Farben,
  * Hervorhebungen und Strukturierungen konsistent über ANSI-Stile umgesetzt werden.
  */
-public class ConsoleOutput implements LogOutput {
+public class ConsoleOutput extends LogOutput {
 
     /**
      * Formatiert den übergebenen {@link LogEntry} und gibt ihn direkt
@@ -23,7 +22,7 @@ public class ConsoleOutput implements LogOutput {
      * @param entry Der auszugebende Logeintrag; darf nicht {@code null} sein
      */
     @Override
-    public void write(@NotNull LogEntry entry) {
+    public void writeInternal(LogEntry entry) {
         List<String> formattedEntry = entry.formatEntry(true);
         String result =
             // Zeitstempel

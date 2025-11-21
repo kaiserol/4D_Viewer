@@ -170,7 +170,7 @@ Es wird empfohlen, diese Datei bei Updates oder neuen Releases zu prüfen, um ü
 Dieses Projekt steht unter der [Apache License 2.0](LICENSE)<br><br>
 Bitte beachten Sie, dass die Datei [NOTICE](NOTICE) Teil der Lizenzanforderungen ist und zusammen mit der Software
 verteilt werden muss.<br><br>
-Copyright © 2025 Oliver Kaiser
+Copyright © 2025 Universität zu Köln
 
 ## 🤝 Beitragende
 
