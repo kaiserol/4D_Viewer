@@ -27,29 +27,21 @@ public final class GraphicsUtils {
         float offset = 128 * ((workspace.getConfig().getBrightness() - 100) / 100f);
         float scale = workspace.getConfig().getContrast() / 100f;
 
-        BufferedImage transformed = transformImage(image, imageType, workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), appliedMarkers);
+        BufferedImage transformed = transformImage(image,  workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), appliedMarkers);
 
         new RescaleOp(scale, offset, null).filter(transformed, transformed);
 
         return transformed;
     }
 
-    public static BufferedImage transformImage(BufferedImage image, int imageType, int rotation, boolean mirrorX, boolean mirrorY, List<Marker> appliedMarkers) {
-        if (appliedMarkers == null) appliedMarkers = new ArrayList<>();
-        if (!mirrorX && !mirrorY && rotation % 360 == 0 && appliedMarkers.isEmpty()) return image;
+    public static AffineTransform createImageTransform(int width, int height, int rotation, boolean mirrorX, boolean mirrorY) {
 
-        int width = image.getWidth();
-        int height = image.getHeight();
         double radians = Math.toRadians(rotation);
         double sin = Math.abs(Math.sin(radians));
         double cos = Math.abs(Math.cos(radians));
         int newWidth = (int) Math.floor(width * cos + height * sin);
         int newHeight = (int) Math.floor(height * cos + width * sin);
 
-
-        BufferedImage transformedImage = new BufferedImage(newWidth, newHeight, imageType);
-
-        Graphics2D g2d = createHighQualityGraphics2D(transformedImage.getGraphics());
         AffineTransform at = new AffineTransform();
 
 
@@ -59,20 +51,34 @@ public final class GraphicsUtils {
 
 
         // Rotate
-        at.translate((newWidth - width) / 2.0, (newHeight - height) / 2.0);
         at.rotate(radians, width / 2.0, height / 2.0);
+
+        at.translate((newWidth - width) / 2.0, (newHeight - height) / 2.0);
+
+
+        return at;
+    }
+
+    public static BufferedImage transformImage(BufferedImage image,  int rotation, boolean mirrorX, boolean mirrorY, List<Marker> appliedMarkers) {
+        if (appliedMarkers == null) appliedMarkers = new ArrayList<>();
+        if (!mirrorX && !mirrorY && rotation % 360 == 0 && appliedMarkers.isEmpty()) return image;
+
+        AffineTransform at = createImageTransform(image.getWidth(), image.getHeight(), rotation, mirrorX, mirrorY);
 
         image = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR).filter(image, null);
 
-        g2d.drawRenderedImage(image, null);
+        BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = createHighQualityGraphics2D(newImage.getGraphics());
+
+        g2d.drawImage(image, 0, 0, null);
 
         for (Marker marker : appliedMarkers) {
-            marker.draw(g2d, new Rectangle(0, 0, newWidth, newHeight), 1.0);
+            marker.draw(g2d, new Rectangle(0, 0, image.getWidth(), image.getHeight()));
         }
 
         g2d.dispose();
 
-        return transformedImage;
+        return newImage;
     }
 
     /**

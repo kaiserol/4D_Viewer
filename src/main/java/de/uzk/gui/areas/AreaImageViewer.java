@@ -3,11 +3,13 @@ package de.uzk.gui.areas;
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
+import de.uzk.gui.marker.MarkerCollisionChecker;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
 import de.uzk.io.ImageLoader;
 import de.uzk.io.SnapshotHelper;
 import de.uzk.markers.Marker;
+import de.uzk.markers.Markers;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.DateTimeUtils;
@@ -25,6 +27,7 @@ import java.util.List;
 
 import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
+import static de.uzk.action.ActionType.ACTION_EDIT_IMAGE;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaImageViewer extends ObserverContainer<JPanel> {
@@ -32,6 +35,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
     private JPanel panelView, panelImage;
     private JScrollBar scrollBarTime, scrollBarLevel;
     private BufferedImage currentImage;
+    private MarkerCollisionChecker markerCollisionChecker = new MarkerCollisionChecker();
 
     public AreaImageViewer(Gui gui) {
         super(new JPanel(), gui);
@@ -65,11 +69,16 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
 
         this.container.add(this.panelView, BorderLayout.CENTER);
         this.container.setMinimumSize(new Dimension(scrollBarWidth * 3, scrollBarWidth * 3));
+
+        this.markerCollisionChecker = new MarkerCollisionChecker();
+        this.markerCollisionChecker.onMarkerClick(this::handleMarkerClicked);
+        this.markerCollisionChecker.onMarkerBeginHover(this::handleMarkerBeginHover);
+        this.markerCollisionChecker.onMarkerEndHover(this::handleMarkerEndHover);
+        this.panelImage.addMouseListener(this.markerCollisionChecker);
+        this.panelImage.addMouseMotionListener(this.markerCollisionChecker);
     }
 
-    // ========================================
-    // Innere Klassen
-    // ========================================
+    //region Innere Klassen
     private class FocusBorderListener implements FocusListener {
         // Listener für Fokusänderungen
         @Override
@@ -90,11 +99,9 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
             if (!container.isFocusOwner()) container.requestFocusInWindow();
         }
     }
+    //endregion
 
-
-    // ========================================
-    // Komponenten-Erzeugung
-    // ========================================
+    //region Komponenten-Erzeugung
     private JPanel createRightSpace(JComponent component, int size) {
         // labelEmpty
         JLabel labelEmpty = new JLabel();
@@ -107,15 +114,15 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         panel.add(labelEmpty, BorderLayout.EAST);
         return panel;
     }
+    //endregion
 
-    // ========================================
-    // Bild zeichnen
-    // ========================================
+    //region Bild zeichnen
     private JPanel initImagePanel() {
         // Erstellt das Panel mit Bildanzeige
         return new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
+
                 super.paintComponent(g);
                 paintImage(g);
             }
@@ -133,6 +140,8 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
             int x = (this.panelImage.getWidth() - width) / 2;
             int y = (this.panelImage.getHeight() - height) / 2;
 
+            markerCollisionChecker.updateInsets(new Dimension(x, y), new Dimension(width, height));
+
             // Bild zeichnen
             g2D.drawImage(this.currentImage, x, y, width, height, null);
         } else {
@@ -142,13 +151,17 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         }
     }
 
-    // ========================================
-    // Observer Methoden
-    // ========================================
+    //endregion
+
+    //region Observer Methoden
     @Override
     public void handleAction(ActionType actionType) {
         switch (actionType) {
-            case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> updateCurrentImage();
+            case ACTION_EDIT_IMAGE-> updateCurrentImage();
+            case ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> {
+                panelImage.removeAll();
+
+            }
             case SHORTCUT_TAKE_SNAPSHOT -> {
                 if (SnapshotHelper.saveSnapshot(this.currentImage)) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SNAPSHOT_COUNTER);
@@ -192,9 +205,9 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         setBorder(this.container.hasFocus());
     }
 
-    // ========================================
-    // Aktualisierungen
-    // ========================================
+    //endregion
+
+    //region Aktualisierungen
     private void handleScrollAction(int newValue, Axis axis, JScrollBar scrollBar) {
         // Wenn sich der Wert nicht ändert, abbrechen
         int oldValue = (axis == Axis.TIME) ? workspace.getTime() : workspace.getLevel();
@@ -212,12 +225,16 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
             Path imagePath = workspace.getCurrentImageFile().getFilePath();
             BufferedImage originalImage = ImageLoader.loadImage(imagePath, false);
             List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
+
             if (originalImage != null) {
-                this.currentImage = DateTimeUtils.measureTime(
+                this.markerCollisionChecker.updateTransform(GraphicsUtils.createImageTransform(panelImage.getWidth(), panelImage.getHeight(), workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY()));
+
+                currentImage = DateTimeUtils.measureTime(
                     () -> GraphicsUtils.getEditedImage(originalImage, true, markers),
                     time -> logger.debug("Edited image in " + time)
                 );
-            }
+
+               }
         }
 
         // Bild zeichnen
@@ -230,12 +247,28 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         ComponentUtils.runWithoutListeners(scrollBar, sb -> sb.setValues(value, 0, 0, max));
     }
 
-    // ========================================
-    // Hilfsmethoden
-    // ========================================
+    //endregion
+
+    //region Hilfsmethoden
     private void setBorder(boolean focusedPanel) {
         Color borderColor = focusedPanel ? ColorUtils.COLOR_BLUE : UIEnvironment.getBorderColor();
         this.container.setBorder(BorderFactory.createLineBorder(borderColor));
         this.panelView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
     }
+
+    private void handleMarkerBeginHover(Marker m) {
+        panelImage.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }
+
+    private void handleMarkerEndHover(Marker m) {
+        panelImage.setCursor(Cursor.getDefaultCursor());
+    }
+
+    private void handleMarkerClicked(Marker m) {
+
+        m.setColor(m.getColor().brighter());
+        gui.handleAction(ACTION_EDIT_IMAGE);
+    }
+
+    //endregion
 }

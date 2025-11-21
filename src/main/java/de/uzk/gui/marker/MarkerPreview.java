@@ -47,7 +47,7 @@ public class MarkerPreview extends JPanel implements MouseListener, MouseMotionL
 
         g2d.drawImage(this.background, 0, 0, width, height, null);
 
-        marker.draw(g2d, new Rectangle(0, 0, width, height), scaleFactor);
+        marker.draw(g2d, new Rectangle(0, 0, width, height));
     }
 
     @Override

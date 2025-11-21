@@ -1,11 +1,10 @@
 package de.uzk.markers;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.*;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.utils.ColorUtils;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
@@ -24,7 +23,7 @@ public class Marker {
     private String label;
 
     public Marker() {
-        this(0, 0, 0, 0, 0, 0, MarkerShape.RECTANGLE, Color.RED, "Marker");
+        this(0, 0, 500, 200, 0, 0, MarkerShape.RECTANGLE, Color.RED, "Marker");
     }
 
     public Marker(Marker other) {
@@ -144,8 +143,8 @@ public class Marker {
         return this.from <= at && this.to >= at;
     }
 
-    public void draw(Graphics2D to, Rectangle imageArea, double scaleFactor) {
-        Rectangle actualBounds = this.getActualBounds(imageArea, scaleFactor);
+    public void draw(Graphics2D to, Rectangle imageArea) {
+        Rectangle actualBounds = this.getBounds();
         Shape finalShape = switch (this.shape) {
             case RECTANGLE -> actualBounds;
             case ELLIPSE ->
@@ -156,7 +155,7 @@ public class Marker {
         to = (Graphics2D) to.create();
 
         to.setColor(this.color);
-        to.setStroke(new BasicStroke(LINE_WIDTH * (float) scaleFactor));
+        to.setStroke(new BasicStroke(LINE_WIDTH));
 
 
         to.draw(finalShape);
@@ -164,6 +163,16 @@ public class Marker {
         this.drawName(to, actualBounds.x, actualBounds.y);
 
 
+    }
+
+    @JsonIgnore
+    public Rectangle getBounds() {
+        return new Rectangle(this.x, this.y, this.width, this.height);
+    }
+
+    public Rectangle getLabelBounds(Graphics onto) {
+        FontMetrics metrics = onto.getFontMetrics();
+        return new Rectangle(this.x, this.y, metrics.stringWidth(label), metrics.getHeight());
     }
 
     public void cloneFrom(Marker other) {
@@ -193,7 +202,7 @@ public class Marker {
         return false;
     }
 
-    
+
     //endregion
 
     //region Private- und Helfermethoden
@@ -202,28 +211,15 @@ public class Marker {
 
     private void drawName(Graphics2D to, int x, int y) {
 
-        FontMetrics metrics = to.getFontMetrics();
-        to.setFont(metrics.getFont().deriveFont(metrics.getFont().getSize() * 1.5f));
-        metrics = to.getFontMetrics();
-        int width = metrics.stringWidth(this.label);
-        int height = metrics.getHeight();
-        to.fillRect(x, y, width, height);
-
+        to.fill(getLabelBounds(to));
         boolean lightColor = ColorUtils.calculatePerceivedBrightness(this.color) > 0.5;
         to.setColor(lightColor ? Color.BLACK : Color.WHITE);
 
+        FontMetrics metrics = to.getFontMetrics();
         to.drawString(this.label, x, y + metrics.getAscent());
     }
 
-    private Rectangle getActualBounds(Rectangle imageBounds, double scale) {
-        int x = imageBounds.x + (int) (this.x * scale);
-        int y = imageBounds.y + (int) (this.y * scale);
 
-        int width = (int) (this.width * scale);
-        int height = (int) (this.height * scale);
-
-        return new Rectangle(x, y, width, height);
-    }
 
     //endregion
 
