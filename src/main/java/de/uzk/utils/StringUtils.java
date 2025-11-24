@@ -58,26 +58,45 @@ public final class StringUtils {
     // ========================================
 
     /**
-     * Richtet den Text in einem &lt;div&gt;-Tag aus.
+     * Hebt den angegebenen Text fett hervor.
      *
-     * @param text     Der auszurichtende Text
-     * @param align    Textausrichtung (z.&nbsp;B. "left", "center", "right", "justify")
-     * @param maxWidth Maximale Breite in Pixeln
-     * @return HTML-String mit entsprechendem Stil
+     * @param text Der Text, der fett dargestellt werden soll
+     * @return HTML-String mit {@code <b>}-Tag
      */
-    public static String applyDivAlignment(String text, String align, int maxWidth) {
-        return "<div style=\"text-align:%s; width:%dpx; word-wrap:break-word;\">%s</div>".formatted(align, maxWidth, text);
+    public static String wrapBold(String text) {
+        return "<b>%s</b>".formatted(text);
     }
 
     /**
-     * Umgibt den Text mit einem &lt;span&gt;-Tag, der eine Schriftfarbe definiert.
+     * Hebt den angegebenen Text kursiv hervor.
+     *
+     * @param text Der Text, der kursiv dargestellt werden soll
+     * @return HTML-String mit {@code <i>}-Tag
+     */
+    public static String wrapItalic(String text) {
+        return "<i>%s</i>".formatted(text);
+    }
+
+
+    /**
+     * Hebt den angegebenen Text unterstrichen hervor.
+     *
+     * @param text Der Text, der unterstrichen dargestellt werden soll
+     * @return HTML-String mit {@code <u>}-Tag
+     */
+    public static String wrapUnderlined(String text) {
+        return "<u>%s</u>".formatted(text);
+    }
+
+    /**
+     * Umgibt den Text mit einem {@code <span>}-Tag, der eine Schriftfarbe definiert.
      *
      * @param text  Der anzuzeigende Text
      * @param color Gewünschte Schriftfarbe
      * @return HTML-String mit farbigem Text
      */
     public static String applyColor(String text, Color color) {
-        return "<span style=\"color:%s;\">%s</span>".formatted(ColorUtils.colorToHex(color), text);
+        return "<span style='color:%s;'>%s</span>".formatted(ColorUtils.colorToHex(color), text);
     }
 
     /**
@@ -97,38 +116,18 @@ public final class StringUtils {
         }
 
         String fontSize = (percentage / 100.0) + "em";
-        return "<span style=\"font-size:%s;\">%s</span>".formatted(fontSize, text);
+        return "<span style='font-size:%s;'>%s</span>".formatted(fontSize, text);
     }
 
     /**
-     * Hebt den angegebenen Text fett hervor.
+     * Umgibt Text mit einem {@code <pre>}-Tag und ersetzt
+     * Zeilenumbrüche durch {@code <br>}-Tags.
      *
-     * @param text Der Text, der fett dargestellt werden soll
-     * @return HTML-String mit &lt;b&gt;-Tag
+     * @param text Zu formatierendem Text
+     * @return HTML-String im {@code <pre>}-Format
      */
-    public static String wrapBold(String text) {
-        return "<b>" + text + "</b>";
-    }
-
-    /**
-     * Hebt den angegebenen Text kursiv hervor.
-     *
-     * @param text Der Text, der kursiv dargestellt werden soll
-     * @return HTML-String mit &lt;i&gt;-Tag
-     */
-    public static String wrapItalic(String text) {
-        return "<i>" + text + "</i>";
-    }
-
-
-    /**
-     * Hebt den angegebenen Text unterstrichen hervor.
-     *
-     * @param text Der Text, der unterstrichen dargestellt werden soll
-     * @return HTML-String mit &lt;u&gt;-Tag
-     */
-    public static String wrapUnderlined(String text) {
-        return "<u>" + text + "</u>";
+    public static String wrapPre(String text) {
+        return "<pre>%s</pre>".formatted(text.replace(NEXT_LINE, "<br>"));
     }
 
     /**
@@ -136,59 +135,10 @@ public final class StringUtils {
      *
      * @param text Der anzuzeigende Text
      * @param url  Die Ziel-URL
-     * @return HTML-Link (&lt;a href=""&gt;text&lt;/a&gt;)
+     * @return HTML-Link {@code <a href="">text</a>}
      */
     public static String wrapA(String text, String url) {
-        return "<a href=\"%s\">%s</a>".formatted(url, text);
-    }
-
-    /**
-     * Umgibt Text mit einem &lt;pre&gt;-Tag und ersetzt
-     * Zeilenumbrüche durch &lt;br&gt; sowie Tabs durch Leerzeichen.
-     *
-     * @param text Zu formatierendem Text
-     * @return HTML-String im &lt;pre&gt;-Format
-     */
-    public static String wrapPre(String text) {
-        return "<pre>" + text.replace(NEXT_LINE, "<br>").replace("\t", "    ") + "</pre>";
-    }
-
-    /**
-     * Umgibt den angegebenen HTML-Inhalt mit einem vollständigen &lt;html&gt;-Block
-     * und verwendet dabei die Standard-Schriftart des Systems.
-     * <p>
-     * Diese Methode ist eine bequeme Kurzform von
-     * {@link #wrapHtml(String, String)} und nutzt {@link UIEnvironment#getFontName()}
-     * als Standardfont.
-     *
-     * @param htmlContent Der einzubettende HTML-Inhalt
-     * @return Vollständiger HTML-String inklusive &lt;html&gt;-, &lt;head&gt;- und &lt;body&gt;-Tags
-     */
-    public static String wrapHtml(String htmlContent) {
-        return wrapHtml(htmlContent, UIEnvironment.getFontName());
-    }
-
-    /**
-     * Erzeugt ein vollständiges HTML-Dokument mit eingebetteten CSS-Stilregeln.
-     * <p>
-     * Der erzeugte HTML-Block nutzt die angegebene Schriftart und definiert
-     * ein einfaches Standard-Layout:
-     * <ul>
-     *   <li>Verwendet die angegebene Schriftart für den gesamten Text.</li>
-     *   <li>Reduziert Abstände bei &lt;pre&gt;-Elementen.</li>
-     * </ul>
-     *
-     * @param htmlContent Der eigentliche HTML-Inhalt
-     * @param fontName    Name der zu verwendenden Schriftart (z.&nbsp;B. "Arial", "Monospaced")
-     * @return Vollständiger HTML-String mit eingebettetem CSS-Stil
-     */
-    public static String wrapHtml(String htmlContent, String fontName) {
-        String style = """
-            body { font-family: %s; }
-            pre { margin: 5px 0; }
-            """.formatted(fontName);
-
-        return "<html><head><style>" + style + "</style></head><body>" + htmlContent + "</body></html>";
+        return "<a href='%s'>%s</a>".formatted(url, text);
     }
 
     /**
@@ -200,8 +150,7 @@ public final class StringUtils {
     public static String wrapLinks(String text) {
         if (text == null || text.isEmpty()) return "";
 
-        String[] words = text.replace("\r\n", "<br>")
-            .replace("\n", "<br>")
+        String[] words = text.replace(NEXT_LINE, "<br>")
             .replace("<br>", " <br>")
             .trim()
             .split("\\s+");
@@ -230,6 +179,67 @@ public final class StringUtils {
         }
 
         return builder.toString();
+    }
+
+    /**
+     * Richtet den Text in einem {@code <div>}-Tag aus.
+     *
+     * @param text     Der auszurichtende Text
+     * @param align    Textausrichtung (z.&nbsp;B. "left", "center", "right", "justify")
+     * @param maxWidth Maximale Breite in Pixeln
+     * @return HTML-String mit entsprechendem Stil
+     */
+    public static String applyDivAlignment(String text, String align, int maxWidth) {
+        return """
+            <div style="text-align:%s; width:%dpx; word-wrap:break-word;">
+                %s
+            </div>
+            """.formatted(align, maxWidth, text.trim());
+    }
+
+    /**
+     * Erzeugt ein vollständiges HTML-Dokument mit eingebetteten CSS-Stilregeln.
+     * <p>
+     * Der erzeugte HTML-Block nutzt die angegebene Schriftart und definiert
+     * ein einfaches Standard-Layout:
+     * <ul>
+     *   <li>Verwendet die angegebene Schriftart für den gesamten Text.</li>
+     *   <li>Reduziert Abstände bei {@code <pre>}-Elementen.</li>
+     * </ul>
+     *
+     * @param htmlContent Der eigentliche HTML-Inhalt
+     * @param fontName    Name der zu verwendenden Schriftart (z.&nbsp;B. "Arial", "Monospaced")
+     * @return Vollständiger HTML-String mit eingebettetem CSS-Stil
+     */
+    public static String wrapHtml(String htmlContent, String fontName) {
+        return """
+            <html>
+                <head>
+                    <style>
+                        body { font-family: %s; }
+                        pre { margin: 5px 0; }
+                    </style>
+                </head>
+                <body>
+                    %s
+                </body>
+            </html>
+            """.formatted(fontName, htmlContent.trim().replaceAll(NEXT_LINE, NEXT_LINE + "\t".repeat(2)));
+    }
+
+    /**
+     * Umgibt den angegebenen HTML-Inhalt mit einem vollständigen {@code <html>}-Block
+     * und verwendet dabei die Standard-Schriftart des Systems.
+     * <p>
+     * Diese Methode ist eine bequeme Kurzform von
+     * {@link #wrapHtml(String, String)} und nutzt {@link UIEnvironment#getFontName()}
+     * als Standardfont.
+     *
+     * @param htmlContent Der einzubettende HTML-Inhalt
+     * @return Vollständiger HTML-String inklusive {@code <html>}-, {@code <head>}- und {@code <body>}-Tags
+     */
+    public static String wrapHtml(String htmlContent) {
+        return wrapHtml(htmlContent, UIEnvironment.getFontName());
     }
 
     /**
