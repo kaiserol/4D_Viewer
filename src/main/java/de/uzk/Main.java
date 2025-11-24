@@ -11,7 +11,7 @@ import de.uzk.logger.Logger;
 import javax.swing.*;
 
 /**
- * <b>Copyright © 2025 Universität zu Köln</b>
+ * <b>Copyright © 2023–2025 Universität zu Köln</b>
  * <p>
  * Lizenziert unter der Apache License, Version 2.0 (die "Lizenz");
  * Sie dürfen diese Datei nur im Einklang mit der Lizenz verwenden.
