@@ -144,7 +144,7 @@ public final class UIManagerConfigurator {
         UIManager.put("SplitPaneDivider.gripDotCount", 0);
         UIManager.put("SplitPaneDivider.gripDotSize", 3);
         UIManager.put("SplitPaneDivider.gripGap", 3);
-        UIManager.put("SplitPane.dividerSize", 10);
+        UIManager.put("SplitPane.dividerSize", UIEnvironment.SPACING_DEFAULT);
         UIManager.put("SplitPane.supportsOneTouchButtons", true);
 
         // Pfeilfarben

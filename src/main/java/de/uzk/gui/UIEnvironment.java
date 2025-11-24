@@ -28,18 +28,23 @@ public final class UIEnvironment {
     private static Color backgroundColor;
     private static Font font;
 
-    // Border
-    public static final Border BORDER_EMPTY_NONE = BorderFactory.createEmptyBorder();
-    public static final Border BORDER_EMPTY_DEFAULT = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-    public static final Border BORDER_EMPTY_MEDIUM = BorderFactory.createEmptyBorder(5, 10, 5, 10);
-    public static final Border BORDER_EMPTY_SMALL = BorderFactory.createEmptyBorder(5, 5, 5, 5);
-    public static final Border BORDER_EMPTY_TINY = BorderFactory.createEmptyBorder(2, 5, 2, 5);
+    // Abstände
+    public static final int SPACING_TINY = 2;
+    public static final int SPACING_SMALL = 5;
+    public static final int SPACING_DEFAULT = 10;
 
     // Insets
     public static final Insets INSETS_NONE = new Insets(0, 0, 0, 0);
-    public static final Insets INSETS_DEFAULT = new Insets(10, 10, 10, 10);
-    public static final Insets INSETS_MEDIUM = new Insets(5, 10, 5, 10);
-    public static final Insets INSETS_SMALL = new Insets(5, 5, 5, 5);
+    public static final Insets INSETS_SMALL = new Insets(SPACING_SMALL, SPACING_SMALL, SPACING_SMALL, SPACING_SMALL);
+    public static final Insets INSETS_MEDIUM = new Insets(SPACING_SMALL, SPACING_DEFAULT, SPACING_SMALL, SPACING_DEFAULT);
+    public static final Insets INSETS_DEFAULT = new Insets(SPACING_DEFAULT, SPACING_DEFAULT, SPACING_DEFAULT, SPACING_DEFAULT);
+
+    // Border
+    public static final Border BORDER_EMPTY_NONE = BorderFactory.createEmptyBorder(0, 0, 0, 0);
+    public static final Border BORDER_EMPTY_TINY = BorderFactory.createEmptyBorder(SPACING_TINY, SPACING_SMALL, SPACING_TINY, SPACING_SMALL);
+    public static final Border BORDER_EMPTY_SMALL = BorderFactory.createEmptyBorder(SPACING_SMALL, SPACING_SMALL, SPACING_SMALL, SPACING_SMALL);
+    public static final Border BORDER_EMPTY_MEDIUM = BorderFactory.createEmptyBorder(SPACING_SMALL, SPACING_DEFAULT, SPACING_SMALL, SPACING_DEFAULT);
+    public static final Border BORDER_EMPTY_DEFAULT = BorderFactory.createEmptyBorder(SPACING_DEFAULT, SPACING_DEFAULT, SPACING_DEFAULT, SPACING_DEFAULT);
 
     // UIManager Eigenschaften
     public static final int ARC_DEFAULT = 999;
@@ -74,6 +79,10 @@ public final class UIEnvironment {
 
     private static FlatLaf getLightMode() {
         return new FlatMacLightLaf();
+    }
+
+    public static LayoutManager getDefaultBorderLayout() {
+        return new BorderLayout(SPACING_DEFAULT, SPACING_DEFAULT);
     }
 
     public static Desktop getDesktopSecurely() {

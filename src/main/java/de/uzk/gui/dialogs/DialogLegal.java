@@ -34,10 +34,14 @@ public class DialogLegal {
         this.dialog.setLayout(new BorderLayout());
 
         // Inhalte hinzufügen
-        JPanel contentPanel = new JPanel(new BorderLayout(0, 20));
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
-        contentPanel.add(createUsagePanel(), BorderLayout.CENTER);
-        contentPanel.add(createDisclaimerPanel(), BorderLayout.SOUTH);
+        contentPanel.add(createSubTitledContentPanel("dialog.legal.subTitle.usage", "dialog.legal.text.usage"));
+        contentPanel.add(Box.createVerticalStrut(UIEnvironment.SPACING_DEFAULT));
+        contentPanel.add(createSubTitledContentPanel("dialog.legal.subTitle.image-sources", "dialog.legal.text.image-sources"));
+        contentPanel.add(Box.createVerticalStrut(UIEnvironment.SPACING_DEFAULT));
+        contentPanel.add(createSubTitledContentPanel("dialog.legal.subTitle.disclaimer", "dialog.legal.text.disclaimer"));
 
         this.dialog.add(contentPanel, BorderLayout.CENTER);
 
@@ -51,48 +55,33 @@ public class DialogLegal {
     // ========================================
     // Komponenten-Erzeugung
     // ========================================
-    private JPanel createUsagePanel() {
-        JPanel usagePanel = new JPanel(new BorderLayout(0, 10));
-
-        // Untertitel hinzufügen
-        usagePanel.add(createSelectableSubTitle(getWord("dialog.legal.subtitle.usage")), BorderLayout.NORTH);
-
-        // Text hinzufügen
-        SelectableText text = new SelectableText(
-            StringUtils.wrapHtmlWithLinks(
-                getWord("dialog.legal.text.usage"),
-                "justify",
-                MAX_WIDTH
-            )
-        );
-        usagePanel.add(text, BorderLayout.CENTER);
-        return usagePanel;
+    private JPanel createSubTitledContentPanel(String subTitleWord, String textWord) {
+        JPanel panel = new JPanel(UIEnvironment.getDefaultBorderLayout());
+        panel.add(createSelectableSubTitle(getWord(subTitleWord)), BorderLayout.NORTH); // Untertitel hinzufügen
+        panel.add(createSelectableContent(getWord(textWord)), BorderLayout.CENTER);  // Text hinzufügen
+        return panel;
     }
 
-    private JPanel createDisclaimerPanel() {
-        JPanel disclaimerPanel = new JPanel(new BorderLayout(0, 10));
-
-        // Untertitel hinzufügen
-        disclaimerPanel.add(createSelectableSubTitle(getWord("dialog.legal.subtitle.disclaimer")), BorderLayout.NORTH);
-
-        // Text hinzufügen
-        SelectableText text = new SelectableText(
-            StringUtils.wrapHtmlWithLinks(
-                getWord("dialog.legal.text.disclaimer"),
-                "justify",
-                MAX_WIDTH
-            ));
-        disclaimerPanel.add(text, BorderLayout.CENTER);
-        return disclaimerPanel;
-    }
-
-    private SelectableText createSelectableSubTitle(String title) {
-        String htmlContent = StringUtils.applyDivAlignment(StringUtils.applyFontSize(title, 125), "center", MAX_WIDTH);
-        SelectableText subTitleText = new SelectableText(StringUtils.wrapHtml(htmlContent));
+    private SelectableText createSelectableSubTitle(String subTitle) {
+        String htmlContent = StringUtils.wrapHtml(StringUtils.applyDivAlignment(
+            StringUtils.applyFontSize(subTitle, 125),
+            "center",
+            MAX_WIDTH
+        ));
+        SelectableText subTitleText = new SelectableText(htmlContent);
         subTitleText.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
         subTitleText.setOpaque(true);
         subTitleText.setBackground(ColorUtils.COLOR_BLUE);
         subTitleText.setForeground(Color.WHITE);
         return subTitleText;
+    }
+
+    private SelectableText createSelectableContent(String text) {
+        String htmlContent = StringUtils.wrapHtmlWithLinks(
+            text,
+            "justify",
+            MAX_WIDTH
+        );
+        return new SelectableText(htmlContent);
     }
 }
