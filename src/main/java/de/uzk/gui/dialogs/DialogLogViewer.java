@@ -72,8 +72,18 @@ public class DialogLogViewer {
     private JTabbedPane createTabs() {
         JTabbedPane tabs = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 
+        // Blockierte Protokollebenen festlegen
+        List<LogLevel> blockedLevels = new ArrayList<>(Arrays.stream(LogLevel.values()).filter(l -> l != LogLevel.INFO).toList());
+
+        // Eingestellte Protokollebenen ausblenden
+        for (LogLevel level : this.filterCheckboxes.keySet()) {
+            JCheckBox checkBox = this.filterCheckboxes.get(level);
+            if (checkBox.isSelected()) blockedLevels.remove(level);
+            else blockedLevels.add(level);
+        }
+
         // Tabs hinzufügen
-        tabs.addTab(getWord("dialog.logViewer.tab.log"), createLogsPanel(LogLevel.DEBUG, LogLevel.ERROR, LogLevel.WARN));
+        tabs.addTab(getWord("dialog.logViewer.tab.log"), createLogsPanel(blockedLevels.toArray(new LogLevel[0])));
 
         if (workspace.isLoaded()) {
             tabs.addTab(getWord("dialog.logViewer.tab.imagesReport"), createMissingImagesPanel());
