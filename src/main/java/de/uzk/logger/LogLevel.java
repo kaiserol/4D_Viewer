@@ -33,7 +33,7 @@ public enum LogLevel {
     /**
      * Warnungen, die auf potenzielle Probleme hinweisen.
      */
-    WARN("WARN", ColorUtils.COLOR_ORANGE),
+    WARN("WARN", ColorUtils.COLOR_YELLOW),
 
     /**
      * Fehler, die eine Ausnahme oder Fehlfunktion darstellen.

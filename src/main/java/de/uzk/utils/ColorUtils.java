@@ -27,12 +27,12 @@ public final class ColorUtils {
     /**
      * Orangeton zur Visualisierung von Warnhinweisen.
      */
-    public static final Color COLOR_ORANGE = new Color(255, 170, 60);
+    public static final Color COLOR_YELLOW = new Color(252, 178, 55);
 
     /**
      * Rotton zur Visualisierung von Ausnahmen oder Fehlfunktion.
      */
-    public static final Color COLOR_RED = new Color(148, 0, 0);
+    public static final Color COLOR_RED = new Color(253, 58, 58);
 
     /**
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
