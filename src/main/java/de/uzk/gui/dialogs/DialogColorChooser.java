@@ -8,7 +8,8 @@ import de.uzk.utils.GraphicsUtils;
 import javax.swing.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,31 +32,16 @@ public class DialogColorChooser {
     // Favoriten Konstante
     private static final int MAX_FAVORITES = 10;
 
-    public DialogColorChooser(JFrame frame) {
-        this.dialog = new JDialog(frame, true);
-        this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                closeDialog(initialColor);
-            }
-        });
+    public DialogColorChooser(Window parentWindow) {
+        this.dialog = ComponentUtils.createDialog(parentWindow, () -> beforeClosing(this.initialColor));
 
         // Favoriten Lister initialisieren
         this.favoriteColors = new ArrayList<>();
-
-        // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(
-            e -> closeDialog(this.initialColor),
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-            JComponent.WHEN_IN_FOCUSED_WINDOW
-        );
     }
 
-    private void closeDialog(Color color) {
+    private void beforeClosing(Color color) {
         this.selectedColor = color;
         this.colorChooser.setColor(color);
-        this.dialog.dispose();
     }
 
     public Color chooseColor(Color intialColor) {
@@ -215,12 +201,12 @@ public class DialogColorChooser {
 
         // Schaltfläche (Abbrechen)
         JButton cancelButton = new JButton(getWord("button.cancel"));
-        cancelButton.addActionListener(e -> closeDialog(this.initialColor));
+        cancelButton.addActionListener(e -> beforeClosing(this.initialColor));
         buttonsPanel.add(cancelButton);
 
         // Schaltfläche (OK)
         JButton okButton = new JButton(getWord("button.ok"));
-        okButton.addActionListener(e -> closeDialog(this.colorChooser.getColor()));
+        okButton.addActionListener(e -> beforeClosing(this.colorChooser.getColor()));
         buttonsPanel.add(okButton);
 
         // Gleicht die Größen aller Buttons an

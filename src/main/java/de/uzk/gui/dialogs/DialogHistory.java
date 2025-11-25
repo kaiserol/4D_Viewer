@@ -7,7 +7,6 @@ import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,16 +17,8 @@ public class DialogHistory {
     // Dialoge
     private final JDialog dialog;
 
-    public DialogHistory(JFrame frame) {
-        this.dialog = new JDialog(frame, true);
-        this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(
-            e -> this.dialog.dispose(),
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-            JComponent.WHEN_IN_FOCUSED_WINDOW
-        );
+    public DialogHistory(Window parentWindow) {
+        this.dialog = ComponentUtils.createDialog(parentWindow, null);
     }
 
     public void show() {

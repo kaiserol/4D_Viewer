@@ -8,9 +8,6 @@ import de.uzk.utils.ComponentUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -34,22 +31,8 @@ public class DialogLoadingImages implements LoadingImageListener {
     // Für einen schönen Ladeeffekt SLEEP_TIME_NANOS > 0 setzen (1 Millisekunde = 1_000_000 Nanos)
     private static final int SLEEP_TIME_NANOS = 0;
 
-    public DialogLoadingImages(JFrame frame) {
-        this.dialog = new JDialog(frame, true);
-        this.dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        this.dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                closeThread();
-            }
-        });
-
-        // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(
-            e -> closeThread(),
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-            JComponent.WHEN_IN_FOCUSED_WINDOW
-        );
+    public DialogLoadingImages(Window parentWindow) {
+        this.dialog = ComponentUtils.createDialog(parentWindow, this::closeThread);
     }
 
 

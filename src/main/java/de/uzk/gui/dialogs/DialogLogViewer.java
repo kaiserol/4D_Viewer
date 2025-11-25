@@ -8,7 +8,6 @@ import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.*;
 import java.util.List;
 
@@ -32,19 +31,11 @@ public class DialogLogViewer {
     private static final int DEFAULT_MAX_WIDTH = 600;
     private static final int DEFAULT_MAX_HEIGHT = 400;
 
-    public DialogLogViewer(JFrame frame) {
-        this.dialog = new JDialog(frame, true);
-        this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    public DialogLogViewer(Window parentWindow) {
+        this.dialog = ComponentUtils.createDialog(parentWindow, null);
 
         // Map initialisieren
         this.filterCheckboxes = new LinkedHashMap<>();
-
-        // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(
-            e -> this.dialog.dispose(),
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-            JComponent.WHEN_IN_FOCUSED_WINDOW
-        );
     }
 
     public void show() {

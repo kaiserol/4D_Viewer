@@ -19,10 +19,10 @@ public class DialogDirectoryChooser {
     // Dialoge
     private JFileChooser fileChooser;
 
-    public int showOpenDialog(JFrame frame) {
+    public int showOpenDialog(Window parentWindow) {
         // Dialog anzeigen
         this.fileChooser = createNewFileChooser();
-        return this.fileChooser.showOpenDialog(frame);
+        return this.fileChooser.showOpenDialog(parentWindow);
     }
 
     public File getDirectory() {

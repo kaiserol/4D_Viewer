@@ -3,11 +3,11 @@ package de.uzk.gui.dialogs;
 import de.uzk.gui.SelectableText;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.utils.ColorUtils;
+import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 
 import static de.uzk.config.LanguageHandler.getWord;
 
@@ -18,16 +18,8 @@ public class DialogLegal {
     // Maximale Dialogbreite
     private static final int MAX_WIDTH = 500;
 
-    public DialogLegal(JFrame frame) {
-        this.dialog = new JDialog(frame, true);
-        this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(
-            e -> this.dialog.dispose(),
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-            JComponent.WHEN_IN_FOCUSED_WINDOW
-        );
+    public DialogLegal(Window parentWindow) {
+        this.dialog = ComponentUtils.createDialog(parentWindow, null);
     }
 
     public void show() {
