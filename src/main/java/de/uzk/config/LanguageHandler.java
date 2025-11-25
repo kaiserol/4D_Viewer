@@ -21,10 +21,10 @@ public class LanguageHandler {
         if (word == null) throw new NullPointerException("Word is null.");
         try {
             if (resources == null) {
-                logger.error("Failed to load the word for '%s'. (Cause: LanguageHandler is not initialized)".formatted(word));
+                logger.warn("Could not load the word for '%s'. (Cause: LanguageHandler is not initialized)".formatted(word));
             } else return resources.getString(word);
         } catch (Exception e) {
-            logger.error("Failed to load the word for '%s'. (Cause: Not available in the language package)".formatted(word));
+            logger.warn("Could not load the word for '%s'. (Cause: Not available in the language package)".formatted(word));
         }
         return "???";
     }

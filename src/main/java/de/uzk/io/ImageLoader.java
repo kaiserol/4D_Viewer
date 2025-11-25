@@ -20,25 +20,25 @@ import static de.uzk.Main.settings;
 
 public final class ImageLoader {
     // App Image
-    public static final Image APP_IMAGE = Objects.requireNonNull(loadResourceSVG("images/4D.svg")).getImage();
+    public static final Image APP_IMAGE = Objects.requireNonNull(openSvgFromResources("images/4D.svg")).getImage();
 
     // Bearbeiten Icons
-    public static final FlatSVGIcon ICON_EDIT = loadResourceSVG("images/icons/edit.svg");
-    public static final FlatSVGIcon ICON_PIN = loadResourceSVG("images/icons/pin.svg");
-    public static final FlatSVGIcon ICON_ARROW_LEFT_TURN = loadResourceSVG("images/icons/arrow_left_turn.svg");
-    public static final FlatSVGIcon ICON_ARROW_RIGHT_TURN = loadResourceSVG("images/icons/arrow_right_turn.svg");
-    public static final FlatSVGIcon ICON_DELETE = loadResourceSVG("images/icons/delete.svg");
+    public static final FlatSVGIcon ICON_EDIT = openSvgFromResources("images/icons/edit.svg");
+    public static final FlatSVGIcon ICON_PIN = openSvgFromResources("images/icons/pin.svg");
+    public static final FlatSVGIcon ICON_ARROW_LEFT_TURN = openSvgFromResources("images/icons/arrow_left_turn.svg");
+    public static final FlatSVGIcon ICON_ARROW_RIGHT_TURN = openSvgFromResources("images/icons/arrow_right_turn.svg");
+    public static final FlatSVGIcon ICON_DELETE = openSvgFromResources("images/icons/delete.svg");
 
     // Navigieren Icons
-    public static final FlatSVGIcon ICON_ARROW_LEFT_START = loadResourceSVG("images/icons/arrow_left_start.svg");
-    public static final FlatSVGIcon ICON_ARROW_LEFT = loadResourceSVG("images/icons/arrow_left.svg");
-    public static final FlatSVGIcon ICON_ARROW_RIGHT = loadResourceSVG("images/icons/arrow_right.svg");
-    public static final FlatSVGIcon ICON_ARROW_RIGHT_END = loadResourceSVG("images/icons/arrow_right_end.svg");
+    public static final FlatSVGIcon ICON_ARROW_LEFT_START = openSvgFromResources("images/icons/arrow_left_start.svg");
+    public static final FlatSVGIcon ICON_ARROW_LEFT = openSvgFromResources("images/icons/arrow_left.svg");
+    public static final FlatSVGIcon ICON_ARROW_RIGHT = openSvgFromResources("images/icons/arrow_right.svg");
+    public static final FlatSVGIcon ICON_ARROW_RIGHT_END = openSvgFromResources("images/icons/arrow_right_end.svg");
 
-    public static final FlatSVGIcon ICON_ARROW_UP_START = loadResourceSVG("images/icons/arrow_up_start.svg");
-    public static final FlatSVGIcon ICON_ARROW_UP = loadResourceSVG("images/icons/arrow_up.svg");
-    public static final FlatSVGIcon ICON_ARROW_DOWN = loadResourceSVG("images/icons/arrow_down.svg");
-    public static final FlatSVGIcon ICON_ARROW_DOWN_END = loadResourceSVG("images/icons/arrow_down_end.svg");
+    public static final FlatSVGIcon ICON_ARROW_UP_START = openSvgFromResources("images/icons/arrow_up_start.svg");
+    public static final FlatSVGIcon ICON_ARROW_UP = openSvgFromResources("images/icons/arrow_up.svg");
+    public static final FlatSVGIcon ICON_ARROW_DOWN = openSvgFromResources("images/icons/arrow_down.svg");
+    public static final FlatSVGIcon ICON_ARROW_DOWN_END = openSvgFromResources("images/icons/arrow_down_end.svg");
 
     /**
      * Icons, deren Farbe in der Methode {@link #updateSVGIcons} geändert wird.
@@ -80,29 +80,29 @@ public final class ImageLoader {
         // Verhindert die Instanziierung dieser Klasse
     }
 
-    public static BufferedImage loadImage(Path imagePath, boolean showErrorIfNotFound) {
+    public static BufferedImage openImage(Path imagePath, boolean showErrorIfNotFound) {
         if (imagePath != null) {
             try {
                 return ImageIO.read(imagePath.toFile());
             } catch (Exception e) {
                 if (showErrorIfNotFound) {
-                    logger.error("Failed to load the image '%s'.".formatted(imagePath.toAbsolutePath()));
+                    logger.warn("Could not open the image-file '%s'.".formatted(imagePath.toAbsolutePath()));
                 }
             }
         }
         return null;
     }
 
-    private static FlatSVGIcon loadResourceSVG(String svgPath) {
-        String svgFilePathCleaned = svgPath.replace("/", StringUtils.FILE_SEP);
-        URL svgUrl = ImageLoader.class.getClassLoader().getResource(svgFilePathCleaned);
+    private static FlatSVGIcon openSvgFromResources(String relativePath) {
+        String relativePathCleaned = relativePath.replace("/", StringUtils.FILE_SEP);
+        URL svgUrl = ImageLoader.class.getClassLoader().getResource(relativePathCleaned);
 
         try {
             if (svgUrl == null) throw new IOException();
             InputStream svgStream = svgUrl.openStream();
             return new FlatSVGIcon(svgStream);
         } catch (IOException e) {
-            logger.error("Failed to load the SVG ressource '%s'.".formatted(svgFilePathCleaned));
+            logger.warn("Could not open the svg-file '%s' in the resources-directory.".formatted(relativePathCleaned));
             return null;
         }
     }

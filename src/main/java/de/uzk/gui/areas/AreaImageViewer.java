@@ -220,7 +220,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         this.currentImage = null;
         if (workspace.isLoaded()) {
             Path imagePath = workspace.getCurrentImageFile().getFilePath();
-            BufferedImage originalImage = ImageLoader.loadImage(imagePath, false);
+            BufferedImage originalImage = ImageLoader.openImage(imagePath, false);
             List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
 
             if (originalImage != null) {

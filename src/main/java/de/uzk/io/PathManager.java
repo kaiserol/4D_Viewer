@@ -158,10 +158,10 @@ public final class PathManager {
                     .map(Object::toString)
                     .toList());
             } else {
-                throw new IllegalArgumentException("Unsupported data type for the file: " + filePath.getFileName());
+                throw new IllegalArgumentException("Unsupported data type for the file '%s'.".formatted(filePath.getFileName()));
             }
         } catch (Exception e) {
-            logger.error("Failed to save the %s-file '%s'.".formatted(fileBaseName, filePath.toAbsolutePath()));
+            logger.warn("Could not write in the %s-file '%s'.".formatted(fileBaseName, filePath.toAbsolutePath()));
         }
     }
 
@@ -184,7 +184,7 @@ public final class PathManager {
                 return Files.readAllLines(filePath);
             }
         } catch (Exception e) {
-            logger.error("Failed to load the %s-file '%s'.".formatted(fileBaseName, filePath.toAbsolutePath()));
+            logger.warn("Could not read from the %s-file '%s'.".formatted(fileBaseName, filePath.toAbsolutePath()));
             return null;
         }
     }
@@ -199,7 +199,7 @@ public final class PathManager {
                 logger.info("Creating the %s-directory '%s' ...".formatted(directoryIdentifier, directory.toAbsolutePath()));
                 Files.createDirectories(directory);
             } catch (IOException e) {
-                logger.error("Failed to create the %s-directory '%s'.".formatted(directoryIdentifier, directory.toAbsolutePath()));
+                logger.warn("Could not create the %s-directory '%s'.".formatted(directoryIdentifier, directory.toAbsolutePath()));
             }
         }
     }

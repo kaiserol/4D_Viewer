@@ -1,6 +1,7 @@
 package de.uzk.gui;
 
 import de.uzk.utils.ColorUtils;
+import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -156,7 +157,7 @@ public final class UIManagerConfigurator {
 
     public static String getAllUIManagerProperties() {
         StringBuilder sb = new StringBuilder();
-        sb.append("=== UIManager Properties ===\n");
+        sb.append("=== UIManager Properties ===").append(StringUtils.NEXT_LINE);
 
         // Alle Keys holen und alphabetisch sortieren
         List<Object> keys = new ArrayList<>(UIManager.getDefaults().keySet());

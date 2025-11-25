@@ -275,7 +275,9 @@ public class Workspace {
         int tempMaxLevel = 0;
 
         // Dateinamen Muster erstellen
-        String fileNamePattern = getImageFileNamePattern();
+        final String fileNamePattern = getImageFileNamePattern();
+        final int MAX_TIME = 9_999;
+        final int MAX_LEVEL = 999;
 
         // Durchlaufe alle Pfade
         for (int number = 1; number <= paths.size(); number++) {
@@ -290,12 +292,16 @@ public class Workspace {
                 int level = NumberUtils.parseInteger(getLevelStr(fileName));
 
                 // Grenzwert bestimmen
-                if (!NumberUtils.valueInRange(time, 0, 9_999)) {
-                    logger.warn("The image '%s' has an invalid time. (Max Time: 9.999)".formatted(fileName));
-                    continue;
-                }
-                if (!NumberUtils.valueInRange(level, 0, 999)) {
-                    logger.warn("The image '%s' has an invalid level. (Max Level: 999)".formatted(fileName));
+                boolean validTime = NumberUtils.valueInRange(time, 0, MAX_TIME);
+                boolean validLevel = NumberUtils.valueInRange(level, 0, MAX_LEVEL);
+                if (!validTime || !validLevel) {
+                    List<String> invalidParts = new ArrayList<>();
+                    if (!validTime)
+                        invalidParts.add("Invalid Time=%d => Valid Range=[%d, %d]".formatted(time, 0, MAX_TIME));
+                    if (!validLevel)
+                        invalidParts.add("Invalid Level=%d => Valid Range=[%d, %d]".formatted(level, 0, MAX_LEVEL));
+
+                    logger.warn("Could not load the image-file '%s'. (Cause: %s)".formatted(fileName, String.join(" | ", invalidParts)));
                     continue;
                 }
 
@@ -359,7 +365,11 @@ public class Workspace {
         }
 
         // Report ausgeben
-        MissingImagesReport.logReport(duplicatedCount, "duplicated", reportBuilder);
+        if (duplicatedCount > 0) {
+            String headerText = MissingImagesReport.createHeaderText(duplicatedCount, "duplicated");
+            String reportOutput = MissingImagesReport.createReport(headerText, reportBuilder);
+            logger.warn(reportOutput);
+        }
 
         int expectedImagesCount = tSize * lSize;
         if (imagesCount < expectedImagesCount) {
