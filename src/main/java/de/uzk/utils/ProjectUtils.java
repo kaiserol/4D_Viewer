@@ -19,12 +19,13 @@ import static de.uzk.config.LanguageHandler.getWord;
 /**
  * Utility-Klasse für Projektoperationen innerhalb der Anwendung.
  *
- * <p>
+ * <br><br>
  * Diese Klasse stellt statische Hilfsmethoden bereit, um Projekte zu öffnen,
  * zuletzt verwendete Verzeichnisse auszuwählen sowie das aktuell geladene
  * Projekt zu schließen. Dabei interagieren die Methoden mit der grafischen
  * Benutzeroberfläche ({@link Gui}) und kapseln wiederkehrende Abläufe, wie das
  * Anzeigen von Dialogen oder das Laden von Bilddaten.
+ *
  * <br><br>
  * Die Klasse ist als {@code final} deklariert, um eine Vererbung zu verhindern.
  * Da sämtliche Funktionalitäten über statische Methoden bereitgestellt werden,

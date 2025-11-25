@@ -23,8 +23,10 @@ public class DialogLegal {
         this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(e -> this.dialog.dispose(),
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
+        this.dialog.getRootPane().registerKeyboardAction(
+            e -> this.dialog.dispose(),
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+            JComponent.WHEN_IN_FOCUSED_WINDOW
         );
     }
 

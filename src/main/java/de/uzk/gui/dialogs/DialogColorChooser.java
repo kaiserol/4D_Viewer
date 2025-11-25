@@ -45,8 +45,10 @@ public class DialogColorChooser {
         this.favoriteColors = new ArrayList<>();
 
         // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(e -> closeDialog(this.initialColor),
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
+        this.dialog.getRootPane().registerKeyboardAction(
+            e -> closeDialog(this.initialColor),
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+            JComponent.WHEN_IN_FOCUSED_WINDOW
         );
     }
 

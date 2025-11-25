@@ -101,7 +101,12 @@ public final class UIEnvironment {
         }
     }
 
-    public static void initDesktopIntegration(Gui gui) {
+    public static void initGui() {
+        Gui gui = new Gui();
+        initDesktopIntegration(gui);
+    }
+
+    private static void initDesktopIntegration(Gui gui) {
         Desktop desktop = getDesktopSecurely();
         if (gui == null || desktop == null) return;
 

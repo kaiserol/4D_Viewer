@@ -3,7 +3,6 @@ package de.uzk;
 import de.uzk.config.History;
 import de.uzk.config.OperatingSystem;
 import de.uzk.config.Settings;
-import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.Workspace;
 import de.uzk.logger.Logger;
@@ -50,10 +49,7 @@ public class Main {
         exitIfExceptionWasThrown(UIEnvironment::initPlatformProperties);
 
         // Gui erstellen und anzeigen
-        exitIfExceptionWasThrown(() -> SwingUtilities.invokeLater(() -> {
-            Gui gui = new Gui();
-            UIEnvironment.initDesktopIntegration(gui);
-        }));
+        SwingUtilities.invokeLater(() -> exitIfExceptionWasThrown(UIEnvironment::initGui));
     }
 
     private static void exitIfExceptionWasThrown(Runnable action) {

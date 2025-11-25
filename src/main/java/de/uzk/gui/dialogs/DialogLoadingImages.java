@@ -45,8 +45,10 @@ public class DialogLoadingImages implements LoadingImageListener {
         });
 
         // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(e -> closeThread(),
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
+        this.dialog.getRootPane().registerKeyboardAction(
+            e -> closeThread(),
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+            JComponent.WHEN_IN_FOCUSED_WINDOW
         );
     }
 
@@ -56,11 +58,11 @@ public class DialogLoadingImages implements LoadingImageListener {
 
 
         String title = getWord("dialog.loadingImages");
-        if(imageFileType != null) {
+        if (imageFileType != null) {
             // Wenn wir ein bestehendes Projekt öffnen, wird der imageFileType erst später aus der Config ausgelesen.
             // Um ihn jetzt schon anzeigen zu können, müssten wir die Config vorher schon einlesen.
 
-             title  += " (" + imageFileType.getDescription() + ")";
+            title += " (" + imageFileType.getDescription() + ")";
         }
         this.dialog.setTitle(title);
         this.dialog.getContentPane().removeAll();
