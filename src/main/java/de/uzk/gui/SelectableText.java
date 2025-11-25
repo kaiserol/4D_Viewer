@@ -105,10 +105,16 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
             if (htmlDoc == null) return;
 
             StyleSheet styleSheet = htmlDoc.getStyleSheet();
-            String hexDefaultColor = ColorUtils.colorToHex(UIEnvironment.getTextColor());
-            styleSheet.addRule("a { color: %s; }".formatted(hexDefaultColor));
+            String hexDefaultColor = ColorUtils.colorToHex(COLOR_ACTIVE_LINK);
+
+            // Standard-Link
+            styleSheet.addRule("a { color: %s; text-decoration: none; }".formatted(hexDefaultColor));
+
+            // Besuchte Links
             styleSheet.addRule("a:visited { color: %s; }".formatted(hexDefaultColor));
-            styleSheet.addRule("a:hover { color: %s; }".formatted(hexDefaultColor));
+
+            // Hover-Zustand
+            styleSheet.addRule("a:hover { color: %s; } ".formatted(hexDefaultColor));
         });
     }
 
@@ -197,13 +203,13 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      */
     private void setupGlobalKeyListener() {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
-            boolean oldValue = commandPressed;
+            boolean oldValue = this.commandPressed;
             if (e.getID() == KeyEvent.KEY_PRESSED || e.getID() == KeyEvent.KEY_RELEASED) {
-                commandPressed = (e.getModifiersEx() & Shortcut.CTRL_DOWN) != 0;
+                this.commandPressed = (e.getModifiersEx() & Shortcut.CTRL_DOWN) != 0;
             }
 
             // Nur bei Änderung aktualisieren
-            if (commandPressed != oldValue) {
+            if (this.commandPressed != oldValue) {
                 SwingUtilities.invokeLater(this::updateCursor);
             }
             return false;
@@ -219,7 +225,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      */
     private void updateCursor() {
         CursorMode newMode;
-        if (overLink && commandPressed) {
+        if (this.overLink && this.commandPressed) {
             newMode = CursorMode.LINK_CTRL_HOVER;
         } else if (overLink) {
             newMode = CursorMode.LINK_HOVER;
@@ -228,8 +234,8 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         }
 
         // Nur wenn sich der Zustand ändert
-        if (newMode != currentCursorMode) {
-            currentCursorMode = newMode;
+        if (newMode != this.currentCursorMode) {
+            this.currentCursorMode = newMode;
 
             switch (newMode) {
                 case LINK_CTRL_HOVER -> {
@@ -238,7 +244,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
                     UIEnvironment.setToolTipText(this, getWord("tooltip.openInBrowser"));
                 }
                 case LINK_HOVER -> {
-                    applyLinkHoverStyle(false);
+                    applyLinkHoverStyle(true);
                     UIEnvironment.setCursor(this, ComponentUtils.HAND_CURSOR);
 
                     String tooltipText = "%s (%s %s)".formatted(
@@ -266,9 +272,9 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      * Entfernt Hyperlink-Styling.
      */
     private void resetLinkElement() {
-        overLink = false;
+        this.overLink = false;
         updateCursor();
-        currentLinkElement = null;
+        this.currentLinkElement = null;
     }
 
     // ========================================
@@ -375,25 +381,28 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     }
 
     /**
-     * Färbt den Hyperlink nur dann ein, wenn Command/Ctrl gedrückt ist.
+     * Unterstreicht den Hyperlink, wenn der Link aktiv ist.
      *
-     * @param active {@code true}, wenn Link aktiv ist, sonst false
+     * @param active {@code true}, wenn der Link aktiv ist, sonst false
      */
     private void applyLinkHoverStyle(boolean active) {
-        if (currentLinkElement == null) return;
+        if (this.currentLinkElement == null) return;
 
         HTMLDocument htmlDoc = getHTMLDocument();
         if (htmlDoc == null) return;
 
-        int startIndex = currentLinkElement.getStartOffset();
-        int endIndex = currentLinkElement.getEndOffset();
+        // Wortgrenzen ermitteln
+        int startIndex = this.currentLinkElement.getStartOffset();
+        int endIndex = this.currentLinkElement.getEndOffset();
         int length = Math.max(0, endIndex - startIndex);
 
+        // Formatierung
         SimpleAttributeSet set = new SimpleAttributeSet();
-        Color color = active ? COLOR_ACTIVE_LINK : UIEnvironment.getTextColor();
-        StyleConstants.setForeground(set, color);
+        StyleConstants.setUnderline(set, active);
 
-        // Farbe ändern
-        SwingUtilities.invokeLater(() -> htmlDoc.setCharacterAttributes(startIndex, length, set, false));
+        // Änderungen vornehmen
+        htmlDoc.setCharacterAttributes(startIndex, length, set, false);
+        revalidate();
+        repaint();
     }
 }
