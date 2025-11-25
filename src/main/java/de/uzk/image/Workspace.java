@@ -262,7 +262,7 @@ public class Workspace {
 
         // Pfade laden
         List<Path> paths;
-        try (DirectoryStream<Path> directory = Files.newDirectoryStream(this.imagesDirectory)) {
+        try (DirectoryStream<Path> directory = Files.newDirectoryStream(this.imagesDirectory, Files::isRegularFile)) {
             paths = StreamSupport.stream(directory.spliterator(), true).toList();
         } catch (IOException e) {
             progress.onLoadingComplete(0);
