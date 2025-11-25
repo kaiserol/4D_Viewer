@@ -77,7 +77,7 @@ public class AreaStatsBar extends ObserverContainer<JPanel> {
     // Hilfsmethoden
     // ========================================
     private void updateTime() {
-        String timeString = DateTimeUtils.getFrameTimestamp(workspace.getTime());
+        String timeString = DateTimeUtils.formatFrameTimeStamp(workspace.getTime());
         this.labelTime.setText(StringUtils.wrapHtml(StringUtils.wrapBold(StringUtils.applyFontSize(
             timeString, 175))));
     }

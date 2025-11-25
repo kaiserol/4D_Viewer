@@ -105,9 +105,9 @@ public class MarkerEditor extends Container {
             setLayout(new GridLayout(1, 2));
 
             JSpinner numberInput = new JSpinner(this.model);
-            JLabel label = new JLabel("(" + DateTimeUtils.getFrameTimestamp(getValue()) + ")", SwingConstants.RIGHT);
+            JLabel label = new JLabel("(" + DateTimeUtils.formatFrameTimeStamp(getValue()) + ")", SwingConstants.RIGHT);
             numberInput.addChangeListener(e -> {
-                label.setText("(" + DateTimeUtils.getFrameTimestamp(getValue()) + ")");
+                label.setText("(" + DateTimeUtils.formatFrameTimeStamp(getValue()) + ")");
                 changed.accept(getValue());
             });
 
