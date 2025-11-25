@@ -4,6 +4,7 @@ import de.uzk.logger.output.ConsoleOutput;
 import de.uzk.logger.output.FileOutput;
 import de.uzk.logger.output.HtmlOutput;
 import de.uzk.logger.output.LogOutput;
+import de.uzk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +88,7 @@ public class Logger {
      * registrierte {@link LogOutput}-Instanz.
      *
      * @param level Die Protokollebene (darf nicht null sein)
-     * @param msg   Die zu loggende Nachricht (darf null sein)
+     * @param msg   Die Nachricht, die geloggt werden soll
      */
     void write(LogLevel level, String msg) {
         LogEntry entry = new LogEntry(level, msg);
@@ -99,7 +100,7 @@ public class Logger {
     /**
      * Schreibt eine Nachricht auf {@link LogLevel#DEBUG}.
      *
-     * @param msg Nachricht
+     * @param msg Die Nachricht, die geloggt werden soll
      */
     public void debug(String msg) {
         write(LogLevel.DEBUG, msg);
@@ -108,7 +109,7 @@ public class Logger {
     /**
      * Schreibt eine Nachricht auf {@link LogLevel#INFO}.
      *
-     * @param msg Nachricht
+     * @param msg Die Nachricht, die geloggt werden soll
      */
     public void info(String msg) {
         write(LogLevel.INFO, msg);
@@ -117,7 +118,7 @@ public class Logger {
     /**
      * Schreibt eine Nachricht auf {@link LogLevel#WARN}.
      *
-     * @param msg Nachricht
+     * @param msg Die Nachricht, die geloggt werden soll
      */
     public void warn(String msg) {
         write(LogLevel.WARN, msg);
@@ -126,9 +127,29 @@ public class Logger {
     /**
      * Schreibt eine Nachricht auf {@link LogLevel#ERROR}.
      *
-     * @param msg Nachricht
+     * @param msg Die Nachricht, die geloggt werden soll
      */
     public void error(String msg) {
         write(LogLevel.ERROR, msg);
+    }
+
+    /**
+     * Schreibt eine Ausnahme auf {@link LogLevel#EXCEPTION}.
+     *
+     * @param e   Die Ausnahme, die geloggt werden soll
+     * @param msg Die Nachricht, die vor der Ausnahme geloggt werden soll
+     */
+    public void exception(Exception e, String msg) {
+        StringBuilder msgBuilder = new StringBuilder();
+        msgBuilder.append("An exception '%s' was thrown: %s".formatted(e.getClass().getCanonicalName(), e.getMessage()))
+            .append(" (%s)".formatted(msg))
+            .append(StringUtils.NEXT_LINE);
+
+        StackTraceElement[] stackTrace = e.getStackTrace();
+        for (int i = 0; i < stackTrace.length; i++) {
+            msgBuilder.append("\tat ").append(stackTrace[i]);
+            if (i < stackTrace.length - 1) msgBuilder.append(StringUtils.NEXT_LINE);
+        }
+        write(LogLevel.EXCEPTION, msgBuilder.toString());
     }
 }

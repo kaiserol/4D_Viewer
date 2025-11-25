@@ -21,24 +21,29 @@ import static de.uzk.config.LanguageHandler.getWord;
  */
 public enum LogLevel {
     /**
-     * Debug-Informationen für Entwickler.
+     * Debug-Informationen für Entwickler
      */
     DEBUG("DEBUG", ColorUtils.COLOR_BLUE),
 
     /**
-     * Standard-Informationen.
+     * Standard-Informationen
      */
     INFO("INFO", ColorUtils.COLOR_GREEN),
 
     /**
-     * Warnungen, die auf potenzielle Probleme hinweisen.
+     * Warnhinweise
      */
     WARN("WARN", ColorUtils.COLOR_YELLOW),
 
     /**
-     * Fehler, die eine Ausnahme oder Fehlfunktion darstellen.
+     * Fehler
      */
-    ERROR("ERROR", ColorUtils.COLOR_RED);
+    ERROR("ERROR", ColorUtils.COLOR_RED),
+
+    /**
+     * Ausnahmen
+     */
+    EXCEPTION("EXCEPTION", ColorUtils.COLOR_DARK_RED);
 
     /**
      * Textdarstellung der Protokollebene.
@@ -72,6 +77,7 @@ public enum LogLevel {
             case INFO -> getWord("logLevel.info");
             case WARN -> getWord("logLevel.warn");
             case ERROR -> getWord("logLevel.error");
+            case EXCEPTION -> getWord("logLevel.exception");
         };
     }
 

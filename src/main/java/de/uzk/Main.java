@@ -27,7 +27,7 @@ import javax.swing.*;
  * Einzelheiten finden Sie in der Lizenz.
  */
 public class Main {
-    public static final Logger logger;
+    public static Logger logger;
     public static final OperatingSystem operationSystem;
     public static final Settings settings;
     public static final History history;
@@ -47,12 +47,21 @@ public class Main {
      */
     public static void main(String[] args) {
         // Platform Eigenschaften initialisieren
-        UIEnvironment.initPlatformProperties();
+        exitIfExceptionWasThrown(UIEnvironment::initPlatformProperties);
 
         // Gui erstellen und anzeigen
-        SwingUtilities.invokeLater(() -> {
+        exitIfExceptionWasThrown(() -> SwingUtilities.invokeLater(() -> {
             Gui gui = new Gui();
             UIEnvironment.initDesktopIntegration(gui);
-        });
+        }));
+    }
+
+    private static void exitIfExceptionWasThrown(Runnable action) {
+        try {
+            action.run();
+        } catch (Exception e) {
+            logger.exception(e, "The app crashed unexpectedly.");
+            System.exit(1);
+        }
     }
 }

@@ -22,17 +22,22 @@ public final class ColorUtils {
     /**
      * Grünton zur Visualisierung von Standard-Informationen oder Erfolgszuständen.
      */
-    public static final Color COLOR_GREEN = new Color(8, 166, 52);
+    public static final Color COLOR_GREEN = new Color(10, 160, 50);
 
     /**
-     * Orangeton zur Visualisierung von Warnhinweisen.
+     * Gelbton zur Visualisierung von Warnhinweisen.
      */
-    public static final Color COLOR_YELLOW = new Color(252, 178, 55);
+    public static final Color COLOR_YELLOW = new Color(250, 180, 60);
 
     /**
-     * Rotton zur Visualisierung von Ausnahmen oder Fehlfunktion.
+     * Rotton zur Visualisierung von Fehlern.
      */
-    public static final Color COLOR_RED = new Color(253, 58, 58);
+    public static final Color COLOR_RED = new Color(250, 50, 50);
+
+    /**
+     * Dunkler Rotton zur Visualisierung von Ausnahmen.
+     */
+    public static final Color COLOR_DARK_RED = new Color(150, 0, 0);
 
     /**
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
