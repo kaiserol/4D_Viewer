@@ -52,7 +52,7 @@ public class DialogLoadingImages implements LoadingImageListener {
         this.dialog.setLayout(new BorderLayout());
 
         // Inhalt hinzufügen
-        JPanel contentPanel = new JPanel(new BorderLayout(0, 20));
+        JPanel contentPanel = new JPanel(new BorderLayout(20, 20));
         contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
         contentPanel.add(createProgressBarPanel(), BorderLayout.CENTER);
         contentPanel.add(createFileNamesPanel(imagesDirectory), BorderLayout.SOUTH);
@@ -79,7 +79,7 @@ public class DialogLoadingImages implements LoadingImageListener {
     // Komponenten-Erzeugung
     // ========================================
     private JPanel createProgressBarPanel() {
-        JPanel progressBarPanel = new JPanel(new BorderLayout(0, 10));
+        JPanel progressBarPanel = new JPanel(UIEnvironment.getDefaultBorderLayout());
 
         // Fortschrittsbalken hinzufügen
         this.progressBar = new JProgressBar();

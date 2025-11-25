@@ -33,7 +33,7 @@ public class AreaStatsBar extends ObserverContainer<JPanel> {
         this.container.add(this.labelTime, BorderLayout.CENTER);
 
         // Zeit-Level-Panel
-        JPanel panelTimeLevel = new JPanel(new BorderLayout(10, 0));
+        JPanel panelTimeLevel = new JPanel(UIEnvironment.getDefaultBorderLayout());
         panelTimeLevel.setOpaque(false);
 
         // Zeit-Level-Label

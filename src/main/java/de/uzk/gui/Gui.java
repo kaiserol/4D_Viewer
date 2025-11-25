@@ -142,7 +142,7 @@ public class Gui extends ObserverContainer<JFrame> {
         this.container.setLayout(new BorderLayout());
 
         // Panel erstellen
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        JPanel mainPanel = new JPanel(UIEnvironment.getDefaultBorderLayout());
         mainPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
 
         // Bilder Verzeichnis Pfad hinzufügen

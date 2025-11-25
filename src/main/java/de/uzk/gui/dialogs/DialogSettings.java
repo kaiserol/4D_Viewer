@@ -57,7 +57,7 @@ public class DialogSettings {
         this.oldConfirmExit = settings.isConfirmExit();
 
         // Inhalte hinzufügen
-        JPanel contentPanel = new JPanel(new BorderLayout(0, 10));
+        JPanel contentPanel = new JPanel(UIEnvironment.getDefaultBorderLayout());
         contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
         contentPanel.add(createSettingsPanel(), BorderLayout.CENTER);
         contentPanel.add(createButtonsPanel(), BorderLayout.SOUTH);

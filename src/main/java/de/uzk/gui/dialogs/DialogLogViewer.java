@@ -150,7 +150,7 @@ public class DialogLogViewer {
         JScrollPane scrollPane = new JScrollPane(text);
 
         // ScrollPane in Panel packen
-        JPanel panel = new JPanel(new BorderLayout(0, 10));
+        JPanel panel = new JPanel(UIEnvironment.getDefaultBorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         panel.add(scrollPane, BorderLayout.CENTER);
         return panel;

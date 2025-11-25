@@ -60,7 +60,7 @@ public class DialogColorChooser {
         configureColorChooserUI(this.colorChooser);
 
         // Inhalte hinzufügen
-        JPanel contentPanel = new JPanel(new BorderLayout(0, 10));
+        JPanel contentPanel = new JPanel(UIEnvironment.getDefaultBorderLayout());
         contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
         contentPanel.add(createFavoritesPanel(), BorderLayout.NORTH);
         contentPanel.add(createPreviewPanel(), BorderLayout.CENTER);
