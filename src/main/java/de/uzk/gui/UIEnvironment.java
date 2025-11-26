@@ -174,7 +174,7 @@ public final class UIEnvironment {
 
         // FlatLaf und Icons aktualisieren
         FlatLaf.updateUI();
-        ImageLoader.updateSVGIcons();
+        ImageLoader.updateIconThemeColors();
     }
 
     public static void updateLanguage(Gui gui, Language language) {
