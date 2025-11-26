@@ -46,25 +46,25 @@ public final class ImageLoader {
 
     // Statische Initialisierung
     static {
-        ThemeColor defaultThemeColor = new ThemeColor(Color.WHITE, Color.GRAY);
+        ThemeColor defaultValue = ColorUtils.DEFAULT_THEME_COLOR;
 
         // Bearbeiten Icons
         THEME_COLORS.put(ICON_PIN, new ThemeColor(ColorUtils.COLOR_BLUE));
-        THEME_COLORS.put(ICON_ARROW_LEFT_TURN, defaultThemeColor);
-        THEME_COLORS.put(ICON_ARROW_RIGHT_TURN, defaultThemeColor);
+        THEME_COLORS.put(ICON_ARROW_LEFT_TURN, defaultValue);
+        THEME_COLORS.put(ICON_ARROW_RIGHT_TURN, defaultValue);
         THEME_COLORS.put(ICON_EDIT, new ThemeColor(Color.WHITE, Color.DARK_GRAY));
-        THEME_COLORS.put(ICON_DELETE, null);
+        THEME_COLORS.put(ICON_DELETE, new ThemeColor(Color.WHITE, Color.DARK_GRAY));
 
         // Navigieren Icons
-        THEME_COLORS.put(ICON_ARROW_LEFT_START, defaultThemeColor);
-        THEME_COLORS.put(ICON_ARROW_LEFT, defaultThemeColor);
-        THEME_COLORS.put(ICON_ARROW_RIGHT, defaultThemeColor);
-        THEME_COLORS.put(ICON_ARROW_RIGHT_END, defaultThemeColor);
+        THEME_COLORS.put(ICON_ARROW_LEFT_START, defaultValue);
+        THEME_COLORS.put(ICON_ARROW_LEFT, defaultValue);
+        THEME_COLORS.put(ICON_ARROW_RIGHT, defaultValue);
+        THEME_COLORS.put(ICON_ARROW_RIGHT_END, defaultValue);
 
-        THEME_COLORS.put(ICON_ARROW_UP_START, defaultThemeColor);
-        THEME_COLORS.put(ICON_ARROW_UP, defaultThemeColor);
-        THEME_COLORS.put(ICON_ARROW_DOWN, defaultThemeColor);
-        THEME_COLORS.put(ICON_ARROW_DOWN_END, defaultThemeColor);
+        THEME_COLORS.put(ICON_ARROW_UP_START, defaultValue);
+        THEME_COLORS.put(ICON_ARROW_UP, defaultValue);
+        THEME_COLORS.put(ICON_ARROW_DOWN, defaultValue);
+        THEME_COLORS.put(ICON_ARROW_DOWN_END, defaultValue);
     }
 
     /**
@@ -113,7 +113,7 @@ public final class ImageLoader {
             if (svgIcon == null || themeColor == null) continue;
 
             // Tausche Farben aus
-            Color svgColor = themeColor.getThemeColor(!settings.getTheme().isLightMode());
+            Color svgColor = themeColor.get(!settings.getTheme().isLightMode());
             svgIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> {
                 if (Objects.equals(color, Color.BLACK)) return svgColor;
                 else return color;

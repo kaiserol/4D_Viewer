@@ -1,6 +1,7 @@
 package de.uzk.utils;
 
 import com.formdev.flatlaf.util.ColorFunctions;
+import de.uzk.config.ThemeColor;
 
 import java.awt.*;
 
@@ -38,6 +39,11 @@ public final class ColorUtils {
      * Dunkler Rotton zur Visualisierung von Ausnahmen.
      */
     public static final Color COLOR_DARK_RED = new Color(150, 0, 0);
+
+    /**
+     * Stellt die Standardfarbe des Designs dar, die innerhalb der Anwendung verwendet wird.
+     */
+    public static final ThemeColor DEFAULT_THEME_COLOR = new ThemeColor(Color.WHITE, Color.GRAY);
 
     /**
      * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.

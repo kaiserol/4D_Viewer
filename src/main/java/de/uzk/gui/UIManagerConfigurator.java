@@ -113,7 +113,7 @@ public final class UIManagerConfigurator {
 
         // Linienfarbe
         UIManager.put("TabbedPane.underlineColor", ColorUtils.COLOR_BLUE);
-        UIManager.put("TabbedPane.inactiveUnderlineColor", settings.getTheme().isLightMode() ? Color.GRAY : Color.WHITE);
+        UIManager.put("TabbedPane.inactiveUnderlineColor", ColorUtils.DEFAULT_THEME_COLOR.get(!settings.getTheme().isLightMode()));
 
         // Scroll-Eigenschaften
         UIManager.put("TabbedPane.tabsPopupPolicy", "never");

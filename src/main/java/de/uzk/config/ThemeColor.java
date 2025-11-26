@@ -31,7 +31,7 @@ public class ThemeColor {
         return dark;
     }
 
-    public final Color getThemeColor(boolean light) {
+    public final Color get(boolean light) {
         return light ? light() : dark();
     }
 }
