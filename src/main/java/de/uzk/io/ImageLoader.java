@@ -28,7 +28,7 @@ public final class ImageLoader {
     public static final FlatSVGIcon ICON_PIN = openFlatSVGIcon("images/icons/pin.svg");
     public static final FlatSVGIcon ICON_ARROW_LEFT_TURN = openFlatSVGIcon("images/icons/arrow_left_turn.svg");
     public static final FlatSVGIcon ICON_ARROW_RIGHT_TURN = openFlatSVGIcon("images/icons/arrow_right_turn.svg");
-    public static final FlatSVGIcon ICON_DELETE = openFlatSVGIcon("images/icons/delete.svg");
+    public static final FlatSVGIcon ICON_DELETE = openFlatSVGIcon("images/icons/x.svg");
 
     // Navigieren Icons
     public static final FlatSVGIcon ICON_ARROW_LEFT_START = openFlatSVGIcon("images/icons/arrow_left_start.svg");
