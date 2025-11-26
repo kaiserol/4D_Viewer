@@ -7,8 +7,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.Caret;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.AdjustmentListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
@@ -60,6 +59,61 @@ public final class ComponentUtils {
         };
         caret.setBlinkRate(0);
         return caret;
+    }
+
+    /**
+     * Erstellt einen konfigurierten {@link JDialog}, der ein einheitliches Schließverhalten besitzt.
+     *
+     * <p>
+     * Der erzeugte Dialog:
+     * <ul>
+     *     <li>reagiert auf das Schließen über den Fenster-Schließen-Button (X)</li>
+     *     <li>reagiert auf das Drücken der ESC-Taste</li>
+     *     <li>führt vor dem Schließen optional eine benutzerdefinierte Aktion aus</li>
+     *     <li>wird erst nach Ausführung dieser Aktion geschlossen</li>
+     *     <li>verwendet die Standard-Modalität {@link Dialog.ModalityType#APPLICATION_MODAL}</li>
+     * </ul>
+     * </p>
+     *
+     * <p>
+     * Die übergebene Aktion {@code beforeClosing} wird genau einmal ausgeführt,
+     * unabhängig davon, ob der Dialog per ESC, Klick auf das X oder programmatisch
+     * geschlossen wird.
+     *
+     * @param parentWindow  Das übergeordnete Fenster, zu dem der Dialog modal ist.
+     *                      Darf {@code null} sein, falls kein Parent existiert.
+     * @param beforeClosing Eine Aktion, die direkt vor dem Schließen des Dialogs
+     *                      ausgeführt wird. Darf {@code null} sein, wenn keine
+     *                      zusätzliche Logik benötigt wird.
+     * @return Ein vollständig vorbereiteter {@link JDialog}, der bereits Listener und ESC-Handling
+     * registriert hat, jedoch noch nicht sichtbar ist.
+     */
+    public static JDialog createDialog(Window parentWindow, Runnable beforeClosing) {
+        JDialog dialog = new JDialog(parentWindow, "", Dialog.ModalityType.APPLICATION_MODAL);
+
+        // Ausführung der Aktion kapseln
+        Consumer<AWTEvent> safeRun = e -> {
+            if (beforeClosing != null) beforeClosing.run();
+            if (dialog.isVisible()) dialog.dispose();
+        };
+
+        // Listener reagiert auf das manuelle Schließen (X-Button)
+        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                safeRun.accept(e);
+            }
+        });
+
+        // ESC-Taste schließt den Dialog
+        dialog.getRootPane().registerKeyboardAction(
+            safeRun::accept,
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+            JComponent.WHEN_IN_FOCUSED_WINDOW
+        );
+
+        return dialog;
     }
 
     /**
@@ -293,9 +347,9 @@ public final class ComponentUtils {
      */
     public static Component[] getComponents(Container container) {
         if (container == null) return new Component[0];
-        else if (container instanceof JWindow window) return window.getOwnedWindows();
         else if (container instanceof JFrame frame) return frame.getContentPane().getComponents();
         else if (container instanceof JDialog dialog) return dialog.getContentPane().getComponents();
+        else if (container instanceof JWindow window) return window.getOwnedWindows();
         else if (container instanceof JMenu menu) return menu.getMenuComponents();
         else if (container instanceof JScrollPane scrollPane) return scrollPane.getViewport().getComponents();
         else return container.getComponents();

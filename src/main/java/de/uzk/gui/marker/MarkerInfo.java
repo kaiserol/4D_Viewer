@@ -43,27 +43,27 @@ public class MarkerInfo extends JPanel {
         ));
         this.setLayout(new GridLayout(1, 3, 5, 0));
 
-        GridBagConstraints c = new GridBagConstraints();
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.VERTICAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.VERTICAL;
 
-        c.weightx = 2;
-        c.gridheight = 1;
-        c.gridwidth = 2;
+        gbc.weightx = 2;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 2;
 
-        this.add(getJumpLink());
+        this.add(getJumpLink(), gbc);
 
-        c.weightx = 1;
-        c.gridwidth = 1;
-        c.anchor = GridBagConstraints.NORTHEAST;
+        gbc.weightx = 1;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
 
 
-        c.gridx += 1;
-        this.add(getEditButton());
+        gbc.gridx += 1;
+        this.add(getEditButton(), gbc);
 
-        c.gridx += 1;
-        this.add(getDeleteButton());
+        gbc.gridx += 1;
+        this.add(getDeleteButton(), gbc);
 
     }
 

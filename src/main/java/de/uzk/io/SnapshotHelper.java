@@ -58,7 +58,7 @@ public final class SnapshotHelper {
         } catch (IOException ignore) {
         }
 
-        logger.error("Failed to save the snapshot as '%s'.".formatted(filePath.toAbsolutePath()));
+        logger.warn("Could not save the snapshot-file '%s'.".formatted(filePath.toAbsolutePath()));
         return false;
     }
 

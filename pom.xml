@@ -5,11 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.uzk</groupId>
-    <artifactId>4d_viewer</artifactId>
-    <version>2.1</version>
-    <name>4D_Viewer_v2_1</name>
+    <artifactId>4D_Viewer</artifactId>
+    <version>2.1.2</version>
 
     <properties>
+        <app.name>4D_Viewer</app.name>
+        <app.version>v2_1_2</app.version>
+        <app.full-name>${app.name}_${app.version}</app.full-name>
+
         <java.version>20</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -65,7 +68,7 @@
 
     <build>
         <!-- Der Name der fertigen Datei -->
-        <finalName>${project.name}</finalName>
+        <finalName>${app.full-name}</finalName>
 
         <!-- Ressourcen: auch LICENSE & Co einbinden -->
         <resources>

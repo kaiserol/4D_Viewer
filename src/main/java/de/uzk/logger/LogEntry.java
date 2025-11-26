@@ -246,7 +246,6 @@ public class LogEntry {
      */
     private String getIndentedMessage(List<String> formattedEntry, String messageStr) {
         String indent = StringUtils.NEXT_LINE +
-
             // Zeitstempel
             " ".repeat(formattedEntry.get(0).length()) +
             formattedEntry.get(1) +
@@ -258,6 +257,8 @@ public class LogEntry {
             // Quelle
             " ".repeat(formattedEntry.get(4).length()) +
             formattedEntry.get(5);
-        return messageStr.replace(StringUtils.NEXT_LINE, indent);
+
+        String cleanIndent = indent.replaceAll("\\S", " ");
+        return messageStr.replace(StringUtils.NEXT_LINE, cleanIndent);
     }
 }

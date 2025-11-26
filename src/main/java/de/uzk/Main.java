@@ -3,7 +3,6 @@ package de.uzk;
 import de.uzk.config.History;
 import de.uzk.config.OperatingSystem;
 import de.uzk.config.Settings;
-import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.Workspace;
 import de.uzk.logger.Logger;
@@ -11,7 +10,7 @@ import de.uzk.logger.Logger;
 import javax.swing.*;
 
 /**
- * <b>Copyright © 2025 Universität zu Köln</b>
+ * <b>Copyright © 2023–2025 Universität zu Köln</b>
  * <p>
  * Lizenziert unter der Apache License, Version 2.0 (die "Lizenz");
  * Sie dürfen diese Datei nur im Einklang mit der Lizenz verwenden.
@@ -27,7 +26,7 @@ import javax.swing.*;
  * Einzelheiten finden Sie in der Lizenz.
  */
 public class Main {
-    public static final Logger logger;
+    public static Logger logger;
     public static final OperatingSystem operationSystem;
     public static final Settings settings;
     public static final History history;
@@ -47,12 +46,18 @@ public class Main {
      */
     public static void main(String[] args) {
         // Platform Eigenschaften initialisieren
-        UIEnvironment.initPlatformProperties();
+        exitIfExceptionWasThrown(UIEnvironment::initPlatformProperties);
 
         // Gui erstellen und anzeigen
-        SwingUtilities.invokeLater(() -> {
-            Gui gui = new Gui();
-            UIEnvironment.initDesktopIntegration(gui);
-        });
+        SwingUtilities.invokeLater(() -> exitIfExceptionWasThrown(UIEnvironment::initGui));
+    }
+
+    private static void exitIfExceptionWasThrown(Runnable action) {
+        try {
+            action.run();
+        } catch (Exception e) {
+            logger.exception(e, "The app crashed unexpectedly.");
+            System.exit(1);
+        }
     }
 }

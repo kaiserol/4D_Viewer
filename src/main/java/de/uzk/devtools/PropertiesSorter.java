@@ -113,7 +113,7 @@ public final class PropertiesSorter {
                 lines.add(line);
             }
         } catch (IOException e) {
-            logger.error("Failed to read from the property-file '%s'.".formatted(filePath));
+            logger.warn("Could not read from the property-file '%s'.".formatted(filePath));
         }
         return lines;
     }
@@ -143,9 +143,8 @@ public final class PropertiesSorter {
                     writer.newLine();
                 }
             }
-
         } catch (IOException e) {
-            logger.error("Failed to write in the property-file '%s'.".formatted(filePath));
+            logger.warn("Could not write in the property-file '%s'.".formatted(filePath));
             return false;
         }
         return true;

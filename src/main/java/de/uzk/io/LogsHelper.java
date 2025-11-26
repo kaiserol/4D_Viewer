@@ -45,7 +45,7 @@ public final class LogsHelper {
         try (FileWriter writer = new FileWriter(filePath.toFile(), true)) {
             writer.write(logEntry + StringUtils.NEXT_LINE);
         } catch (IOException ex) {
-            logger.error("Failed to write in the file '%s'.".formatted(filePath.toAbsolutePath()));
+            logger.warn("Could not write in the log-file '%s'.".formatted(filePath.toAbsolutePath()));
         }
     }
 
@@ -86,7 +86,7 @@ public final class LogsHelper {
             try {
                 Files.createFile(filePath);
             } catch (IOException e) {
-                logger.error("Failed to load the log-file '%s'.".formatted(filePath.toAbsolutePath()));
+                logger.warn("Could not create the log-file '%s'.".formatted(filePath.toAbsolutePath()));
                 return null;
             }
         }
@@ -110,7 +110,7 @@ public final class LogsHelper {
                 logger.info("Deleting the log-file '%s' ... (%d days old, threshold: %d days)".formatted(path.toAbsolutePath(), daysOld, daysToKeep));
                 Files.deleteIfExists(path);
             } catch (IOException e) {
-                logger.error("Failed to delete the log-file '%s'.".formatted(path.toAbsolutePath()));
+                logger.warn("Could not delete the log-file '%s'.".formatted(path.toAbsolutePath()));
             }
         }
     }

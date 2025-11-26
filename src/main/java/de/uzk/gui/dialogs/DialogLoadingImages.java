@@ -8,9 +8,6 @@ import de.uzk.utils.ComponentUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -34,20 +31,8 @@ public class DialogLoadingImages implements LoadingImageListener {
     // Für einen schönen Ladeeffekt SLEEP_TIME_NANOS > 0 setzen (1 Millisekunde = 1_000_000 Nanos)
     private static final int SLEEP_TIME_NANOS = 0;
 
-    public DialogLoadingImages(JFrame frame) {
-        this.dialog = new JDialog(frame, true);
-        this.dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        this.dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                closeThread();
-            }
-        });
-
-        // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(e -> closeThread(),
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
-        );
+    public DialogLoadingImages(Window parentWindow) {
+        this.dialog = ComponentUtils.createDialog(parentWindow, this::closeThread);
     }
 
 
@@ -56,18 +41,18 @@ public class DialogLoadingImages implements LoadingImageListener {
 
 
         String title = getWord("dialog.loadingImages");
-        if(imageFileType != null) {
+        if (imageFileType != null) {
             // Wenn wir ein bestehendes Projekt öffnen, wird der imageFileType erst später aus der Config ausgelesen.
             // Um ihn jetzt schon anzeigen zu können, müssten wir die Config vorher schon einlesen.
 
-             title  += " (" + imageFileType.getDescription() + ")";
+            title += " (" + imageFileType.getDescription() + ")";
         }
         this.dialog.setTitle(title);
         this.dialog.getContentPane().removeAll();
         this.dialog.setLayout(new BorderLayout());
 
         // Inhalt hinzufügen
-        JPanel contentPanel = new JPanel(new BorderLayout(0, 20));
+        JPanel contentPanel = new JPanel(new BorderLayout(20, 20));
         contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
         contentPanel.add(createProgressBarPanel(), BorderLayout.CENTER);
         contentPanel.add(createFileNamesPanel(imagesDirectory), BorderLayout.SOUTH);
@@ -94,7 +79,7 @@ public class DialogLoadingImages implements LoadingImageListener {
     // Komponenten-Erzeugung
     // ========================================
     private JPanel createProgressBarPanel() {
-        JPanel progressBarPanel = new JPanel(new BorderLayout(0, 10));
+        JPanel progressBarPanel = new JPanel(UIEnvironment.getDefaultBorderLayout());
 
         // Fortschrittsbalken hinzufügen
         this.progressBar = new JProgressBar();

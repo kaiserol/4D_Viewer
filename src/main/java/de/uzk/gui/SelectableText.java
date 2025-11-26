@@ -7,15 +7,20 @@ import de.uzk.utils.ComponentUtils;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.StyleSheet;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.net.URI;
+import java.net.URL;
 import java.util.Objects;
 
 import static de.uzk.config.LanguageHandler.getWord;
@@ -87,7 +92,8 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         setDefaultCursor();
 
         // Maus- & Hyperlink-Events
-        addMouseMotionListener(new MouseMovementListener());
+        addMouseListener(new PrivateMouseExitListener());
+        addMouseMotionListener(new PrivateMouseMotionListener());
         addHyperlinkListener(this);
 
         // Globale Tastaturüberwachung aktivieren
@@ -95,13 +101,20 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
 
         // Standard-Link-Styling setzen
         SwingUtilities.invokeLater(() -> {
-            if (getDocument() instanceof HTMLDocument htmlDoc) {
-                StyleSheet styleSheet = htmlDoc.getStyleSheet();
-                String hexDefaultColor = ColorUtils.colorToHex(UIEnvironment.getTextColor());
-                styleSheet.addRule("a { color: %s; }".formatted(hexDefaultColor));
-                styleSheet.addRule("a:visited { color: %s; }".formatted(hexDefaultColor));
-                styleSheet.addRule("a:hover { color: %s; }".formatted(hexDefaultColor));
-            }
+            HTMLDocument htmlDoc = getHTMLDocument();
+            if (htmlDoc == null) return;
+
+            StyleSheet styleSheet = htmlDoc.getStyleSheet();
+            String hexDefaultColor = ColorUtils.colorToHex(COLOR_ACTIVE_LINK);
+
+            // Standard-Link
+            styleSheet.addRule("a { color: %s; text-decoration: none; }".formatted(hexDefaultColor));
+
+            // Besuchte Links
+            styleSheet.addRule("a:visited { color: %s; }".formatted(hexDefaultColor));
+
+            // Hover-Zustand
+            styleSheet.addRule("a:hover { color: %s; } ".formatted(hexDefaultColor));
         });
     }
 
@@ -110,9 +123,25 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     // ========================================
 
     /**
+     * Listener, der Cursor bei Mauseintritt und -austritt aktualisiert
+     */
+    private class PrivateMouseExitListener extends MouseAdapter {
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            checkEnteredLinkAt(e.getPoint());
+            updateCursor();
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            resetLinkElement();
+        }
+    }
+
+    /**
      * Listener, der Cursor bei Mausbewegungen aktualisiert
      */
-    private class MouseMovementListener extends MouseMotionAdapter {
+    private class PrivateMouseMotionListener extends MouseMotionAdapter {
         @Override
         public void mouseMoved(MouseEvent e) {
             updateCursor();
@@ -129,18 +158,40 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     @Override
     public void hyperlinkUpdate(HyperlinkEvent e) {
         if (Objects.equals(e.getEventType(), ENTERED)) {
-            overLink = true;
-            currentLinkElement = e.getSourceElement();
+            this.overLink = true;
+            this.currentLinkElement = e.getSourceElement();
             updateCursor();
         } else if (Objects.equals(e.getEventType(), EXITED)) {
             resetLinkElement();
         } else if (Objects.equals(e.getEventType(), ACTIVATED)) {
-            if (commandPressed) {
+            if (this.commandPressed) {
                 UIEnvironment.openWebLink(e.getURL());
                 updateCursor();
-                commandPressed = false;
+                this.commandPressed = false;
             }
         }
+    }
+
+    /**
+     * Prüft, ob unter der angegebenen Mausposition ein Hyperlink vorhanden ist.
+     * Wenn ja, wird ein ENTERED-HyperlinkEvent erzeugt und an {@link #hyperlinkUpdate(HyperlinkEvent)} weitergeleitet.
+     *
+     * @param mousePos Die Mausposition relativ zur Komponente
+     */
+    private void checkEnteredLinkAt(Point mousePos) {
+        HTMLDocument htmlDoc = getHTMLDocument();
+        if (htmlDoc == null) return;
+
+        // Holt das Character-Leaf-Element an dieser Position
+        Element leaf = getLeafElementAt(htmlDoc, mousePos);
+        if (leaf == null) return;
+
+        // Findet ein <a>-Element oder HREF-Attribut unter dem Leaf
+        Element linkElement = findLinkElement(leaf);
+        if (linkElement == null) return;
+
+        // Löst ein HyperlinkEvent vom Typ ENTERED für das angegebene Link-Element aus
+        fireHyperLinkEntered(linkElement, htmlDoc);
     }
 
     // ========================================
@@ -152,13 +203,13 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      */
     private void setupGlobalKeyListener() {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
-            boolean oldValue = commandPressed;
+            boolean oldValue = this.commandPressed;
             if (e.getID() == KeyEvent.KEY_PRESSED || e.getID() == KeyEvent.KEY_RELEASED) {
-                commandPressed = (e.getModifiersEx() & Shortcut.CTRL_DOWN) != 0;
+                this.commandPressed = (e.getModifiersEx() & Shortcut.CTRL_DOWN) != 0;
             }
 
             // Nur bei Änderung aktualisieren
-            if (commandPressed != oldValue) {
+            if (this.commandPressed != oldValue) {
                 SwingUtilities.invokeLater(this::updateCursor);
             }
             return false;
@@ -174,7 +225,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      */
     private void updateCursor() {
         CursorMode newMode;
-        if (overLink && commandPressed) {
+        if (this.overLink && this.commandPressed) {
             newMode = CursorMode.LINK_CTRL_HOVER;
         } else if (overLink) {
             newMode = CursorMode.LINK_HOVER;
@@ -183,8 +234,8 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         }
 
         // Nur wenn sich der Zustand ändert
-        if (newMode != currentCursorMode) {
-            currentCursorMode = newMode;
+        if (newMode != this.currentCursorMode) {
+            this.currentCursorMode = newMode;
 
             switch (newMode) {
                 case LINK_CTRL_HOVER -> {
@@ -193,7 +244,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
                     UIEnvironment.setToolTipText(this, getWord("tooltip.openInBrowser"));
                 }
                 case LINK_HOVER -> {
-                    applyLinkHoverStyle(false);
+                    applyLinkHoverStyle(true);
                     UIEnvironment.setCursor(this, ComponentUtils.HAND_CURSOR);
 
                     String tooltipText = "%s (%s %s)".formatted(
@@ -208,35 +259,6 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         }
     }
 
-    // ========================================
-    // HTML Styling
-    // ========================================
-
-    /**
-     * Färbt den Hyperlink nur dann ein, wenn Command/Ctrl gedrückt ist.
-     *
-     * @param active {@code true}, wenn Link aktiv ist, sonst false
-     */
-    private void applyLinkHoverStyle(boolean active) {
-        if (currentLinkElement == null) return;
-        if (!(getDocument() instanceof HTMLDocument htmlDoc)) return;
-
-        int startIndex = currentLinkElement.getStartOffset();
-        int endIndex = currentLinkElement.getEndOffset();
-        int length = Math.max(0, endIndex - startIndex);
-
-        SimpleAttributeSet set = new SimpleAttributeSet();
-        Color color = active ? COLOR_ACTIVE_LINK : UIEnvironment.getTextColor();
-        StyleConstants.setForeground(set, color);
-
-        // Farbe ändern
-        SwingUtilities.invokeLater(() -> htmlDoc.setCharacterAttributes(startIndex, length, set, false));
-    }
-
-    // ========================================
-    // Hilfsmethoden
-    // ========================================
-
     /**
      * Setzt Standard-Cursor und entfernt Tooltip
      */
@@ -250,8 +272,137 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      * Entfernt Hyperlink-Styling.
      */
     private void resetLinkElement() {
-        overLink = false;
+        this.overLink = false;
         updateCursor();
-        currentLinkElement = null;
+        this.currentLinkElement = null;
+    }
+
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
+
+    /**
+     * Gibt das aktuelle Dokument als {@link HTMLDocument} zurück, falls das Dokument
+     * ein HTML-Dokument ist. Andernfalls wird {@code null} zurückgegeben.
+     *
+     * @return Das aktuelle {@code HTMLDocument} oder {@code null}, wenn kein HTML-Dokument vorhanden ist
+     */
+    private HTMLDocument getHTMLDocument() {
+        return (getDocument() instanceof HTMLDocument doc) ? doc : null;
+    }
+
+    /**
+     * Liefert das {@link Element} an die durch die Mausposition angegebene Stelle,
+     * die ein Zeichen (Leaf-Element) repräsentiert.
+     *
+     * @param htmlDoc  Das HTML-Dokument, in dem die Suche durchgeführt wird
+     * @param mousePos Die Mausposition relativ zur Komponente
+     * @return Das Zeichen-Element an der gegebenen Position oder {@code null},
+     * wenn die Position ungültig ist oder kein Element gefunden wurde
+     */
+    private Element getLeafElementAt(HTMLDocument htmlDoc, Point mousePos) {
+        int pos = viewToModel2D(mousePos);
+        return (pos >= 0) ? htmlDoc.getCharacterElement(pos) : null;
+    }
+
+    /**
+     * Durchläuft die Eltern-Hierarchie eines gegebenen Leaf-Elements, um das nächstgelegene
+     * {@code <a>}-Tag oder ein Element mit einem HREF-Attribut zu finden.
+     *
+     * @param leaf Das Ausgangselement (Leaf) im HTML-Dokument
+     * @return Das nächstgelegene Link-Element ({@code <a>} oder Element mit HREF),
+     * oder {@code null}, wenn kein solches Element gefunden wird
+     */
+    private Element findLinkElement(Element leaf) {
+        Element e = leaf;
+
+        while (e != null) {
+            AttributeSet attrs = e.getAttributes();
+
+            // Prüfe, ob ein <a>-Tag vorliegt, welches ein HREF-Attribut besitzt
+            Object tagA = attrs.getAttribute(HTML.Tag.A);
+            if (tagA instanceof AttributeSet aAttrs && aAttrs.getAttribute(HTML.Attribute.HREF) != null) {
+                return e;
+            }
+
+            // Prüfe, ob HREF-Attribut vorliegt
+            if (attrs.getAttribute(HTML.Attribute.HREF) != null) {
+                return e;
+            }
+
+            e = e.getParentElement();
+        }
+        return null;
+    }
+
+
+    /**
+     * Löst ein {@link HyperlinkEvent} vom Typ {@code ENTERED} für das angegebene Link-Element aus.
+     * <p>
+     * Wenn das Link-Element ein HREF-Attribut enthält, wird dieses als URL verwendet.
+     * Andernfalls wird der Text des Elements als Beschreibung versucht in eine URL umzuwandeln.
+     * Ungültige oder relative URLs führen dazu, dass kein Event ausgelöst wird.
+     *
+     * @param linkElement Das Element, das als Hyperlink behandelt werden soll
+     * @param htmlDoc     Das HTML-Dokument, aus dem der Text des Elements ggf. extrahiert wird
+     */
+    private void fireHyperLinkEntered(Element linkElement, HTMLDocument htmlDoc) {
+        // Attribute des gefundenen Links
+        AttributeSet attrs = linkElement.getAttributes();
+        Object hrefValue = attrs.getAttribute(HTML.Attribute.HREF);
+
+        // URL und Beschreibung bestimmen
+        URL url;
+        String desc;
+
+        if (hrefValue != null) {
+            desc = hrefValue.toString();
+            try {
+                url = new URI(desc).toURL();
+            } catch (Exception e) {
+                // Ungültige oder relative URL
+                return;
+            }
+        } else {
+            // Wenn kein HREF-Attribut existiert, wird der Text als Beschreibung gesetzt
+            try {
+                int start = linkElement.getStartOffset();
+                int end = linkElement.getEndOffset();
+                desc = htmlDoc.getText(start, Math.max(0, end - start));
+                url = new URI(desc).toURL();
+            } catch (Exception e) {
+                return;
+            }
+        }
+
+        // HyperlinkEvent erzeugen und ENTERED-Event auslösen
+        HyperlinkEvent entered = new HyperlinkEvent(this, ENTERED, url, desc, linkElement);
+        hyperlinkUpdate(entered);
+    }
+
+    /**
+     * Unterstreicht den Hyperlink, wenn der Link aktiv ist.
+     *
+     * @param active {@code true}, wenn der Link aktiv ist, sonst false
+     */
+    private void applyLinkHoverStyle(boolean active) {
+        if (this.currentLinkElement == null) return;
+
+        HTMLDocument htmlDoc = getHTMLDocument();
+        if (htmlDoc == null) return;
+
+        // Wortgrenzen ermitteln
+        int startIndex = this.currentLinkElement.getStartOffset();
+        int endIndex = this.currentLinkElement.getEndOffset();
+        int length = Math.max(0, endIndex - startIndex);
+
+        // Formatierung
+        SimpleAttributeSet set = new SimpleAttributeSet();
+        StyleConstants.setUnderline(set, active);
+
+        // Änderungen vornehmen
+        htmlDoc.setCharacterAttributes(startIndex, length, set, false);
+        revalidate();
+        repaint();
     }
 }

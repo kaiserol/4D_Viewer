@@ -21,11 +21,11 @@ public class MarkerCollisionChecker extends MouseAdapter {
     private Consumer<Marker> onMarkerBeginHover;
     private Consumer<Marker> onMarkerEndHover;
 
-    //region MouseAdapter overrides
+    // region MouseAdapter overrides
     @Override
     public void mouseClicked(MouseEvent e) {
         Marker collided = getCollision(e);
-        if(collided != null && onMarkerClick != null) {
+        if (collided != null && onMarkerClick != null) {
             onMarkerClick.accept(collided);
         }
     }
@@ -33,17 +33,15 @@ public class MarkerCollisionChecker extends MouseAdapter {
     @Override
     public void mouseMoved(MouseEvent e) {
         Marker collided = getCollision(e);
-        if(collided != null && onMarkerBeginHover != null) {
+        if (collided != null && onMarkerBeginHover != null) {
             onMarkerBeginHover.accept(collided);
-        } else if(onMarkerEndHover != null) {
+        } else if (onMarkerEndHover != null) {
             onMarkerEndHover.accept(null);
         }
     }
+    // endregion
 
-
-    //endregion
-
-    //region Öffentliche Setter
+    // region Öffentliche Setter
     public void onMarkerClick(Consumer<Marker> onMarkerCollision) {
         this.onMarkerClick = onMarkerCollision;
     }
@@ -64,14 +62,13 @@ public class MarkerCollisionChecker extends MouseAdapter {
         this.panelInsets = panelInsets;
         this.imageSize = imageSize;
     }
-    //endregion
-
+    // endregion
 
     private Marker getCollision(MouseEvent e) {
         Point p = e.getPoint();
         p.translate(-panelInsets.width, -panelInsets.height);
 
-        if(p.getX() < 0 || p.getY() < 0 ||
+        if (p.getX() < 0 || p.getY() < 0 ||
             p.getX() > imageSize.width || p.getY() > imageSize.height
         ) {
             // User hat nicht auf das Bild geclickt.
@@ -81,14 +78,14 @@ public class MarkerCollisionChecker extends MouseAdapter {
 
         Point2D actual;
         try {
-            actual= currentAffineTransform.inverseTransform(p, null);
+            actual = currentAffineTransform.inverseTransform(p, null);
             logger.debug("User: %s, actual: %s".formatted(p, actual));
         } catch (NoninvertibleTransformException ex) {
             throw new RuntimeException("Nur bijektive Transformationen (Rotation, Translation, Skalierung) werden verwendet – wie konnte das passieren?", ex);
         }
-        for(Marker m: workspace.getMarkers().getMarkersForImage(workspace.getTime())) {
-            Rectangle label = m.getLabelBounds(((Component)e.getSource()).getGraphics());
-            if(label.contains(actual)) {
+        for (Marker m : workspace.getMarkers().getMarkersForImage(workspace.getTime())) {
+            Rectangle label = m.getLabelBounds(((Component) e.getSource()).getGraphics());
+            if (label.contains(actual)) {
                 return m;
             }
 

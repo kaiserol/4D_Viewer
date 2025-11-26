@@ -217,12 +217,29 @@ public final class DateTimeUtils {
         }
     }
 
-    public static String getFrameTimestamp(int frame) {
-        int totalSeconds = (int)(frame * workspace.getConfig().getTimeUnit());
+    /**
+     * Erzeugt einen Zeitstempel im Format HH:MM:SS basierend auf einem Frame-Index.
+     *
+     * <p>
+     * Der übergebene Frame-Wert {@code frame} wird mithilfe der in der
+     * Workspace-Konfiguration definierten Zeitauflösung in Sekunden umgerechnet.
+     * Die konfigurierte Zeiteinheit bestimmt dabei, wie viele Sekunden ein einzelner
+     * Frame repräsentiert ({@code workspace.getConfig().getTimeUnit()}).
+     *
+     * <p>Aus den berechneten Gesamtsekunden werden anschließend Stunden, Minuten
+     * und Sekunden extrahiert und als formatierter String im Muster
+     * {@code "HH:MM:SS"} zurückgegeben. Dabei werden führende Nullen automatisch
+     * ergänzt.</p>
+     *
+     * @param frame Der Frame-Index, der zeitlich interpretiert werden soll
+     * @return Ein formatierter Zeitstempel im Muster {@code "HH:MM:SS"}
+     */
+    public static String formatFrameTimeStamp(int frame) {
+        int totalSeconds = (int) (frame * workspace.getConfig().getTimeUnit());
         int seconds = totalSeconds % 60;
         int minute = totalSeconds / 60 % 60;
-        int hour = totalSeconds / 3_600;
+        int hour = totalSeconds / 60 * 60;
 
-        return String.format("%02d:%02d:%02d", hour, minute, seconds);
+        return "%02d:%02d:%02d".formatted(hour, minute, seconds);
     }
 }

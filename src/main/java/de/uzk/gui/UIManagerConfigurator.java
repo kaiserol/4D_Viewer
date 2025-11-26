@@ -1,6 +1,7 @@
 package de.uzk.gui;
 
 import de.uzk.utils.ColorUtils;
+import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -112,7 +113,7 @@ public final class UIManagerConfigurator {
 
         // Linienfarbe
         UIManager.put("TabbedPane.underlineColor", ColorUtils.COLOR_BLUE);
-        UIManager.put("TabbedPane.inactiveUnderlineColor", settings.getTheme().isLightMode() ? Color.GRAY : Color.WHITE);
+        UIManager.put("TabbedPane.inactiveUnderlineColor", ColorUtils.DEFAULT_THEME_COLOR.get(!settings.getTheme().isLightMode()));
 
         // Scroll-Eigenschaften
         UIManager.put("TabbedPane.tabsPopupPolicy", "never");
@@ -144,7 +145,7 @@ public final class UIManagerConfigurator {
         UIManager.put("SplitPaneDivider.gripDotCount", 0);
         UIManager.put("SplitPaneDivider.gripDotSize", 3);
         UIManager.put("SplitPaneDivider.gripGap", 3);
-        UIManager.put("SplitPane.dividerSize", 10);
+        UIManager.put("SplitPane.dividerSize", UIEnvironment.SPACING_DEFAULT);
         UIManager.put("SplitPane.supportsOneTouchButtons", true);
 
         // Pfeilfarben
@@ -156,7 +157,7 @@ public final class UIManagerConfigurator {
 
     public static String getAllUIManagerProperties() {
         StringBuilder sb = new StringBuilder();
-        sb.append("=== UIManager Properties ===\n");
+        sb.append("=== UIManager Properties ===").append(StringUtils.NEXT_LINE);
 
         // Alle Keys holen und alphabetisch sortieren
         List<Object> keys = new ArrayList<>(UIManager.getDefaults().keySet());

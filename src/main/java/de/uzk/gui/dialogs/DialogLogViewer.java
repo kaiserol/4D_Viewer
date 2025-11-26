@@ -8,7 +8,6 @@ import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.*;
 import java.util.List;
 
@@ -32,19 +31,11 @@ public class DialogLogViewer {
     private static final int DEFAULT_MAX_WIDTH = 600;
     private static final int DEFAULT_MAX_HEIGHT = 400;
 
-    public DialogLogViewer(JFrame frame) {
-        this.dialog = new JDialog(frame, true);
-        this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    public DialogLogViewer(Window parentWindow) {
+        this.dialog = ComponentUtils.createDialog(parentWindow, null);
 
         // Map initialisieren
         this.filterCheckboxes = new LinkedHashMap<>();
-
-        // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(
-            e -> this.dialog.dispose(),
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-            JComponent.WHEN_IN_FOCUSED_WINDOW
-        );
     }
 
     public void show() {
@@ -72,8 +63,18 @@ public class DialogLogViewer {
     private JTabbedPane createTabs() {
         JTabbedPane tabs = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 
+        // Blockierte Protokollebenen festlegen
+        List<LogLevel> blockedLevels = new ArrayList<>(Arrays.stream(LogLevel.values()).filter(l -> l != LogLevel.INFO).toList());
+
+        // Eingestellte Protokollebenen ausblenden
+        for (LogLevel level : this.filterCheckboxes.keySet()) {
+            JCheckBox checkBox = this.filterCheckboxes.get(level);
+            if (checkBox.isSelected()) blockedLevels.remove(level);
+            else blockedLevels.add(level);
+        }
+
         // Tabs hinzufügen
-        tabs.addTab(getWord("dialog.logViewer.tab.log"), createLogsPanel(LogLevel.DEBUG, LogLevel.ERROR, LogLevel.WARN));
+        tabs.addTab(getWord("dialog.logViewer.tab.log"), createLogsPanel(blockedLevels.toArray(new LogLevel[0])));
 
         if (workspace.isLoaded()) {
             tabs.addTab(getWord("dialog.logViewer.tab.imagesReport"), createMissingImagesPanel());
@@ -149,7 +150,7 @@ public class DialogLogViewer {
         JScrollPane scrollPane = new JScrollPane(text);
 
         // ScrollPane in Panel packen
-        JPanel panel = new JPanel(new BorderLayout(0, 10));
+        JPanel panel = new JPanel(UIEnvironment.getDefaultBorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         panel.add(scrollPane, BorderLayout.CENTER);
         return panel;

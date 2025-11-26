@@ -3,6 +3,7 @@ package de.uzk.gui.tabs;
 import de.uzk.action.ActionType;
 import de.uzk.config.Config;
 import de.uzk.gui.Gui;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.io.SnapshotHelper;
 import de.uzk.utils.ComponentUtils;
@@ -69,7 +70,7 @@ public class TabEdit extends ObserverContainer<JPanel> {
         gbc.anchor = GridBagConstraints.SOUTHWEST;
 
         // Label (Momentaufnahmen) hinzufügen
-        JPanel snapshotsPanel = new JPanel(new BorderLayout(10, 0));
+        JPanel snapshotsPanel = new JPanel(UIEnvironment.getDefaultBorderLayout());
         snapshotsPanel.add(new JLabel(getWord("menu.edit.snapshots") + ":"), BorderLayout.WEST);
         snapshotsPanel.add(snapshots = new JLabel(), BorderLayout.CENTER);
         ComponentUtils.addRow(this.container, gbc, snapshotsPanel, 15);

@@ -54,8 +54,13 @@ public class MissingImagesReport {
 
         // Prüfen, ob sich etwas geändert hat
         if (hasDifferences(oldMissingList, newMissingList)) {
-            if (onLoading) logReport(missingCount, "missing", reportBuilder);
-            else logListDifferences(oldMissingList, newMissingList);
+            if (onLoading) {
+                if (missingCount == 0) return;
+
+                String headerText = createHeaderText(missingCount, "missing");
+                String reportOutput = createReport(headerText, reportBuilder);
+                logger.warn(reportOutput);
+            } else logListDifferences(oldMissingList, newMissingList);
         }
 
         // Map aktualisieren
@@ -93,8 +98,9 @@ public class MissingImagesReport {
             restoredImages.forEach(imageFile -> reportBuilder.append(createImageFileRow(imageFile)));
 
             // Report ausgeben
-            String headerText = createReportHeader(restoredImages.size(), "restored");
-            logger.info(headerText + reportBuilder);
+            String headerText = createHeaderText(restoredImages.size(), "restored");
+            String reportOutput = createReport(headerText, reportBuilder);
+            logger.info(reportOutput);
         }
 
         // Report ausgeben
@@ -103,8 +109,9 @@ public class MissingImagesReport {
             newlyMissingImages.forEach(imageFile -> reportBuilder.append(createImageFileRow(imageFile)));
 
             // Report ausgeben
-            String headerText = createReportHeader(newlyMissingImages.size(), "newly missing");
-            logger.warn(headerText + reportBuilder);
+            String headerText = createHeaderText(newlyMissingImages.size(), "newly missing");
+            String reportOutput = createReport(headerText, reportBuilder);
+            logger.warn(reportOutput);
         }
     }
 
@@ -142,12 +149,12 @@ public class MissingImagesReport {
             reportBuilder.append("Max Level: ").append(maxLevel).append(StringUtils.NEXT_LINE);
 
             String headerText = "Loaded Images:" + StringUtils.NEXT_LINE;
-            String formattedText = StringUtils.applyColor(StringUtils.wrapBold(headerText), ColorUtils.COLOR_BLUE);
-            return formattedText + reportBuilder;
+            String formattedHeaderText = StringUtils.applyColor(StringUtils.wrapBold(headerText), ColorUtils.COLOR_BLUE);
+            return formattedHeaderText + reportBuilder;
         } else {
-            String headerText = createReportHeader(missingCount, "missing");
-            String formattedText = StringUtils.wrapBold(headerText);
-            return formattedText + StringUtils.NEXT_LINE + reportBuilder;
+            String headerText = createHeaderText(missingCount, "missing") + StringUtils.NEXT_LINE;
+            String formattedHeaderText = StringUtils.applyColor(StringUtils.wrapBold(headerText), ColorUtils.COLOR_RED);
+            return createReport(formattedHeaderText, reportBuilder);
         }
     }
 
@@ -168,14 +175,14 @@ public class MissingImagesReport {
         return createImageFileRow(imageFile);
     }
 
-    public static String createReportHeader(int count, String type) {
+    public static String createHeaderText(int count, String type) {
         String base = count + " " + (count == 1 ? "Image is" : "Images are");
-        return base + " " + type + ":" + StringUtils.NEXT_LINE;
+        return base + " " + type + ":";
     }
 
-    public static void logReport(int count, String type, StringBuilder report) {
-        if (count > 0) {
-            logger.warn(createReportHeader(count, type) + report);
-        }
+    public static String createReport(String headerText, StringBuilder reportBuilder) {
+        String lineBreaksPattern = "(%s)+$".formatted(StringUtils.NEXT_LINE);
+        String formattedReport = reportBuilder.toString().replaceAll(lineBreaksPattern, "");
+        return headerText + StringUtils.NEXT_LINE + formattedReport;
     }
 }

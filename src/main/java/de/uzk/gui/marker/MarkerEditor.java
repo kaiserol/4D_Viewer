@@ -27,7 +27,7 @@ public class MarkerEditor extends Container {
 
     public MarkerEditor(ImageFile onto, Marker marker) {
         this.marker = marker;
-         this.dialogColorChooser = new DialogColorChooser(null);
+        this.dialogColorChooser = new DialogColorChooser(null);
         init();
     }
 
@@ -96,7 +96,7 @@ public class MarkerEditor extends Container {
         private final SpinnerNumberModel model;
         private transient Consumer<Integer> changed;
 
-        public TimeInput(int value , int minTime, int maxTime) {
+        public TimeInput(int value, int minTime, int maxTime) {
             model = new SpinnerNumberModel(value, minTime, maxTime, 1);
             init();
         }
@@ -105,9 +105,9 @@ public class MarkerEditor extends Container {
             setLayout(new GridLayout(1, 2));
 
             JSpinner numberInput = new JSpinner(this.model);
-            JLabel label = new JLabel("(" + DateTimeUtils.getFrameTimestamp(getValue()) + ")", SwingConstants.RIGHT);
+            JLabel label = new JLabel("(" + DateTimeUtils.formatFrameTimeStamp(getValue()) + ")", SwingConstants.RIGHT);
             numberInput.addChangeListener(e -> {
-                label.setText("(" + DateTimeUtils.getFrameTimestamp(getValue()) + ")");
+                label.setText("(" + DateTimeUtils.formatFrameTimeStamp(getValue()) + ")");
                 changed.accept(getValue());
             });
 
@@ -124,9 +124,9 @@ public class MarkerEditor extends Container {
         }
 
         public void setValue(int value) {
-            if(value >= (Integer)model.getMinimum() && value <= (Integer)model.getMaximum()) {
+            if (value >= (Integer) model.getMinimum() && value <= (Integer) model.getMaximum()) {
                 model.setValue(value);
-                if(changed != null) {
+                if (changed != null) {
                     changed.accept(value);
                 }
             }
@@ -134,14 +134,14 @@ public class MarkerEditor extends Container {
 
         public void setMinimum(int min) {
             model.setMinimum(min);
-            if(getValue() < min) {
+            if (getValue() < min) {
                 setValue(min);
             }
         }
 
         public void setMaximum(int max) {
             model.setMaximum(max);
-            if(getValue() > max) {
+            if (getValue() > max) {
                 setValue(max);
             }
         }

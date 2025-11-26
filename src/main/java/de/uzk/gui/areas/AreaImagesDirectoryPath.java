@@ -2,6 +2,7 @@ package de.uzk.gui.areas;
 
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
+import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
 
@@ -22,7 +23,7 @@ public class AreaImagesDirectoryPath extends ObserverContainer<JPanel> {
     }
 
     private void init() {
-        this.container.setLayout(new BorderLayout());
+        this.container.setLayout(UIEnvironment.getDefaultBorderLayout());
 
         // Bilder-Verzeichnis Pfad hinzufügen
         this.txtFieldDirectory = new JTextField();

@@ -10,7 +10,6 @@ import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.Objects;
 
 import static de.uzk.Main.settings;
@@ -36,14 +35,8 @@ public class DialogSettings {
     private boolean oldConfirmExit;
 
     public DialogSettings(Gui gui) {
-        this.dialog = new JDialog(gui.getContainer(), true);
-        this.dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.gui = gui;
-
-        // ESC schließt Dialog
-        this.dialog.getRootPane().registerKeyboardAction(e -> this.dialog.dispose(),
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW
-        );
+        this.dialog = ComponentUtils.createDialog(gui.getContainer(), null);
     }
 
     public void show() {
@@ -64,7 +57,7 @@ public class DialogSettings {
         this.oldConfirmExit = settings.isConfirmExit();
 
         // Inhalte hinzufügen
-        JPanel contentPanel = new JPanel(new BorderLayout(0, 10));
+        JPanel contentPanel = new JPanel(UIEnvironment.getDefaultBorderLayout());
         contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
         contentPanel.add(createSettingsPanel(), BorderLayout.CENTER);
         contentPanel.add(createButtonsPanel(), BorderLayout.SOUTH);
