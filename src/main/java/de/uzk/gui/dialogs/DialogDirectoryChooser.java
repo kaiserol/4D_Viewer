@@ -103,14 +103,24 @@ public class DialogDirectoryChooser {
     private void addContent(JFileChooser fileChooser) {
         JPanel borderPanel = new JPanel(new BorderLayout());
         borderPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createEmptyBorder(0, 10, 0, 0),
+            BorderFactory.createEmptyBorder(2, 12, 2, 2),
             BorderFactory.createLineBorder(UIEnvironment.getBorderColor())
         ));
 
         // Inhalte hinzufügen
-        JPanel contentPanel = new JPanel(new BorderLayout());
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
         contentPanel.setBackground(UIEnvironment.getBackgroundColor());
+
+        // Trennzeichen (Zeit)
+        contentPanel.add(new JLabel("Separator Character (Time): "));
+        contentPanel.add(new JTextField(workspace.getConfig().getTimeSep()));
+
+        // Trennzeichen (Ebene)
+        contentPanel.add(new JLabel("Separator Character (Level): "));
+        contentPanel.add(new JTextField(workspace.getConfig().getLevelSep()));
+
         borderPanel.add(contentPanel, BorderLayout.CENTER);
 
         // Zubehör setzen
