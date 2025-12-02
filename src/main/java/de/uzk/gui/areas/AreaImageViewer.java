@@ -2,17 +2,14 @@ package de.uzk.gui.areas;
 
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
+import de.uzk.gui.SensitiveImagePanel;
 import de.uzk.gui.UIEnvironment;
-import de.uzk.gui.marker.MarkerCollisionChecker;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
-import de.uzk.io.ImageLoader;
+import de.uzk.image.ImageEditor;
 import de.uzk.io.SnapshotHelper;
-import de.uzk.markers.Marker;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
-import de.uzk.utils.DateTimeUtils;
-import de.uzk.utils.GraphicsUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,20 +18,16 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.nio.file.Path;
-import java.util.List;
 
-import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
-import static de.uzk.action.ActionType.ACTION_EDIT_IMAGE;
-import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaImageViewer extends ObserverContainer<JPanel> {
     // Gui Elemente
-    private JPanel panelView, panelImage;
+    private JPanel panelView;
+    private SensitiveImagePanel panelImage;
     private JScrollBar scrollBarTime, scrollBarLevel;
-    private BufferedImage currentImage;
-    private MarkerCollisionChecker markerCollisionChecker = new MarkerCollisionChecker();
+
+    private ImageEditor editor;
 
     public AreaImageViewer(Gui gui) {
         super(new JPanel(), gui);
@@ -55,7 +48,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
 
         // 2. Bildbereich mit Scrollbars hinzufügen
         this.panelView = new JPanel(new BorderLayout());
-        this.panelImage = initImagePanel();
+        this.panelImage = new SensitiveImagePanel();
         this.scrollBarTime = ComponentUtils.createScrollBar(Adjustable.HORIZONTAL, newValue ->
             handleScrollAction(newValue, Axis.TIME, this.scrollBarTime));
         this.scrollBarLevel = ComponentUtils.createScrollBar(Adjustable.VERTICAL, newValue ->
@@ -69,12 +62,10 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         this.container.add(this.panelView, BorderLayout.CENTER);
         this.container.setMinimumSize(new Dimension(scrollBarWidth * 3, scrollBarWidth * 3));
 
-        this.markerCollisionChecker = new MarkerCollisionChecker();
-        this.markerCollisionChecker.onMarkerClick(this::handleMarkerClicked);
-        this.markerCollisionChecker.onMarkerBeginHover(this::handleMarkerBeginHover);
-        this.markerCollisionChecker.onMarkerEndHover(this::handleMarkerEndHover);
-        this.panelImage.addMouseListener(this.markerCollisionChecker);
-        this.panelImage.addMouseMotionListener(this.markerCollisionChecker);
+        this.editor = new ImageEditor();
+        this.editor.onNewImageAvailable(this.panelImage::updateImage);
+
+
     }
 
     //region Innere Klassen
@@ -115,52 +106,14 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
     }
     //endregion
 
-    //region Bild zeichnen
-    private JPanel initImagePanel() {
-        // Erstellt das Panel mit Bildanzeige
-        return new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-
-                super.paintComponent(g);
-                paintImage(g);
-            }
-        };
-    }
-
-    private void paintImage(Graphics g) {
-        // Zeichnet das aktuelle Bild und Marker
-        Graphics2D g2D = GraphicsUtils.createHighQualityGraphics2D(g);
-        if (this.currentImage != null) {
-            double zoomPercentage = workspace.getConfig().getZoom() / 100.0;
-            double scale = GraphicsUtils.getImageScaleFactor(this.currentImage, this.panelImage) * zoomPercentage;
-            int width = (int) (this.currentImage.getWidth() * scale);
-            int height = (int) (this.currentImage.getHeight() * scale);
-            int x = (this.panelImage.getWidth() - width) / 2;
-            int y = (this.panelImage.getHeight() - height) / 2;
-            markerCollisionChecker.updateTransform(GraphicsUtils.createImageTransform(width, height, workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY()));
-
-            markerCollisionChecker.updateInsets(new Dimension(x, y), new Dimension(width, height));
-
-            // Bild zeichnen
-            g2D.drawImage(this.currentImage, x, y, width, height, null);
-        } else {
-            // Eine Fehlermeldung wird angezeigt, wenn das aktuelle Bild nicht geladen werden kann (weil es nicht existiert)
-            String text = workspace.getImagesDirectory() != null ? getWord("dialog.loadingImages.imageCouldNotLoad") : "";
-            GraphicsUtils.drawCenteredText(g2D, text, this.panelImage);
-        }
-    }
-
-    //endregion
-
     //region Observer Methoden
     @Override
     public void handleAction(ActionType actionType) {
         switch (actionType) {
-            case ACTION_EDIT_IMAGE-> updateCurrentImage();
+            case ACTION_EDIT_IMAGE-> this.editor.updateImage();
             case ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> panelImage.removeAll();
             case SHORTCUT_TAKE_SNAPSHOT -> {
-                if (SnapshotHelper.saveSnapshot(this.currentImage)) {
+                if (SnapshotHelper.saveSnapshot(this.editor.getCurrentImage())) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SNAPSHOT_COUNTER);
                 }
             }
@@ -172,7 +125,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         // Komponenten aktivieren
         ComponentUtils.setEnabled(this.container, true);
 
-        updateCurrentImage();
+        this.editor.updateImage();
         updateScrollBarValuesSecurely(this.scrollBarTime, workspace.getTime(), workspace.getMaxTime());
         updateScrollBarValuesSecurely(this.scrollBarLevel, workspace.getLevel(), workspace.getMaxLevel());
     }
@@ -183,14 +136,14 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         // Komponenten deaktivieren
         ComponentUtils.setEnabled(this.container, false);
 
-        updateCurrentImage();
+        this.editor.updateImage();
         updateScrollBarValuesSecurely(this.scrollBarTime, 0, 0);
         updateScrollBarValuesSecurely(this.scrollBarLevel, 0, 0);
     }
 
     @Override
     public void update(Axis axis) {
-        updateCurrentImage();
+        this.editor.updateImage();
         switch (axis) {
             case TIME -> ComponentUtils.setValueSecurely(this.scrollBarTime, workspace.getTime());
             case LEVEL -> ComponentUtils.setValueSecurely(this.scrollBarLevel, workspace.getLevel());
@@ -215,28 +168,6 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         gui.getActionHandler().scroll(axis, rotation, scrollBar.getValueIsAdjusting());
     }
 
-    private void updateCurrentImage() {
-        // Bild neu laden
-        this.currentImage = null;
-        if (workspace.isLoaded()) {
-            Path imagePath = workspace.getCurrentImageFile().getFilePath();
-            BufferedImage originalImage = ImageLoader.openImage(imagePath, false);
-            List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
-
-            if (originalImage != null) {
-
-                currentImage = DateTimeUtils.measureTime(
-                    () -> GraphicsUtils.getEditedImage(originalImage, true, markers),
-                    time -> logger.debug("Edited image in " + time)
-                );
-
-               }
-        }
-
-        // Bild zeichnen
-        this.container.repaint();
-    }
-
     private void updateScrollBarValuesSecurely(JScrollBar scrollBar, int value, int max) {
         if (scrollBar.getValueIsAdjusting()) return;
         if (scrollBar.getValue() == value && scrollBar.getMaximum() == max) return;
@@ -251,20 +182,5 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         this.container.setBorder(BorderFactory.createLineBorder(borderColor));
         this.panelView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
     }
-
-    private void handleMarkerBeginHover(Marker m) {
-        panelImage.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-    }
-
-    private void handleMarkerEndHover(Marker m) {
-        panelImage.setCursor(Cursor.getDefaultCursor());
-    }
-
-    private void handleMarkerClicked(Marker m) {
-
-        m.setColor(m.getColor().brighter());
-        gui.handleAction(ACTION_EDIT_IMAGE);
-    }
-
     //endregion
 }

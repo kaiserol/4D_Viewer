@@ -1,16 +1,7 @@
 package de.uzk.utils;
 
-import de.uzk.markers.Marker;
-
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
-import java.util.ArrayList;
-import java.util.List;
-
-import static de.uzk.Main.workspace;
 
 // TODO: Verbessere die Methoden
 public final class GraphicsUtils {
@@ -20,65 +11,6 @@ public final class GraphicsUtils {
      */
     private GraphicsUtils() {
         // Verhindert die Instanziierung dieser Klasse
-    }
-
-    public static BufferedImage getEditedImage(BufferedImage image, boolean transparentBackground, java.util.List<Marker> appliedMarkers) {
-        int imageType = transparentBackground ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
-        float offset = 128 * ((workspace.getConfig().getBrightness() - 100) / 100f);
-        float scale = workspace.getConfig().getContrast() / 100f;
-
-        BufferedImage transformed = transformImage(image,  workspace.getConfig().getRotation(), workspace.getConfig().isMirrorX(), workspace.getConfig().isMirrorY(), appliedMarkers);
-
-        new RescaleOp(scale, offset, null).filter(transformed, transformed);
-
-        return transformed;
-    }
-
-    public static AffineTransform createImageTransform(int width, int height, int rotation, boolean mirrorX, boolean mirrorY) {
-
-        double radians = Math.toRadians(rotation);
-        double sin = Math.abs(Math.sin(radians));
-        double cos = Math.abs(Math.cos(radians));
-        int newWidth = (int) Math.floor(width * cos + height * sin);
-        int newHeight = (int) Math.floor(height * cos + width * sin);
-
-        AffineTransform at = new AffineTransform();
-
-
-        // Mirror
-        at.scale(mirrorX ? -1 : 1, mirrorY ? -1 : 1);
-        at.translate(mirrorX ? -width : 0, mirrorY ? -height : 0);
-
-
-        // Rotate
-        at.rotate(radians, width / 2.0, height / 2.0);
-
-        at.translate((newWidth - width) / 2.0, (newHeight - height) / 2.0);
-
-
-        return at;
-    }
-
-    public static BufferedImage transformImage(BufferedImage image,  int rotation, boolean mirrorX, boolean mirrorY, List<Marker> appliedMarkers) {
-        if (appliedMarkers == null) appliedMarkers = new ArrayList<>();
-        if (!mirrorX && !mirrorY && rotation % 360 == 0 && appliedMarkers.isEmpty()) return image;
-
-        AffineTransform at = createImageTransform(image.getWidth(), image.getHeight(), rotation, mirrorX, mirrorY);
-
-        image = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR).filter(image, null);
-
-        BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = createHighQualityGraphics2D(newImage.getGraphics());
-
-        g2d.drawImage(image, 0, 0, null);
-        g2d.setTransform(at);
-        for (Marker marker : appliedMarkers) {
-            marker.draw(g2d, new Rectangle(0, 0, image.getWidth(), image.getHeight()));
-        }
-
-        g2d.dispose();
-
-        return newImage;
     }
 
     /**
@@ -127,5 +59,13 @@ public final class GraphicsUtils {
         double scaleWidth = (double) container.getWidth() / imgWidth;
         double scaleHeight = (double) container.getHeight() / imgHeight;
         return Math.min(scaleWidth, scaleHeight);
+    }
+
+    public static Rectangle scaleInsetsAndSize(int width, int height, double scaleFactor) {
+        int newWidth = (int) (width * scaleFactor);
+        int newHeight = (int) (height * scaleFactor);
+        int insetX = (width - newWidth) / 2;
+        int insetY = (height - newHeight) / 2;
+        return new Rectangle(insetX, insetY, newWidth, newHeight);
     }
 }

@@ -15,8 +15,8 @@ import static de.uzk.Main.workspace;
 
 public class MarkerCollisionChecker extends MouseAdapter {
     private AffineTransform currentAffineTransform = new AffineTransform();
-    private Dimension panelInsets;
-    private Dimension imageSize;
+    private Dimension panelInsets = new Dimension();
+    private Dimension imageSize = new Dimension();
     private Consumer<Marker> onMarkerClick;
     private Consumer<Marker> onMarkerBeginHover;
     private Consumer<Marker> onMarkerEndHover;
@@ -84,10 +84,7 @@ public class MarkerCollisionChecker extends MouseAdapter {
             throw new RuntimeException("Nur bijektive Transformationen (Rotation, Translation, Skalierung) werden verwendet – wie konnte das passieren?", ex);
         }
         for (Marker m : workspace.getMarkers().getMarkersForImage(workspace.getTime())) {
-            Rectangle label = m.getLabelBounds(((Component) e.getSource()).getGraphics());
-            if (label.contains(actual)) {
-                return m;
-            }
+           //TODO
 
         }
         return null;

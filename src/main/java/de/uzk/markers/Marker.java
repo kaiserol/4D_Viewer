@@ -1,12 +1,9 @@
 package de.uzk.markers;
 
 import com.fasterxml.jackson.annotation.*;
-import de.uzk.gui.UIEnvironment;
 import de.uzk.utils.ColorUtils;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 
 public class Marker {
@@ -145,6 +142,7 @@ public class Marker {
 
     public void draw(Graphics2D to, Rectangle imageArea) {
         Rectangle actualBounds = this.getBounds();
+        actualBounds.translate(imageArea.x, imageArea.y);
         Shape finalShape = switch (this.shape) {
             case RECTANGLE -> actualBounds;
             case ELLIPSE ->
@@ -170,9 +168,9 @@ public class Marker {
         return new Rectangle(this.x, this.y, this.width, this.height);
     }
 
-    public Rectangle getLabelBounds(Graphics onto) {
+    public Dimension getLabelBounds(Graphics onto) {
         FontMetrics metrics = onto.getFontMetrics();
-        return new Rectangle(this.x, this.y, metrics.stringWidth(label), metrics.getHeight());
+        return new Dimension(metrics.stringWidth(label), metrics.getHeight());
     }
 
     public void cloneFrom(Marker other) {
@@ -211,12 +209,12 @@ public class Marker {
 
     private void drawName(Graphics2D to, int x, int y) {
 
-        to.fill(getLabelBounds(to));
-        boolean lightColor = ColorUtils.calculatePerceivedBrightness(this.color) > 0.5;
+        to.fill(new Rectangle(new Point(x, y), getLabelBounds(to)));
+        boolean lightColor = ColorUtils.calculatePerceivedBrightness(color) > 0.5;
         to.setColor(lightColor ? Color.BLACK : Color.WHITE);
 
         FontMetrics metrics = to.getFontMetrics();
-        to.drawString(this.label, x, y + metrics.getAscent());
+        to.drawString(label, x, y + metrics.getAscent());
     }
 
 
