@@ -21,11 +21,18 @@ public class ImageEditor {
     private AffineTransform currentTransform = new AffineTransform();
     private Consumer<BufferedImage> newImageConsumer;
 
-
+    // region Getter
     public BufferedImage getCurrentImage() {
         return currentImage;
     }
 
+    public AffineTransform getCurrentTransform() {
+        return currentTransform;
+    }
+
+    //endregion
+
+    //region public Methoden für Bildupdates
     public void onNewImageAvailable(Consumer<BufferedImage> listener) {
         this.newImageConsumer = listener;
     }
@@ -47,6 +54,11 @@ public class ImageEditor {
         }
     }
 
+    //endregion
+
+    //region Private Helfermethoden – für Bild-Updates
+
+    // Einige Operationen (Zoom, Marker) nur durch Erstellen eines neuen Bildes umsetzbar
     private BufferedImage redraw(BufferedImage to, List<Marker> markers) {
         double zoomFactor = workspace.getConfig().getZoom() / 100.;
         Rectangle scaled = GraphicsUtils.scaleInsetsAndSize(to.getWidth(), to.getHeight(), zoomFactor);
@@ -109,4 +121,6 @@ public class ImageEditor {
     private void newImageAvailable() {
         if(this.newImageConsumer != null) this.newImageConsumer.accept(this.currentImage);
     }
+
+    //endregion
 }

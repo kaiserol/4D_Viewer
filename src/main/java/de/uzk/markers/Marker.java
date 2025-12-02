@@ -168,7 +168,7 @@ public class Marker {
         return new Rectangle(this.x, this.y, this.width, this.height);
     }
 
-    public Dimension getLabelBounds(Graphics onto) {
+    public Dimension getLabelSize(Graphics onto) {
         FontMetrics metrics = onto.getFontMetrics();
         return new Dimension(metrics.stringWidth(label), metrics.getHeight());
     }
@@ -209,7 +209,7 @@ public class Marker {
 
     private void drawName(Graphics2D to, int x, int y) {
 
-        to.fill(new Rectangle(new Point(x, y), getLabelBounds(to)));
+        to.fill(new Rectangle(new Point(x, y), getLabelSize(to)));
         boolean lightColor = ColorUtils.calculatePerceivedBrightness(color) > 0.5;
         to.setColor(lightColor ? Color.BLACK : Color.WHITE);
 

@@ -10,6 +10,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
+import static de.uzk.Main.logger;
+
 public class SensitiveImagePanel extends JPanel implements MouseListener, MouseMotionListener {
     private BufferedImage currentImage;
     private double scale;
@@ -24,12 +26,12 @@ public class SensitiveImagePanel extends JPanel implements MouseListener, MouseM
     }
 
     @Override
-    public void addMouseMotionListener(MouseMotionListener mouseMotionListener) {
+    public synchronized void addMouseMotionListener(MouseMotionListener mouseMotionListener) {
         this.mouseMotionListener = mouseMotionListener;
     }
 
     @Override
-    public void addMouseListener(MouseListener mouseListener) {
+    public synchronized void addMouseListener(MouseListener mouseListener) {
         this.mouseListener = mouseListener;
     }
 
@@ -40,8 +42,8 @@ public class SensitiveImagePanel extends JPanel implements MouseListener, MouseM
 
     @Override
     public void paint(Graphics g) {
+        super.paint(g);
         Graphics2D g2d = GraphicsUtils.createHighQualityGraphics2D(g);
-        g2d.clearRect(0, 0, getWidth(), getHeight());
         if(this.currentImage != null) {
             scale = GraphicsUtils.getImageScaleFactor(currentImage, this);
 
@@ -59,9 +61,10 @@ public class SensitiveImagePanel extends JPanel implements MouseListener, MouseM
         int x = (int) (originalPoint.getX() - insets.width) ;
         int y = (int) (originalPoint.getY() - insets.height) ;
         if(x < 0 || x > displaySize.width || y < 0 || y > displaySize.height) {
+            setCursor(Cursor.getDefaultCursor());
             return;
         }
-        x  = (int)(x / scale);
+        x = (int)(x / scale);
         y = (int)(y / scale);
         consumer.accept(new MouseEvent(original.getComponent(), original.getID(), original.getWhen(), original.getModifiersEx(), x, y, original.getClickCount(), original.isPopupTrigger(), original.getButton()));
     }

@@ -8,6 +8,7 @@ import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
 import de.uzk.image.ImageEditor;
 import de.uzk.io.SnapshotHelper;
+import de.uzk.markers.MarkerEditor;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
 
@@ -17,7 +18,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 
 import static de.uzk.Main.workspace;
 
@@ -27,7 +27,8 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
     private SensitiveImagePanel panelImage;
     private JScrollBar scrollBarTime, scrollBarLevel;
 
-    private ImageEditor editor;
+    private ImageEditor imageEditor;
+    private MarkerEditor markerEditor;
 
     public AreaImageViewer(Gui gui) {
         super(new JPanel(), gui);
@@ -62,10 +63,12 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         this.container.add(this.panelView, BorderLayout.CENTER);
         this.container.setMinimumSize(new Dimension(scrollBarWidth * 3, scrollBarWidth * 3));
 
-        this.editor = new ImageEditor();
-        this.editor.onNewImageAvailable(this.panelImage::updateImage);
+        this.imageEditor = new ImageEditor();
+        this.imageEditor.onNewImageAvailable(this.panelImage::updateImage);
 
-
+        this.markerEditor = new MarkerEditor(this.imageEditor);
+        this.panelImage.addMouseListener(this.markerEditor);
+        this.panelImage.addMouseMotionListener(this.markerEditor);
     }
 
     //region Innere Klassen
@@ -110,10 +113,10 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
     @Override
     public void handleAction(ActionType actionType) {
         switch (actionType) {
-            case ACTION_EDIT_IMAGE-> this.editor.updateImage();
+            case ACTION_EDIT_IMAGE-> this.imageEditor.updateImage();
             case ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> panelImage.removeAll();
             case SHORTCUT_TAKE_SNAPSHOT -> {
-                if (SnapshotHelper.saveSnapshot(this.editor.getCurrentImage())) {
+                if (SnapshotHelper.saveSnapshot(this.imageEditor.getCurrentImage())) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SNAPSHOT_COUNTER);
                 }
             }
@@ -125,7 +128,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         // Komponenten aktivieren
         ComponentUtils.setEnabled(this.container, true);
 
-        this.editor.updateImage();
+        this.imageEditor.updateImage();
         updateScrollBarValuesSecurely(this.scrollBarTime, workspace.getTime(), workspace.getMaxTime());
         updateScrollBarValuesSecurely(this.scrollBarLevel, workspace.getLevel(), workspace.getMaxLevel());
     }
@@ -136,14 +139,14 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         // Komponenten deaktivieren
         ComponentUtils.setEnabled(this.container, false);
 
-        this.editor.updateImage();
+        this.imageEditor.updateImage();
         updateScrollBarValuesSecurely(this.scrollBarTime, 0, 0);
         updateScrollBarValuesSecurely(this.scrollBarLevel, 0, 0);
     }
 
     @Override
     public void update(Axis axis) {
-        this.editor.updateImage();
+        this.imageEditor.updateImage();
         switch (axis) {
             case TIME -> ComponentUtils.setValueSecurely(this.scrollBarTime, workspace.getTime());
             case LEVEL -> ComponentUtils.setValueSecurely(this.scrollBarLevel, workspace.getLevel());
