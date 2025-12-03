@@ -3,6 +3,7 @@ package de.uzk.markers;
 
 import de.uzk.image.ImageEditor;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -27,18 +28,23 @@ public class MarkerEditor extends MouseAdapter {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        checkHoveringMarker(e);
+        checkHoveringMarker(e, false);
     }
 
-    @Override public void mouseClicked(MouseEvent e) {
-        if(selectedMarker != null && e.getClickCount() == 2) {
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if(selectedMarker == null) return;
+        if(e.getClickCount() == 2) {
             editMode = EditMode.RESIZE;
+            selectedMarker.setResizing(true);
             setCursorAndRerender(e.getComponent(), Cursor.CROSSHAIR_CURSOR);
 
         } else if(e.getClickCount() == 1) {
             this.editMode = EditMode.NONE;
-            checkHoveringMarker(e);
+            selectedMarker.setResizing(false);
+            checkHoveringMarker(e, true);
         }
+        imageEditor.updateImage();
     }
 
     @Override
@@ -67,8 +73,7 @@ public class MarkerEditor extends MouseAdapter {
     public void mouseDragged(MouseEvent e) {
         if(selectedMarker == null) return;
         if(editMode == EditMode.MOVE) {
-            selectedMarker.setX(e.getX());
-            selectedMarker.setY(e.getY());
+            selectedMarker.setPos(e.getPoint());
             imageEditor.updateImage();
         }
     }
@@ -76,10 +81,11 @@ public class MarkerEditor extends MouseAdapter {
     private void setCursorAndRerender(Component target, int cursorType) {
         if(target.getCursor().getType() == cursorType) return;
         target.setCursor(Cursor.getPredefinedCursor(cursorType));
-        target.repaint();
+        // Um die aufrufende Methode nicht durch einen repaint zu blocken (vor allem bei mehrfachaufrufen)
+        SwingUtilities.invokeLater(target::repaint);
     }
 
-    private void checkHoveringMarker(MouseEvent e) {
+    private void checkHoveringMarker(MouseEvent e, boolean forceReset) {
         Component target = e.getComponent();
         Point2D actual;
         try {
@@ -90,7 +96,7 @@ public class MarkerEditor extends MouseAdapter {
 
         for (Marker m : workspace.getMarkers().getMarkersForImage(workspace.getTime())) {
             Dimension labelSize = m.getLabelSize(target.getGraphics());
-            if(new Rectangle(new Point(m.getX(), m.getY()), labelSize).contains(actual.getX(), actual.getY())) {
+            if(new Rectangle(m.getPos(), labelSize).contains(actual.getX(), actual.getY())) {
                 if(selectedMarker == null) {
                     setCursorAndRerender(target, Cursor.HAND_CURSOR);
                     selectedMarker = m;
@@ -98,7 +104,7 @@ public class MarkerEditor extends MouseAdapter {
                 return;
             }
         }
-        if(editMode != EditMode.RESIZE) {
+        if(editMode != EditMode.RESIZE || forceReset) {
             selectedMarker = null;
             setCursorAndRerender(target, Cursor.DEFAULT_CURSOR);
         }

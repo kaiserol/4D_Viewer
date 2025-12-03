@@ -1,81 +1,71 @@
 package de.uzk.markers;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import de.uzk.utils.ColorUtils;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
 
 public class Marker {
     private static final int LINE_WIDTH = 5;
 
-    private int x;
-    private int y;
+    private Point pos;
     private int from;
     private int to;
-    private int width;
-    private int height;
+    private Dimension size;
     private MarkerShape shape;
     private Color color;
     private String label;
+    @JsonIgnore
+    private boolean resizing = false;
 
     public Marker() {
-        this(0, 0, 500, 200, 0, 0, MarkerShape.RECTANGLE, Color.RED, "Marker");
+        this(new Point(0,0), new Dimension(500, 200), 0, 0, MarkerShape.RECTANGLE, Color.RED, "Marker");
     }
 
     public Marker(Marker other) {
         this.cloneFrom(other);
     }
 
-    public Marker(int x, int y, int width, int height, int from, int to, MarkerShape shape, Color color, String label) {
-        this.setX(x);
-        this.setY(y);
-        this.setWidth(width);
-        this.setHeight(height);
-        this.setShape(shape);
-        this.setLabel(label);
-        this.setColor(color);
-        this.setFrom(from);
-        this.setTo(to);
+    public Marker(Point pos, Dimension size, int from, int to, MarkerShape shape, Color color, String label) {
+        setPos(pos);
+        setSize(size);
+        setShape(shape);
+        setLabel(label);
+        setColor(color);
+        setFrom(from);
+        setTo(to);
     }
 
 
     //region Getter- und Settermethoden
-
-    public int getY() {
-        return y;
+    public Point getPos() {
+        return pos;
     }
 
-    @JsonSetter("y")
-    public void setY(int y) {
-        this.y = y;
+    @JsonSetter("pos")
+    public void setPos(Point pos) {
+        this.pos = pos;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    @JsonSetter("x")
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    @JsonSetter("width")
     public void setWidth(int width) {
-        this.width = width;
+        setSize(new Dimension(width, size.height));
     }
 
-    public int getHeight() {
-        return height;
-    }
-
-    @JsonSetter("height")
     public void setHeight(int height) {
-        this.height = height;
+        setSize(new Dimension(size.width, height));
+    }
+
+    public Dimension getSize() {
+        return size;
+    }
+
+    @JsonSetter("size")
+    public void setSize(Dimension size) {
+        this.size = size;
     }
 
     public int getFrom() {
@@ -109,6 +99,10 @@ public class Marker {
         return color;
     }
 
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
     @JsonGetter("color")
     private String getHexColor() {
         return ColorUtils.colorToHex(this.color);
@@ -119,10 +113,6 @@ public class Marker {
         setColor(Color.decode(color));
     }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
     public String getLabel() {
         return label;
     }
@@ -131,10 +121,12 @@ public class Marker {
     public void setLabel(String label) {
         this.label = label;
     }
-
     //endregion
 
     //region Eigene öffentliche Methoden
+    public void setResizing(boolean resizing) {
+        this.resizing = resizing;
+    }
 
     public boolean shouldRender(int at) {
         return this.from <= at && this.to >= at;
@@ -151,21 +143,23 @@ public class Marker {
         };
 
         to = (Graphics2D) to.create();
-
         to.setColor(this.color);
         to.setStroke(new BasicStroke(LINE_WIDTH));
-
-
         to.draw(finalShape);
 
+        if(resizing) {
+            for(Point point : getScalePoints()) {
+                Shape c = new Ellipse2D.Float(point.x - 5, point.y - 5, 10, 10);
+                to.fill(c);
+            }
+        }
+
         this.drawName(to, actualBounds.x, actualBounds.y);
-
-
     }
 
     @JsonIgnore
     public Rectangle getBounds() {
-        return new Rectangle(this.x, this.y, this.width, this.height);
+        return new Rectangle(pos, size);
     }
 
     public Dimension getLabelSize(Graphics onto) {
@@ -174,15 +168,26 @@ public class Marker {
     }
 
     public void cloneFrom(Marker other) {
-        this.setX(other.getX());
-        this.setY(other.getY());
-        this.setWidth(other.getWidth());
-        this.setHeight(other.getHeight());
-        this.setShape(other.getShape());
-        this.setLabel(other.getLabel());
-        this.setColor(other.getColor());
-        this.setFrom(other.getFrom());
-        this.setTo(other.getTo());
+        setPos(other.getPos());
+        setSize(other.getSize());
+        setShape(other.getShape());
+        setLabel(other.getLabel());
+        setColor(other.getColor());
+        setFrom(other.getFrom());
+        setTo(other.getTo());
+    }
+
+    public java.util.List<Point> getScalePoints() {
+        ArrayList<Point> points = new ArrayList<>();
+        for(int i = 0; i <= 2; i++) {
+            for(int j = 0; j <= 2; j++) {
+                if(i == 1 && j == 1) continue;
+                int dx = (size.width / 2) * i;
+                int dy = (size.height / 2) * j;
+                points.add(new Point(pos.x + dx, pos.y + dy));
+            }
+        }
+        return points;
     }
 
     //endregion
@@ -191,22 +196,13 @@ public class Marker {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Marker other) {
-            return this.x == other.x && this.y == other.y &&
-                this.width == other.width && this.height == other.height &&
-                this.from == other.from && this.to == other.to &&
-                this.shape == other.shape && this.color.equals(other.color) &&
-                this.label.equals(other.label);
+            return pos.equals(other.pos) && size.equals(other.size) && from == other.from && to == other.to && shape == other.shape && color.equals(other.color) && label.equals(other.label);
         }
         return false;
     }
-
-
     //endregion
 
     //region Private- und Helfermethoden
-
-
-
     private void drawName(Graphics2D to, int x, int y) {
 
         to.fill(new Rectangle(new Point(x, y), getLabelSize(to)));
@@ -216,9 +212,6 @@ public class Marker {
         FontMetrics metrics = to.getFontMetrics();
         to.drawString(label, x, y + metrics.getAscent());
     }
-
-
-
     //endregion
 
 }
