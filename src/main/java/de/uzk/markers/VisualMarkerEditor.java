@@ -2,6 +2,7 @@ package de.uzk.markers;
 
 
 import de.uzk.image.ImageEditor;
+import org.intellij.lang.annotations.MagicConstant;
 
 import javax.swing.*;
 import java.awt.*;
@@ -78,21 +79,21 @@ public class VisualMarkerEditor extends MouseAdapter {
         }
     }
 
-    @SuppressWarnings("MagicConstant")
-    private void setCursorAndRerender(Component target,  int cursorType) {
+    private void setCursorAndRerender(Component target, @MagicConstant(valuesFromClass = Cursor.class) int cursorType) {
         if(target.getCursor().getType() == cursorType) return;
         target.setCursor(Cursor.getPredefinedCursor(cursorType));
         // Um die aufrufende Methode nicht durch einen repaint zu blocken (vor allem bei mehrfachaufrufen)
         SwingUtilities.invokeLater(target::repaint);
     }
 
-    private void checkHoveringMarker(MouseEvent e, boolean forceReset) {
+    private void checkHoveringMarker(MouseEvent e, boolean forceReset)  {
         Component target = e.getComponent();
         Point2D actual;
         try {
             actual = imageEditor.getCurrentTransform().inverseTransform(e.getPoint(), null);
         } catch (NoninvertibleTransformException ex) {
-            throw new RuntimeException("Nur bijektive Transformationen (Rotation, Translation, Skalierung) werden verwendet – wie konnte das passieren?", ex);
+
+            throw new IllegalStateException("Nur bijektive Transformationen (Rotation, Translation, Skalierung) werden verwendet – wie konnte das passieren?", ex);
         }
 
         for (Marker m : workspace.getMarkers().getMarkersForImage(workspace.getTime())) {
