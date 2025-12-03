@@ -134,12 +134,14 @@ public final class UIEnvironment {
     }
 
     public static void initImageIcon(Gui gui) {
-        gui.getContainer().setIconImage(ImageLoader.APP_IMAGE);
+        Image scaled = ImageLoader.scaledAppImageIcon(512, 512);
+        Image appImage = (scaled != null) ? new ImageIcon(scaled).getImage() : null;
 
-        // App-Icon (plattformübergreifend) setzen
+        // App-Image-Icon (plattformübergreifend) setzen
+        gui.getContainer().setIconImage(appImage);
         if (Taskbar.isTaskbarSupported()) {
             try {
-                Taskbar.getTaskbar().setIconImage(ImageLoader.APP_IMAGE);
+                Taskbar.getTaskbar().setIconImage(appImage);
             } catch (Exception e) {
                 logger.error("Failed to set the taskbar icon.");
             }

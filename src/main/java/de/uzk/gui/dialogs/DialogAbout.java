@@ -16,9 +16,6 @@ public class DialogAbout {
     // Dialoge
     private final JDialog dialog;
 
-    // Konstanten
-    private static final int APP_ICON_SIZE = 150;
-
     public DialogAbout(Window parentWindow) {
         this.dialog = ComponentUtils.createDialog(parentWindow, null);
     }
@@ -51,8 +48,10 @@ public class DialogAbout {
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.insets = UIEnvironment.INSETS_DEFAULT;
 
-        // App-Icon
-        ImageIcon appIcon = getAppIcon();
+        Image scaled = ImageLoader.scaledAppImageIcon(128, 128);
+        ImageIcon appIcon = (scaled != null) ? new ImageIcon(scaled) : null;
+
+        // App-Image-Icon setzen
         JLabel iconLabel = new JLabel(appIcon);
         panel.add(iconLabel, gbc);
 
@@ -89,13 +88,5 @@ public class DialogAbout {
         panel.add(textPanel, gbc);
 
         return panel;
-    }
-
-    // ========================================
-    // Hilfsmethoden
-    // ========================================
-    private static ImageIcon getAppIcon() {
-        Image scaled = ImageLoader.APP_IMAGE.getScaledInstance(APP_ICON_SIZE, APP_ICON_SIZE, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaled);
     }
 }
