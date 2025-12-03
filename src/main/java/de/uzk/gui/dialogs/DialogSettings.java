@@ -36,7 +36,12 @@ public class DialogSettings {
 
     public DialogSettings(Gui gui) {
         this.gui = gui;
-        this.dialog = ComponentUtils.createDialog(gui.getContainer(), null);
+        this.dialog = ComponentUtils.createDialog(gui.getContainer(), () -> confirmAndDispose(false));
+    }
+
+    private void confirmAndDispose(boolean applySettings) {
+        if (applySettings) applySettings();
+        this.dialog.dispose();
     }
 
     public void show() {
@@ -128,15 +133,12 @@ public class DialogSettings {
 
         // Schaltfläche (Abbrechen)
         JButton cancelButton = new JButton(getWord("button.cancel"));
-        cancelButton.addActionListener(e -> this.dialog.dispose());
+        cancelButton.addActionListener(e -> confirmAndDispose(false));
         buttonsPanel.add(cancelButton);
 
         // Schaltfläche (OK)
         this.okButton = new JButton(getWord("button.ok"));
-        this.okButton.addActionListener(e -> {
-            applySettings();
-            this.dialog.dispose();
-        });
+        this.okButton.addActionListener(e -> confirmAndDispose(true));
         buttonsPanel.add(this.okButton);
 
         // Gleicht die Größen aller Buttons an
