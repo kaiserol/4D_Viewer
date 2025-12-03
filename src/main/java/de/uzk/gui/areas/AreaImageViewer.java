@@ -8,7 +8,7 @@ import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
 import de.uzk.image.ImageEditor;
 import de.uzk.io.SnapshotHelper;
-import de.uzk.markers.MarkerEditor;
+import de.uzk.markers.VisualMarkerEditor;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
 
@@ -28,7 +28,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
     private JScrollBar scrollBarTime, scrollBarLevel;
 
     private ImageEditor imageEditor;
-    private MarkerEditor markerEditor;
+    private VisualMarkerEditor markerEditor;
 
     public AreaImageViewer(Gui gui) {
         super(new JPanel(), gui);
@@ -50,10 +50,8 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         // 2. Bildbereich mit Scrollbars hinzufügen
         this.panelView = new JPanel(new BorderLayout());
         this.panelImage = new SensitiveImagePanel();
-        this.scrollBarTime = ComponentUtils.createScrollBar(Adjustable.HORIZONTAL, newValue ->
-            handleScrollAction(newValue, Axis.TIME, this.scrollBarTime));
-        this.scrollBarLevel = ComponentUtils.createScrollBar(Adjustable.VERTICAL, newValue ->
-            handleScrollAction(newValue, Axis.LEVEL, this.scrollBarLevel));
+        this.scrollBarTime = ComponentUtils.createScrollBar(Adjustable.HORIZONTAL, newValue -> handleScrollAction(newValue, Axis.TIME, this.scrollBarTime));
+        this.scrollBarLevel = ComponentUtils.createScrollBar(Adjustable.VERTICAL, newValue -> handleScrollAction(newValue, Axis.LEVEL, this.scrollBarLevel));
 
         int scrollBarWidth = UIManager.getInt("ScrollBar.width");
         this.panelView.add(this.panelImage, BorderLayout.CENTER);
@@ -66,33 +64,10 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         this.imageEditor = new ImageEditor();
         this.imageEditor.onNewImageAvailable(this.panelImage::updateImage);
 
-        this.markerEditor = new MarkerEditor(this.imageEditor);
+        this.markerEditor = new VisualMarkerEditor(this.imageEditor);
         this.panelImage.addMouseListener(this.markerEditor);
         this.panelImage.addMouseMotionListener(this.markerEditor);
     }
-
-    //region Innere Klassen
-    private class FocusBorderListener implements FocusListener {
-        // Listener für Fokusänderungen
-        @Override
-        public void focusGained(FocusEvent e) {
-            setBorder(true);
-        }
-
-        @Override
-        public void focusLost(FocusEvent e) {
-            setBorder(false);
-        }
-    }
-
-    private class FocusMouseListener extends MouseAdapter {
-        // Listener für Fokusaktivierung
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            if (!container.isFocusOwner()) container.requestFocusInWindow();
-        }
-    }
-    //endregion
 
     //region Komponenten-Erzeugung
     private JPanel createRightSpace(JComponent component, int size) {
@@ -107,14 +82,12 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         panel.add(labelEmpty, BorderLayout.EAST);
         return panel;
     }
-    //endregion
 
     //region Observer Methoden
     @Override
     public void handleAction(ActionType actionType) {
         switch (actionType) {
-            case ACTION_EDIT_IMAGE-> this.imageEditor.updateImage();
-            case ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> panelImage.removeAll();
+            case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_EDIT_MARKER, ACTION_REMOVE_MARKER -> this.imageEditor.updateImage();
             case SHORTCUT_TAKE_SNAPSHOT -> {
                 if (SnapshotHelper.saveSnapshot(this.imageEditor.getCurrentImage())) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SNAPSHOT_COUNTER);
@@ -122,6 +95,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
             }
         }
     }
+    //endregion
 
     @Override
     public void toggleOn() {
@@ -132,7 +106,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         updateScrollBarValuesSecurely(this.scrollBarTime, workspace.getTime(), workspace.getMaxTime());
         updateScrollBarValuesSecurely(this.scrollBarLevel, workspace.getLevel(), workspace.getMaxLevel());
     }
-
+    //endregion
 
     @Override
     public void toggleOff() {
@@ -158,8 +132,6 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         setBorder(this.container.hasFocus());
     }
 
-    //endregion
-
     //region Aktualisierungen
     private void handleScrollAction(int newValue, Axis axis, JScrollBar scrollBar) {
         // Wenn sich der Wert nicht ändert, abbrechen
@@ -184,6 +156,30 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         Color borderColor = focusedPanel ? ColorUtils.COLOR_BLUE : UIEnvironment.getBorderColor();
         this.container.setBorder(BorderFactory.createLineBorder(borderColor));
         this.panelView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
+    }
+
+    //region Innere Klassen
+    private class FocusBorderListener implements FocusListener {
+        // Listener für Fokusänderungen
+        @Override
+        public void focusGained(FocusEvent e) {
+            setBorder(true);
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            setBorder(false);
+        }
+    }
+
+    //endregion
+
+    private class FocusMouseListener extends MouseAdapter {
+        // Listener für Fokusaktivierung
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if (!container.isFocusOwner()) container.requestFocusInWindow();
+        }
     }
     //endregion
 }

@@ -41,7 +41,8 @@ public class DialogColorChooser {
 
     private void beforeClosing(Color color) {
         this.selectedColor = color;
-        this.colorChooser.setColor(color);
+        this.colorChooser.getSelectionModel().setSelectedColor(color);
+        this.dialog.setVisible(false);
     }
 
     public Color chooseColor(Color intialColor) {
@@ -78,9 +79,7 @@ public class DialogColorChooser {
         return this.selectedColor;
     }
 
-    // ========================================
-    // Komponenten-Erzeugung
-    // ========================================
+    //region Komponenten-Erzeugung
     private JPanel createFavoritesPanel() {
         JPanel favoritesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         favoritesPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -217,10 +216,9 @@ public class DialogColorChooser {
 
         return buttonsPanel;
     }
+    //endregion
 
-    // ========================================
-    // Hilfsmethoden
-    // ========================================
+    //region Hilfsmethoden
     private static void configureColorChooserPanels(JColorChooser colorChooser) {
         Stream<AbstractColorChooserPanel> panels = Arrays.stream(colorChooser.getChooserPanels())
             .filter(panel -> !"swatches rgb".contains(panel.getDisplayName().toLowerCase()));
@@ -320,10 +318,9 @@ public class DialogColorChooser {
 
         return button;
     }
+    //endregion
 
-    // ========================================
-    // Innere Klasse: Renderer für runde Farbbuttons
-    // ========================================
+    //region Innere Klasse: Renderer für runde Farbbuttons
     private static class FavoriteColorButton extends JComponent {
         private static final int DIAMETER = 20;
 
@@ -409,4 +406,5 @@ public class DialogColorChooser {
             g2.dispose();
         }
     }
+    //endregion
 }

@@ -11,7 +11,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import static de.uzk.Main.workspace;
 
-public class MarkerEditor extends MouseAdapter {
+public class VisualMarkerEditor extends MouseAdapter {
     private enum EditMode {
         NONE,
         MOVE,
@@ -22,7 +22,7 @@ public class MarkerEditor extends MouseAdapter {
     private Marker selectedMarker;
     private EditMode editMode = EditMode.NONE;
 
-    public MarkerEditor(ImageEditor imageEditor) {
+    public VisualMarkerEditor(ImageEditor imageEditor) {
         this.imageEditor = imageEditor;
     }
 
@@ -78,7 +78,8 @@ public class MarkerEditor extends MouseAdapter {
         }
     }
 
-    private void setCursorAndRerender(Component target, int cursorType) {
+    @SuppressWarnings("MagicConstant")
+    private void setCursorAndRerender(Component target,  int cursorType) {
         if(target.getCursor().getType() == cursorType) return;
         target.setCursor(Cursor.getPredefinedCursor(cursorType));
         // Um die aufrufende Methode nicht durch einen repaint zu blocken (vor allem bei mehrfachaufrufen)

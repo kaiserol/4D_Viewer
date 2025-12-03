@@ -25,6 +25,7 @@ public enum ActionType {
 
     // Markierungen Shortcuts
     ACTION_ADD_MARKER,
+    ACTION_EDIT_MARKER,
     ACTION_REMOVE_MARKER,
 
     // Navigieren Shortcuts

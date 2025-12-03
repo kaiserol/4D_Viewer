@@ -102,7 +102,7 @@ public class MarkerInfo extends JPanel {
         edit.addActionListener(a -> {
 
             Marker copy = new Marker(marker);
-            MarkerEditor initial = new MarkerEditor(workspace.getCurrentImageFile(), marker);
+            MarkerEditor initial = new MarkerEditor(marker);
             int option = JOptionPane.showConfirmDialog(
                 gui.getContainer(),
                 initial,
@@ -112,7 +112,7 @@ public class MarkerInfo extends JPanel {
 
             if (option == JOptionPane.OK_OPTION) {
 
-                gui.handleAction(ActionType.ACTION_ADD_MARKER);
+                gui.handleAction(ActionType.ACTION_EDIT_MARKER);
 
                 gui.updateUI();
             } else {

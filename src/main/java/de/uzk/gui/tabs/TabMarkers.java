@@ -18,18 +18,18 @@ import static de.uzk.config.LanguageHandler.getWord;
 public class TabMarkers extends ObserverContainer<JPanel> {
     public TabMarkers(Gui gui) {
         super(new JPanel(), gui);
-        this.rerender();
+        rebuildContainer();
     }
 
-    private void rerender() {
+    private void rebuildContainer() {
         java.util.List<Marker> currentMarkers =  workspace.getMarkers().getAllMarkers();
 
-        this.container.removeAll();
-        this.container.setLayout(new BorderLayout());
+        container.removeAll();
+        container.setLayout(new BorderLayout());
 
         JButton add = new JButton(getWord("menu.markers.addMarker"));
         add.addActionListener(e -> {
-            MarkerEditor initial = new MarkerEditor(workspace.getCurrentImageFile());
+            MarkerEditor initial = new MarkerEditor();
             int option = JOptionPane.showConfirmDialog(
                     gui.getContainer(),
                     initial,
@@ -44,7 +44,7 @@ public class TabMarkers extends ObserverContainer<JPanel> {
             }
         });
 
-        this.container.add(add, BorderLayout.SOUTH);
+        container.add(add, BorderLayout.SOUTH);
 
         if (!currentMarkers.isEmpty()) {
             Box panel = new Box(BoxLayout.Y_AXIS);
@@ -54,18 +54,19 @@ public class TabMarkers extends ObserverContainer<JPanel> {
                 panel.add(next);
                 panel.add(Box.createRigidArea(new Dimension(0, 10)));
             }
-            this.container.add(new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
+            container.add(new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
         } else {
             JLabel noneLabel = new JLabel(getWord("menu.markers.noMarkersSet"));
             noneLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            this.container.add(noneLabel, BorderLayout.CENTER);
+            container.add(noneLabel, BorderLayout.CENTER);
         }
+        container.revalidate();
     }
 
     @Override
     public void handleAction(ActionType actionType) {
         if (actionType == ActionType.ACTION_ADD_MARKER || actionType == ActionType.ACTION_REMOVE_MARKER) {
-            this.rerender();
+            rebuildContainer();
         }
     }
 
@@ -82,7 +83,7 @@ public class TabMarkers extends ObserverContainer<JPanel> {
     @Override
     public void update(Axis axis) {
         if (axis == Axis.TIME) {
-            this.rerender();
+            rebuildContainer();
         }
     }
 }

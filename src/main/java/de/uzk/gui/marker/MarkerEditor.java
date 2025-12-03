@@ -2,16 +2,14 @@ package de.uzk.gui.marker;
 
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.dialogs.DialogColorChooser;
-import de.uzk.image.ImageFile;
 import de.uzk.markers.Marker;
+import de.uzk.markers.MarkerShape;
 import de.uzk.utils.DateTimeUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import static de.uzk.Main.workspace;
@@ -19,14 +17,13 @@ import static de.uzk.config.LanguageHandler.getWord;
 
 public class MarkerEditor extends Container {
     private final Marker marker;
-    private final java.util.List<Runnable> onUpdate = new ArrayList<>();
     private final DialogColorChooser dialogColorChooser;
 
-    public MarkerEditor(ImageFile onto) {
-        this(onto, new Marker());
+    public MarkerEditor() {
+        this(new Marker());
     }
 
-    public MarkerEditor(ImageFile onto, Marker marker) {
+    public MarkerEditor(Marker marker) {
         this.marker = marker;
         this.dialogColorChooser = new DialogColorChooser(null);
         init();
@@ -50,6 +47,15 @@ public class MarkerEditor extends Container {
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         this.add(getLabelInput(), gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        this.add(new JLabel(getWord("dialog.markers.shape")), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        this.add(getShapeInput(), gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -90,6 +96,13 @@ public class MarkerEditor extends Container {
         gbc.gridwidth = 2;
         this.add(toInput, gbc);
 
+    }
+
+    private JComboBox<MarkerShape> getShapeInput() {
+        JComboBox<MarkerShape> list = new JComboBox<>(MarkerShape.values());
+        list.addItemListener(e -> marker.setShape((MarkerShape)list.getSelectedItem()));
+        list.setSelectedItem(marker.getShape());
+        return list;
     }
 
     private static class TimeInput extends JPanel {
@@ -187,9 +200,4 @@ public class MarkerEditor extends Container {
         color.setBackground(selected);
         this.marker.setColor(selected);
     }
-
-    void changed() {
-        this.onUpdate.forEach(Runnable::run);
-    }
-
 }
