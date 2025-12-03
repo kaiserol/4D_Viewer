@@ -24,7 +24,7 @@ public final class ImageLoader {
     private static final Map<FlatSVGIcon, ThemeColor> THEME_COLORS = new HashMap<>();
 
     // App Icon
-    private static final FlatSVGIcon APP_IMAGE_ICON = openFlatSVGIcon("images/4D.svg");
+    private static final FlatSVGIcon APP_ICON = openFlatSVGIcon("images/4D.svg");
 
     // Bearbeiten Icons
     public static final FlatSVGIcon ICON_EDIT = openFlatSVGIcon("images/icons/edit.svg");
@@ -87,8 +87,8 @@ public final class ImageLoader {
         return null;
     }
 
-    public static Image scaledAppImageIcon(int width, int height) {
-        return APP_IMAGE_ICON == null ? null : APP_IMAGE_ICON.derive(width, height).getImage();
+    public static Image scaleAppIcon(int width, int height) {
+        return APP_ICON == null ? null : APP_ICON.derive(width, height).getImage();
     }
 
     private static FlatSVGIcon openFlatSVGIcon(String resourcesPath) {

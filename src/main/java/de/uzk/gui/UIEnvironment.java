@@ -134,7 +134,7 @@ public final class UIEnvironment {
     }
 
     public static void initImageIcon(Gui gui) {
-        Image scaled = ImageLoader.scaledAppImageIcon(512, 512);
+        Image scaled = ImageLoader.scaleAppIcon(512, 512);
         Image appImage = (scaled != null) ? new ImageIcon(scaled).getImage() : null;
 
         // App-Image-Icon (plattformübergreifend) setzen

@@ -48,7 +48,7 @@ public class DialogAbout {
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.insets = UIEnvironment.INSETS_DEFAULT;
 
-        Image scaled = ImageLoader.scaledAppImageIcon(128, 128);
+        Image scaled = ImageLoader.scaleAppIcon(128, 128);
         ImageIcon appIcon = (scaled != null) ? new ImageIcon(scaled) : null;
 
         // App-Image-Icon setzen
