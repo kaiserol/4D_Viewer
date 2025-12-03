@@ -238,7 +238,7 @@ public final class DateTimeUtils {
         int totalSeconds = (int) (frame * workspace.getConfig().getTimeUnit());
         int seconds = totalSeconds % 60;
         int minute = totalSeconds / 60 % 60;
-        int hour = totalSeconds / 60 * 60;
+        int hour = totalSeconds / 60 / 60;
 
         return "%02d:%02d:%02d".formatted(hour, minute, seconds);
     }
