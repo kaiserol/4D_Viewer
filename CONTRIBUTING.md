@@ -3,30 +3,22 @@
 Dieses Projekt wird gemeinschaftlich entwickelt, getestet und genutzt. Ein herzlicher Dank geht an alle, die zur
 Verbesserung, Erweiterung und Pflege des 4D Viewers beigetragen haben.
 
-## 1️⃣ Erstentwickler
+## 👥 Gesamtübersicht
 
-| Name                     | Rolle / Beitrag         | Version(en) | Datum                  |
-|--------------------------|-------------------------|-------------|------------------------|
-| **Einhard Schierenberg** | Ideengeber              | v1.0 - v1.2 | Unbekannt – 02.03.2017 |
-| **Sascha Zur**           | Erstentwicklung der App | v1.0 - v1.2 | Unbekannt – 02.03.2017 |
+| Name                          | Kategorie              | Rolle / Beitrag                                | Version(en) | Datum                  |
+|-------------------------------|------------------------|------------------------------------------------|-------------|------------------------|
+| **Einhard Schierenberg**      | 1️⃣ Erstentwickler     | Ideengeber                                     | v1.0 - v1.2 | Unbekannt – 02.03.2017 |
+| **Sascha Zur**                | 1️⃣ Erstentwickler     | Erstentwicklung der App                        | v1.0 - v1.2 | Unbekannt – 02.03.2017 |
+|                               |                        |                                                |             |                        |
+| **Oliver Kaiser**             | 💻 Hauptentwickler     | Hauptentwickler                                | v2.0 – v2.1 | 24.08.2023 – Heute     |
+| **Lion Rexhepi**              | 💻 Hauptentwickler     | Mitentwickler                                  | v2.1        | 06.10.2025 – Heute     |
+|                               |                        |                                                |             |                        |
+| **Peter Heger**               | 🧬 Weitere Mitwirkende | Ausbilder für MATSE an der Universität zu Köln | v2.0 – v2.1 | 28.09.2023 – Heute     |
+| **Olaf Bossinger**            | 🧬 Weitere Mitwirkende | Nutzer & UX-Feedback                           | v2.0 – v2.1 | 28.09.2023 – Heute     |
+| **Julia Camps**               | 🧬 Weitere Mitwirkende | Nutzerin & UX-Feedback                         | v2.0 – v2.1 | 28.09.2023 – Heute     |
+| **Jiyu (Graduate-Studentin)** | 🧬 Weitere Mitwirkende | Bereitstellung biologischer 4D-Datensätze      | v2.0 – v2.1 | 28.09.2023 – Heute     |
 
-## 💻 Hauptentwickler
-
-| Name              | Rolle / Beitrag | Version(en) | Datum              |
-|-------------------|-----------------|-------------|--------------------|
-| **Oliver Kaiser** | Hauptentwickler | v2.0 – v2.1 | 24.08.2023 – Heute |
-| **Lion Rexhepi**  | Mitentwickler   | v2.1        | 06.10.2025 – Heute |
-
-## 🧬 Weitere Mitwirkende
-
-| Name                          | Rolle / Beitrag                                | Version(en) | Datum              |
-|-------------------------------|------------------------------------------------|-------------|--------------------|
-| **Peter Heger**               | Ausbilder für MATSE an der Universität zu Köln | v2.0 – v2.1 | 28.09.2023 – Heute |
-| **Olaf Bossinger**            | Nutzer & UX-Feedback                           | v2.0 – v2.1 | 28.09.2023 – Heute |
-| **Julia Camps**               | Nutzerin & UX-Feedback                         | v2.0 – v2.1 | 28.09.2023 – Heute |
-| **Jiyu (Graduate-Studentin)** | Bereitstellung biologischer 4D-Datensätze      | v2.0 – v2.1 | 28.09.2023 – Heute |
-
-## Hinweise
+## ℹ️ Hinweise
 
 - **Einhard Schierenberg** entwickelte die grundlegende Idee des 4D Viewers.
 - **Sascha Zur** erstellte die erste lauffähige Version, welche später als Grundlage für die _Entwicklung der
@@ -40,7 +32,7 @@ Verbesserung, Erweiterung und Pflege des 4D Viewers beigetragen haben.
 - **Lion Rexhepi** brachte ab `Version 2.1` wesentliche Beiträge zur modularen Code-Architektur und zur Implementierung
   neuer Funktionen ein.
 
-## Dank
+## 🙏 Dank
 
 Ein großes Dankeschön an **alle Entwickler, Tester und Nutzer**, die den 4D Viewer mit Engagement und Feedback
 unterstützen!
@@ -52,4 +44,5 @@ unterstützen!
 für den 4D Viewer. Ohne seinen Impuls würde es dieses Projekt in seiner heutigen Form nicht geben.
 
 ![Window Settings](src/main/resources/images/readme/einhard-schierenberg.png)
-Heruntergeladen von: [College of Natural & Agricultural Sciences | - UC Riverside](https://faculty.ucr.edu/~pdeley/lab/visitors/schierbio.html)
+Abgerufen
+von: [College of Natural & Agricultural Sciences | UC Riverside](https://faculty.ucr.edu/~pdeley/lab/visitors/schierbio.html)
