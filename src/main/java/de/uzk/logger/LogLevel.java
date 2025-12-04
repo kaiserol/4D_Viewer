@@ -100,20 +100,6 @@ public enum LogLevel {
     }
 
     /**
-     * Berechnet die längste Protokollebene Textdarstellung über alle definierten
-     * {@link LogLevel}-Konstanten hinweg.
-     *
-     * @return Die Länge der längsten Protokollebene Textdarstellung
-     */
-    public static int maxLevelLength() {
-        int maxLevelLength = 0;
-        for (LogLevel level : LogLevel.values()) {
-            maxLevelLength = Math.max(maxLevelLength, level.toString().length());
-        }
-        return maxLevelLength;
-    }
-
-    /**
      * Liefert alle {@link LogLevel}-Werte alphabetisch sortiert nach ihrer
      * Textdarstellung zurück.
      *

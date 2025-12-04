@@ -52,7 +52,7 @@ public class HtmlOutput extends LogOutput {
 
                 // Protokollebene
                 StringUtils.applyColor(formattedEntry.get(2), entry.getLevel().getColor()) +
-                " " +
+                " - " +
 
                 // Quelle
                 StringUtils.wrapUnderlined(formattedEntry.get(4)) +
