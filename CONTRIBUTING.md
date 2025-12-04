@@ -1,29 +1,55 @@
 # Contributing – 4D Viewer
 
-Dieses Projekt wird von mehreren Personen entwickelt, getestet und genutzt. Wir möchten allen Beitragenden danken, die
-die Entwicklung, Verbesserung und Wartung des 4D Viewers unterstützt haben.
+Dieses Projekt wird gemeinschaftlich entwickelt, getestet und genutzt. Ein herzlicher Dank geht an alle, die zur
+Verbesserung, Erweiterung und Pflege des 4D Viewers beigetragen haben.
 
-## Hauptbeitragende
+## 1️⃣ Erstentwickler
 
-| Name               | Rolle / Beitrag                      | Version(en) | Datum                  |
-|--------------------|--------------------------------------|-------------|------------------------|
-| **Sascha Zur**     | Ideengeber, Originalversion erstellt | v1.0 - v1.3 | Unbekannt - 17.02.2013 |
-| **Olaf Bossinger** | Nutzer & UX-Feedback                 | v1.0 – v2.1 | 24.08.2023 – Heute     |
-| **Peter Heger**    | Ausbilder zum MATSE an der Uni Köln  | v2.0 – v2.1 | 24.08.2023 – Heute     |
-| **Oliver Kaiser**  | Hauptentwickler                      | v2.0 – v2.1 | 24.08.2023 – Heute     |
-| **Lion Rexhepi**   | Mitentwickler                        | v2.1        | 06.10.2025 - Heute     |
+| Name                     | Rolle / Beitrag         | Version(en) | Datum                  |
+|--------------------------|-------------------------|-------------|------------------------|
+| **Einhard Schierenberg** | Ideengeber              | v1.0 - v1.2 | Unbekannt – 02.03.2017 |
+| **Sascha Zur**           | Erstentwicklung der App | v1.0 - v1.2 | Unbekannt – 02.03.2017 |
+
+## 💻 Hauptentwickler
+
+| Name              | Rolle / Beitrag | Version(en) | Datum              |
+|-------------------|-----------------|-------------|--------------------|
+| **Oliver Kaiser** | Hauptentwickler | v2.0 – v2.1 | 24.08.2023 – Heute |
+| **Lion Rexhepi**  | Mitentwickler   | v2.1        | 06.10.2025 – Heute |
+
+## 🧬 Weitere Mitwirkende
+
+| Name                          | Rolle / Beitrag                                | Version(en) | Datum              |
+|-------------------------------|------------------------------------------------|-------------|--------------------|
+| **Peter Heger**               | Ausbilder für MATSE an der Universität zu Köln | v2.0 – v2.1 | 28.09.2023 – Heute |
+| **Olaf Bossinger**            | Nutzer & UX-Feedback                           | v2.0 – v2.1 | 28.09.2023 – Heute |
+| **Julia Camps**               | Nutzerin & UX-Feedback                         | v2.0 – v2.1 | 28.09.2023 – Heute |
+| **Jiyu (Graduate-Studentin)** | Bereitstellung biologischer 4D-Datensätze      | v2.0 – v2.1 | 28.09.2023 – Heute |
 
 ## Hinweise
 
-- **Sascha Zur** lieferte die ursprüngliche Idee und erstellte die erste Version, die als Vorlage für die spätere
-  Entwicklung durch Oliver Kaiser diente.
-- **Olaf Bossinger** und **Peter Heger** übernahmen ab Version 2.0 beratende Rollen in der Softwareentwicklung. Peter
-  unterstützte insbesondere in seiner Ausbilderrolle, während Olaf als Nutzerberater wertvolles UX-Feedback einbrachte.
-- **Lion Rexhepi** leistete ab Version 2.1 Entwicklungsbeiträge, insbesondere im Bereich modularer Code-Architektur und
-  Implementierung neuer Features.
+- **Einhard Schierenberg** entwickelte die grundlegende Idee des 4D Viewers.
+- **Sascha Zur** erstellte die erste lauffähige Version, welche später als Grundlage für die _Entwicklung der
+  Versionsreihe 2.*_ diente.
+- Ab `Version 2.0` unterstützten **Olaf Bossinger** und **Peter Heger** das Projekt in beratenden Rollen:
+    - **Peter Heger** als Ausbilder für MATSE (Mathematisch-Technischer Softwareentwickler) mit fachlicher Betreuung.
+    - **Olaf Bossinger** als wichtiger Ansprechpartner für **Oliver Kaiser**, sowohl in UX-Fragen als auch im täglichen
+      Austausch. Er lieferte kontinuierlich wertvolles Nutzerfeedback, prägte viele praktische Verbesserungen und stand
+      als direkte Bezugsperson stets zur Seite.
+- **Oliver Kaiser** übernahm die leitende Weiterentwicklung der `Version 2.*`.
+- **Lion Rexhepi** brachte ab `Version 2.1` wesentliche Beiträge zur modularen Code-Architektur und zur Implementierung
+  neuer Funktionen ein.
 
 ## Dank
 
-Ein großes Dankeschön an **alle Entwickler, Tester und Nutzer**, die den 4D Viewer unterstützen!
+Ein großes Dankeschön an **alle Entwickler, Tester und Nutzer**, die den 4D Viewer mit Engagement und Feedback
+unterstützen!
+
+> **_Olaf Bossinger an Oliver Kaiser:_**\
 > „Ich glaube, das Projekt macht dir genauso viel Spaß wie mir – und wir sind auf dem richtigen Weg.“
-> — Olaf Bossinger
+
+**Postum:** In Gedenken an Einhard Schierenberg (1948–2022). Seine ursprüngliche Vision legte den Grundstein
+für den 4D Viewer. Ohne seinen Impuls würde es dieses Projekt in seiner heutigen Form nicht geben.
+
+![Window Settings](src/main/resources/images/readme/einhard-schierenberg.png)
+Heruntergeladen von: [College of Natural & Agricultural Sciences | - UC Riverside](https://faculty.ucr.edu/~pdeley/lab/visitors/schierbio.html)
