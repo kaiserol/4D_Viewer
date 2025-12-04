@@ -38,17 +38,18 @@ public class ImageEditor {
     }
 
     public void updateImage() {
-         this.currentImage = null;
+        this.currentImage = null;
         if (workspace.isLoaded()) {
             Path imagePath = workspace.getCurrentImageFile().getFilePath();
-            currentImage = ImageLoader.openImage(imagePath, false);
+            BufferedImage newImage = ImageLoader.openImage(imagePath, false);
             List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
-            if (currentImage != null) {
-                this.recalculateTransform();
+            if (newImage != null) {
+                recalculateTransform(newImage);
                 AffineTransformOp at = new AffineTransformOp(currentTransform, AffineTransformOp.TYPE_BILINEAR);
-                currentImage = at.filter(currentImage, null);
-                calculateRescaleOp().filter(currentImage, currentImage);
-                currentImage = redraw(currentImage, markers);
+                newImage = at.filter(newImage, null);
+                calculateRescaleOp().filter(newImage, newImage);
+                newImage = redraw(newImage, markers);
+                currentImage = newImage;
                 newImageAvailable();
             }
         }
@@ -60,15 +61,16 @@ public class ImageEditor {
 
     // Einige Operationen (Zoom, Marker) nur durch Erstellen eines neuen Bildes umsetzbar
     private BufferedImage redraw(BufferedImage to, List<Marker> markers) {
-        double zoomFactor = workspace.getConfig().getZoom() / 100.;
-        Rectangle scaled = GraphicsUtils.scaleInsetsAndSize(to.getWidth(), to.getHeight(), zoomFactor);
-
+        int width = (int) (to.getWidth() * currentTransform.getScaleX());
+        int height = (int) (to.getHeight() * currentTransform.getScaleY());
+        int offsetX = (to.getWidth() - width) / 2;
+        int offsetY = (to.getHeight() - height) / 2;
         BufferedImage result = new BufferedImage(to.getWidth(), to.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = GraphicsUtils.createHighQualityGraphics2D(result.getGraphics());
-        g2d.drawImage(to, scaled.x, scaled.y, scaled.width, scaled.height, null);
+        g2d.drawImage(to, offsetX, offsetY, width, height, null);
         g2d.transform(currentTransform);
         for (Marker marker : markers) {
-            marker.draw(g2d, new Rectangle(scaled.x, scaled.y, scaled.width, scaled.height));
+            marker.draw(g2d);
         }
         g2d.dispose();
         return result;
@@ -82,12 +84,12 @@ public class ImageEditor {
         return new RescaleOp(scale, offset, null);
     }
 
-    private void recalculateTransform() {
-        if(this.currentImage == null) return;
+    private void recalculateTransform(BufferedImage image) {
+
         Config config = workspace.getConfig();
 
-        int width = currentImage.getWidth();
-        int height = currentImage.getHeight();
+        int width = image.getWidth();
+        int height = image.getHeight();
         double radians = Math.toRadians(config.getRotation());
         boolean mirrorX = config.isMirrorX();
         boolean mirrorY = config.isMirrorY();
@@ -119,7 +121,7 @@ public class ImageEditor {
 
 
     private void newImageAvailable() {
-        if(this.newImageConsumer != null) this.newImageConsumer.accept(this.currentImage);
+        if (this.newImageConsumer != null) this.newImageConsumer.accept(this.currentImage);
     }
 
     //endregion

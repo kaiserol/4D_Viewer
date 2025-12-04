@@ -61,11 +61,4 @@ public final class GraphicsUtils {
         return Math.min(scaleWidth, scaleHeight);
     }
 
-    public static Rectangle scaleInsetsAndSize(int width, int height, double scaleFactor) {
-        int newWidth = (int) (width * scaleFactor);
-        int newHeight = (int) (height * scaleFactor);
-        int insetX = (width - newWidth) / 2;
-        int insetY = (height - newHeight) / 2;
-        return new Rectangle(insetX, insetY, newWidth, newHeight);
-    }
 }
