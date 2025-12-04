@@ -185,11 +185,11 @@ public class LogEntry {
      *
      * <pre>
      * index 0 → "[" + Zeitstempel + "]"
-     * index 1 → &lt;Trenner&gt; (z. B. "\t")
+     * index 1 → &lt;Trenner&gt;
      * index 2 → Protokollebene (rechtsbündig gepolstert)
      * index 3 → &lt;Trenner&gt;
      * index 4 → Quelle (z. B. Klassenname)
-     * index 5 → &lt;Trenner&gt; (typisch ": ")
+     * index 5 → &lt;Trenner&gt;
      * index 6 → Nachricht (optional mit Einrückung)
      * </pre>
      *
@@ -213,15 +213,14 @@ public class LogEntry {
         list.add("\t");           // 1
 
         // Protokollebene hinzufügen
-        String levelRaw = getLevel().toString();
-        String levelStr = levelRaw + " ".repeat(LogLevel.maxLevelLength() - levelRaw.length());
+        String levelStr = getLevel().toString();
         list.add(levelStr);       // 2
-        list.add("\t");           // 3
+        list.add(" - ");          // 3
 
         // Quelle hinzufügen
         String sourceStr = getSource();
         list.add(sourceStr);      // 4
-        list.add(": ");           // 5
+        list.add(" - ");          // 5
 
         // Nachricht hinzufügen
         String messageStr = indentedMessage ? getIndentedMessage(list, getMessage()) : getMessage();
