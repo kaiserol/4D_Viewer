@@ -20,8 +20,11 @@ import static de.uzk.Main.logger;
 import static de.uzk.Main.settings;
 
 public final class ImageLoader {
+    private static final int ICON_SIZE = 16;
+    private static final Map<FlatSVGIcon, ThemeColor> THEME_COLORS = new HashMap<>();
+
     // App Icon
-    public static final Image APP_IMAGE = openAppImage();
+    private static final FlatSVGIcon APP_ICON = openFlatSVGIcon("images/4D.svg");
 
     // Bearbeiten Icons
     public static final FlatSVGIcon ICON_EDIT = openFlatSVGIcon("images/icons/edit.svg");
@@ -40,9 +43,6 @@ public final class ImageLoader {
     public static final FlatSVGIcon ICON_ARROW_UP = openFlatSVGIcon("images/icons/arrow_up.svg");
     public static final FlatSVGIcon ICON_ARROW_DOWN = openFlatSVGIcon("images/icons/arrow_down.svg");
     public static final FlatSVGIcon ICON_ARROW_DOWN_END = openFlatSVGIcon("images/icons/arrow_down_end.svg");
-
-    private static final Map<FlatSVGIcon, ThemeColor> THEME_COLORS = new HashMap<>();
-    private static final int ICON_SIZE = 16;
 
     // Statische Initialisierung
     static {
@@ -87,9 +87,8 @@ public final class ImageLoader {
         return null;
     }
 
-    private static Image openAppImage() {
-        FlatSVGIcon svgIcon = openFlatSVGIcon("images/4D.svg");
-        return svgIcon == null ? null : svgIcon.getImage();
+    public static Image scaleAppIcon(int width, int height) {
+        return APP_ICON == null ? null : APP_ICON.derive(width, height).getImage();
     }
 
     private static FlatSVGIcon openFlatSVGIcon(String resourcesPath) {

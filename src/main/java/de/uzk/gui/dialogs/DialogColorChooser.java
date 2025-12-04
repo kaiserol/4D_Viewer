@@ -33,16 +33,16 @@ public class DialogColorChooser {
     private static final int MAX_FAVORITES = 10;
 
     public DialogColorChooser(Window parentWindow) {
-        this.dialog = ComponentUtils.createDialog(parentWindow, () -> beforeClosing(this.initialColor));
+        this.dialog = ComponentUtils.createDialog(parentWindow, () -> setSelectedColorAndDispose(this.initialColor));
 
         // Favoriten Lister initialisieren
         this.favoriteColors = new ArrayList<>();
     }
 
-    private void beforeClosing(Color color) {
+    private void setSelectedColorAndDispose(Color color) {
         this.selectedColor = color;
-        this.colorChooser.getSelectionModel().setSelectedColor(color);
-        this.dialog.setVisible(false);
+        this.colorChooser.setColor(color);
+        this.dialog.dispose();
     }
 
     public Color chooseColor(Color intialColor) {
@@ -79,7 +79,7 @@ public class DialogColorChooser {
         return this.selectedColor;
     }
 
-    //region Komponenten-Erzeugung
+    // region (Komponenten-Erzeugung)
     private JPanel createFavoritesPanel() {
         JPanel favoritesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         favoritesPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -200,12 +200,12 @@ public class DialogColorChooser {
 
         // Schaltfläche (Abbrechen)
         JButton cancelButton = new JButton(getWord("button.cancel"));
-        cancelButton.addActionListener(e -> beforeClosing(this.initialColor));
+        cancelButton.addActionListener(e -> setSelectedColorAndDispose(this.initialColor));
         buttonsPanel.add(cancelButton);
 
         // Schaltfläche (OK)
         JButton okButton = new JButton(getWord("button.ok"));
-        okButton.addActionListener(e -> beforeClosing(this.colorChooser.getColor()));
+        okButton.addActionListener(e -> setSelectedColorAndDispose(this.colorChooser.getColor()));
         buttonsPanel.add(okButton);
 
         // Gleicht die Größen aller Buttons an
@@ -216,9 +216,9 @@ public class DialogColorChooser {
 
         return buttonsPanel;
     }
-    //endregion
+    // endregion
 
-    //region Hilfsmethoden
+    // region (Hilfsmethoden)
     private static void configureColorChooserPanels(JColorChooser colorChooser) {
         Stream<AbstractColorChooserPanel> panels = Arrays.stream(colorChooser.getChooserPanels())
             .filter(panel -> !"swatches rgb".contains(panel.getDisplayName().toLowerCase()));
@@ -318,9 +318,9 @@ public class DialogColorChooser {
 
         return button;
     }
-    //endregion
+    // endregion
 
-    //region Innere Klasse: Renderer für runde Farbbuttons
+    // region (Innere Klasse: Renderer für runde Farbbuttons)
     private static class FavoriteColorButton extends JComponent {
         private static final int DIAMETER = 20;
 
@@ -406,5 +406,5 @@ public class DialogColorChooser {
             g2.dispose();
         }
     }
-    //endregion
+    // endregion
 }

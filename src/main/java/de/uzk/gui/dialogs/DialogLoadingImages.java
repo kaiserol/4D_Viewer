@@ -35,10 +35,8 @@ public class DialogLoadingImages implements LoadingImageListener {
         this.dialog = ComponentUtils.createDialog(parentWindow, this::closeThread);
     }
 
-
     public LoadingResult load(Path imagesDirectory, ImageFileType imageFileType) {
         if (imagesDirectory == null || !Files.exists(imagesDirectory)) return LoadingResult.DIRECTORY_DOES_NOT_EXIST;
-
 
         String title = getWord("dialog.loadingImages");
         if (imageFileType != null) {
@@ -143,7 +141,6 @@ public class DialogLoadingImages implements LoadingImageListener {
                 logger.error("Failed to join the thread. (Process: Loading images ...)");
             }
         }
-        this.dialog.dispose();
     }
 
     // ========================================
