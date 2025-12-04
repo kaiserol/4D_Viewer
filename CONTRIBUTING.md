@@ -5,16 +5,16 @@ Verbesserung, Erweiterung und Pflege des 4D Viewers beigetragen haben.
 
 ## 👥 Gesamtübersicht
 
-| Name                          | Kategorie              | Rolle / Beitrag                                | Version(en) | Datum                  |
-|-------------------------------|------------------------|------------------------------------------------|-------------|------------------------|
-| **Einhard Schierenberg**      | 1️⃣ Erstentwickler     | Ideengeber                                     | v1.0 - v1.2 | Unbekannt – 02.03.2017 |
-| **Sascha Zur**                | 1️⃣ Erstentwickler     | Erstentwicklung der App                        | v1.0 - v1.2 | Unbekannt – 02.03.2017 |
-| **Oliver Kaiser**             | 💻 Hauptentwickler     | Hauptentwickler                                | v2.0 – v2.1 | 24.08.2023 – Heute     |
-| **Lion Rexhepi**              | 💻 Hauptentwickler     | Mitentwickler                                  | v2.1        | 06.10.2025 – Heute     |
-| **Peter Heger**               | 🧬 Weitere Mitwirkende | Ausbilder für MATSE an der Universität zu Köln | v2.0 – v2.1 | 28.09.2023 – Heute     |
-| **Olaf Bossinger**            | 🧬 Weitere Mitwirkende | Nutzer & UX-Feedback                           | v2.0 – v2.1 | 28.09.2023 – Heute     |
-| **Julia Camps**               | 🧬 Weitere Mitwirkende | Nutzerin & UX-Feedback                         | v2.0 – v2.1 | 28.09.2023 – Heute     |
-| **Jiyu (Graduate-Studentin)** | 🧬 Weitere Mitwirkende | Bereitstellung biologischer 4D-Datensätze      | v2.0 – v2.1 | 28.09.2023 – Heute     |
+| Name                          | Kategorie             | Rolle / Beitrag                                | Version(en) | Datum                  |
+|-------------------------------|-----------------------|------------------------------------------------|-------------|------------------------|
+| **Einhard Schierenberg**      | 1️⃣ Erstentwickler    | Ideengeber                                     | v1.0 - v1.2 | Unbekannt – 02.03.2017 |
+| **Sascha Zur**                | 1️⃣ Erstentwickler    | Erstentwicklung der App                        | v1.0 - v1.2 | Unbekannt – 02.03.2017 |
+| **Oliver Kaiser**             | 💻 Entwickler         | Hauptentwickler                                | v2.0 – v2.1 | 24.08.2023 – Heute     |
+| **Lion Rexhepi**              | 💻 Entwickler         | Mitentwickler                                  | v2.1        | 06.10.2025 – Heute     |
+| **Peter Heger**               | 🧬 Mitwirkende Person | Ausbilder für MATSE an der Universität zu Köln | v2.0 – v2.1 | 28.09.2023 – Heute     |
+| **Olaf Bossinger**            | 🧬 Mitwirkende Person | Nutzer & UX-Feedback                           | v2.0 – v2.1 | 28.09.2023 – Heute     |
+| **Julia Camps**               | 🧬 Mitwirkende Person | Nutzerin & UX-Feedback                         | v2.0 – v2.1 | 28.09.2023 – Heute     |
+| **Jiyu (Graduate-Studentin)** | 🧬 Mitwirkende Person | Bereitstellung biologischer 4D-Datensätze      | v2.0 – v2.1 | 28.09.2023 – Heute     |
 
 ## ℹ️ Hinweise
 
