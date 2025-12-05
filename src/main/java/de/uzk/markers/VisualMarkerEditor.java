@@ -115,10 +115,10 @@ public class VisualMarkerEditor extends MouseAdapter {
 
 
         /*
-        * Formel für Achse A mit Größe G:
-        * dG = (mA - (G / 2) - eA)
-        * dA = (dG / 2) * sign(eA - mA)
-        */
+         * Formel für Achse A mit Größe G:
+         * dG = (mA - (G / 2) - eA)
+         * dA = (dG / 2) * sign(eA - mA)
+         */
         switch (dragPoint) {
             case TOP_LEFT -> {
                 dw = (mx - width / 2 - ex);
@@ -193,7 +193,7 @@ public class VisualMarkerEditor extends MouseAdapter {
     private void setCursorAndRerender(Component target, @MagicConstant(valuesFromClass = Cursor.class) int cursorType) {
         if (target.getCursor().getType() == cursorType) return;
         target.setCursor(Cursor.getPredefinedCursor(cursorType));
-        // Um die aufrufende Methode nicht durch einen repaint zu blocken (vor allem bei mehrfachaufrufen)
+        // Um die aufrufende Methode nicht durch einen repaint zu blocken (vor allem bei Mehrfachaufrufen)
         SwingUtilities.invokeLater(target::repaint);
     }
 
@@ -201,7 +201,7 @@ public class VisualMarkerEditor extends MouseAdapter {
         Component target = e.getComponent();
         Point actual = getActualPoint(e.getPoint());
         for (Marker m : workspace.getMarkers().getMarkersForImage(workspace.getTime())) {
-            Rectangle area = m.getLabelArea(target.getGraphics(), 1, 1);
+            Rectangle area = m.getLabelArea(target.getGraphics());
             if (area.contains(actual)) {
                 if (selectedMarker == null) {
                     setCursorAndRerender(target, Cursor.HAND_CURSOR);
@@ -219,7 +219,7 @@ public class VisualMarkerEditor extends MouseAdapter {
     private void checkHoveringDragPoint(MouseEvent e) {
         Component target = e.getComponent();
         Point actual = getActualPoint(e.getPoint());
-        Point[] dragPoints = Marker.getScalePoints(selectedMarker.getBounds(1, 1));
+        Point[] dragPoints = Marker.getScalePoints(selectedMarker.getBounds());
 
         for (int i = 0; i < dragPoints.length; i++) {
             if (actual.distance(dragPoints[i]) < Marker.LINE_WIDTH * Marker.LINE_WIDTH) {

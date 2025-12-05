@@ -33,7 +33,8 @@ public class Marker {
 
     /**
      * Default-Konstruktor (Rotes 500x200-Rechteck mit Beschriftung "Marker" in der oberen linken Ecke bei t=0)
-     * */
+     *
+     */
     public Marker() {
         this(new Point(250, 100), new Dimension(500, 200), 0, 0, MarkerShape.RECTANGLE, Color.RED, "Marker");
     }
@@ -53,6 +54,20 @@ public class Marker {
         setTo(to);
     }
 
+    public static Point[] getScalePoints(Rectangle bounds) {
+        Point[] points = new Point[8];
+        int i = 0;
+        for (int x = 0; x <= 2; x++) {
+            for (int y = 0; y <= 2; y++) {
+                if (x == 1 && y == 1) continue;
+                int dx = (bounds.width / 2) * x;
+                int dy = (bounds.height / 2) * y;
+                points[i] = new Point(bounds.x + dx, bounds.y + dy);
+                i++;
+            }
+        }
+        return points;
+    }
 
     //region Getter- und Settermethoden
     public Point getPos() {
@@ -130,12 +145,12 @@ public class Marker {
     public String getLabel() {
         return label;
     }
+    //endregion
 
     @JsonSetter("label")
     public void setLabel(String label) {
         this.label = label;
     }
-    //endregion
 
     //region Eigene öffentliche Methoden
     public void setResizing(boolean resizing) {
@@ -147,9 +162,8 @@ public class Marker {
     }
 
     public void draw(Graphics2D to) {
-        double scaleX = to.getTransform().getScaleX();
-        double scaleY = to.getTransform().getScaleY();
-        Rectangle actualBounds = getBounds(scaleX, scaleY);
+        Rectangle actualBounds = getBounds();
+
         Shape finalShape = switch (shape) {
             case RECTANGLE -> actualBounds;
             case ELLIPSE ->
@@ -163,7 +177,7 @@ public class Marker {
         to.draw(finalShape);
 
 
-        drawName(to, scaleX, scaleY);
+        drawName(to);
 
         if (resizing) {
             to.setColor(Color.WHITE);
@@ -182,22 +196,21 @@ public class Marker {
      *
      */
     @JsonIgnore
-    public Rectangle getBounds(double scaleX, double scaleY) {
+    public Rectangle getBounds() {
+        Point corner = getCorner();
+        return new Rectangle(corner, size);
+    }
+
+    @JsonIgnore
+    public Point getCorner() {
         Point center = pos;
-        Dimension scaleSize = new Dimension((int) (size.width * scaleX), (int) (size.height * scaleY));
-        Point corner = new Point(center.x - (scaleSize.width / 2), center.y - (scaleSize.height / 2));
-        return new Rectangle(corner, scaleSize);
+        return new Point(center.x - (size.width / 2), center.y - (size.height / 2));
     }
 
     @JsonIgnore
-    public Point getCorner(double scaleX, double scaleY) {
-        return getBounds(scaleX, scaleY).getLocation();
-    }
-
-    @JsonIgnore
-    public Rectangle getLabelArea(Graphics onto, double scaleX, double scaleY) {
+    public Rectangle getLabelArea(Graphics onto) {
         FontMetrics metrics = onto.getFontMetrics();
-        Point corner = getCorner(scaleX, scaleY);
+        Point corner = getCorner();
         return new Rectangle(corner, new Dimension(metrics.stringWidth(label), metrics.getHeight()));
     }
 
@@ -210,22 +223,6 @@ public class Marker {
         setFrom(other.getFrom());
         setTo(other.getTo());
         resizing = other.resizing;
-    }
-
-
-    public static Point[] getScalePoints(Rectangle bounds) {
-        Point[] points = new Point[8];
-        int i = 0;
-        for (int x = 0; x <= 2; x++) {
-            for (int y = 0; y <= 2; y++) {
-                if (x == 1 && y == 1) continue;
-                int dx = (bounds.width / 2) * x;
-                int dy = (bounds.height / 2) * y;
-                points[i] = new Point(bounds.x + dx, bounds.y + dy);
-                i++;
-            }
-        }
-        return points;
     }
 
     //endregion
@@ -241,8 +238,8 @@ public class Marker {
     //endregion
 
     //region Private- und Helfermethoden
-    private void drawName(Graphics2D to, double scaleX, double scaleY) {
-        Rectangle labelArea = getLabelArea(to, scaleX, scaleY);
+    private void drawName(Graphics2D to) {
+        Rectangle labelArea = getLabelArea(to);
         to.fill(labelArea);
         boolean lightColor = ColorUtils.calculatePerceivedBrightness(color) > 0.5;
         to.setColor(lightColor ? Color.BLACK : Color.WHITE);

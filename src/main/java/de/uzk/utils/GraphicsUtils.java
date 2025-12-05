@@ -18,9 +18,10 @@ public final class GraphicsUtils {
      * Diese Methode tut nichts, wenn `image.getType() == BufferedImage.TYPE_INT_RGB`.
      *
      * @param image Bild, welches transformiert werden soll.
-     * */
+     *
+     */
     public static BufferedImage transformToRGB(BufferedImage image) {
-        if(image.getType() == BufferedImage.TYPE_INT_RGB) {
+        if (image.getType() == BufferedImage.TYPE_INT_RGB) {
             // Hintergrund ist bereits intransparent
             return image;
         }
@@ -60,5 +61,4 @@ public final class GraphicsUtils {
         double scaleHeight = (double) container.getHeight() / imgHeight;
         return Math.min(scaleWidth, scaleHeight);
     }
-
 }

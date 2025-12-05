@@ -45,8 +45,6 @@ public class ImageEditor {
             List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
             if (newImage != null) {
                 recalculateTransform(newImage);
-                AffineTransformOp at = new AffineTransformOp(currentTransform, AffineTransformOp.TYPE_BILINEAR);
-                newImage = at.filter(newImage, null);
                 calculateRescaleOp().filter(newImage, newImage);
                 newImage = redraw(newImage, markers);
                 currentImage = newImage;
@@ -61,14 +59,20 @@ public class ImageEditor {
 
     // Einige Operationen (Zoom, Marker) nur durch Erstellen eines neuen Bildes umsetzbar
     private BufferedImage redraw(BufferedImage to, List<Marker> markers) {
-        int width = (int) (to.getWidth() * currentTransform.getScaleX());
-        int height = (int) (to.getHeight() * currentTransform.getScaleY());
+
+        double scale = (workspace.getConfig().getZoom()) / 100.;
+
+        int width = (int) (to.getWidth() * scale);
+        int height = (int) (to.getHeight() * scale);
         int offsetX = (to.getWidth() - width) / 2;
         int offsetY = (to.getHeight() - height) / 2;
         BufferedImage result = new BufferedImage(to.getWidth(), to.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = GraphicsUtils.createHighQualityGraphics2D(result.getGraphics());
-        g2d.drawImage(to, offsetX, offsetY, width, height, null);
+
         g2d.transform(currentTransform);
+        g2d.drawImage(to, offsetX, offsetY, width, height, null);
+        g2d.translate(offsetX, offsetY);
+        g2d.scale(scale, scale);
         for (Marker marker : markers) {
             marker.draw(g2d);
         }
@@ -93,7 +97,6 @@ public class ImageEditor {
         double radians = Math.toRadians(config.getRotation());
         boolean mirrorX = config.isMirrorX();
         boolean mirrorY = config.isMirrorY();
-        double zoom = (config.getZoom()) / 100.;
 
 
         double sin = Math.abs(Math.sin(radians));
@@ -111,10 +114,6 @@ public class ImageEditor {
         // Rotate
         at.rotate(radians, width / 2.0, height / 2.0);
         at.translate((newWidth - width) / 2.0, (newHeight - height) / 2.0);
-
-        // Zoom part I
-        // visuell geschieht der "zoom" erst in redraw()
-        at.scale(zoom, zoom);
 
         this.currentTransform = at;
     }
