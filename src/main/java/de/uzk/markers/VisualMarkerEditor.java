@@ -48,7 +48,7 @@ public class VisualMarkerEditor extends MouseAdapter {
             selectedMarker.setResizing(false);
             checkHoveringMarker(e);
         }
-        imageEditor.updateImage();
+        imageEditor.updateImage(false);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class VisualMarkerEditor extends MouseAdapter {
         int x = mousePos.x + size.width / 2;
         int y = mousePos.y + size.height / 2;
         selectedMarker.setPos(new Point(x, y));
-        imageEditor.updateImage();
+        imageEditor.updateImage(false);
     }
 
     private void handleResize(Point mousePos) {
@@ -187,7 +187,7 @@ public class VisualMarkerEditor extends MouseAdapter {
         }
         selectedMarker.setSize(new Dimension(width, height));
         selectedMarker.setPos(new Point(mx, my));
-        imageEditor.updateImage();
+        imageEditor.updateImage(false);
     }
 
     private void setCursorAndRerender(Component target, @MagicConstant(valuesFromClass = Cursor.class) int cursorType) {
@@ -234,8 +234,8 @@ public class VisualMarkerEditor extends MouseAdapter {
 
     private Point getActualPoint(Point event) {
         try {
-            Point2D actual = imageEditor.getCurrentTransform().inverseTransform(event, null);
-            return new Point((int) actual.getX(), (int) actual.getY());
+            Point2D actual = imageEditor.getMarkerTransform().inverseTransform(event, null);
+            return new Point((int) ( actual.getX()), (int) (actual.getY() ));
         } catch (NoninvertibleTransformException ex) {
             throw new IllegalStateException("Nur bijektive Transformationen (Rotation, Translation, Skalierung) werden verwendet – wie konnte das passieren?", ex);
         }

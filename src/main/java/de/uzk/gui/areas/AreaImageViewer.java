@@ -87,12 +87,14 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
     @Override
     public void handleAction(ActionType actionType) {
         switch (actionType) {
-            case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_EDIT_MARKER, ACTION_REMOVE_MARKER -> this.imageEditor.updateImage();
+            case ACTION_EDIT_IMAGE -> imageEditor.updateImage(true);
+            case ACTION_ADD_MARKER, ACTION_EDIT_MARKER, ACTION_REMOVE_MARKER -> imageEditor.updateImage(false);
             case SHORTCUT_TAKE_SNAPSHOT -> {
-                if (SnapshotHelper.saveSnapshot(this.imageEditor.getCurrentImage())) {
+                if (SnapshotHelper.saveSnapshot(imageEditor.getCurrentImage())) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SNAPSHOT_COUNTER);
                 }
             }
+            default -> {/* ignorieren */}
         }
     }
     //endregion
@@ -102,7 +104,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         // Komponenten aktivieren
         ComponentUtils.setEnabled(this.container, true);
 
-        this.imageEditor.updateImage();
+        this.imageEditor.updateImage(true);
         updateScrollBarValuesSecurely(this.scrollBarTime, workspace.getTime(), workspace.getMaxTime());
         updateScrollBarValuesSecurely(this.scrollBarLevel, workspace.getLevel(), workspace.getMaxLevel());
     }
@@ -113,14 +115,14 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         // Komponenten deaktivieren
         ComponentUtils.setEnabled(this.container, false);
 
-        this.imageEditor.updateImage();
+        this.imageEditor.updateImage(true);
         updateScrollBarValuesSecurely(this.scrollBarTime, 0, 0);
         updateScrollBarValuesSecurely(this.scrollBarLevel, 0, 0);
     }
 
     @Override
     public void update(Axis axis) {
-        this.imageEditor.updateImage();
+        this.imageEditor.updateImage(true);
         switch (axis) {
             case TIME -> ComponentUtils.setValueSecurely(this.scrollBarTime, workspace.getTime());
             case LEVEL -> ComponentUtils.setValueSecurely(this.scrollBarLevel, workspace.getLevel());

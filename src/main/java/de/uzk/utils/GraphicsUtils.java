@@ -61,4 +61,5 @@ public final class GraphicsUtils {
         double scaleHeight = (double) container.getHeight() / imgHeight;
         return Math.min(scaleWidth, scaleHeight);
     }
+
 }
