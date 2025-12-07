@@ -56,23 +56,56 @@ dem [Semantic Versioning](https://semver.org/).
 
 - **Unterstütztes Format**: LWF
 
-## [1.3] - 17.02.2013
+--------------------------------------------------------------------------------
 
-### Übernommene Basisversion
+## [1.2] - 02.03.2017
 
-Diese Version stellt die erste bekannte und weiterentwickelte Codebasis dar,
-auf der die aktuelle Entwicklungsreihe aufbaut.
+- **Versionsname**: Colonia 1.3
 
-### Funktionen und Merkmale
+--------------------------------------------------------------------------------
 
-- **4D-Visualisierung** (3D-Raum + Zeitdimension)
-- **Unterstützte Formate**: JPEG, LWF und TIFF
-- **Navigationssteuerung**: Grundlegende Steuerung und Anzeigeparameter
-- **Bildbearbeitung**: Horizontale / vertikale Spiegelung von Bildern
-- **Einheiten**: Neue, konfigurierbare Zeit- und Ebenen-Einheiten
-- **Momentaufnahmen**: Speichern einzelner Frames
-- **Checkpoint**: Möglichkeit, während der Navigation in der Zeitachse einen Referenzpunkt zu setzen.
-  Beim erneuten Aufrufen wird die Zeitdifferenz zwischen dem aktuellen Frame und dem gesetzten Checkpoint automatisch
-  berechnet.
-- **Projektspezifische Konfigurationen**: Speichern und Wiederherstellen projektbezogener Einstellungen (Dateityp,
-  Zeit-/Ebenentrenner, gewählte Zeit- und Ebeneneinheit)
+## [1.1] - 24.08.2010
+
+- **Versionsname**: 0.100824
+
+--------------------------------------------------------------------------------
+
+## [1.0] - 08.06.2010
+
+- **Versionsname**: 0.61
+- **Erste lauffähige Grundversion des 4D-Viewers** zur Visualisierung von Bildsequenzen in Zeit- und Ebenenrichtung
+
+### Hinzugefügt
+
+- **Anzeige von 4D-Daten** als einfache Bildsequenz ohne Skalierung – Bilder werden stets in ihrer Originalgröße
+  angezeigt.
+- **Unterstützte Bildformate**:
+    - TIFF (Standard)
+    - JPEG und LWF über auswählbaren Dateityp
+- **Grundnavigation und Bedienung**
+    - **UI-Buttons** für:
+        - Frame vor/zurück
+        - Sprünge um ±10 Frames
+        - Ebenen vor/zurück\
+          _(Hinweis: In dieser Version noch ohne vollständige Navigationslogik)_
+    - **Tastatursteuerung**:
+        - Links/Rechts: Frame vor/zurück
+        - Seite Hoch/Runter: Sprünge um ±10 Frames
+        - Hoch/Runter: Ebenen vor/zurück\
+          _(Hinweis: In dieser Version noch ohne vollständige Navigationslogik)_
+    - **Scrollbars** zur direkten Auswahl von Frame (Zeit) und Ebene
+    - **Anzeigenbereich** zur Darstellung des aktuell geladenen Bildes
+- **Anzeige des Bildverzeichnisses** in der UI\
+  _(Hinweis: Der angezeigte Pfad wird in dieser Version nicht dynamisch beim Navigieren aktualisiert; der konkrete
+  Bildname wird nicht mit angezeigt)_
+- **Zeit-, Ebenen- und Statusanzeige:**
+    - **Einfache Statusanzeige** zur Darstellung des aktuellen Frames und der aktuellen Ebene
+    - **Einstellbare Zeitdifferenz** pro Frame (Sekunden/Frame) mit automatischer Berechnung und Anzeige der Gesamtzeit
+      im Format `hh:mm:ss`
+- **Verzeichniswahl über Dialog** zum Laden von Bilddaten
+- **Konfigurierbares Dateinamensschema**:
+    - Einstellbare Trenner für Frame- und Ebeneninformationen
+    - Unterstützung für unterschiedliche Dateitypen
+- **Konfigurationsdatei** `config.cfg`:
+    - Speicherung des zuletzt verwendeten Bildverzeichnisses
+    - Speicherung des zuletzt gewählten Bildtyps
