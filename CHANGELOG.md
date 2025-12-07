@@ -68,6 +68,33 @@ dem [Semantic Versioning](https://semver.org/).
 
 - **Versionsname**: 0.100824
 
+## Hinzugefügt
+
+- **Einstellbare Ebenendifferenz**
+    - Analoge Funktion zur Zeitdifferenz
+    - Einführung einer konfigurierbaren Einheit für Ebenen (Mikrometer/Ebene)
+- **Bildbearbeitung**
+    - **Horizontale und vertikale Spiegelung** des aktuell angezeigten Bildes
+    - **Neue Buttons** in der UI (Spiegelung wird sofort angewendet)
+- **Momentaufnahmen (Snapshots)**
+    - Speichern einzelner Bilder im Verzeichnis der ausführbaren Anwendung
+    - Snapshot-Button in der UI hinzugefügt
+    - Dateiformat der gespeicherten Bilder:\
+      `images_<frame-sep><cur_frame><level_sep><cur_level>(<snapshot-count>).<Dateityp>`
+    - Snapshot-Zähler wird bei jedem Programmstart auf 0 gesetzt
+- **Checkpoint-Funktion**
+    - Setzen eines **Referenz-Frames** während der Navigation in der Frame-Achse
+    - Beim erneuten Aktivieren wird die **Frame-Differenz** zwischen dem aktuellen Frame und dem gesetzten Checkpoint
+      automatisch berechnet und angezeigt
+
+## Geändert
+
+- **Der konkrete Bildname** wird bei der Navigation korrekt aktualisiert und in der UI angezeigt (Anzeige im Pfad des
+  Bildverzeichnisses)
+- **Statusanzeige erweitert**
+    - Analog zur Zeitdifferenz wird nun auch die Ebenendifferenz in Klammern hinter dem Level angezeigt
+    - Checkpoint-Funktion in die Statusleiste integriert (Anzeige der Frame-Differenz zum gesetzten Referenz-Frame)
+
 --------------------------------------------------------------------------------
 
 ## [1.0] - 08.06.2010
@@ -94,14 +121,17 @@ dem [Semantic Versioning](https://semver.org/).
         - Hoch/Runter: Ebenen vor/zurück\
           _(Hinweis: In dieser Version noch ohne vollständige Navigationslogik)_
     - **Anzeigenbereich** zur Darstellung des aktuell geladenen Bildes
-    - **Horizontale und vertikale Bildlaufleisten im Anzeigebereich** ermöglichen die direkte Auswahl und Anpassung von Frame und Ebene
+    - **Horizontale und vertikale Bildlaufleisten im Anzeigebereich** ermöglichen die direkte Auswahl und Anpassung von
+      Frame und Ebene
 - **Anzeige des Bildverzeichnisses** in der UI\
   _(Hinweis: Der angezeigte Pfad wird in dieser Version nicht dynamisch beim Navigieren aktualisiert; der konkrete
   Bildname wird nicht mit angezeigt)_
-- **Zeit-, Ebenen- und Statusanzeige:**
-    - **Einfache Statusanzeige** zur Darstellung des aktuellen Frames und der aktuellen Ebene
-    - **Einstellbare Zeitdifferenz** pro Frame (Sekunden/Frame) mit automatischer Berechnung und Anzeige der Gesamtzeit
-      im Format `hh:mm:ss`
+- **Einstellbare Zeitdifferenz**
+    - Zeitdifferenz pro Frame (Sekunden/Frame) frei konfigurierbar
+    - Automatische Berechnung und Anzeige der Gesamtzeit
+- **Statusanzeige**:
+    - Darstellung des aktuellen **Frames** und der aktuellen **Ebene**
+    - Hinter dem Frame-Wert wird zusätzlich in Klammern die berechnete Gesamtzeit im Format `hh:mm:ss` angezeigt
 - **Verzeichniswahl über Dialog** zum Laden von Bilddaten
 - **Konfigurierbares Dateinamensschema**:
     - Einstellbare Trenner für Frame- und Ebeneninformationen
