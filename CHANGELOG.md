@@ -9,17 +9,17 @@ dem [Semantic Versioning](https://semver.org/).
 ### Geplante und in Entwicklung befindliche Funktionen
 
 - **Erweiterung des Reiters „Bearbeiten“**
-	- Neues Panel mit Schaltflächen für gängige Aktionen
-	- Zoom- und Zuschneidefunktionen (Crop)
-	- Regler für Helligkeit, Kontrast und Sättigung
+    - Neues Panel mit Schaltflächen für gängige Aktionen
+    - Zoom- und Zuschneidefunktionen (Crop)
+    - Regler für Helligkeit, Kontrast und Sättigung
 
 - **Überarbeitung des Reiters „Navigieren“**
-	- Neues Panel mit Schaltflächen für gängige Aktionen
-	- Vereinfachte und intuitive Bildnavigation
+    - Neues Panel mit Schaltflächen für gängige Aktionen
+    - Vereinfachte und intuitive Bildnavigation
 
 - **Allgemeine Verbesserungen (geplant)**
-	- Leistungsoptimierungen beim Laden großer Datensätze
-	- Erweiterte Einstellungsoptionen (Tastenkürzel)
+    - Leistungsoptimierungen beim Laden großer Datensätze
+    - Erweiterte Einstellungsoptionen (Tastenkürzel)
 
 ### Hinzugefügt
 
@@ -93,8 +93,9 @@ dem [Semantic Versioning](https://semver.org/).
         - Seite Hoch/Runter: Sprünge um ±10 Frames
         - Hoch/Runter: Ebenen vor/zurück\
           _(Hinweis: In dieser Version noch ohne vollständige Navigationslogik)_
-    - **Scrollbars** zur direkten Auswahl von Frame (Zeit) und Ebene
     - **Anzeigenbereich** zur Darstellung des aktuell geladenen Bildes
+    - **Horizontale und vertikale Scrollbars im Anzeigebereich** ermöglichen die direkte Auswahl und Anpassung von
+      Frame und Ebene
 - **Anzeige des Bildverzeichnisses** in der UI\
   _(Hinweis: Der angezeigte Pfad wird in dieser Version nicht dynamisch beim Navigieren aktualisiert; der konkrete
   Bildname wird nicht mit angezeigt)_
