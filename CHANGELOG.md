@@ -94,8 +94,7 @@ dem [Semantic Versioning](https://semver.org/).
         - Hoch/Runter: Ebenen vor/zurück\
           _(Hinweis: In dieser Version noch ohne vollständige Navigationslogik)_
     - **Anzeigenbereich** zur Darstellung des aktuell geladenen Bildes
-    - **Horizontale und vertikale Scrollbars im Anzeigebereich** ermöglichen die direkte Auswahl und Anpassung von
-      Frame und Ebene
+    - **Horizontale und vertikale Bildlaufleisten im Anzeigebereich** ermöglichen die direkte Auswahl und Anpassung von Frame und Ebene
 - **Anzeige des Bildverzeichnisses** in der UI\
   _(Hinweis: Der angezeigte Pfad wird in dieser Version nicht dynamisch beim Navigieren aktualisiert; der konkrete
   Bildname wird nicht mit angezeigt)_
