@@ -61,6 +61,24 @@ dem [Semantic Versioning](https://semver.org/).
 ## [1.2] - 02.03.2017
 
 - **Versionsname**: Colonia 1.3
+- **Erste bekannte und weiterentwickelte Codebasis**, auf der die Entwicklungsreihe (Version 2.*) aufbaut.
+
+## Geändert
+
+- **Statusleiste** zeigt nun Copyright-Hinweis an: „Provided for non-commercial use…“
+- **Standardgröße der UI** auf 800×600 festgelegt
+- **Bildbereich**: Navigation durch das Scrollen mit der Maus möglich (vertikal), erleichtert das Durchblättern der
+  Ebenen
+- **Codeoptimierung**: Laden von Bildern funktioniert jetzt zuverlässiger
+- **Refactoring**: Zwei Klassen zu einer zusammengefasst\
+  _(Hinweis: Monolithische Implementierung; stark gekoppelte Logik mit hoher Redundanz und mangelnder Modularität)_
+
+## Gefixt
+
+- **Navigationsbuttons** funktionieren nun korrekt
+- **Tastatursteuerung** funktioniert jetzt wie erwartet
+- **UI-Größenprobleme behoben**: Bilder werden nicht mehr automatisch zu groß skaliert
+    - Statusleiste bleibt sichtbar, feste Höhe für das Fenster gesetzt
 
 --------------------------------------------------------------------------------
 
@@ -80,7 +98,7 @@ dem [Semantic Versioning](https://semver.org/).
     - Speichern einzelner Bilder im Verzeichnis der ausführbaren Anwendung
     - Snapshot-Button in der UI hinzugefügt
     - Dateiformat der gespeicherten Bilder:\
-      `images_<frame-sep><cur_frame><level_sep><cur_level>(<snapshot-count>).<Dateityp>`
+      `images_<FRAME_SEP><frame><EBENE_SEP><ebene>(<count>).<Dateityp>`
     - Snapshot-Zähler wird bei jedem Programmstart auf 0 gesetzt
 - **Checkpoint-Funktion**
     - Setzen eines **Referenz-Frames** während der Navigation in der Frame-Achse
@@ -100,7 +118,7 @@ dem [Semantic Versioning](https://semver.org/).
 ## [1.0] - 08.06.2010
 
 - **Versionsname**: 0.61
-- **Erste lauffähige Grundversion des 4D-Viewers** zur Visualisierung von Bildsequenzen in Zeit- und Ebenenrichtung
+- **Erste Version des 4D-Viewers** zur Visualisierung von Bildsequenzen in Zeit- und Ebenenrichtung
 
 ### Hinzugefügt
 
@@ -120,8 +138,8 @@ dem [Semantic Versioning](https://semver.org/).
         - Seite Hoch/Runter: Sprünge um ±10 Frames
         - Hoch/Runter: Ebenen vor/zurück\
           _(Hinweis: In dieser Version noch ohne vollständige Navigationslogik)_
-    - **Anzeigenbereich** zur Darstellung des aktuell geladenen Bildes
-    - **Horizontale und vertikale Bildlaufleisten im Anzeigebereich** ermöglichen die direkte Auswahl und Anpassung von
+    - **Bildbereich** zur Darstellung des aktuell geladenen Bildes
+    - **Horizontale und vertikale Bildlaufleisten im Bildbereich** ermöglichen die direkte Auswahl und Anpassung von
       Frame und Ebene
 - **Anzeige des Bildverzeichnisses** in der UI\
   _(Hinweis: Der angezeigte Pfad wird in dieser Version nicht dynamisch beim Navigieren aktualisiert; der konkrete
