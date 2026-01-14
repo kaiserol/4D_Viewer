@@ -9,17 +9,17 @@ dem [Semantic Versioning](https://semver.org/).
 ### Geplante und in Entwicklung befindliche Funktionen
 
 - **Erweiterung des Reiters „Bearbeiten“**
-	- Neues Panel mit Schaltflächen für gängige Aktionen
-	- Zoom- und Zuschneidefunktionen (Crop)
-	- Regler für Helligkeit, Kontrast und Sättigung
+    - Neues Panel mit Schaltflächen für gängige Aktionen
+    - Zoom- und Zuschneidefunktionen (Crop)
+    - Regler für Helligkeit, Kontrast und Sättigung
 
 - **Überarbeitung des Reiters „Navigieren“**
-	- Neues Panel mit Schaltflächen für gängige Aktionen
-	- Vereinfachte und intuitive Bildnavigation
+    - Neues Panel mit Schaltflächen für gängige Aktionen
+    - Vereinfachte und intuitive Bildnavigation
 
 - **Allgemeine Verbesserungen (geplant)**
-	- Leistungsoptimierungen beim Laden großer Datensätze
-	- Erweiterte Einstellungsoptionen (Tastenkürzel)
+    - Leistungsoptimierungen beim Laden großer Datensätze
+    - Erweiterte Einstellungsoptionen (Tastenkürzel)
 
 ### Hinzugefügt
 
@@ -56,23 +56,104 @@ dem [Semantic Versioning](https://semver.org/).
 
 - **Unterstütztes Format**: LWF
 
-## [1.3] - 17.02.2013
+--------------------------------------------------------------------------------
 
-### Übernommene Basisversion
+## [1.2] - 02.03.2017
 
-Diese Version stellt die erste bekannte und weiterentwickelte Codebasis dar,
-auf der die aktuelle Entwicklungsreihe aufbaut.
+- **Versionsname**: Colonia 1.3
+- **Erste bekannte und weiterentwickelte Codebasis**, auf der die Entwicklungsreihe (Version 2.*) aufbaut.
 
-### Funktionen und Merkmale
+## Geändert
 
-- **4D-Visualisierung** (3D-Raum + Zeitdimension)
-- **Unterstützte Formate**: JPEG, LWF und TIFF
-- **Navigationssteuerung**: Grundlegende Steuerung und Anzeigeparameter
-- **Bildbearbeitung**: Horizontale / vertikale Spiegelung von Bildern
-- **Einheiten**: Neue, konfigurierbare Zeit- und Ebenen-Einheiten
-- **Momentaufnahmen**: Speichern einzelner Frames
-- **Checkpoint**: Möglichkeit, während der Navigation in der Zeitachse einen Referenzpunkt zu setzen.
-  Beim erneuten Aufrufen wird die Zeitdifferenz zwischen dem aktuellen Frame und dem gesetzten Checkpoint automatisch
-  berechnet.
-- **Projektspezifische Konfigurationen**: Speichern und Wiederherstellen projektbezogener Einstellungen (Dateityp,
-  Zeit-/Ebenentrenner, gewählte Zeit- und Ebeneneinheit)
+- **Statusleiste** zeigt nun Copyright-Hinweis an: „Provided for non-commercial use…“
+- **Standardgröße der UI** auf 800×600 festgelegt
+- **Bildbereich**: Navigation durch das Scrollen mit der Maus möglich (vertikal), erleichtert das Durchblättern der
+  Ebenen
+- **Codeoptimierung**: Laden von Bildern funktioniert jetzt zuverlässiger
+- **Refactoring**: Zwei Klassen zu einer zusammengefasst\
+  _(Hinweis: Monolithische Implementierung; stark gekoppelte Logik mit hoher Redundanz und mangelnder Modularität)_
+
+## Gefixt
+
+- **Navigationsbuttons** funktionieren nun korrekt
+- **Tastatursteuerung** funktioniert jetzt wie erwartet
+- **UI-Größenprobleme behoben**: Bilder werden nicht mehr automatisch zu groß skaliert
+    - Statusleiste bleibt sichtbar, feste Höhe für das Fenster gesetzt
+
+--------------------------------------------------------------------------------
+
+## [1.1] - 24.08.2010
+
+- **Versionsname**: 0.100824
+
+## Hinzugefügt
+
+- **Einstellbare Ebenendifferenz**
+    - Analoge Funktion zur Zeitdifferenz
+    - Einführung einer konfigurierbaren Einheit für Ebenen (Mikrometer/Ebene)
+- **Bildbearbeitung**
+    - **Horizontale und vertikale Spiegelung** des aktuell angezeigten Bildes
+    - **Neue Buttons** in der UI (Spiegelung wird sofort angewendet)
+- **Momentaufnahmen (Snapshots)**
+    - Speichern einzelner Bilder im Verzeichnis der ausführbaren Anwendung
+    - Snapshot-Button in der UI hinzugefügt
+    - Dateiformat der gespeicherten Bilder:\
+      `images_<FRAME_SEP><frame><EBENE_SEP><ebene>(<count>).<Dateityp>`
+    - Snapshot-Zähler wird bei jedem Programmstart auf 0 gesetzt
+- **Checkpoint-Funktion**
+    - Setzen eines **Referenz-Frames** während der Navigation in der Frame-Achse
+    - Beim erneuten Aktivieren wird die **Frame-Differenz** zwischen dem aktuellen Frame und dem gesetzten Checkpoint
+      automatisch berechnet und angezeigt
+
+## Geändert
+
+- **Der konkrete Bildname** wird bei der Navigation korrekt aktualisiert und in der UI angezeigt (Anzeige im Pfad des
+  Bildverzeichnisses)
+- **Statusanzeige erweitert**
+    - Analog zur Zeitdifferenz wird nun auch die Ebenendifferenz in Klammern hinter dem Level angezeigt
+    - Checkpoint-Funktion in die Statusleiste integriert (Anzeige der Frame-Differenz zum gesetzten Referenz-Frame)
+
+--------------------------------------------------------------------------------
+
+## [1.0] - 08.06.2010
+
+- **Versionsname**: 0.61
+- **Erste Version des 4D-Viewers** zur Visualisierung von Bildsequenzen in Zeit- und Ebenenrichtung
+
+### Hinzugefügt
+
+- **Anzeige von 4D-Daten** als einfache Bildsequenz ohne Skalierung – Bilder werden stets in ihrer Originalgröße
+  angezeigt.
+- **Unterstützte Bildformate**:
+    - TIFF (Standard)
+    - JPEG und LWF über auswählbaren Dateityp
+- **Grundnavigation und Bedienung**
+    - **UI-Buttons** für:
+        - Frame vor/zurück
+        - Sprünge um ±10 Frames
+        - Ebenen vor/zurück\
+          _(Hinweis: In dieser Version noch ohne vollständige Navigationslogik)_
+    - **Tastatursteuerung**:
+        - Links/Rechts: Frame vor/zurück
+        - Seite Hoch/Runter: Sprünge um ±10 Frames
+        - Hoch/Runter: Ebenen vor/zurück\
+          _(Hinweis: In dieser Version noch ohne vollständige Navigationslogik)_
+    - **Bildbereich** zur Darstellung des aktuell geladenen Bildes
+    - **Horizontale und vertikale Bildlaufleisten im Bildbereich** ermöglichen die direkte Auswahl und Anpassung von
+      Frame und Ebene
+- **Anzeige des Bildverzeichnisses** in der UI\
+  _(Hinweis: Der angezeigte Pfad wird in dieser Version nicht dynamisch beim Navigieren aktualisiert; der konkrete
+  Bildname wird nicht mit angezeigt)_
+- **Einstellbare Zeitdifferenz**
+    - Zeitdifferenz pro Frame (Sekunden/Frame) frei konfigurierbar
+    - Automatische Berechnung und Anzeige der Gesamtzeit
+- **Statusanzeige**:
+    - Darstellung des aktuellen **Frames** und der aktuellen **Ebene**
+    - Hinter dem Frame-Wert wird zusätzlich in Klammern die berechnete Gesamtzeit im Format `hh:mm:ss` angezeigt
+- **Verzeichniswahl über Dialog** zum Laden von Bilddaten
+- **Konfigurierbares Dateinamensschema**:
+    - Einstellbare Trenner für Frame- und Ebeneninformationen
+    - Unterstützung für unterschiedliche Dateitypen
+- **Konfigurationsdatei** `config.cfg`:
+    - Speicherung des zuletzt verwendeten Bildverzeichnisses
+    - Speicherung des zuletzt gewählten Bildtyps
