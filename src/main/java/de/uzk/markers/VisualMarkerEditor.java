@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
@@ -28,7 +29,7 @@ public class VisualMarkerEditor extends MouseAdapter {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (editMode == EditMode.RESIZE) {
+        if (editMode == EditMode.RESIZE || editMode == EditMode.ROTATE) {
             checkHoveringDragPoint(e);
         } else {
             checkHoveringMarker(e);
@@ -81,7 +82,18 @@ public class VisualMarkerEditor extends MouseAdapter {
             handleMove(actual);
         } else if (editMode == EditMode.RESIZE && dragPoint != null) {
             handleResize(actual);
+        } else if (editMode == EditMode.ROTATE) {
+
+            handleRotate(actual);
         }
+    }
+
+    private void handleRotate(Point actual) {
+        actual = derotate(actual);
+        int distance = actual.x - derotate(selectedMarker.getRotatePoint()).x;
+        int direction = distance < 0 ? -1 : 1;
+        selectedMarker.rotate(distance / 100 + direction);
+        imageEditor.updateImage(false);
     }
 
     private void handleMove(Point mousePos) {
@@ -94,99 +106,42 @@ public class VisualMarkerEditor extends MouseAdapter {
 
     private void handleResize(Point mousePos) {
         // Position des Markers
-        int mx = selectedMarker.getPos().x;
-        int my = selectedMarker.getPos().y;
-
-        // Position des Mauszeigers
-        int ex = mousePos.x;
-        int ey = mousePos.y;
+        int x = selectedMarker.getPos().x;
+        int y = selectedMarker.getPos().y;
 
         // Maße des Markers
         int width = selectedMarker.getSize().width;
         int height = selectedMarker.getSize().height;
 
-        // Breiten- und Höhenwachstum
-        int dw = 0;
-        int dh = 0;
+        mousePos = derotate(mousePos);
+        Point dragStart = derotate(selectedMarker.getScalePoints()[dragPoint.ordinal()]);
 
-        // Durch den Resize verursachte Verschiebung des Mittelpunktes
-        int dx = 0;
-        int dy = 0;
+        int dx = (int) (mousePos.getX() - dragStart.getX());
+        int dy = (int) (mousePos.getY() - dragStart.getY());
 
 
-        /*
-         * Formel für Achse A mit Größe G:
-         * dG = (mA - (G / 2) - eA)
-         * dA = (dG / 2) * sign(eA - mA)
-         */
-        switch (dragPoint) {
-            case TOP_LEFT -> {
-                dw = (mx - width / 2 - ex);
-                dh = (my - height / 2 - ey);
-                dx = -dw / 2;
-                dy = -dh / 2;
-            }
-            case MIDDLE_LEFT -> {
-                dw = (mx - width / 2 - ex);
-                dx = -dw / 2;
-            }
-            case BOTTOM_LEFT -> {
-                dw = (mx - width / 2 - ex);
-                dh = (ey - height / 2 - my);
-                dx = -dw / 2;
-                dy = dh / 2;
-            }
-            case TOP_CENTER -> {
-                dh = (my - height / 2 - ey);
-                dy = -dh / 2;
-            }
-            case BOTTOM_CENTER -> {
-                dh = (ey - height / 2 - my);
-                dy = dh / 2;
-            }
+        height += dragPoint.y() * dy;
+        y += dragPoint.isTop() ? 0 : dy / 2;
 
-            case TOP_RIGHT -> {
-                dw = (ex - width / 2 - mx);
-                dh = (my - height / 2 - ey);
-                dx = dw / 2;
-                dy = -dh / 2;
-            }
-            case MIDDLE_RIGHT -> {
-                dw = (ex - width / 2 - mx);
-                dx = dw / 2;
-            }
-
-            case BOTTOM_RIGHT -> {
-                dw = (ex - width / 2 - mx);
-                dh = (ey - height / 2 - my);
-                dx = dw / 2;
-                dy = dh / 2;
-            }
-
-        }
-
-        width += dw;
-        height += dh;
-        mx += dx;
-        my += dy;
-
+        width += dragPoint.x() * dx;
+        x += dragPoint.isCenter() ? 0 : dx / 2;
 
         boolean flipped = false;
         if (width < 0) {
             width = -width;
-            mx -= width;
+            x -= width;
             flipped = true;
         }
         if (height < 0) {
             height = -height;
-            my -= height;
+            y -= height;
             flipped = true;
         }
         if (flipped) {
             dragPoint = dragPoint.getOpposite();
         }
         selectedMarker.setSize(new Dimension(width, height));
-        selectedMarker.setPos(new Point(mx, my));
+        selectedMarker.setPos(new Point(x, y));
         imageEditor.updateImage(false);
     }
 
@@ -219,9 +174,10 @@ public class VisualMarkerEditor extends MouseAdapter {
     private void checkHoveringDragPoint(MouseEvent e) {
         Component target = e.getComponent();
         Point actual = getActualPoint(e.getPoint());
-        Point[] dragPoints = Marker.getScalePoints(selectedMarker.getBounds());
+        Point[] dragPoints = selectedMarker.getScalePoints();
 
         for (int i = 0; i < dragPoints.length; i++) {
+
             if (actual.distance(dragPoints[i]) < Marker.LINE_WIDTH * Marker.LINE_WIDTH) {
                 setCursorAndRerender(target, DRAG_CURSORS[i]);
                 dragPoint = DragPoint.values()[i];
@@ -229,20 +185,36 @@ public class VisualMarkerEditor extends MouseAdapter {
             }
         }
         dragPoint = null;
-        setCursorAndRerender(target, Cursor.CROSSHAIR_CURSOR);
+
+        Point rotPoint = selectedMarker.getRotatePoint();
+        if (actual.distance(rotPoint) < Marker.LINE_WIDTH * Marker.LINE_WIDTH) {
+            setCursorAndRerender(target, Cursor.WAIT_CURSOR);
+            editMode = EditMode.ROTATE;
+        } else {
+            editMode = EditMode.RESIZE;
+            setCursorAndRerender(target, Cursor.CROSSHAIR_CURSOR);
+        }
     }
 
     private Point getActualPoint(Point event) {
+        AffineTransform transform = imageEditor.getMarkerTransform();
+
         try {
-            Point2D actual = imageEditor.getMarkerTransform().inverseTransform(event, null);
-            return new Point((int) ( actual.getX()), (int) (actual.getY() ));
+            Point2D actual = transform.inverseTransform(event, null);
+            return new Point((int) (actual.getX()), (int) (actual.getY()));
         } catch (NoninvertibleTransformException ex) {
             throw new IllegalStateException("Nur bijektive Transformationen (Rotation, Translation, Skalierung) werden verwendet – wie konnte das passieren?", ex);
         }
     }
 
+    // Hilfsfunktion; Rotiert `p` gegen den Uhrzeigersinn um `selectedMarker.getRotation()` Grad.
+    private Point derotate(Point p) {
+        Point2D derotated = AffineTransform.getRotateInstance(-Math.toRadians(selectedMarker.getRotation())).transform(p, null);
+        return new Point((int) derotated.getX(), (int) derotated.getY());
+    }
+
     private enum EditMode {
-        NONE, MOVE, RESIZE,
+        NONE, MOVE, RESIZE, ROTATE
     }
 
     private enum DragPoint {
@@ -258,6 +230,30 @@ public class VisualMarkerEditor extends MouseAdapter {
                 case BOTTOM_LEFT -> TOP_RIGHT;
                 case BOTTOM_CENTER -> TOP_CENTER;
                 case BOTTOM_RIGHT -> TOP_LEFT;
+            };
+        }
+
+        public boolean isTop() {
+            return this == TOP_LEFT || this == TOP_CENTER || this == TOP_RIGHT;
+        }
+
+        public boolean isCenter() {
+            return this == TOP_CENTER || this == BOTTOM_CENTER;
+        }
+
+        public int x() {
+            return switch (this) {
+                case TOP_LEFT, MIDDLE_LEFT, BOTTOM_LEFT -> -1;
+                case TOP_CENTER, BOTTOM_CENTER -> 0;
+                case TOP_RIGHT, MIDDLE_RIGHT, BOTTOM_RIGHT -> 1;
+            };
+        }
+
+        public int y() {
+            return switch (this) {
+                case TOP_LEFT, TOP_CENTER, TOP_RIGHT -> -1;
+                case MIDDLE_LEFT, MIDDLE_RIGHT -> 0;
+                case BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT -> 1;
             };
         }
     }
