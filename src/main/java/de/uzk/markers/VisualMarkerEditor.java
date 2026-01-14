@@ -83,7 +83,6 @@ public class VisualMarkerEditor extends MouseAdapter {
         } else if (editMode == EditMode.RESIZE && dragPoint != null) {
             handleResize(actual);
         } else if (editMode == EditMode.ROTATE) {
-
             handleRotate(actual);
         }
     }
@@ -97,9 +96,11 @@ public class VisualMarkerEditor extends MouseAdapter {
     }
 
     private void handleMove(Point mousePos) {
+        double theta = Math.toRadians(selectedMarker.getRotation());
         Dimension size = selectedMarker.getSize();
-        int x = mousePos.x + size.width / 2;
-        int y = mousePos.y + size.height / 2;
+
+        int x = mousePos.x + (int)(size.width * Math.cos(theta) - size.height * Math.sin(theta)) / 2;
+        int y = mousePos.y + (int)(size.height *Math.cos(theta) + size.width * Math.sin(theta))/ 2;
         selectedMarker.setPos(new Point(x, y));
         imageEditor.updateImage(false);
     }
@@ -156,7 +157,7 @@ public class VisualMarkerEditor extends MouseAdapter {
         Component target = e.getComponent();
         Point actual = getActualPoint(e.getPoint());
         for (Marker m : workspace.getMarkers().getMarkersForImage(workspace.getTime())) {
-            Rectangle area = m.getLabelArea(target.getGraphics());
+            Shape area = m.getRotationTransform().createTransformedShape(m.getLabelArea(target.getGraphics()));
             if (area.contains(actual)) {
                 if (selectedMarker == null) {
                     setCursorAndRerender(target, Cursor.HAND_CURSOR);
