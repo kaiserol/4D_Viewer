@@ -16,10 +16,12 @@ import java.awt.event.MouseEvent;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
+
+public class MarkerInfo extends JPanel
 /* Nur JPanel erweitern, da diese Komponente dynamisch während UI Updates erstellt wird.
-AreaContainerInteractive würde während der initialisierung eventhandler registrieren, was eine Exception
- auslöst. */
-public class MarkerInfo extends JPanel {
+   `extends AreaContainerInteractive` würde während der initialisierung Eventhandler registrieren,
+    was einen Stack-Overflow auslöst */
+{
     private final Gui gui;
     private final Marker marker;
 

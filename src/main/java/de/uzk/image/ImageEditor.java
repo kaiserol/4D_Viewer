@@ -19,7 +19,9 @@ public class ImageEditor {
     private BufferedImage currentImage;
     private BufferedImage cache;
     private Marker focusedMarker;
+    // Transformationen, die auf das Bild angewendet werden.
     private AffineTransform imageTransform = new AffineTransform();
+    // Transformationen, die auf Marker angewendet werden.
     private AffineTransform markerTransform = new AffineTransform();
     private Consumer<BufferedImage> newImageConsumer;
     private final Rectangle zoomRect = new Rectangle(0, 0);
@@ -29,6 +31,10 @@ public class ImageEditor {
         return currentImage;
     }
 
+    /**
+     * Die affine Transformation, die auf Marker angewendet wird.
+     * Diese ist u.a. relevant für Koordinatenberechnungen, weswegen sie `public` ist.
+     * */
     public AffineTransform getMarkerTransform() {
         return markerTransform;
     }

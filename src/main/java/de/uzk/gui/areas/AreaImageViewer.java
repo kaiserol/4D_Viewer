@@ -8,7 +8,7 @@ import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
 import de.uzk.image.ImageEditor;
 import de.uzk.io.SnapshotHelper;
-import de.uzk.markers.VisualMarkerEditor;
+import de.uzk.markers.MarkerInteractionHandler;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
 
@@ -28,7 +28,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
     private JScrollBar scrollBarTime, scrollBarLevel;
 
     private ImageEditor imageEditor;
-    private VisualMarkerEditor markerEditor;
+    private MarkerInteractionHandler markerEditor;
 
     public AreaImageViewer(Gui gui) {
         super(new JPanel(), gui);
@@ -64,7 +64,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         this.imageEditor = new ImageEditor();
         this.imageEditor.onNewImageAvailable(this.panelImage::updateImage);
 
-        this.markerEditor = new VisualMarkerEditor(this.imageEditor);
+        this.markerEditor = new MarkerInteractionHandler(this.imageEditor);
         this.panelImage.addMouseListener(this.markerEditor);
         this.panelImage.addMouseMotionListener(this.markerEditor);
     }

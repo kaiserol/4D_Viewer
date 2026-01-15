@@ -14,7 +14,16 @@ import java.awt.geom.Point2D;
 
 import static de.uzk.Main.workspace;
 
-public class VisualMarkerEditor extends MouseAdapter {
+/**
+ * {@link java.awt.event.MouseAdapter}-Override, der die folgenden Funktionen zur Markerbearbeitung bereitstellt:
+ * <ul>
+ *  <li>Verschieben von Markern über Mausziehen</li>
+ *  <li>Selektieren von Markern durch Doppelklicken</li>
+ *  <li>Drehen und Skalieren von selektierten Markern</li>
+ * </ul>
+ * Andere Markereigenschaften werden vom Nutzer über einen UI-Dialog verändert (siehe {@link de.uzk.gui.marker.MarkerEditor})
+ * */
+public class MarkerInteractionHandler extends MouseAdapter {
 
     private static final int[] DRAG_CURSORS = {Cursor.NW_RESIZE_CURSOR, Cursor.W_RESIZE_CURSOR, Cursor.SW_RESIZE_CURSOR, Cursor.N_RESIZE_CURSOR, Cursor.S_RESIZE_CURSOR, Cursor.NE_RESIZE_CURSOR, Cursor.E_RESIZE_CURSOR, Cursor.SE_RESIZE_CURSOR};
 
@@ -23,10 +32,12 @@ public class VisualMarkerEditor extends MouseAdapter {
     private EditMode editMode = EditMode.NONE;
     private DragPoint dragPoint = null;
 
-    public VisualMarkerEditor(ImageEditor imageEditor) {
+    public MarkerInteractionHandler(ImageEditor imageEditor) {
         this.imageEditor = imageEditor;
     }
 
+    //region Maus-Tracking
+    //region MouseAdapter Overrides
     @Override
     public void mouseMoved(MouseEvent e) {
         if (editMode == EditMode.RESIZE || editMode == EditMode.ROTATE) {
@@ -87,6 +98,70 @@ public class VisualMarkerEditor extends MouseAdapter {
             handleRotate(actual);
         }
     }
+    //endregion
+
+    //region Maustracking-Hilfsmethoden
+    private void checkHoveringMarker(MouseEvent e) {
+        Component target = e.getComponent();
+        Point actual = getActualPoint(e.getPoint());
+        for (Marker m : workspace.getMarkers().getMarkersForImage(workspace.getTime())) {
+            Shape area = m.getRotationTransform().createTransformedShape(m.getLabelArea(target.getGraphics()));
+            if (area.contains(actual)) {
+                if (selectedMarker == null) {
+                    setCursorAndRerender(target, Cursor.HAND_CURSOR);
+                    selectedMarker = m;
+                }
+                return;
+            }
+        }
+
+        selectedMarker = null;
+        setCursorAndRerender(target, Cursor.DEFAULT_CURSOR);
+    }
+
+    @SuppressWarnings("MagicConstant")
+    private void checkHoveringDragPoint(MouseEvent e) {
+        Component target = e.getComponent();
+        Point actual = getActualPoint(e.getPoint());
+        Point[] dragPoints = selectedMarker.getScalePoints();
+
+        for (int i = 0; i < dragPoints.length; i++) {
+
+            if (actual.distance(dragPoints[i]) < Marker.LINE_WIDTH * Marker.LINE_WIDTH) {
+                setCursorAndRerender(target, DRAG_CURSORS[i]);
+                dragPoint = DragPoint.values()[i];
+                return;
+            }
+        }
+        dragPoint = null;
+
+        Point rotPoint = selectedMarker.getRotatePoint();
+        if (actual.distance(rotPoint) < Marker.LINE_WIDTH * Marker.LINE_WIDTH) {
+            setCursorAndRerender(target, Cursor.WAIT_CURSOR);
+            editMode = EditMode.ROTATE;
+        } else {
+            editMode = EditMode.RESIZE;
+            setCursorAndRerender(target, Cursor.CROSSHAIR_CURSOR);
+        }
+    }
+
+    /**
+     *
+    * */
+    private Point getActualPoint(Point event) {
+        AffineTransform transform = imageEditor.getMarkerTransform();
+
+        try {
+            Point2D actual = transform.inverseTransform(event, null);
+            return new Point((int) (actual.getX()), (int) (actual.getY()));
+        } catch (NoninvertibleTransformException ex) {
+            throw new IllegalStateException("Nur bijektive Transformationen (Rotation, Translation, Skalierung) werden verwendet – wie konnte das passieren?", ex);
+        }
+    }
+    //endregion
+    //endregion
+
+    //region Berechnungsmethoden
 
     private void handleRotate(Point actual) {
         actual = derotate(actual);
@@ -117,8 +192,7 @@ public class VisualMarkerEditor extends MouseAdapter {
         double height = selectedMarker.getSize().height;
 
 
-        mousePos = derotate(mousePos);
-        Point dragStart = derotate(selectedMarker.getScalePoints()[dragPoint.ordinal()]);
+        Point dragStart = selectedMarker.getScalePoints()[dragPoint.ordinal()];
 
         double dx =  (mousePos.getX() - dragStart.getX());
         double dy =  (mousePos.getY() - dragStart.getY());
@@ -170,6 +244,9 @@ public class VisualMarkerEditor extends MouseAdapter {
         imageEditor.updateImage(false);
     }
 
+    //endregion
+
+    //region Sonstige Hilfsmethoden
     private void setCursorAndRerender(Component target, @MagicConstant(valuesFromClass = Cursor.class) int cursorType) {
         if (target.getCursor().getType() == cursorType) return;
         target.setCursor(Cursor.getPredefinedCursor(cursorType));
@@ -177,67 +254,14 @@ public class VisualMarkerEditor extends MouseAdapter {
         SwingUtilities.invokeLater(target::repaint);
     }
 
-    private void checkHoveringMarker(MouseEvent e) {
-        Component target = e.getComponent();
-        Point actual = getActualPoint(e.getPoint());
-        for (Marker m : workspace.getMarkers().getMarkersForImage(workspace.getTime())) {
-            Shape area = m.getRotationTransform().createTransformedShape(m.getLabelArea(target.getGraphics()));
-            if (area.contains(actual)) {
-                if (selectedMarker == null) {
-                    setCursorAndRerender(target, Cursor.HAND_CURSOR);
-                    selectedMarker = m;
-                }
-                return;
-            }
-        }
-
-        selectedMarker = null;
-        setCursorAndRerender(target, Cursor.DEFAULT_CURSOR);
-    }
-
-    @SuppressWarnings("MagicConstant")
-    private void checkHoveringDragPoint(MouseEvent e) {
-        Component target = e.getComponent();
-        Point actual = getActualPoint(e.getPoint());
-        Point[] dragPoints = selectedMarker.getScalePoints();
-
-        for (int i = 0; i < dragPoints.length; i++) {
-
-            if (actual.distance(dragPoints[i]) < Marker.LINE_WIDTH * Marker.LINE_WIDTH) {
-                setCursorAndRerender(target, DRAG_CURSORS[i]);
-                dragPoint = DragPoint.values()[i];
-                return;
-            }
-        }
-        dragPoint = null;
-
-        Point rotPoint = selectedMarker.getRotatePoint();
-        if (actual.distance(rotPoint) < Marker.LINE_WIDTH * Marker.LINE_WIDTH) {
-            setCursorAndRerender(target, Cursor.WAIT_CURSOR);
-            editMode = EditMode.ROTATE;
-        } else {
-            editMode = EditMode.RESIZE;
-            setCursorAndRerender(target, Cursor.CROSSHAIR_CURSOR);
-        }
-    }
-
-    private Point getActualPoint(Point event) {
-        AffineTransform transform = imageEditor.getMarkerTransform();
-
-        try {
-            Point2D actual = transform.inverseTransform(event, null);
-            return new Point((int) (actual.getX()), (int) (actual.getY()));
-        } catch (NoninvertibleTransformException ex) {
-            throw new IllegalStateException("Nur bijektive Transformationen (Rotation, Translation, Skalierung) werden verwendet – wie konnte das passieren?", ex);
-        }
-    }
-
     // Hilfsfunktion; Rotiert `p` gegen den Uhrzeigersinn um `selectedMarker.getRotation()` Grad.
     private Point derotate(Point p) {
         Point2D derotated = AffineTransform.getRotateInstance(-Math.toRadians(selectedMarker.getRotation())).transform(p, null);
         return new Point((int) derotated.getX(), (int) derotated.getY());
     }
+    //endregion
 
+    //region innere Enums
     private enum EditMode {
         NONE, MOVE, RESIZE, ROTATE
     }
@@ -282,6 +306,7 @@ public class VisualMarkerEditor extends MouseAdapter {
             };
         }
     }
+    //endregion
 
 
 }

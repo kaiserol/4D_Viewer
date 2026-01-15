@@ -15,6 +15,11 @@ import java.util.function.Consumer;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
+/**
+ * Dialog zum Bearbeiten von Markereigenschaften.
+ * Diese Klasse ist nur für "selten" veränderte Eigenschaften wie Farbe, Name etc. zuständig
+ * Markerposition, -größe und -rotation finden in {@link de.uzk.markers.MarkerInteractionHandler} statt.
+ * */
 public class MarkerEditor extends Container {
     private final Marker marker;
     private final DialogColorChooser dialogColorChooser;
@@ -66,13 +71,16 @@ public class MarkerEditor extends Container {
         gbc.gridwidth = 2;
         this.add(getColorButton(), gbc);
 
+
         TimeInput fromInput = new TimeInput(marker.getFrom(), 0, marker.getTo());
         TimeInput toInput = new TimeInput(marker.getTo(), marker.getFrom(), workspace.getMaxTime());
 
+        // Diese beiden Handler stellen sicher, dass from <= to
         fromInput.onChange(value -> {
             this.marker.setFrom(value);
             toInput.setMinimum(value);
         });
+
         toInput.onChange(value -> {
             this.marker.setTo(value);
             fromInput.setMaximum(value);
