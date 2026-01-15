@@ -24,11 +24,9 @@ import static de.uzk.Main.workspace;
 public class AreaImageViewer extends ObserverContainer<JPanel> {
     // Gui Elemente
     private JPanel panelView;
-    private SensitiveImagePanel panelImage;
     private JScrollBar scrollBarTime, scrollBarLevel;
 
     private ImageEditor imageEditor;
-    private MarkerInteractionHandler markerEditor;
 
     public AreaImageViewer(Gui gui) {
         super(new JPanel(), gui);
@@ -49,12 +47,12 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
 
         // 2. Bildbereich mit Scrollbars hinzufügen
         this.panelView = new JPanel(new BorderLayout());
-        this.panelImage = new SensitiveImagePanel();
+        SensitiveImagePanel imagePanel = new SensitiveImagePanel();
         this.scrollBarTime = ComponentUtils.createScrollBar(Adjustable.HORIZONTAL, newValue -> handleScrollAction(newValue, Axis.TIME, this.scrollBarTime));
         this.scrollBarLevel = ComponentUtils.createScrollBar(Adjustable.VERTICAL, newValue -> handleScrollAction(newValue, Axis.LEVEL, this.scrollBarLevel));
 
         int scrollBarWidth = UIManager.getInt("ScrollBar.width");
-        this.panelView.add(this.panelImage, BorderLayout.CENTER);
+        this.panelView.add(imagePanel, BorderLayout.CENTER);
         this.panelView.add(createRightSpace(this.scrollBarTime, scrollBarWidth), BorderLayout.SOUTH);
         this.panelView.add(this.scrollBarLevel, BorderLayout.EAST);
 
@@ -62,11 +60,11 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         this.container.setMinimumSize(new Dimension(scrollBarWidth * 3, scrollBarWidth * 3));
 
         this.imageEditor = new ImageEditor();
-        this.imageEditor.onNewImageAvailable(this.panelImage::updateImage);
+        this.imageEditor.onNewImageAvailable(imagePanel::updateImage);
 
-        this.markerEditor = new MarkerInteractionHandler(this.imageEditor);
-        this.panelImage.addMouseListener(this.markerEditor);
-        this.panelImage.addMouseMotionListener(this.markerEditor);
+        MarkerInteractionHandler markerInteractionHandler = new MarkerInteractionHandler(this.imageEditor);
+        imagePanel.addMouseListener(markerInteractionHandler);
+        imagePanel.addMouseMotionListener(markerInteractionHandler);
     }
 
     //region Komponenten-Erzeugung
