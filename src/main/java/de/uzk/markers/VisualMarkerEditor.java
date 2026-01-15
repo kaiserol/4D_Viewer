@@ -39,14 +39,15 @@ public class VisualMarkerEditor extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (selectedMarker == null) return;
-        if (e.getClickCount() == 2) {
+
+        if (e.getClickCount() >= 2) {
             editMode = EditMode.RESIZE;
-            selectedMarker.setResizing(true);
+            imageEditor.setFocusedMarker(selectedMarker);
             setCursorAndRerender(e.getComponent(), Cursor.CROSSHAIR_CURSOR);
 
-        } else if (e.getClickCount() == 1) {
+        } else {
             this.editMode = EditMode.NONE;
-            selectedMarker.setResizing(false);
+            imageEditor.setFocusedMarker(null);
             checkHoveringMarker(e);
         }
         imageEditor.updateImage(false);
@@ -107,25 +108,41 @@ public class VisualMarkerEditor extends MouseAdapter {
 
     private void handleResize(Point mousePos) {
         // Position des Markers
-        int x = selectedMarker.getPos().x;
-        int y = selectedMarker.getPos().y;
+        double x = selectedMarker.getPos().x;
+        double y = selectedMarker.getPos().y;
 
-        // Maße des Markers
-        int width = selectedMarker.getSize().width;
-        int height = selectedMarker.getSize().height;
+
+        // Maße des Markers.
+        double width = selectedMarker.getSize().width;
+        double height = selectedMarker.getSize().height;
+
 
         mousePos = derotate(mousePos);
         Point dragStart = derotate(selectedMarker.getScalePoints()[dragPoint.ordinal()]);
 
-        int dx = (int) (mousePos.getX() - dragStart.getX());
-        int dy = (int) (mousePos.getY() - dragStart.getY());
+        double dx =  (mousePos.getX() - dragStart.getX());
+        double dy =  (mousePos.getY() - dragStart.getY());
 
-
-        height += dragPoint.y() * dy;
-        y += dragPoint.isTop() ? 0 : dy / 2;
 
         width += dragPoint.x() * dx;
-        x += dragPoint.isCenter() ? 0 : dx / 2;
+        height += dragPoint.y() * dy;
+
+        double theta = Math.toRadians(selectedMarker.getRotation());
+        double sin = Math.sin(theta);
+        double cos = Math.cos(theta);
+
+        if(dragPoint.isCenter()) {
+            x -= ( (dy / 2.) * sin);
+            y += ((dy/ 2.) * cos);
+        } else if (dragPoint.isMiddle()) {
+            x += ((dx / 2.) * cos);
+            y += ((dx / 2.) * sin);
+        } else {
+            x += ((dx / 2.) * cos - (dy / 2.) * sin);
+            y += ((dy / 2.) * cos + (dx / 2.) * sin);
+        }
+
+
 
         boolean flipped = false;
         if (width < 0) {
@@ -141,8 +158,15 @@ public class VisualMarkerEditor extends MouseAdapter {
         if (flipped) {
             dragPoint = dragPoint.getOpposite();
         }
-        selectedMarker.setSize(new Dimension(width, height));
-        selectedMarker.setPos(new Point(x, y));
+
+        // Rundungsfehler werden bei einfachem Cast sonst schnell visuell sichtbar
+        x = Math.round(x);
+        y = Math.round(y);
+        width = Math.round(width);
+        height = Math.round(height);
+
+        selectedMarker.setSize(new Dimension((int)width, (int)height));
+        selectedMarker.setPos(new Point((int)x, (int)y));
         imageEditor.updateImage(false);
     }
 
@@ -234,8 +258,8 @@ public class VisualMarkerEditor extends MouseAdapter {
             };
         }
 
-        public boolean isTop() {
-            return this == TOP_LEFT || this == TOP_CENTER || this == TOP_RIGHT;
+        public boolean isMiddle() {
+            return this == MIDDLE_LEFT || this == MIDDLE_RIGHT;
         }
 
         public boolean isCenter() {
