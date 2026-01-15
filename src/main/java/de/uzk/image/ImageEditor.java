@@ -18,6 +18,7 @@ import static de.uzk.Main.workspace;
 public class ImageEditor {
     private BufferedImage currentImage;
     private BufferedImage cache;
+    private Marker focusedMarker;
     private AffineTransform imageTransform = new AffineTransform();
     private AffineTransform markerTransform = new AffineTransform();
     private Consumer<BufferedImage> newImageConsumer;
@@ -37,6 +38,10 @@ public class ImageEditor {
     //region public Methoden für Bildupdates
     public void onNewImageAvailable(Consumer<BufferedImage> listener) {
         this.newImageConsumer = listener;
+    }
+
+    public void setFocusedMarker(Marker marker) {
+        this.focusedMarker = marker;
     }
 
     public void updateImage(boolean needsFullRedraw) {
@@ -80,6 +85,11 @@ public class ImageEditor {
 
         for (Marker marker : markers) {
             marker.draw(g2d);
+
+        }
+        if(focusedMarker != null) {
+            // Wenn mehrere Marker überlappen, sollten die Eckpunkte in der obersten Ebene liegen
+            focusedMarker.drawResizeHelpers(g2d);
         }
         g2d.dispose();
         return result;

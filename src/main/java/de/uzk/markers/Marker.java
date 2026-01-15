@@ -31,11 +31,6 @@ public class Marker {
     private Color color;
     private String label;
 
-    // Ob der Marker gerade dabei ist, im {@link de.uzk.markers.VisualMarkerEditor} resized zu werden
-    // TODO: auslagern (gehört nicht zu den Markereigenschaften)
-    @JsonIgnore
-    private boolean resizing = false;
-
     /**
      * Default-Konstruktor (Rotes 500x200-Rechteck mit Beschriftung "Marker" in der oberen linken Ecke bei t=0)
      *
@@ -168,55 +163,49 @@ public class Marker {
     }
 
     //region Eigene öffentliche Methoden
-    public void setResizing(boolean resizing) {
-        this.resizing = resizing;
-    }
 
     public boolean shouldRender(int at) {
         return this.from <= at && this.to >= at;
     }
 
-    public void draw(Graphics2D to) {
+    public void draw(Graphics2D g2d) {
         Rectangle actualBounds = getShapeBounds();
         AffineTransform rot = getRotationTransform();
-        Shape finalShape = rot.createTransformedShape(switch (shape) {
+        Shape finalShape = switch (shape) {
             case RECTANGLE -> actualBounds;
             case ELLIPSE ->
                 new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
 
-        });
-
-        to = (Graphics2D) to.create();
-        to.setColor(color);
-        to.setStroke(new BasicStroke(LINE_WIDTH));
-
-        to.draw(finalShape);
-
-        to.transform(rot);
-        drawName(to);
-        to.rotate(Math.toRadians(-rotation), pos.x, pos.y);
+        };
 
 
+        g2d = (Graphics2D) g2d.create();
+        g2d.setColor(color);
+        g2d.setStroke(new BasicStroke(LINE_WIDTH));
+        g2d.transform(rot);
 
-        if (resizing) {
+        g2d.draw(finalShape);
+        drawName(g2d);
+    }
 
-            to.setColor(Color.WHITE);
+    public void drawResizeHelpers(Graphics2D g2d) {
+        g2d = (Graphics2D) g2d.create();
+        g2d.setColor(Color.WHITE);
 
-            Point[] scalePoints = getScalePoints();
-            for (Point point : scalePoints) {
-                Shape c = new Ellipse2D.Float(point.x - (float) LINE_WIDTH, point.y - (float) LINE_WIDTH, 2.0f * LINE_WIDTH, 2.0f * LINE_WIDTH);
-                to.fill(c);
-            }
-
-            Point rotPoint = getRotatePoint();
-            Point topCenter = scalePoints[3];
-
-            Shape r = new Ellipse2D.Float(rotPoint.x - (float) LINE_WIDTH, rotPoint.y - (float) LINE_WIDTH, 2.0f * LINE_WIDTH, 2.0f * LINE_WIDTH);
-            to.fill(r);
-            to.setStroke(new BasicStroke(1));
-
-            to.drawLine(topCenter.x , topCenter.y, rotPoint.x, rotPoint.y);
+        Point[] scalePoints = getScalePoints();
+        for (Point point : scalePoints) {
+            Shape c = new Ellipse2D.Float(point.x - (float) LINE_WIDTH, point.y - (float) LINE_WIDTH, 2.0f * LINE_WIDTH, 2.0f * LINE_WIDTH);
+            g2d.fill(c);
         }
+
+        Point rotPoint = getRotatePoint();
+        Point topCenter = scalePoints[3];
+
+        Shape r = new Ellipse2D.Float(rotPoint.x - (float) LINE_WIDTH, rotPoint.y - (float) LINE_WIDTH, 2.0f * LINE_WIDTH, 2.0f * LINE_WIDTH);
+        g2d.fill(r);
+        g2d.setStroke(new BasicStroke(1));
+
+        g2d.drawLine(topCenter.x , topCenter.y, rotPoint.x, rotPoint.y);
     }
 
     public void rotate(int rotation) {
@@ -266,7 +255,6 @@ public class Marker {
         setColor(other.getColor());
         setFrom(other.getFrom());
         setTo(other.getTo());
-        resizing = other.resizing;
     }
 
     //endregion
