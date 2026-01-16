@@ -4,7 +4,6 @@ import de.uzk.action.ActionType;
 import de.uzk.config.Config;
 import de.uzk.io.ImageLoader;
 import de.uzk.markers.Marker;
-import de.uzk.markers.Markers;
 import de.uzk.utils.GraphicsUtils;
 
 import java.awt.*;
