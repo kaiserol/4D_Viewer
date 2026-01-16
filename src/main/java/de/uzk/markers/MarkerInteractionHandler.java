@@ -196,8 +196,8 @@ public class MarkerInteractionHandler extends MouseAdapter {
         double width = selectedMarker.getSize().width;
         double height = selectedMarker.getSize().height;
 
-
-        Point dragStart = selectedMarker.getScalePoints()[dragPoint.ordinal()];
+        mousePos = derotate(mousePos);
+        Point dragStart = derotate(selectedMarker.getScalePoints()[dragPoint.ordinal()]);
 
         double dx =  (mousePos.getX() - dragStart.getX());
         double dy =  (mousePos.getY() - dragStart.getY());
@@ -209,6 +209,8 @@ public class MarkerInteractionHandler extends MouseAdapter {
         double theta = Math.toRadians(selectedMarker.getRotation());
         double sin = Math.sin(theta);
         double cos = Math.cos(theta);
+
+
 
         if(dragPoint.isCenter()) {
             x -= ( (dy / 2.) * sin);
@@ -223,19 +225,23 @@ public class MarkerInteractionHandler extends MouseAdapter {
 
 
 
-        boolean flipped = false;
+        boolean flippedX = false, flippedY = false;
         if (width < 0) {
             width = -width;
-            x -= width;
-            flipped = true;
+            x -= width/2;
+            flippedX = true;
         }
         if (height < 0) {
             height = -height;
-            y -= height;
-            flipped = true;
+            y -= height/2;
+            flippedY = true;
         }
-        if (flipped) {
+        if (flippedX && flippedY) {
             dragPoint = dragPoint.getOpposite();
+        } else if(flippedX) {
+            dragPoint = dragPoint.mirrorY();
+        } else if(flippedY) {
+            dragPoint = dragPoint.mirrorX();
         }
 
         // Rundungsfehler werden bei einfachem Cast sonst schnell visuell sichtbar
@@ -284,6 +290,30 @@ public class MarkerInteractionHandler extends MouseAdapter {
                 case BOTTOM_LEFT -> TOP_RIGHT;
                 case BOTTOM_CENTER -> TOP_CENTER;
                 case BOTTOM_RIGHT -> TOP_LEFT;
+            };
+        }
+
+        public DragPoint mirrorX() {
+            return switch (this) {
+                case TOP_LEFT -> BOTTOM_LEFT;
+                case TOP_CENTER -> BOTTOM_CENTER;
+                case TOP_RIGHT -> BOTTOM_RIGHT;
+                case BOTTOM_LEFT -> TOP_LEFT;
+                case BOTTOM_CENTER -> TOP_CENTER;
+                case BOTTOM_RIGHT -> TOP_RIGHT;
+                default -> this;
+            };
+        }
+
+        public DragPoint mirrorY() {
+            return switch (this) {
+                case TOP_LEFT -> TOP_RIGHT;
+                case TOP_CENTER -> TOP_CENTER;
+                case TOP_RIGHT -> TOP_LEFT;
+                case BOTTOM_LEFT -> BOTTOM_RIGHT;
+                case BOTTOM_CENTER -> BOTTOM_CENTER;
+                case BOTTOM_RIGHT -> BOTTOM_LEFT;
+                default -> this;
             };
         }
 
