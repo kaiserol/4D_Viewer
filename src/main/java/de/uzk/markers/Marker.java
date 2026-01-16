@@ -150,12 +150,7 @@ public class Marker {
     public void draw(Graphics2D g2d) {
         Rectangle actualBounds = getShapeBounds();
         AffineTransform rot = getRotationTransform();
-        Shape finalShape = switch (shape) {
-            case RECTANGLE -> actualBounds;
-            case ELLIPSE ->
-                new Ellipse2D.Float(actualBounds.x, actualBounds.y, actualBounds.width, actualBounds.height);
-
-        };
+        Shape finalShape = shape.createShape(actualBounds);
 
 
         g2d = (Graphics2D) g2d.create();
