@@ -44,6 +44,8 @@ public final class ImageLoader {
     public static final FlatSVGIcon ICON_ARROW_DOWN = openFlatSVGIcon("images/icons/arrow_down.svg");
     public static final FlatSVGIcon ICON_ARROW_DOWN_END = openFlatSVGIcon("images/icons/arrow_down_end.svg");
 
+    public static final FlatSVGIcon ICON_STEP_FORWARD = openFlatSVGIcon("images/icons/step-forward.svg");
+
     // Statische Initialisierung
     static {
         ThemeColor defaultValue = ColorUtils.DEFAULT_THEME_COLOR;

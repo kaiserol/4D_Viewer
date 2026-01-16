@@ -3,16 +3,13 @@ package de.uzk.gui.marker;
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
-import de.uzk.image.Axis;
 import de.uzk.io.ImageLoader;
 import de.uzk.markers.Marker;
+import de.uzk.utils.ColorUtils;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
@@ -54,12 +51,14 @@ public class MarkerInfo extends JPanel
         gbc.gridheight = 1;
         gbc.gridwidth = 2;
 
-        this.add(getJumpLink(), gbc);
+        this.add(new JLabel(marker.getLabel()), gbc);
 
         gbc.weightx = 1;
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.NORTHEAST;
 
+        gbc.gridx += 1;
+        add(getJumpButton(), gbc);
 
         gbc.gridx += 1;
         this.add(getEditButton(), gbc);
@@ -69,37 +68,15 @@ public class MarkerInfo extends JPanel
 
     }
 
-    private JLabel getJumpLink() {
-        JLabel link = new JLabel(marker.getLabel());
-        link.setAlignmentY(Component.CENTER_ALIGNMENT);
-
-        link.setToolTipText("Jump to " + marker.getLabel());
-        link.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                link.setFont(link.getFont().deriveFont(Font.BOLD));
-                link.setForeground(Color.BLUE);
-
-            }
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                workspace.setTime(marker.getFrom());
-                gui.update(Axis.TIME);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                link.setFont(link.getFont().deriveFont(Font.PLAIN));
-                link.setForeground(UIEnvironment.getTextColor());
-            }
-        });
-        return link;
+    private JButton getJumpButton() {
+        JButton jump = new JButton(ImageLoader.ICON_STEP_FORWARD);
+        jump.setBackground(ColorUtils.COLOR_BLUE);
+        jump.setToolTipText(getWord("menu.markers.tooltipJumpToMarker").formatted(marker.getLabel()));
+        return jump;
     }
 
     private JButton getEditButton() {
         JButton edit = new JButton(ImageLoader.ICON_EDIT);
-        edit.setForeground(Color.BLUE);
         edit.setToolTipText(getWord("menu.markers.tooltipEditMarker"));
         edit.addActionListener(a -> {
 
@@ -127,7 +104,7 @@ public class MarkerInfo extends JPanel
 
     private JButton getDeleteButton() {
         JButton deleteButton = new JButton(ImageLoader.ICON_DELETE);
-        deleteButton.setForeground(Color.RED);
+        deleteButton.setBackground(ColorUtils.COLOR_RED);
         deleteButton.setToolTipText(getWord("menu.markers.tooltipRemoveMarker"));
         deleteButton.addActionListener(a -> {
             workspace.getMarkers().remove(marker);
