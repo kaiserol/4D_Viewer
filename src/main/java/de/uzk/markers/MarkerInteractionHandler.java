@@ -161,6 +161,11 @@ public class MarkerInteractionHandler extends MouseAdapter {
     //endregion
     //endregion
 
+    public void unselectMarker() {
+        selectedMarker = null;
+        editMode = EditMode.NONE;
+    }
+
     //region Berechnungsmethoden
 
     private void handleRotate(Point actual) {

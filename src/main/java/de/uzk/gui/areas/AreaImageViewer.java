@@ -24,6 +24,8 @@ import static de.uzk.Main.workspace;
 public class AreaImageViewer extends ObserverContainer<JPanel> {
     // Gui Elemente
     private JPanel panelView;
+    private MarkerInteractionHandler markerInteractionHandler;
+    private SensitiveImagePanel panelImage;
     private JScrollBar scrollBarTime, scrollBarLevel;
 
     private ImageEditor imageEditor;
@@ -47,12 +49,12 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
 
         // 2. Bildbereich mit Scrollbars hinzufügen
         this.panelView = new JPanel(new BorderLayout());
-        SensitiveImagePanel imagePanel = new SensitiveImagePanel();
+        panelImage = new SensitiveImagePanel();
         this.scrollBarTime = ComponentUtils.createScrollBar(Adjustable.HORIZONTAL, newValue -> handleScrollAction(newValue, Axis.TIME, this.scrollBarTime));
         this.scrollBarLevel = ComponentUtils.createScrollBar(Adjustable.VERTICAL, newValue -> handleScrollAction(newValue, Axis.LEVEL, this.scrollBarLevel));
 
         int scrollBarWidth = UIManager.getInt("ScrollBar.width");
-        this.panelView.add(imagePanel, BorderLayout.CENTER);
+        this.panelView.add(panelImage, BorderLayout.CENTER);
         this.panelView.add(createRightSpace(this.scrollBarTime, scrollBarWidth), BorderLayout.SOUTH);
         this.panelView.add(this.scrollBarLevel, BorderLayout.EAST);
 
@@ -60,11 +62,11 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         this.container.setMinimumSize(new Dimension(scrollBarWidth * 3, scrollBarWidth * 3));
 
         this.imageEditor = new ImageEditor();
-        this.imageEditor.onNewImageAvailable(imagePanel::updateImage);
+        this.imageEditor.onNewImageAvailable(panelImage::updateImage);
 
-        MarkerInteractionHandler markerInteractionHandler = new MarkerInteractionHandler(this.imageEditor);
-        imagePanel.addMouseListener(markerInteractionHandler);
-        imagePanel.addMouseMotionListener(markerInteractionHandler);
+        markerInteractionHandler = new MarkerInteractionHandler(this.imageEditor);
+        panelImage.addMouseListener(markerInteractionHandler);
+        panelImage.addMouseMotionListener(markerInteractionHandler);
     }
 
     //region Komponenten-Erzeugung
@@ -88,7 +90,13 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
             case ACTION_EDIT_IMAGE ->
                 imageEditor.updateImage(true);
 
-            case ACTION_ADD_MARKER, ACTION_EDIT_MARKER, ACTION_REMOVE_MARKER, ACTION_UPDATE_FONT -> imageEditor.updateImage(false);
+            case ACTION_ADD_MARKER, ACTION_EDIT_MARKER, ACTION_REMOVE_MARKER, ACTION_UPDATE_FONT -> {
+                if(imageEditor.handleMarkerAction(actionType)) {
+                    markerInteractionHandler.unselectMarker();
+                    panelImage.setCursor(Cursor.getDefaultCursor());
+                    panelImage.repaint();
+                }
+            }
             case SHORTCUT_TAKE_SNAPSHOT -> {
                 if (SnapshotHelper.saveSnapshot(imageEditor.getCurrentImage())) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SNAPSHOT_COUNTER);

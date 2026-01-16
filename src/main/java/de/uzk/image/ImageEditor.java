@@ -1,8 +1,10 @@
 package de.uzk.image;
 
+import de.uzk.action.ActionType;
 import de.uzk.config.Config;
 import de.uzk.io.ImageLoader;
 import de.uzk.markers.Marker;
+import de.uzk.markers.Markers;
 import de.uzk.utils.GraphicsUtils;
 
 import java.awt.*;
@@ -71,6 +73,27 @@ public class ImageEditor {
         newImageAvailable();
     }
 
+    /**
+     * Eine Markerbezogene Aktion verarbeiten.
+     * Ist diese ACTION_DELETE_MARKER und der gelöschte Marker ist `this.selectedMarker`,
+     * wird `this.selectedMarker` auf null gesetzt und die Methode gibt `true` zurück.
+     * Ansonsten gibt sie `false` zurück.
+     * */
+    public boolean handleMarkerAction(ActionType actionType) {
+        boolean focusedDeleted = false;
+        if(actionType == ActionType.ACTION_REMOVE_MARKER) {
+            focusedDeleted = !workspace.getMarkers().getMarkersForImage(workspace.getTime()).contains(focusedMarker);
+            if(focusedDeleted) {
+                focusedMarker = null;
+
+            }
+        }
+
+        updateImage(false);
+
+        return focusedDeleted;
+    }
+
     //endregion
 
     //region Private Helfermethoden – für Bild-Updates
@@ -89,13 +112,16 @@ public class ImageEditor {
         java.util.List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
         g2d.transform(markerTransform);
 
+        boolean focusedMarkerStillExists = false;
         for (Marker marker : markers) {
             marker.draw(g2d);
-
+            focusedMarkerStillExists |= marker == focusedMarker;
         }
-        if(focusedMarker != null) {
+        if(focusedMarker != null && focusedMarkerStillExists) {
             // Wenn mehrere Marker überlappen, sollten die Eckpunkte in der obersten Ebene liegen
             focusedMarker.drawResizeHelpers(g2d);
+        } else {
+            focusedMarker = null;
         }
         g2d.dispose();
         return result;
