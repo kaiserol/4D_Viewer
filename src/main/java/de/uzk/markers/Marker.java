@@ -10,6 +10,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
+import static de.uzk.Main.settings;
+
 public class Marker {
     public static final int LINE_WIDTH = 5;
 
@@ -156,10 +158,14 @@ public class Marker {
         g2d = (Graphics2D) g2d.create();
         g2d.setColor(color);
         g2d.setStroke(new BasicStroke(LINE_WIDTH));
-        g2d.transform(rot);
 
-        g2d.draw(finalShape);
-        drawName(g2d);
+        {
+            Graphics2D g2dCopy = (Graphics2D) g2d.create();
+            g2dCopy.transform(rot);
+            g2dCopy.draw(finalShape);
+            drawName(g2d);
+        }
+
     }
 
     public void drawResizeHelpers(Graphics2D g2d) {
@@ -183,13 +189,13 @@ public class Marker {
     }
 
     private void drawName(Graphics2D to) {
-        Rectangle labelArea = getLabelArea(to);
+        Shape labelArea = getLabelArea(to);
         to.fill(labelArea);
         boolean lightColor = ColorUtils.calculatePerceivedBrightness(color) > 0.5;
         to.setColor(lightColor ? Color.BLACK : Color.WHITE);
 
-        FontMetrics metrics = to.getFontMetrics();
-        to.drawString(label, labelArea.x, labelArea.y + metrics.getAscent());
+        FontMetrics metrics = updateMetrics(to);
+        to.drawString(label, labelArea.getBounds().x, labelArea.getBounds().y + metrics.getAscent());
     }
     //endregion
 
@@ -215,10 +221,14 @@ public class Marker {
     }
 
     @JsonIgnore
-    public Rectangle getLabelArea(Graphics onto) {
-        FontMetrics metrics = onto.getFontMetrics();
-        Point corner = getShapeCorner();
-        return new Rectangle(corner, new Dimension(metrics.stringWidth(label), metrics.getHeight()));
+    public Shape getLabelArea(Graphics onto) {
+        FontMetrics metrics = updateMetrics(onto);
+        Point2D corner = getRotationTransform().transform(getShapeCorner(), null);
+        return new Rectangle(
+            new Point((int)corner.getX(), (int)corner.getY()),
+            new Dimension(metrics.stringWidth(label), metrics.getHeight())
+        );
+
     }
 
     @JsonIgnore
@@ -258,6 +268,11 @@ public class Marker {
         return AffineTransform.getRotateInstance(Math.toRadians(rotation), pos.x, pos.y);
     }
 
+    private FontMetrics updateMetrics(Graphics g) {
+        FontMetrics metrics = g.getFontMetrics();
+        g.setFont(metrics.getFont().deriveFont((float) settings.getFontSize()));
+        return g.getFontMetrics();
+    }
 
     public void cloneFrom(Marker other) {
         setPos(other.getPos());

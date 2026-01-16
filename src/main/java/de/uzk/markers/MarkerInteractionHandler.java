@@ -105,7 +105,7 @@ public class MarkerInteractionHandler extends MouseAdapter {
         Component target = e.getComponent();
         Point actual = getActualPoint(e.getPoint());
         for (Marker m : workspace.getMarkers().getMarkersForImage(workspace.getTime())) {
-            Shape area = m.getRotationTransform().createTransformedShape(m.getLabelArea(target.getGraphics()));
+            Shape area = m.getLabelArea(target.getGraphics());
             if (area.contains(actual)) {
                 if (selectedMarker == null) {
                     setCursorAndRerender(target, Cursor.HAND_CURSOR);

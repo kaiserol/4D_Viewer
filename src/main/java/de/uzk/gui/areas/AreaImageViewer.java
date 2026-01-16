@@ -85,8 +85,10 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
     @Override
     public void handleAction(ActionType actionType) {
         switch (actionType) {
-            case ACTION_EDIT_IMAGE -> imageEditor.updateImage(true);
-            case ACTION_ADD_MARKER, ACTION_EDIT_MARKER, ACTION_REMOVE_MARKER -> imageEditor.updateImage(false);
+            case ACTION_EDIT_IMAGE ->
+                imageEditor.updateImage(true);
+
+            case ACTION_ADD_MARKER, ACTION_EDIT_MARKER, ACTION_REMOVE_MARKER, ACTION_UPDATE_FONT -> imageEditor.updateImage(false);
             case SHORTCUT_TAKE_SNAPSHOT -> {
                 if (SnapshotHelper.saveSnapshot(imageEditor.getCurrentImage())) {
                     gui.handleAction(ActionType.ACTION_UPDATE_SNAPSHOT_COUNTER);
