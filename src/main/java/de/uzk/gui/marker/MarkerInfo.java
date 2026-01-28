@@ -3,6 +3,7 @@ package de.uzk.gui.marker;
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
+import de.uzk.image.Axis;
 import de.uzk.io.ImageLoader;
 import de.uzk.markers.Marker;
 import de.uzk.utils.ColorUtils;
@@ -72,6 +73,10 @@ public class MarkerInfo extends JPanel
         JButton jump = new JButton(ImageLoader.ICON_STEP_FORWARD);
         jump.setBackground(ColorUtils.COLOR_BLUE);
         jump.setToolTipText(getWord("menu.markers.tooltipJumpToMarker").formatted(marker.getLabel()));
+        jump.addActionListener(a -> {
+            workspace.setTime(marker.getFrom());
+            gui.update(Axis.TIME);
+        });
         return jump;
     }
 

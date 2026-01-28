@@ -29,7 +29,7 @@ public class TabMarkers extends ObserverContainer<JPanel> {
 
         JButton add = new JButton(getWord("menu.markers.addMarker"));
         add.addActionListener(e -> {
-            MarkerEditor initial = new MarkerEditor();
+            MarkerEditor initial = new MarkerEditor(workspace.getTime());
             int option = JOptionPane.showConfirmDialog(
                     gui.getContainer(),
                     initial,

@@ -33,13 +33,16 @@ public class Marker {
     private Color color;
     private String label;
 
+
+    public Marker(int start) {
+        this(new Point(250, 100), new Dimension(500, 200), start, start, MarkerShape.RECTANGLE, Color.RED, "Marker");
+    }
+
     /**
      * Default-Konstruktor (Rotes 500x200-Rechteck mit Beschriftung "Marker" in der oberen linken Ecke bei t=0)
      *
      */
-    public Marker() {
-        this(new Point(250, 100), new Dimension(500, 200), 0, 0, MarkerShape.RECTANGLE, Color.RED, "Marker");
-    }
+    public Marker() { this(0); }
 
     public Marker(Marker other) {
         this.cloneFrom(other);

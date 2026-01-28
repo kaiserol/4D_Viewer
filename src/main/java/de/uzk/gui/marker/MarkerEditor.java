@@ -24,8 +24,8 @@ public class MarkerEditor extends Container {
     private final Marker marker;
     private final DialogColorChooser dialogColorChooser;
 
-    public MarkerEditor() {
-        this(new Marker());
+    public MarkerEditor(int startTime) {
+        this(new Marker(startTime));
     }
 
     public MarkerEditor(Marker marker) {
