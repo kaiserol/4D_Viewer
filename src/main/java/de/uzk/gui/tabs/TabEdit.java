@@ -2,6 +2,7 @@ package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionType;
 import de.uzk.config.Config;
+import de.uzk.edit.RotateImageEdit;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.observer.ObserverContainer;
@@ -62,7 +63,13 @@ public class TabEdit extends ObserverContainer<JPanel> {
 
         // Drehfeld (Rotation) hinzufügen
         degreeSpinner = ComponentUtils.createSpinner(Config.MIN_ROTATION, Config.MAX_ROTATION, true, newValue ->
-            setConfigValue(newValue, workspace.getConfig()::getRotation, workspace.getConfig()::setRotation));
+            setConfigValue(newValue, workspace.getConfig()::getRotation, newRotation -> {
+                int diff = workspace.getConfig().getRotation() - newRotation;
+                if(diff != 0) {
+                    workspace.getEditManager().performEdit(new RotateImageEdit(diff));
+                    return true;
+                } else return false;
+            }));
         ComponentUtils.addLabeledRow(this.container, gbc, getWord("menu.edit.rotation"), degreeSpinner, 10);
 
         gbc.gridwidth = 2;

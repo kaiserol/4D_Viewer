@@ -19,6 +19,8 @@ public enum ActionType {
     SHORTCUT_TURN_IMAGE_90_LEFT(new Shortcut(KeyEvent.VK_LEFT, Shortcut.ALT_DOWN | Shortcut.SHIFT_DOWN)),
     SHORTCUT_TURN_IMAGE_90_RIGHT(new Shortcut(KeyEvent.VK_RIGHT, Shortcut.ALT_DOWN | Shortcut.SHIFT_DOWN)),
     SHORTCUT_TAKE_SNAPSHOT(new Shortcut(KeyEvent.VK_S, Shortcut.ALT_DOWN | Shortcut.SHIFT_DOWN)),
+    SHORTCUT_UNDO(new Shortcut(KeyEvent.VK_Z, Shortcut.CTRL_DOWN)),
+    SHORTCUT_REDO(new Shortcut(KeyEvent.VK_Y, Shortcut.CTRL_DOWN)),
 
     ACTION_EDIT_IMAGE,
     ACTION_UPDATE_SNAPSHOT_COUNTER,

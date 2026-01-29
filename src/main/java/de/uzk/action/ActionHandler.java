@@ -88,6 +88,10 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_TURN_IMAGE_90_LEFT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_LEFT);
             case SHORTCUT_TURN_IMAGE_90_RIGHT -> gui.handleAction(SHORTCUT_TURN_IMAGE_90_RIGHT);
             case SHORTCUT_TAKE_SNAPSHOT -> gui.handleAction(SHORTCUT_TAKE_SNAPSHOT);
+            case SHORTCUT_UNDO -> {
+                workspace.getEditManager().undoLastEdit();
+                gui.handleAction(ACTION_EDIT_IMAGE);
+            }
 
             // Navigieren Shortcuts
             case SHORTCUT_GO_TO_FIRST_IMAGE -> scrollToBoundary(Axis.TIME, true);
