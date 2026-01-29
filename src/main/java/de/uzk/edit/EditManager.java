@@ -1,40 +1,39 @@
 package de.uzk.edit;
 
+import de.uzk.action.ActionType;
+
 import java.util.LinkedList;
 
 public class EditManager {
-    private LinkedList<Edit> editsMade;
-    private LinkedList<Edit> editsUndone;
-
-    public EditManager() {
+    private final LinkedList<Edit> editsMade;
+    private final LinkedList<Edit> editsUndone;
+    public EditManager( ) {
         editsMade = new LinkedList<>();
         editsUndone = new LinkedList<>();
     }
 
-    public void performEdit(Edit edit) {
-        edit.redo();
-        editsMade.push(edit);
-        //TODO: was passiert wenn der user jetzt "redo" wählt?
+    public boolean performEdit(Edit edit) {
+        boolean valid = edit.perform();
+        if(valid) {
+            editsMade.push(edit);
+        }
+        return valid;
     }
 
-    public boolean undoLastEdit() {
+    public ActionType undoLastEdit() {
+        if(editsMade.isEmpty()) return null;
         Edit last = editsMade.pop();
-        if(last != null) {
-            last.undo();
-            editsUndone.push(last);
-            return true;
-        }
-        return false;
+        last.undo();
+        editsUndone.push(last);
+        return last.getType();
     }
 
-    public boolean redoLastEdit() {
+    public ActionType redoLastEdit() {
+        if(editsUndone.isEmpty()) return null;
         Edit last = editsUndone.pop();
-        if(last != null) {
-            last.redo();
-            editsMade.push(last);
-            return true;
-        }
-        return false;
+        last.perform();
+        editsMade.push(last);
+        return last.getType();
     }
 
     public Edit viewLastEdit() {

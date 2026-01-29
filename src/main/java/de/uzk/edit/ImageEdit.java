@@ -1,18 +1,7 @@
 package de.uzk.edit;
 
-import static de.uzk.Main.workspace;
+import de.uzk.action.ActionType;
 
-public abstract class ImageEdit {
-    protected final int time;
-    protected final int level;
-
-    protected ImageEdit(int time, int level) {
-        if(time < 0 || time > workspace.getMaxTime()) {
-            throw new IllegalArgumentException("Time must be between 0 and " + workspace.getMaxTime());
-        } else if (level < 0 || level > workspace.getMaxLevel()) {
-            throw new IllegalArgumentException("Level must be between 0 and " + workspace.getMaxLevel());
-        }
-        this.time = time;
-        this.level = level;
-    }
+public abstract class ImageEdit extends Edit {
+    @Override public ActionType getType() { return ActionType.ACTION_EDIT_IMAGE; }
 }

@@ -53,6 +53,7 @@ public class AppMenuBar extends ObserverContainer<JMenuBar> {
         CustomMenu menuEdit = new CustomMenu(getWord("menu.edit"));
 
         menuEdit.add(new CustomMenuItem("undo", actionHandler, SHORTCUT_UNDO));
+        menuEdit.add(new CustomMenuItem("redo", actionHandler, SHORTCUT_REDO));
         menuEdit.addSeparator();
         menuEdit.add(new CustomMenuItem(getWord("menu.edit.pinTime"), ICON_PIN, actionHandler, SHORTCUT_PIN_TIME));
         menuEdit.add(new CustomMenuItem(getWord("menu.edit.turnImageLeft"), ICON_ARROW_LEFT_TURN, actionHandler, SHORTCUT_TURN_IMAGE_90_LEFT));

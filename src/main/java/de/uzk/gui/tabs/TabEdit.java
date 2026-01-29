@@ -2,6 +2,7 @@ package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionType;
 import de.uzk.config.Config;
+import de.uzk.edit.Edit;
 import de.uzk.edit.RotateImageEdit;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
@@ -12,6 +13,7 @@ import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -63,13 +65,7 @@ public class TabEdit extends ObserverContainer<JPanel> {
 
         // Drehfeld (Rotation) hinzufügen
         degreeSpinner = ComponentUtils.createSpinner(Config.MIN_ROTATION, Config.MAX_ROTATION, true, newValue ->
-            setConfigValue(newValue, workspace.getConfig()::getRotation, newRotation -> {
-                int diff = workspace.getConfig().getRotation() - newRotation;
-                if(diff != 0) {
-                    workspace.getEditManager().performEdit(new RotateImageEdit(diff));
-                    return true;
-                } else return false;
-            }));
+            setConfigValue(newValue, workspace.getConfig()::getRotation, (Function<Integer, Edit>) newRotation -> new RotateImageEdit(workspace.getConfig().getRotation() - newRotation)));
         ComponentUtils.addLabeledRow(this.container, gbc, getWord("menu.edit.rotation"), degreeSpinner, 10);
 
         gbc.gridwidth = 2;
@@ -111,6 +107,8 @@ public class TabEdit extends ObserverContainer<JPanel> {
                 gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
             }
             case ACTION_UPDATE_SNAPSHOT_COUNTER -> updateSnapshotCounter();
+            case ACTION_EDIT_IMAGE -> setCorrectValues();
+
         }
     }
 
@@ -118,13 +116,18 @@ public class TabEdit extends ObserverContainer<JPanel> {
     public void toggleOn() {
         ComponentUtils.setEnabled(this.container, true);
 
+        setCorrectValues();
+        updateSnapshotCounter();
+    }
+
+    private void setCorrectValues() {
         ComponentUtils.setValueSecurely(this.mirrorXBox, workspace.getConfig().isMirrorX());
         ComponentUtils.setValueSecurely(this.mirrorYBox, workspace.getConfig().isMirrorY());
         ComponentUtils.setValueSecurely(this.brightnessSlider, workspace.getConfig().getBrightness());
         ComponentUtils.setValueSecurely(this.contrastSlider, workspace.getConfig().getContrast());
         ComponentUtils.setValueSecurely(this.zoomSlider, workspace.getConfig().getZoom());
         ComponentUtils.setValueSecurely(this.degreeSpinner, workspace.getConfig().getRotation());
-        updateSnapshotCounter();
+
     }
 
     @Override
@@ -154,6 +157,15 @@ public class TabEdit extends ObserverContainer<JPanel> {
         if (settingsValue.equals(newValue)) return;
 
         boolean hasValueChanged = setter.test(newValue);
+        if (hasValueChanged) gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
+    }
+
+    private <T> void setConfigValue(T newValue, Supplier<T> oldGetter, Function<T, Edit> editConstructor) {
+        T settingsValue = oldGetter.get();
+        if (settingsValue.equals(newValue)) return;
+
+        Edit edit = editConstructor.apply(newValue);
+        boolean hasValueChanged = workspace.getEditManager().performEdit(edit);
         if (hasValueChanged) gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
     }
 

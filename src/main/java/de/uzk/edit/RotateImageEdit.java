@@ -4,8 +4,7 @@ import java.awt.*;
 
 import static de.uzk.Main.workspace;
 
-public class RotateImageEdit extends Edit {
-
+public class RotateImageEdit extends ImageEdit {
     private final int degrees;
 
     public RotateImageEdit( int degrees) {
@@ -15,12 +14,11 @@ public class RotateImageEdit extends Edit {
 
     @Override
     public void undo() {
-
-        workspace.getConfig().setRotation(workspace.getConfig().getRotation() + degrees);
+         workspace.getConfig().setRotation(workspace.getConfig().getRotation() + degrees);
     }
 
     @Override
-    public void redo() {
-        workspace.getConfig().setRotation(workspace.getConfig().getRotation() - degrees);
+    public boolean perform() {
+        return workspace.getConfig().setRotation(workspace.getConfig().getRotation() - degrees);
     }
 }
