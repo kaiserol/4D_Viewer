@@ -4,14 +4,16 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import de.uzk.utils.ColorUtils;
+import de.uzk.utils.GraphicsUtils;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
-import static de.uzk.Main.settings;
-
+/**
+ * Ein einzelner Marker bzw. dessen Parameter: Position, Aussehen, etc.
+ * */
 public class Marker {
     public static final int LINE_WIDTH = 5;
 
@@ -171,7 +173,14 @@ public class Marker {
 
     }
 
-    public void drawResizeHelpers(Graphics2D g2d) {
+    /**
+     * Zeichnet die Dragpunkte dieses Markers auf das gegebene <code>Graphics2D</code>-Objekt.
+     * Siehe <code>getDragPoints</code> und <code>getRotatePoint</code>.
+     *
+     * @param g2d Graphics2D-Objekt, auf das gezeichnet werden soll. Es wird eine Kopie angelegt, das
+     *            ürsprüngliche Objekt wird nicht modifiziert.
+     * */
+    public void drawDragPoints(Graphics2D g2d) {
         g2d = (Graphics2D) g2d.create();
         g2d.setColor(Color.WHITE);
 
@@ -191,21 +200,29 @@ public class Marker {
         g2d.drawLine(topCenter.x , topCenter.y, rotPoint.x, rotPoint.y);
     }
 
-    private void drawName(Graphics2D to) {
-        Shape labelArea = getLabelArea(to);
-        to.fill(labelArea);
+    /**
+     * Zeichnet die Beschriftung dieses Markers auf das gegebene <code>Graphics2D</code>-Objekt.
+     * Siehe <code>getLabelArea</code>.
+     *
+     * @param g2d Graphics2D-Objekt, auf das gezeichnet werden soll. Es wird eine Kopie angelegt, das
+     *            ürsprüngliche Objekt wird nicht modifiziert.
+     * */
+    private void drawName(Graphics2D g2d) {
+        g2d = (Graphics2D) g2d.create();
+        Shape labelArea = getLabelArea(g2d);
+        g2d.fill(labelArea);
         boolean lightColor = ColorUtils.calculatePerceivedBrightness(color) > 0.5;
-        to.setColor(lightColor ? Color.BLACK : Color.WHITE);
+        g2d.setColor(lightColor ? Color.BLACK : Color.WHITE);
 
-        FontMetrics metrics = updateMetrics(to);
-        to.drawString(label, labelArea.getBounds().x, labelArea.getBounds().y + metrics.getAscent());
+        FontMetrics metrics = GraphicsUtils.updateMetrics(g2d);
+        g2d.drawString(label, labelArea.getBounds().x, labelArea.getBounds().y + metrics.getAscent());
     }
     //endregion
 
     //region Geometrische Hilfsmethoden
 
     /**
-     * Liefert den Bereich, in den der Marker gezeichnet werden soll, unter Berücksichtigung der Skalierung.
+     * @return den Bereich, in den der Marker gezeichnet werden soll, unter Berücksichtigung der Skalierung.
      * Diese Methode ist notwendig, da {@link java.awt.Rectangle} annimmt, dass die Position des Rechtecks der
      * der oberen linken Ecke des Rechtecks entspricht, wir die Position des Markers aber als den Mittelpunkt
      * dieses Bereiches definieren.
@@ -217,15 +234,23 @@ public class Marker {
         return new Rectangle(corner, size);
     }
 
+    /**
+     * @return die linke obere Ecke des Bereichs, in den der Marker gezeichnet werden soll.
+     * */
     @JsonIgnore
     public Point getShapeCorner() {
         Point center = pos;
         return new Point(center.x - (size.width / 2), center.y - (size.height / 2));
     }
 
+    /**
+     * @return den Bereich, auf den die Beschriftung des Markers gezeichnet werden soll;
+     * Dieser ist so rotiert, dass er relativ zum Bild immer waagerecht und der Text somit leicht
+     * lesbar ist.
+     * */
     @JsonIgnore
     public Shape getLabelArea(Graphics onto) {
-        FontMetrics metrics = updateMetrics(onto);
+        FontMetrics metrics = GraphicsUtils.updateMetrics(onto);
         Point2D corner = getRotationTransform().transform(getShapeCorner(), null);
         return new Rectangle(
             new Point((int)corner.getX(), (int)corner.getY()),
@@ -234,6 +259,10 @@ public class Marker {
 
     }
 
+    /**
+     * @return die Acht "Drag-Punkte", mit denen der Marker vergrößert oder verkleinert werden kann.
+     * Diese sind bereits so rotiert, dass sie auch visuell an den Rändern des Markers liegen.
+     * */
     @JsonIgnore
     public Point[] getScalePoints() {
         Point[] points = new Point[8];
@@ -255,6 +284,11 @@ public class Marker {
         return points;
     }
 
+    /**
+     * @return Den "Drag-Punkt", der benutzt wird, um den Marker zu rotieren.
+     * Seine Position ist selbst so rotiert, dass er immer auch visuell über dem Mittelpunkt des
+     * Markers angezeigt wird.
+     * */
     @JsonIgnore
     public Point getRotatePoint() {
         Point2D point = getRotationTransform().transform(new Point(pos.x, pos.y - size.height/2 - 100), null);
@@ -266,17 +300,19 @@ public class Marker {
         return this.from <= at && this.to >= at;
     }
 
+    /**
+     * Hilfsmethode.
+     * @return einen {@link AffineTransform}, der die aktuelle individuelle Rotation des Markers repräsentiert.
+     * */
     @JsonIgnore
     public AffineTransform getRotationTransform() {
         return AffineTransform.getRotateInstance(Math.toRadians(rotation), pos.x, pos.y);
     }
 
-    private FontMetrics updateMetrics(Graphics g) {
-        FontMetrics metrics = g.getFontMetrics();
-        g.setFont(metrics.getFont().deriveFont((float) settings.getFontSize()));
-        return g.getFontMetrics();
-    }
-
+    /**
+     * Ähnlich wie ein Copy-Konstruktor, überschreibt jedoch diesen Marker mit den Werten eines
+     * anderen, statt einen neuen zu konstruieren.
+     * */
     public void cloneFrom(Marker other) {
         setPos(other.getPos());
         setSize(other.getSize());

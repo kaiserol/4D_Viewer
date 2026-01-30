@@ -13,7 +13,8 @@ import java.util.function.Consumer;
 
 /**
  * Ein JPanel, das ein Bild anzeigt und Events verfolgt, welche <i>innerhalb des Bildbereichs</i> auftreten.
- *
+ * @see de.uzk.markers.MarkerInteractionHandler
+ * @see de.uzk.image.ImageEditor
  */
 public class SensitiveImagePanel extends JPanel implements MouseListener, MouseMotionListener {
     private BufferedImage currentImage;

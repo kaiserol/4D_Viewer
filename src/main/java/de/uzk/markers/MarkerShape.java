@@ -33,6 +33,13 @@ public enum MarkerShape {
         };
     }
 
+    /**
+     * Erstellt eine geometrische Figur mit der Form dieser <code>MarkerShape</code> innerhalb
+     * des gegebenen Rechtecks.
+     *
+     * @param boundingBox der Bereich, in den die Form passen soll.
+     * @return Die Form, als {@link java.awt.Shape}
+     * */
     public Shape createShape(Rectangle boundingBox) {
         return switch(this) {
             case RECTANGLE -> boundingBox;

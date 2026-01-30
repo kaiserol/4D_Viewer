@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Globales (per-Workspace) Objekt, das alle Marker für alle Bilder im Projekt speichert.
+ * Außerdem zur Zentralisierung der Markerserialisierung verwendet.
+ * */
 public class Markers {
     @JsonGetter("markers")
     public List<Marker> getAllMarkers() {
@@ -26,10 +30,6 @@ public class Markers {
     // Markierungen
     @JsonDeserialize(contentUsing = NullInvalidMarkers.class)
     private final List<Marker> markers;
-
-    private Markers(Marker[] markers) {
-        this.markers = List.of(markers);
-    }
 
     public Markers() {
         this.markers = new ArrayList<>();
@@ -54,8 +54,11 @@ public class Markers {
         this.markers.remove(marker);
     }
 
-    public List<Marker> getMarkersForImage(int image) {
-        return this.markers.stream().filter(m -> m.shouldRender(image)).toList();
+    /**
+     * @return Alle Marker, die zum gegebenen Zeitpunkt zu sehen sind.
+     * */
+    public List<Marker> getMarkersForImage(int time) {
+        return this.markers.stream().filter(m -> m.shouldRender(time)).toList();
     }
 
     // Helferklasse, die ungültige Marker zu nulls macht, die herausgefiltert werden können

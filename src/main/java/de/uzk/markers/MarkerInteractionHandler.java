@@ -22,6 +22,9 @@ import static de.uzk.Main.workspace;
  *  <li>Drehen und Skalieren von selektierten Markern</li>
  * </ul>
  * Andere Markereigenschaften werden vom Nutzer über einen UI-Dialog verändert (siehe {@link de.uzk.gui.marker.MarkerEditor})
+ *
+ * @see de.uzk.image.ImageEditor
+ * @see de.uzk.gui.SensitiveImagePanel
  * */
 public class MarkerInteractionHandler extends MouseAdapter {
 
@@ -119,6 +122,12 @@ public class MarkerInteractionHandler extends MouseAdapter {
         setCursorAndRerender(target, Cursor.DEFAULT_CURSOR);
     }
 
+    /** Überprüfe, ob der Mauszeiger sich über einem der Drag-Points des aktuell ausgewählten Markers befindet.
+     * Diese Methode geht davon aus, dass momentan ein Marker ausgewählt ist, und berechnet den korrekten <code>EditMode</code>
+     * aus dem Punkt, der gehovered wird.
+     *
+     * @param e Das Event, dessen Position untersucht werden soll
+     * */
     @SuppressWarnings("MagicConstant")
     private void checkHoveringDragPoint(MouseEvent e) {
         Component target = e.getComponent();
@@ -145,8 +154,13 @@ public class MarkerInteractionHandler extends MouseAdapter {
         }
     }
 
-    /**
+    /** Berechnet die "tatsächliche" Position des Mauszeigers.
+     * Diese Hilfsmethode ist das Herzstück von MarkerInteractionHandler – sie ermittelt die Position des
+     * Mauszeigers relativ zur Zeichenebene, unter Berücksichtigung der Tatsache, dass diese auf verschiedenste
+     * Arten skaliert, rotiert usw. wurde.
      *
+     * @param event "physische" Position des Mauszeigers
+     * @return "tatsächliche" Position des Mauszeigers
     * */
     private Point getActualPoint(Point event) {
         AffineTransform transform = imageEditor.getMarkerTransform();
@@ -161,6 +175,9 @@ public class MarkerInteractionHandler extends MouseAdapter {
     //endregion
     //endregion
 
+    /**
+     * Setzt den Bearbeitungszustand auf Standardwerte zurück.
+     * */
     public void unselectMarker() {
         selectedMarker = null;
         editMode = EditMode.NONE;
@@ -168,24 +185,46 @@ public class MarkerInteractionHandler extends MouseAdapter {
 
     //region Berechnungsmethoden
 
-    private void handleRotate(Point actual) {
-        actual = derotate(actual);
-        int distance = actual.x - derotate(selectedMarker.getRotatePoint()).x;
+    /**
+     * Berechnet die Richtung, um die der ausgewählte Marker rotiert werden soll, und führt die Rotation durch.
+     * Der Winkel wird basierend auf dem Abstand zwischen dem Rotationspunkt und dem Mauszeiger bestimmt.
+     *
+     * @param mousePos "tatsächliche" Positon des Mauszeigers. Siehe <code>getActualPoint</code>.
+     * */
+    private void handleRotate(Point mousePos) {
+        mousePos = derotate(mousePos);
+        int distance = mousePos.x - derotate(selectedMarker.getRotatePoint()).x;
         int direction = distance < 0 ? -1 : 1;
         selectedMarker.rotate(distance / 100 + direction);
         imageEditor.updateImage(false);
     }
 
+    /**
+     * Berechnet die Verschiebung, um die der ausgewählte Marker rotiert werden soll, und führt die Verschiebung durch.
+     * Der Winkel wird basierend auf der Position des Mauszeigers bestimmt.
+     *
+     * @param mousePos "tatsächliche" Positon des Mauszeigers. Siehe <code>getActualPoint</code>.
+     * */
     private void handleMove(Point mousePos) {
         double theta = Math.toRadians(selectedMarker.getRotation());
         Dimension size = selectedMarker.getSize();
+        double cos =  Math.cos(theta);
+        double sin = Math.sin(theta);
 
-        int x = mousePos.x + (int)(size.width * Math.cos(theta) - size.height * Math.sin(theta)) / 2;
-        int y = mousePos.y + (int)(size.height *Math.cos(theta) + size.width * Math.sin(theta))/ 2;
+        int x = mousePos.x + (int)(size.width * cos - size.height * sin) / 2;
+        int y = mousePos.y + (int)(size.height * cos + size.width * sin) / 2;
         selectedMarker.setPos(new Point(x, y));
         imageEditor.updateImage(false);
     }
 
+    /**
+     * Berechnet  basierend auf der Position des Mauszeigers und des Momentan ausgewählten Dragpoints
+     * die Vergrößerung sowie die dafür nötige Verschiebung des Mittelpunktes. Letztere ist nötig, weil
+     * die Markerposition dessen Mittelpunkt repräsentiert, das visuelle Zeichnen des Markers jedoch in
+     * der oberen linken Ecke beginnt.
+     *
+     * @param mousePos "tatsächliche" Positon des Mauszeigers. Siehe <code>getActualPoint</code>.
+     * */
     private void handleResize(Point mousePos) {
         // Position des Markers
         double x = selectedMarker.getPos().x;
@@ -213,17 +252,23 @@ public class MarkerInteractionHandler extends MouseAdapter {
 
 
         if(dragPoint.isCenter()) {
+            // Nur entlang der y-Achse verschieben
             x -= ( (dy / 2.) * sin);
             y += ((dy/ 2.) * cos);
         } else if (dragPoint.isMiddle()) {
+            // Nur entlang der x-Achse Verschieben
             x += ((dx / 2.) * cos);
             y += ((dx / 2.) * sin);
         } else {
+
             x += ((dx / 2.) * cos - (dy / 2.) * sin);
             y += ((dy / 2.) * cos + (dx / 2.) * sin);
         }
 
-
+        /*
+        Berechne, ob der "tatsächliche" Dragpoint ausgetauscht werden muss, falls eine der Markergrenzen
+        "überschritten wurde". Sonst kommt es zu extrem(!) merkwürdigem Verhalten.
+        */
 
         boolean flippedX = false, flippedY = false;
         if (width < 0) {
@@ -236,7 +281,8 @@ public class MarkerInteractionHandler extends MouseAdapter {
             y -= height/2;
             flippedY = true;
         }
-        if (flippedX && flippedY) {
+
+        if (flippedX && flippedY) { // Eine Ecke wurde über ihr gegenüber hinweggezogen
             dragPoint = dragPoint.getOpposite();
         } else if(flippedX) {
             dragPoint = dragPoint.mirrorY();

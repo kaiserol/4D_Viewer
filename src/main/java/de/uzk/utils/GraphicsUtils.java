@@ -3,6 +3,8 @@ package de.uzk.utils;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import static de.uzk.Main.settings;
+
 // TODO: Verbessere die Methoden
 public final class GraphicsUtils {
 
@@ -40,6 +42,17 @@ public final class GraphicsUtils {
         int x = (container.getWidth() - textWidth) / 2;
         int y = (container.getHeight() + textHeight) / 2;
         g2D.drawString(text, x, y);
+    }
+
+    /**
+     * Passt die Schriftgröße des gegebenen @{link Graphics}-Objektes an die Einstellungen an.
+     * @param g das {@link Graphics}-Objekt, dessen Schriftgröße modifiziert werden soll.
+     * @return eine Kopie der {@link FontMetrics} von <code>g</code>, mit veränderter Schriftgröße.
+     * */
+    public static FontMetrics updateMetrics(Graphics g) {
+        FontMetrics metrics = g.getFontMetrics();
+        g.setFont(metrics.getFont().deriveFont((float) settings.getFontSize()));
+        return g.getFontMetrics();
     }
 
     // ========================================
