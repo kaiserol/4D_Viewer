@@ -228,18 +228,19 @@ public final class DateTimeUtils {
      *
      * <p>Aus den berechneten Gesamtsekunden werden anschließend Stunden, Minuten
      * und Sekunden extrahiert und als formatierter String im Muster
-     * {@code "HH:MM:SS"} zurückgegeben. Dabei werden führende Nullen automatisch
+     * {@code "HH:MM:SS.S"} zurückgegeben. Dabei werden führende Nullen automatisch
      * ergänzt.</p>
      *
      * @param frame Der Frame-Index, der zeitlich interpretiert werden soll
-     * @return Ein formatierter Zeitstempel im Muster {@code "HH:MM:SS"}
+     * @return Ein formatierter Zeitstempel im Muster {@code "HH:MM:SS.S"}
      */
     public static String formatFrameTimeStamp(int frame) {
-        int totalSeconds = (int) (frame * workspace.getConfig().getTimeUnit());
-        int seconds = totalSeconds % 60;
-        int minute = totalSeconds / 60 % 60;
-        int hour = totalSeconds / 60 / 60;
+        double totalSeconds =  frame * workspace.getConfig().getTimeUnit();
+        int fullSeconds = (int)totalSeconds;
+        double seconds = totalSeconds % 60;
+        int minute = fullSeconds / 60 % 60;
+        int hour = fullSeconds / 60 / 60;
 
-        return "%02d:%02d:%02d".formatted(hour, minute, seconds);
+        return "%02d:%02d:%02.01f".formatted(hour, minute, seconds);
     }
 }
