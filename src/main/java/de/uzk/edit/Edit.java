@@ -32,5 +32,20 @@ public abstract class Edit {
      * Da je nachdem, <i>was</i> überhaupt verändert wurde, unterschiedliche Bereiche der GUI reagieren
      * müssen, bietet diese Methode einen Weg, nicht die gesamte GUI updaten zu müssen.
      * */
-    public abstract ActionType getType();
+    public abstract ActionType getActionType();
+
+    /**
+     * Manche Operationen können nicht Wiederholt werden, wenn seit ihrem Rückgängigmachen
+     * eine andere, inkompatible Operation durchgeführt wurde, die dazu führt, dass der
+     * "Ursprungszustand" nicht wiederhergestellt werden kann. Es muss also sichergestellt werden,
+     * dass diese Operationen nicht kollidieren.
+     * Diese Methode sollte immer symmetrisch implementiert werden, also
+     * <code>a.isRedoCompatible(b) &lt=&gt b.isRedoCompatible(a)</code>
+     *
+     * @param other eine beliebige andere Operation.
+     * @return die Kompatibilität der beiden Operationen.
+     * */
+    public boolean isRedoCompatible(Edit other) {
+        return !other.getClass().equals(this.getClass());
+    }
 }

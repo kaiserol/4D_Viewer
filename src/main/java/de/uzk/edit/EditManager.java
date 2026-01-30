@@ -16,6 +16,7 @@ public class EditManager {
         boolean valid = edit.perform();
         if(valid) {
             editsMade.push(edit);
+            editsUndone.removeIf(prev -> !prev.isRedoCompatible(edit));
         }
         return valid;
     }
@@ -25,7 +26,7 @@ public class EditManager {
         Edit last = editsMade.pop();
         last.undo();
         editsUndone.push(last);
-        return last.getType();
+        return last.getActionType();
     }
 
     public ActionType redoLastEdit() {
@@ -33,10 +34,7 @@ public class EditManager {
         Edit last = editsUndone.pop();
         last.perform();
         editsMade.push(last);
-        return last.getType();
+        return last.getActionType();
     }
 
-    public Edit viewLastEdit() {
-        return editsMade.peek();
-    }
 }
