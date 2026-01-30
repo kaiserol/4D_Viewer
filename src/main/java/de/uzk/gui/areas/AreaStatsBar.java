@@ -1,5 +1,6 @@
 package de.uzk.gui.areas;
 
+import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.observer.ObserverContainer;
@@ -71,6 +72,14 @@ public class AreaStatsBar extends ObserverContainer<JPanel> {
             case LEVEL -> updateLevel();
         }
         updateTimeLevel();
+    }
+
+    @Override
+    public void handleAction(ActionType actionType) {
+        if(actionType == ActionType.ACTION_UPDATE_UNIT) {
+            updateTime();
+            updateLevel();
+        }
     }
 
     // ========================================

@@ -24,6 +24,7 @@ public enum ActionType {
 
     ACTION_EDIT_IMAGE,
     ACTION_UPDATE_SNAPSHOT_COUNTER,
+    ACTION_UPDATE_UNIT,
 
     // Markierungen Shortcuts
     ACTION_ADD_MARKER,

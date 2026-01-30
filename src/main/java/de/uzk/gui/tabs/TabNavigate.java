@@ -1,6 +1,9 @@
 package de.uzk.gui.tabs;
 
+import de.uzk.action.ActionType;
 import de.uzk.config.Config;
+import de.uzk.edit.LevelUnitEdit;
+import de.uzk.edit.TimeUnitEdit;
 import de.uzk.gui.Gui;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
@@ -100,9 +103,12 @@ public class TabNavigate extends ObserverContainer<JPanel> {
 
     private void updateUnitValue(JSpinner spinner, Axis axis) {
         Number value = (Number) spinner.getValue();
-        switch (axis) {
-            case TIME -> workspace.getConfig().setTimeUnit(value.doubleValue());
-            case LEVEL -> workspace.getConfig().setLevelUnit(value.doubleValue());
+        boolean success = switch (axis) {
+            case TIME -> workspace.getEditManager().performEdit(new TimeUnitEdit(value.doubleValue()));
+            case LEVEL -> workspace.getEditManager().performEdit(new LevelUnitEdit(value.doubleValue()));
+        };
+        if(success) {
+            gui.handleAction(ActionType.ACTION_UPDATE_UNIT);
         }
     }
 
@@ -120,5 +126,12 @@ public class TabNavigate extends ObserverContainer<JPanel> {
         this.levelUnitSpinner.setValue(workspace.getConfig().getLevelUnit());
     }
 
+    @Override
+    public void handleAction(ActionType actionType) {
+        if(actionType == ActionType.ACTION_UPDATE_UNIT) {
+            timeUnitSpinner.setValue(workspace.getConfig().getTimeUnit());
+            levelUnitSpinner.setValue(workspace.getConfig().getLevelUnit());
+        }
+    }
 
 }
