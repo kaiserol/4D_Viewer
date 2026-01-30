@@ -2,8 +2,8 @@ package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionType;
 import de.uzk.config.Config;
-import de.uzk.edit.Edit;
-import de.uzk.edit.RotateImageEdit;
+import de.uzk.edit.*;
+import de.uzk.edit.image.*;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.observer.ObserverContainer;
@@ -14,7 +14,6 @@ import de.uzk.utils.NumberUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static de.uzk.Main.workspace;
@@ -42,9 +41,9 @@ public class TabEdit extends ObserverContainer<JPanel> {
 
         // Kontrollkästchen (Horizontales und Vertikales spiegeln) hinzufügen
         this.mirrorXBox = ComponentUtils.createCheckBox(getWord("menu.edit.mirrorX"), newValue ->
-            setConfigValue(newValue, workspace.getConfig()::isMirrorX, workspace.getConfig()::setMirrorX));
+            setConfigValue(newValue, workspace.getConfig()::isMirrorX, MirrorEdit::mirrorXEdit));
         this.mirrorYBox = ComponentUtils.createCheckBox(getWord("menu.edit.mirrorY"), newValue ->
-            setConfigValue(newValue, workspace.getConfig()::isMirrorY, workspace.getConfig()::setMirrorY));
+            setConfigValue(newValue, workspace.getConfig()::isMirrorY, MirrorEdit::mirrorYEdit));
         ComponentUtils.addRow(this.container, gbc, this.mirrorXBox, 0);
         ComponentUtils.addRow(this.container, gbc, this.mirrorYBox, 5);
 
@@ -53,11 +52,11 @@ public class TabEdit extends ObserverContainer<JPanel> {
 
         // Schieberegler (Helligkeit, Kontrast und Zoom) hinzufügen
         this.brightnessSlider = ComponentUtils.createSlider(Config.MIN_BRIGHTNESS, Config.MAX_BRIGHTNESS, newValue ->
-            setConfigValue(newValue, workspace.getConfig()::getBrightness, workspace.getConfig()::setBrightness));
+            setConfigValue(newValue, workspace.getConfig()::getBrightness, BrightnessEdit::new));
         this.contrastSlider = ComponentUtils.createSlider(Config.MIN_CONTRAST, Config.MAX_CONTRAST, newValue ->
-            setConfigValue(newValue, workspace.getConfig()::getContrast, workspace.getConfig()::setContrast));
+            setConfigValue(newValue, workspace.getConfig()::getContrast, ContrastEdit::new));
         this.zoomSlider = ComponentUtils.createSlider(Config.MIN_ZOOM, Config.MAX_ZOOM, newValue ->
-            setConfigValue(newValue, workspace.getConfig()::getZoom, workspace.getConfig()::setZoom));
+            setConfigValue(newValue, workspace.getConfig()::getZoom, ZoomEdit::new));
 
         ComponentUtils.addLabeledRow(this.container, gbc, getWord("menu.edit.brightness"), this.brightnessSlider, 15);
         ComponentUtils.addLabeledRow(this.container, gbc, getWord("menu.edit.contrast"), this.contrastSlider, 10);
@@ -65,7 +64,7 @@ public class TabEdit extends ObserverContainer<JPanel> {
 
         // Drehfeld (Rotation) hinzufügen
         degreeSpinner = ComponentUtils.createSpinner(Config.MIN_ROTATION, Config.MAX_ROTATION, true, newValue ->
-            setConfigValue(newValue, workspace.getConfig()::getRotation, (Function<Integer, Edit>) newRotation -> new RotateImageEdit(workspace.getConfig().getRotation() - newRotation)));
+            setConfigValue(newValue, workspace.getConfig()::getRotation, RotateImageEdit::new));
         ComponentUtils.addLabeledRow(this.container, gbc, getWord("menu.edit.rotation"), degreeSpinner, 10);
 
         gbc.gridwidth = 2;
@@ -151,14 +150,6 @@ public class TabEdit extends ObserverContainer<JPanel> {
     // ========================================
     // Aktualisierungen
     // ========================================
-    private <T> void setConfigValue(T newValue, Supplier<T> getter, Predicate<T> setter) {
-        // Wenn sich der Wert nicht ändert, abbrechen
-        T settingsValue = getter.get();
-        if (settingsValue.equals(newValue)) return;
-
-        boolean hasValueChanged = setter.test(newValue);
-        if (hasValueChanged) gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
-    }
 
     private <T> void setConfigValue(T newValue, Supplier<T> oldGetter, Function<T, Edit> editConstructor) {
         T settingsValue = oldGetter.get();

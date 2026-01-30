@@ -23,7 +23,7 @@ public abstract class Edit {
 
     /** Macht diesen Bearbeitungsschritt rückgängig.
      *  Diese Methode sollte für jeden Aufruf von <code>perform</code> nur ein Mal aufgerufen werden;
-     *  Was passiert, wenn man (beispielsweise) zweimal hintereinander `undo` aufruft, ist nicht definiert.
+     *  was passiert, wenn man (beispielsweise) zweimal hintereinander `undo` aufruft, ist nicht definiert.
      * */
     public abstract void undo();
 
@@ -31,6 +31,9 @@ public abstract class Edit {
      * @return Art des UI-Updates, das durch diese Operation ausgelöst werden soll.
      * Da je nachdem, <i>was</i> überhaupt verändert wurde, unterschiedliche Bereiche der GUI reagieren
      * müssen, bietet diese Methode einen Weg, nicht die gesamte GUI updaten zu müssen.
+     *
+     * @see de.uzk.action.ActionHandler
+     * @see de.uzk.gui.observer.ObserverContainer#handleAction
      * */
     public abstract ActionType getActionType();
 

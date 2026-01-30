@@ -1,15 +1,12 @@
-package de.uzk.edit;
-
-import java.awt.*;
+package de.uzk.edit.image;
 
 import static de.uzk.Main.workspace;
 
 public class RotateImageEdit extends ImageEdit {
     private final int degrees;
 
-    public RotateImageEdit( int degrees) {
-
-        this.degrees = degrees;
+    public RotateImageEdit( int newRotation) {
+        this.degrees = workspace.getConfig().getRotation() -  newRotation;
     }
 
     @Override
