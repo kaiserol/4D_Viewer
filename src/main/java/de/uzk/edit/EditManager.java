@@ -16,7 +16,7 @@ public class EditManager {
         boolean valid = edit.perform();
         if(valid) {
             editsMade.push(edit);
-            editsUndone.removeIf(prev -> !prev.isRedoCompatible(edit));
+            editsUndone.clear();
         }
         return valid;
     }
