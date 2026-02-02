@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.GraphicsUtils;
+import de.uzk.utils.NumberUtils;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -142,9 +143,8 @@ public class Marker {
         this.label = label;
     }
 
-
-    public void rotate(int rotation) {
-        this.rotation = (this.rotation + rotation) % 360;
+    public void setRotation(int newRotation) {
+        this.rotation = NumberUtils.normalizeAngle(newRotation);
     }
 
     public int getRotation() {

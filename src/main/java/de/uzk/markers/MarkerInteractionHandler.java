@@ -2,6 +2,7 @@ package de.uzk.markers;
 
 
 import de.uzk.image.ImageEditor;
+import de.uzk.utils.NumberUtils;
 import org.intellij.lang.annotations.MagicConstant;
 
 import javax.swing.*;
@@ -187,15 +188,18 @@ public class MarkerInteractionHandler extends MouseAdapter {
 
     /**
      * Berechnet die Richtung, um die der ausgewählte Marker rotiert werden soll, und führt die Rotation durch.
-     * Der Winkel wird basierend auf dem Abstand zwischen dem Rotationspunkt und dem Mauszeiger bestimmt.
+     * Der Winkel wird basierend auf dem Winkel zwischen dem Markermittelpunkt und dem Mauszeiger bestimmt.
      *
      * @param mousePos "tatsächliche" Positon des Mauszeigers. Siehe <code>getActualPoint</code>.
      * */
     private void handleRotate(Point mousePos) {
-        mousePos = derotate(mousePos);
-        int distance = mousePos.x - derotate(selectedMarker.getRotatePoint()).x;
-        int direction = distance < 0 ? -1 : 1;
-        selectedMarker.rotate(distance / 100 + direction);
+        Point center = selectedMarker.getPos();
+
+        // Winkel zwischen Mauszeiger und Mittelpunkt des Markers
+        double newAngleRadians = Math.atan2(mousePos.y - center.y, mousePos.x - center.x);
+        // 90° Addieren, damit der Dragpunkt (oben in der Mitte) unter dem Mauszeiger bleibt
+        int newAngle = NumberUtils.normalizeAngle((int)Math.toDegrees(newAngleRadians) + 90);
+        selectedMarker.setRotation(newAngle);
         imageEditor.updateImage(false);
     }
 

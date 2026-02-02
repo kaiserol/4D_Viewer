@@ -110,7 +110,7 @@ public final class NumberUtils {
      * @param rotationAngle Beliebiger Winkel in Grad (auch negativ)
      * @return Normierter Winkel im Intervall [0, 359]
      */
-    private static int normalizeAngle(int rotationAngle) {
+    public static int normalizeAngle(int rotationAngle) {
         int a = rotationAngle % 360;
         return a < 0 ? a + 360 : a;
     }
