@@ -8,17 +8,15 @@ import java.awt.geom.Path2D;
 import java.util.Arrays;
 
 import static de.uzk.config.LanguageHandler.getWord;
-import static java.lang.Math.sin;
 
-public enum MarkerShape {
+public enum GenericMarkerShape {
     @JsonEnumDefaultValue
     RECTANGLE,
     ELLIPSE,
-    ARROW,
     TRIANGLE;
 
-    public static MarkerShape[] sortedValues() {
-        MarkerShape[] values = MarkerShape.values();
+    public static GenericMarkerShape[] sortedValues() {
+        GenericMarkerShape[] values = GenericMarkerShape.values();
         Arrays.sort(values, (mark1, mark2) -> mark1.toString().compareToIgnoreCase(mark2.toString()));
         return values;
     }
@@ -28,13 +26,12 @@ public enum MarkerShape {
         return switch (this) {
             case RECTANGLE -> getWord("dialog.markers.shape.rectangle");
             case ELLIPSE -> getWord("dialog.markers.shape.ellipse");
-            case ARROW -> getWord("dialog.markers.shape.arrow");
             case TRIANGLE -> getWord("dialog.markers.shape.triangle");
         };
     }
 
     /**
-     * Erstellt eine geometrische Figur mit der Form dieser <code>MarkerShape</code> innerhalb
+     * Erstellt eine geometrische Figur mit der Form dieser <code>GenericMarkerShape</code> innerhalb
      * des gegebenen Rechtecks.
      *
      * @param boundingBox der Bereich, in den die Form passen soll.
@@ -44,24 +41,7 @@ public enum MarkerShape {
         return switch(this) {
             case RECTANGLE -> boundingBox;
             case ELLIPSE -> new Ellipse2D.Double(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
-            case ARROW -> {
-                Path2D path = new Path2D.Double();
-                double baseAngle = Math.atan2(boundingBox.height, boundingBox.width);
-                double leftAngle = baseAngle + Math.PI / 4;
-                double rightAngle = baseAngle - Math.PI / 4;
-                double xCorner = boundingBox.getX() + boundingBox.width;
-                double yCorner = boundingBox.getY() + boundingBox.height;
-                double length = Math.sqrt(boundingBox.getWidth() * boundingBox.getWidth() + boundingBox.getHeight() * boundingBox.getHeight()) / 20;
-                path.moveTo(boundingBox.x, boundingBox.y);
-                path.lineTo(xCorner, yCorner);
-                path.moveTo(xCorner, yCorner);
 
-                path.lineTo(xCorner - length * Math.cos(leftAngle), yCorner - length * sin(leftAngle));
-                path.moveTo(xCorner, yCorner);
-                  path.lineTo(xCorner - length * Math.cos(rightAngle), yCorner - length * sin(rightAngle));
-
-                 yield path;
-            }
             case TRIANGLE -> {
                 Path2D path = new Path2D.Double();
                 double x = boundingBox.x;

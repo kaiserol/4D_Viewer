@@ -2,8 +2,10 @@ package de.uzk.gui.marker;
 
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.dialogs.DialogColorChooser;
-import de.uzk.markers.Marker;
-import de.uzk.markers.MarkerShape;
+import de.uzk.markers.AbstractMarker;
+import de.uzk.markers.GenericMarker;
+import de.uzk.markers.GenericMarkerShape;
+import de.uzk.markers.interactions.MarkerInteractionHandler;
 import de.uzk.utils.DateTimeUtils;
 
 import javax.swing.*;
@@ -18,29 +20,27 @@ import static de.uzk.config.LanguageHandler.getWord;
 /**
  * Dialog zum Bearbeiten von Markereigenschaften.
  * Diese Klasse ist nur für "selten" veränderte Eigenschaften wie Farbe, Name etc. zuständig
- * Markerposition, -größe und -rotation finden in {@link de.uzk.markers.MarkerInteractionHandler} statt.
+ * Markerposition, -größe und -rotation finden in {@link MarkerInteractionHandler} statt.
  * */
 public class MarkerEditor extends Container {
-    private final Marker marker;
+    protected final AbstractMarker marker;
+    protected GridBagConstraints gbc;
     private final DialogColorChooser dialogColorChooser;
 
-    public MarkerEditor(int startTime) {
-        this(new Marker(startTime));
-    }
 
-    public MarkerEditor(Marker marker) {
+    public MarkerEditor(AbstractMarker marker) {
         this.marker = marker;
         this.dialogColorChooser = new DialogColorChooser(null);
         init();
     }
 
-    public Marker getMarker() {
+    public AbstractMarker getMarker() {
         return this.marker;
     }
 
-    private void init() {
+    protected void init() {
         this.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
+        gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = UIEnvironment.INSETS_DEFAULT;
 
@@ -53,14 +53,6 @@ public class MarkerEditor extends Container {
         gbc.gridwidth = 2;
         this.add(getLabelInput(), gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 1;
-        this.add(new JLabel(getWord("dialog.markers.shape")), gbc);
-
-        gbc.gridx = 1;
-        gbc.gridwidth = 2;
-        this.add(getShapeInput(), gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -106,12 +98,7 @@ public class MarkerEditor extends Container {
 
     }
 
-    private JComboBox<MarkerShape> getShapeInput() {
-        JComboBox<MarkerShape> list = new JComboBox<>(MarkerShape.values());
-        list.addItemListener(e -> marker.setShape((MarkerShape)list.getSelectedItem()));
-        list.setSelectedItem(marker.getShape());
-        return list;
-    }
+
 
     private static class TimeInput extends JPanel {
 

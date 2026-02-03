@@ -5,7 +5,8 @@ import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.Axis;
 import de.uzk.io.ImageLoader;
-import de.uzk.markers.Marker;
+import de.uzk.markers.AbstractMarker;
+import de.uzk.markers.GenericMarker;
 import de.uzk.utils.ColorUtils;
 
 import javax.swing.*;
@@ -21,9 +22,9 @@ public class MarkerInfo extends JPanel
     was einen Stack-Overflow auslöst */
 {
     private final Gui gui;
-    private final Marker marker;
+    private final AbstractMarker marker;
 
-    public MarkerInfo(Marker marker, Gui gui) {
+    public MarkerInfo(AbstractMarker marker, Gui gui) {
         this.gui = gui;
         this.marker = marker;
         init();
@@ -85,23 +86,20 @@ public class MarkerInfo extends JPanel
         edit.setToolTipText(getWord("menu.markers.tooltipEditMarker"));
         edit.addActionListener(a -> {
 
-            Marker copy = new Marker(marker);
-            MarkerEditor initial = new MarkerEditor(marker);
+            AbstractMarker copy = marker.copy();
+            // Da momentan nur 2 Markertypen, ist ein schnelles instanceof hier schneller & verständlicher als eine zusätzliche abstrakte Methode
+            MarkerEditor editor = (copy instanceof GenericMarker generic) ? new GenericMarkerEditor(generic) : new MarkerEditor(copy);
             int option = JOptionPane.showConfirmDialog(
                 gui.getContainer(),
-                initial,
+                editor,
                 getWord("dialog.markers.editMarker"),
                 JOptionPane.OK_CANCEL_OPTION
             );
 
             if (option == JOptionPane.OK_OPTION) {
-
+                workspace.getMarkers().replace(marker, copy);
                 gui.handleAction(ActionType.ACTION_EDIT_MARKER);
-
                 gui.updateUI();
-            } else {
-                // Resetten
-                marker.cloneFrom(copy);
             }
         });
         return edit;

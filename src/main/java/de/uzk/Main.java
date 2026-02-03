@@ -6,6 +6,7 @@ import de.uzk.config.Settings;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.Workspace;
 import de.uzk.logger.Logger;
+import de.uzk.markers.GenericMarker;
 
 import javax.swing.*;
 

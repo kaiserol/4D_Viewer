@@ -8,7 +8,7 @@ import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
 import de.uzk.image.ImageEditor;
 import de.uzk.io.SnapshotHelper;
-import de.uzk.markers.MarkerInteractionHandler;
+import de.uzk.markers.interactions.MarkerInteractionHandler;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.ComponentUtils;
 

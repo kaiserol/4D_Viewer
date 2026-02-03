@@ -1,6 +1,7 @@
 package de.uzk.markers;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import de.uzk.io.PathManager;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonParser;
@@ -18,18 +19,18 @@ import java.util.Objects;
  * Außerdem zur Zentralisierung der Markerserialisierung verwendet.
  * */
 public class Markers {
-    @JsonGetter("markers")
-    public List<Marker> getAllMarkers() {
+   public List<AbstractMarker> getAllMarkers() {
         return this.markers;
     }
 
-    public void addMarker(Marker marker) {
+    public void addMarker(AbstractMarker marker) {
         this.markers.add(marker);
     }
 
     // Markierungen
-    @JsonDeserialize(contentUsing = NullInvalidMarkers.class)
-    private final List<Marker> markers;
+    //TODO Bei Deserialisierung einzelne Ungültige Marker überspringen statt alle zu löschen.
+    @JsonProperty("markers")
+    private final List<AbstractMarker> markers;
 
     public Markers() {
         this.markers = new ArrayList<>();
@@ -50,30 +51,20 @@ public class Markers {
         } else return new Markers();
     }
 
-    public void remove(Marker marker) {
+    public void remove(AbstractMarker marker) {
         this.markers.remove(marker);
+    }
+
+    public void replace(AbstractMarker oldMarker, AbstractMarker newMarker) {
+        this.markers.removeIf(m -> m == oldMarker);
+        this.markers.add(newMarker);
     }
 
     /**
      * @return Alle Marker, die zum gegebenen Zeitpunkt zu sehen sind.
      * */
-    public List<Marker> getMarkersForImage(int time) {
+    public List<AbstractMarker> getMarkersForImage(int time) {
         return this.markers.stream().filter(m -> m.shouldRender(time)).toList();
     }
 
-    // Helferklasse, die ungültige Marker zu nulls macht, die herausgefiltert werden können
-    private static class NullInvalidMarkers extends StdDeserializer<Marker> {
-        public NullInvalidMarkers() {
-            super(Marker.class);
-        }
-
-        @Override
-        public Marker deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
-            try {
-                return p.readValueAs(Marker.class);
-            } catch (Exception e) {
-                return null;
-            }
-        }
-    }
 }
