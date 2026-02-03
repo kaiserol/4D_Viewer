@@ -25,12 +25,13 @@ public class GenericMarker extends AbstractMarker {
         this(new Point(250, 100), new Dimension(500, 200), start, start, GenericMarkerShape.RECTANGLE, Color.RED, "Marker");
     }
 
+    @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
+    public GenericMarker() { this(0); }
+
     public GenericMarker(GenericMarker other) {
         this(new Point(other.pos), new Dimension(other.size), other.from, other.to, other.shape, other.color, other.label);
         setRotation(other.rotation);
     }
-
-
 
     public GenericMarker(AbstractMarker abstractMarker, GenericMarkerShape shape) {
         setFrom(abstractMarker.getFrom());

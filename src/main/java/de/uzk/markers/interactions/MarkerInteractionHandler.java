@@ -3,8 +3,6 @@ package de.uzk.markers.interactions;
 
 import de.uzk.image.ImageEditor;
 import de.uzk.markers.AbstractMarker;
-import de.uzk.markers.ArrowMarker;
-import de.uzk.markers.GenericMarker;
 import org.intellij.lang.annotations.MagicConstant;
 
 import javax.swing.*;
@@ -30,9 +28,6 @@ import static de.uzk.Main.workspace;
  * @see de.uzk.gui.SensitiveImagePanel
  * */
 public class MarkerInteractionHandler extends MouseAdapter {
-
-    private static final int[] DRAG_CURSORS = {Cursor.NW_RESIZE_CURSOR, Cursor.W_RESIZE_CURSOR, Cursor.SW_RESIZE_CURSOR, Cursor.N_RESIZE_CURSOR, Cursor.S_RESIZE_CURSOR, Cursor.NE_RESIZE_CURSOR, Cursor.E_RESIZE_CURSOR, Cursor.SE_RESIZE_CURSOR};
-
     private final ImageEditor imageEditor;
     private MarkerModificator selectedMarker;
     private EditMode editMode = EditMode.NONE;
@@ -133,7 +128,6 @@ public class MarkerInteractionHandler extends MouseAdapter {
      *
      * @param e Das Event, dessen Position untersucht werden soll
      * */
-    @SuppressWarnings("MagicConstant")
     private void checkHoveringDragPoint(MouseEvent e) {
         Point actual = getActualPoint(e.getPoint());
         editMode = selectedMarker.checkEditMode(actual);
@@ -172,53 +166,6 @@ public class MarkerInteractionHandler extends MouseAdapter {
         selectedMarker = null;
         editMode = EditMode.NONE;
     }
-
-    //region Berechnungsmethoden
-
-    /**
-     * Berechnet die Richtung, um die der ausgewählte Marker rotiert werden soll, und führt die Rotation durch.
-     * Der Winkel wird basierend auf dem Winkel zwischen dem Markermittelpunkt und dem Mauszeiger bestimmt.
-     *
-     * @param mousePos "tatsächliche" Positon des Mauszeigers. Siehe <code>getActualPoint</code>.
-     * */
-    private void handleRotate(Point mousePos) {
-        if(selectedMarker instanceof GenericMarker marker) {
-
-        }
-    }
-
-    /**
-     * Berechnet die Verschiebung, um die der ausgewählte Marker rotiert werden soll, und führt die Verschiebung durch.
-     * Der Winkel wird basierend auf der Position des Mauszeigers bestimmt.
-     *
-     * @param mousePos "tatsächliche" Positon des Mauszeigers. Siehe <code>getActualPoint</code>.
-     * */
-    private void handleMove(Point mousePos) {
-
-    }
-
-    /**
-     * Berechnet  basierend auf der Position des Mauszeigers und des Momentan ausgewählten Dragpoints
-     * die Vergrößerung sowie die dafür nötige Verschiebung des Mittelpunktes. Letztere ist nötig, weil
-     * die Markerposition dessen Mittelpunkt repräsentiert, das visuelle Zeichnen des Markers jedoch in
-     * der oberen linken Ecke beginnt.
-     *
-     * @param mousePos "tatsächliche" Positon des Mauszeigers. Siehe <code>getActualPoint</code>.
-     * */
-    private void handleResize(Point mousePos, GenericMarker marker) {
-        // Position des Markers
-
-    }
-
-    private void handleResize(Point mousePos, ArrowMarker marker) {
-        System.out.println("wha t");
-    }
-
-    private void handleResize(Point mousePos, AbstractMarker marker) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    //endregion
 
     //region Sonstige Hilfsmethoden
     private void setCursorAndRerender(Component target, @MagicConstant(valuesFromClass = Cursor.class) int cursorType) {

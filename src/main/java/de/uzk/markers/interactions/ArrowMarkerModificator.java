@@ -21,14 +21,18 @@ public class ArrowMarkerModificator implements MarkerModificator {
 
     @Override
     public void handleResize(Point mousePos) {
-        if(dragPoint == null) return;
-        else if(dragPoint == DragPoint.START) marker.setStart(mousePos);
+        if(dragPoint == DragPoint.START) marker.setStart(mousePos);
         else if(dragPoint == DragPoint.TIP) marker.setTip(mousePos);
     }
 
     @Override
     public void handleMove(Point mousePos) {
-
+        Point start = marker.getStart();
+        Point tip = marker.getTip();
+        int dx = mousePos.x - start.x;
+        int dy = mousePos.y - start.y;
+        marker.setStart(new Point(start.x + dx, start.y + dy));
+        marker.setTip(new Point(tip.x + dx, tip.y + dy));
     }
 
     @Override
@@ -51,6 +55,6 @@ public class ArrowMarkerModificator implements MarkerModificator {
     }
 
     private enum DragPoint {
-        START, TIP;
+        START, TIP
     }
 }

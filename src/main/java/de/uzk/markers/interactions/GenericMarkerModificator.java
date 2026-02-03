@@ -31,6 +31,7 @@ public class GenericMarkerModificator implements MarkerModificator {
 
     @Override
     public void handleResize(Point mousePos) {
+        if(dragPoint == null) return;
         double x = marker.getPos().x;
         double y = marker.getPos().y;
 

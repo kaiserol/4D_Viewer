@@ -12,9 +12,13 @@ import java.awt.geom.Path2D;
 import static java.lang.Math.sin;
 
 public class ArrowMarker extends AbstractMarker {
-
     private Point start;
     private Point tip;
+
+    @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
+    public ArrowMarker() {
+        this(new Point(250, 100), new Point(500, 500), 0, 0, Color.RED, "Arrow");
+    }
 
     @JsonGetter("start")
     public Point getStart() { return start; }
@@ -79,8 +83,6 @@ public class ArrowMarker extends AbstractMarker {
 
     @Override
     public Point[] getScalePoints() {
-        System.out.println(start);
-        System.out.println(tip);
         return new Point[] { start, tip };
     }
 
