@@ -5,7 +5,7 @@ import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.Axis;
 import de.uzk.io.ImageLoader;
-import de.uzk.markers.AbstractMarker;
+import de.uzk.markers.Marker;
 import de.uzk.utils.ColorUtils;
 
 import javax.swing.*;
@@ -21,9 +21,9 @@ public class MarkerInfo extends JPanel
    `extends AreaContainerInteractive` würde während der initialisierung Eventhandler registrieren,
     was einen Stack-Overflow auslöst */ {
     private final Gui gui;
-    private final AbstractMarker marker;
+    private final Marker marker;
 
-    public MarkerInfo(AbstractMarker marker, Gui gui) {
+    public MarkerInfo(Marker marker, Gui gui) {
         this.gui = gui;
         this.marker = marker;
         init();

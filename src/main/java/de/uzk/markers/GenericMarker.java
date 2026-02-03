@@ -2,7 +2,7 @@ package de.uzk.markers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import de.uzk.markers.interactions.GenericMarkerModificator;
+import de.uzk.markers.interactions.ShapeMarker;
 import de.uzk.markers.interactions.MarkerModificator;
 import de.uzk.utils.GraphicsUtils;
 import de.uzk.utils.NumberUtils;
@@ -12,16 +12,16 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
-public class GenericMarker extends AbstractMarker {
+public class GenericMarker extends Marker {
     // Höhe und Breite
     protected Dimension size;
     // Mittelpunkt des Markers
     protected Point pos;
     private int rotation;
-    private GenericMarkerShape shape;
+    private MarkerShape shape;
 
     public GenericMarker(int start) {
-        this(new Point(250, 100), new Dimension(500, 200), start, start, GenericMarkerShape.RECTANGLE, Color.RED, "Marker");
+        this(new Point(250, 100), new Dimension(500, 200), start, start, MarkerShape.RECTANGLE, Color.RED, "Marker");
     }
 
     @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
@@ -34,7 +34,7 @@ public class GenericMarker extends AbstractMarker {
         setRotation(other.rotation);
     }
 
-    public GenericMarker(AbstractMarker abstractMarker, GenericMarkerShape shape) {
+    public GenericMarker(Marker abstractMarker, MarkerShape shape) {
         setFrom(abstractMarker.getFrom());
         setTo(abstractMarker.getTo());
         setColor(abstractMarker.getColor());
@@ -51,7 +51,7 @@ public class GenericMarker extends AbstractMarker {
         setShape(shape);
     }
 
-    public GenericMarker(Point pos, Dimension size, int from, int to, GenericMarkerShape shape, Color color, String label) {
+    public GenericMarker(Point pos, Dimension size, int from, int to, MarkerShape shape, Color color, String label) {
         setPos(pos);
         setSize(size);
         setShape(shape);
@@ -89,12 +89,12 @@ public class GenericMarker extends AbstractMarker {
         this.size = size;
     }
 
-    public GenericMarkerShape getShape() {
+    public MarkerShape getShape() {
         return shape;
     }
 
     @JsonSetter("shape")
-    public void setShape(GenericMarkerShape shape) {
+    public void setShape(MarkerShape shape) {
         this.shape = shape;
     }
 
@@ -228,13 +228,13 @@ public class GenericMarker extends AbstractMarker {
     }
 
     @Override
-    public AbstractMarker copy() {
+    public Marker copy() {
         return new GenericMarker(this);
     }
 
     @Override
     public MarkerModificator getSuitableModificator() {
-        return new GenericMarkerModificator(this);
+        return new ShapeMarker(this);
     }
 
     @Override

@@ -1,16 +1,16 @@
 package de.uzk.gui.marker;
 
-import de.uzk.markers.AbstractMarker;
+import de.uzk.markers.Marker;
 import de.uzk.markers.ArrowMarker;
 import de.uzk.markers.GenericMarker;
-import de.uzk.markers.GenericMarkerShape;
+import de.uzk.markers.MarkerShape;
 
 import static de.uzk.config.LanguageHandler.getWord;
 
 public enum MarkerKind {
     SHAPE_RECTANGLE, SHAPE_ELLIPSE, SHAPE_TRIANGLE, ARROW;
 
-    public static MarkerKind fromMarker(AbstractMarker marker) {
+    public static MarkerKind fromMarker(Marker marker) {
         if (marker instanceof ArrowMarker) {
             return ARROW;
         } else if (marker instanceof GenericMarker s) {
@@ -24,15 +24,15 @@ public enum MarkerKind {
         throw new UnsupportedOperationException();
     }
 
-    public AbstractMarker switchKind(AbstractMarker marker) {
+    public Marker switchKind(Marker marker) {
         if (this == ARROW) {
             if (marker instanceof ArrowMarker) return marker;
             return new ArrowMarker(marker);
         }
-        GenericMarkerShape shape = switch (this) {
-            case SHAPE_RECTANGLE -> GenericMarkerShape.RECTANGLE;
-            case SHAPE_ELLIPSE -> GenericMarkerShape.ELLIPSE;
-            case SHAPE_TRIANGLE -> GenericMarkerShape.TRIANGLE;
+        MarkerShape shape = switch (this) {
+            case SHAPE_RECTANGLE -> MarkerShape.RECTANGLE;
+            case SHAPE_ELLIPSE -> MarkerShape.ELLIPSE;
+            case SHAPE_TRIANGLE -> MarkerShape.TRIANGLE;
             case ARROW -> throw new IllegalStateException("this == ARROW despite prior if branch");
         };
         if (marker instanceof GenericMarker gen) {

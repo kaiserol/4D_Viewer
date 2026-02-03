@@ -2,7 +2,7 @@ package de.uzk.gui.marker;
 
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.dialogs.DialogColorChooser;
-import de.uzk.markers.AbstractMarker;
+import de.uzk.markers.Marker;
 import de.uzk.markers.interactions.MarkerInteractionHandler;
 import de.uzk.utils.DateTimeUtils;
 
@@ -23,17 +23,17 @@ import static de.uzk.config.LanguageHandler.getWord;
  */
 public class MarkerEditor extends Container {
     private final DialogColorChooser dialogColorChooser;
-    protected AbstractMarker marker;
+    protected Marker marker;
     protected GridBagConstraints gbc;
 
 
-    public MarkerEditor(AbstractMarker marker) {
+    public MarkerEditor(Marker marker) {
         this.marker = marker;
         this.dialogColorChooser = new DialogColorChooser(null);
         init();
     }
 
-    public AbstractMarker getMarker() {
+    public Marker getMarker() {
         return this.marker;
     }
 

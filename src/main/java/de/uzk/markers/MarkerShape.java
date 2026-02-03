@@ -6,11 +6,11 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 
 
-public enum GenericMarkerShape {
+public enum MarkerShape {
     @JsonEnumDefaultValue RECTANGLE, ELLIPSE, TRIANGLE;
 
     /**
-     * Erstellt eine geometrische Figur mit der Form dieser <code>GenericMarkerShape</code> innerhalb
+     * Erstellt eine geometrische Figur mit der Form dieser <code>MarkerShape</code> innerhalb
      * des gegebenen Rechtecks.
      *
      * @param boundingBox der Bereich, in den die Form passen soll.

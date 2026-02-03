@@ -1,6 +1,6 @@
 package de.uzk.markers.interactions;
 
-import de.uzk.markers.AbstractMarker;
+import de.uzk.markers.Marker;
 
 import java.awt.*;
 
@@ -13,5 +13,5 @@ public interface MarkerModificator {
 
     MarkerInteractionHandler.EditMode checkEditMode(Point mousePos);
 
-    AbstractMarker getCurrentFocused();
+    Marker getCurrentFocused();
 }

@@ -2,7 +2,7 @@ package de.uzk.markers.interactions;
 
 
 import de.uzk.image.ImageEditor;
-import de.uzk.markers.AbstractMarker;
+import de.uzk.markers.Marker;
 import org.intellij.lang.annotations.MagicConstant;
 
 import javax.swing.*;
@@ -108,7 +108,7 @@ public class MarkerInteractionHandler extends MouseAdapter {
     private void checkHoveringMarker(MouseEvent e) {
         Component target = e.getComponent();
         Point actual = getActualPoint(e.getPoint());
-        for (AbstractMarker m : workspace.getMarkers().getMarkersForImage(workspace.getTime())) {
+        for (Marker m : workspace.getMarkers().getMarkersForImage(workspace.getTime())) {
             Shape area = m.getLabelArea(target.getGraphics());
             if (area.contains(actual)) {
                 if (selectedMarker == null) {

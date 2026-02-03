@@ -17,7 +17,7 @@ public class Markers {
     // Markierungen
     //TODO Bei Deserialisierung einzelne Ungültige Marker überspringen statt alle zu löschen.
     @JsonProperty("markers")
-    private final List<AbstractMarker> markers;
+    private final List<Marker> markers;
 
     public Markers() {
         this.markers = new ArrayList<>();
@@ -33,11 +33,11 @@ public class Markers {
         } else return new Markers();
     }
 
-    public List<AbstractMarker> getAllMarkers() {
+    public List<Marker> getAllMarkers() {
         return this.markers;
     }
 
-    public void addMarker(AbstractMarker marker) {
+    public void addMarker(Marker marker) {
         this.markers.add(marker);
     }
 
@@ -46,11 +46,11 @@ public class Markers {
         PathManager.save(filePath, this);
     }
 
-    public void remove(AbstractMarker marker) {
+    public void remove(Marker marker) {
         this.markers.remove(marker);
     }
 
-    public void replace(AbstractMarker oldMarker, AbstractMarker newMarker) {
+    public void replace(Marker oldMarker, Marker newMarker) {
         this.markers.remove(oldMarker);
         this.markers.add(newMarker);
     }
@@ -59,7 +59,7 @@ public class Markers {
      * @return Alle Marker, die zum gegebenen Zeitpunkt zu sehen sind.
      *
      */
-    public List<AbstractMarker> getMarkersForImage(int time) {
+    public List<Marker> getMarkersForImage(int time) {
         return this.markers.stream().filter(m -> m.shouldRender(time)).toList();
     }
 

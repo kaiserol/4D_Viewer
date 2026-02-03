@@ -11,7 +11,7 @@ import java.awt.geom.Path2D;
 
 import static java.lang.Math.sin;
 
-public class ArrowMarker extends AbstractMarker {
+public class ArrowMarker extends Marker {
     private Point start;
     private Point tip;
 
@@ -33,7 +33,7 @@ public class ArrowMarker extends AbstractMarker {
         this(new Point(other.getStart()), other.getTip(), other.getFrom(), other.getTo(), other.getColor(), other.getLabel());
     }
 
-    public ArrowMarker(AbstractMarker abstractMarker) {
+    public ArrowMarker(Marker abstractMarker) {
         setFrom(abstractMarker.getFrom());
         setTo(abstractMarker.getTo());
         setColor(abstractMarker.getColor());
@@ -97,7 +97,7 @@ public class ArrowMarker extends AbstractMarker {
     }
 
     @Override
-    public AbstractMarker copy() {
+    public Marker copy() {
         return new ArrowMarker(this);
     }
 

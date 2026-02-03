@@ -1,6 +1,6 @@
 package de.uzk.markers.interactions;
 
-import de.uzk.markers.AbstractMarker;
+import de.uzk.markers.Marker;
 import de.uzk.markers.GenericMarker;
 import de.uzk.utils.NumberUtils;
 
@@ -8,11 +8,11 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
-public class GenericMarkerModificator implements MarkerModificator {
+public class ShapeMarker implements MarkerModificator {
     private final GenericMarker marker;
     private DragPoint dragPoint = null;
 
-    public GenericMarkerModificator(GenericMarker marker) {
+    public ShapeMarker(GenericMarker marker) {
         this.marker = marker;
     }
 
@@ -117,7 +117,7 @@ public class GenericMarkerModificator implements MarkerModificator {
     }
 
     @Override
-    public AbstractMarker getCurrentFocused() {
+    public Marker getCurrentFocused() {
         return marker;
     }
 
@@ -125,14 +125,14 @@ public class GenericMarkerModificator implements MarkerModificator {
     public MarkerInteractionHandler.EditMode checkEditMode(Point mousePos) {
         Point[] scalePoints = marker.getScalePoints();
         for (int i = 0; i < scalePoints.length; i++) {
-            if (mousePos.distance(scalePoints[i]) < AbstractMarker.LINE_WIDTH * AbstractMarker.LINE_WIDTH) {
+            if (mousePos.distance(scalePoints[i]) < Marker.LINE_WIDTH * Marker.LINE_WIDTH) {
                 dragPoint = DragPoint.values()[i];
                 return MarkerInteractionHandler.EditMode.RESIZE;
             }
         }
 
         Point rotPoint = marker.getRotatePoint();
-        if (mousePos.distance(rotPoint) < AbstractMarker.LINE_WIDTH * AbstractMarker.LINE_WIDTH) {
+        if (mousePos.distance(rotPoint) < Marker.LINE_WIDTH * Marker.LINE_WIDTH) {
 
             return MarkerInteractionHandler.EditMode.ROTATE;
         } else {

@@ -1,6 +1,6 @@
 package de.uzk.markers.interactions;
 
-import de.uzk.markers.AbstractMarker;
+import de.uzk.markers.Marker;
 import de.uzk.markers.ArrowMarker;
 
 import java.awt.*;
@@ -37,7 +37,7 @@ public class ArrowMarkerModificator implements MarkerModificator {
 
     @Override
     public MarkerInteractionHandler.EditMode checkEditMode(Point mousePos) {
-        int distance = AbstractMarker.LINE_WIDTH * AbstractMarker.LINE_WIDTH;
+        int distance = Marker.LINE_WIDTH * Marker.LINE_WIDTH;
         if (mousePos.distance(marker.getStart()) <= distance) {
             dragPoint = DragPoint.START;
 
@@ -50,7 +50,7 @@ public class ArrowMarkerModificator implements MarkerModificator {
     }
 
     @Override
-    public AbstractMarker getCurrentFocused() {
+    public Marker getCurrentFocused() {
         return marker;
     }
 

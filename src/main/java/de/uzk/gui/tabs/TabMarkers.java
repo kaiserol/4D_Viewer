@@ -6,7 +6,7 @@ import de.uzk.gui.marker.MarkerEditor;
 import de.uzk.gui.marker.MarkerInfo;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
-import de.uzk.markers.AbstractMarker;
+import de.uzk.markers.Marker;
 import de.uzk.markers.GenericMarker;
 import de.uzk.utils.ComponentUtils;
 
@@ -23,7 +23,7 @@ public class TabMarkers extends ObserverContainer<JPanel> {
     }
 
     private void rebuildContainer() {
-        java.util.List<AbstractMarker> currentMarkers = workspace.getMarkers().getAllMarkers();
+        java.util.List<Marker> currentMarkers = workspace.getMarkers().getAllMarkers();
 
         container.removeAll();
         container.setLayout(new BorderLayout());
@@ -45,7 +45,7 @@ public class TabMarkers extends ObserverContainer<JPanel> {
 
         if (!currentMarkers.isEmpty()) {
             Box panel = new Box(BoxLayout.Y_AXIS);
-            for (AbstractMarker currentMarker : currentMarkers) {
+            for (Marker currentMarker : currentMarkers) {
                 JPanel next = new MarkerInfo(currentMarker, this.gui);
 
                 panel.add(next);

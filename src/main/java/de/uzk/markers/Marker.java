@@ -10,7 +10,7 @@ import java.awt.geom.Ellipse2D;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes(value = {@JsonSubTypes.Type(value = GenericMarker.class), @JsonSubTypes.Type(value = ArrowMarker.class)})
-public abstract class AbstractMarker {
+public abstract class Marker {
     public static final int LINE_WIDTH = 5;
     // Zeitraum, in dem der Marker sichtbar sein soll
     protected int from;
@@ -103,7 +103,7 @@ public abstract class AbstractMarker {
 
     public abstract Shape getLabelArea(Graphics g2d);
 
-    public abstract AbstractMarker copy();
+    public abstract Marker copy();
 
     @JsonIgnore
     public abstract MarkerModificator getSuitableModificator();
@@ -112,7 +112,7 @@ public abstract class AbstractMarker {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AbstractMarker that = (AbstractMarker) o;
+        Marker that = (Marker) o;
         return from == that.from && to == that.to && color.equals(that.color) && label.equals(that.label);
     }
 }

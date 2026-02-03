@@ -2,7 +2,7 @@ package de.uzk.image;
 
 import de.uzk.config.Config;
 import de.uzk.io.ImageLoader;
-import de.uzk.markers.AbstractMarker;
+import de.uzk.markers.Marker;
 import de.uzk.markers.interactions.MarkerInteractionHandler;
 import de.uzk.utils.GraphicsUtils;
 
@@ -25,7 +25,7 @@ public class ImageEditor {
     private BufferedImage currentImage;
     private BufferedImage cache;
     // Der Marker, der vom Nutzer aktuell skaliert/rotiert wird, falls vorhanden.
-    private AbstractMarker focusedMarker;
+    private Marker focusedMarker;
     // Transformationen, die auf das Bild angewendet werden.
     private AffineTransform imageTransform = new AffineTransform();
     // Transformationen, die auf Marker angewendet werden.
@@ -68,7 +68,7 @@ public class ImageEditor {
      *
      * @param marker der Marker, der fokussiert werden soll, oder <code>null</code>.
      * */
-    public void setFocusedMarker(AbstractMarker marker) {
+    public void setFocusedMarker(Marker marker) {
         this.focusedMarker = marker;
     }
 
@@ -134,11 +134,11 @@ public class ImageEditor {
         Graphics2D g2d = GraphicsUtils.createHighQualityGraphics2D(result.getGraphics());
         g2d.drawImage(cache, 0, 0, null);
 
-        java.util.List<AbstractMarker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
+        java.util.List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
         g2d.transform(markerTransform);
 
         boolean focusedMarkerStillExists = false;
-        for (AbstractMarker marker : markers) {
+        for (Marker marker : markers) {
             marker.draw(g2d);
             focusedMarkerStillExists |= marker == focusedMarker;
         }
