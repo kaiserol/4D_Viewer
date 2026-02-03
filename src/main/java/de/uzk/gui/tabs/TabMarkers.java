@@ -1,6 +1,7 @@
 package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionType;
+import de.uzk.edit.markers.AddMarkerEdit;
 import de.uzk.gui.Gui;
 import de.uzk.gui.marker.MarkerEditor;
 import de.uzk.gui.marker.MarkerInfo;
@@ -35,7 +36,7 @@ public class TabMarkers extends ObserverContainer<JPanel> {
             int option = JOptionPane.showConfirmDialog(gui.getContainer(), editor, getWord("dialog.markers.newMarker"), JOptionPane.OK_CANCEL_OPTION);
 
             if (option == JOptionPane.OK_OPTION) {
-                workspace.getMarkers().addMarker(editor.getMarker());
+                workspace.getEditManager().performEdit(new AddMarkerEdit(editor.getMarker()));
                 gui.handleAction(ActionType.ACTION_ADD_MARKER);
                 gui.updateUI();
             }

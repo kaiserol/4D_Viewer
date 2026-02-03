@@ -37,8 +37,8 @@ public class Markers {
         return this.markers;
     }
 
-    public void addMarker(Marker marker) {
-        this.markers.add(marker);
+    public boolean addMarker(Marker marker) {
+        return this.markers.add(marker);
     }
 
     public void save() {
@@ -46,13 +46,16 @@ public class Markers {
         PathManager.save(filePath, this);
     }
 
-    public void remove(Marker marker) {
-        this.markers.remove(marker);
+    public boolean remove(Marker marker) {
+       return this.markers.remove(marker);
     }
 
-    public void replace(Marker oldMarker, Marker newMarker) {
-        this.markers.remove(oldMarker);
-        this.markers.add(newMarker);
+    public boolean replace(Marker oldMarker, Marker newMarker) {
+        if(this.markers.remove(oldMarker)) {
+            this.markers.add(newMarker);
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -1,6 +1,8 @@
 package de.uzk.gui.marker;
 
 import de.uzk.action.ActionType;
+import de.uzk.edit.markers.MarkerEdit;
+import de.uzk.edit.markers.RemoveMarkerEdit;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.Axis;
@@ -89,7 +91,7 @@ public class MarkerInfo extends JPanel
 
 
             if (option == JOptionPane.OK_OPTION) {
-                workspace.getMarkers().replace(marker, editor.getMarker());
+                workspace.getEditManager().performEdit(new MarkerEdit(marker, editor.getMarker()));
                 gui.handleAction(ActionType.ACTION_EDIT_MARKER);
                 gui.updateUI();
             }
@@ -102,7 +104,7 @@ public class MarkerInfo extends JPanel
         deleteButton.setBackground(ColorUtils.COLOR_RED);
         deleteButton.setToolTipText(getWord("menu.markers.tooltipRemoveMarker"));
         deleteButton.addActionListener(a -> {
-            workspace.getMarkers().remove(marker);
+            workspace.getEditManager().performEdit(new RemoveMarkerEdit(marker));
             gui.handleAction(ActionType.ACTION_REMOVE_MARKER);
         });
         return deleteButton;
