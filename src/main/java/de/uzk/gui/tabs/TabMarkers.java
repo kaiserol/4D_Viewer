@@ -23,21 +23,16 @@ public class TabMarkers extends ObserverContainer<JPanel> {
     }
 
     private void rebuildContainer() {
-        java.util.List<AbstractMarker> currentMarkers =  workspace.getMarkers().getAllMarkers();
+        java.util.List<AbstractMarker> currentMarkers = workspace.getMarkers().getAllMarkers();
 
         container.removeAll();
         container.setLayout(new BorderLayout());
 
         JButton addButton = new JButton(getWord("menu.markers.addMarker"));
-        addButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,addButton.getPreferredSize().height));
+        addButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, addButton.getPreferredSize().height));
         addButton.addActionListener(e -> {
             MarkerEditor editor = new MarkerEditor(new GenericMarker(workspace.getTime()));
-            int option = JOptionPane.showConfirmDialog(
-                gui.getContainer(),
-                editor,
-                getWord("dialog.markers.newMarker"),
-                JOptionPane.OK_CANCEL_OPTION
-            );
+            int option = JOptionPane.showConfirmDialog(gui.getContainer(), editor, getWord("dialog.markers.newMarker"), JOptionPane.OK_CANCEL_OPTION);
 
             if (option == JOptionPane.OK_OPTION) {
                 workspace.getMarkers().addMarker(editor.getMarker());

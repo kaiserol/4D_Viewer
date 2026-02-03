@@ -2,8 +2,6 @@ package de.uzk.image;
 
 import de.uzk.config.Config;
 import de.uzk.edit.EditManager;
-import de.uzk.markers.ArrowMarker;
-import de.uzk.markers.GenericMarker;
 import de.uzk.markers.Markers;
 import de.uzk.utils.NumberUtils;
 import de.uzk.utils.StringUtils;
@@ -36,7 +34,7 @@ public class Workspace {
     private int maxLevel;
     private final List<Integer> pinTimes;
 
-    private EditManager editManager = new EditManager();
+    private final EditManager editManager = new EditManager();
 
     public Workspace() {
         this.missingImagesReport = new MissingImagesReport();

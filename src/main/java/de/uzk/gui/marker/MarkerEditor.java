@@ -19,11 +19,12 @@ import static de.uzk.config.LanguageHandler.getWord;
  * Dialog zum Bearbeiten von Markereigenschaften.
  * Diese Klasse ist nur für "selten" veränderte Eigenschaften wie Farbe, Name etc. zuständig
  * Markerposition, -größe und -rotation finden in {@link MarkerInteractionHandler} statt.
- * */
+ *
+ */
 public class MarkerEditor extends Container {
+    private final DialogColorChooser dialogColorChooser;
     protected AbstractMarker marker;
     protected GridBagConstraints gbc;
-    private final DialogColorChooser dialogColorChooser;
 
 
     public MarkerEditor(AbstractMarker marker) {
@@ -109,12 +110,52 @@ public class MarkerEditor extends Container {
     private JComboBox<MarkerKind> getKindInput() {
         JComboBox<MarkerKind> list = new JComboBox<>(MarkerKind.values());
         list.addItemListener(e -> {
-            MarkerKind kind =  (MarkerKind) e.getItem();
+            MarkerKind kind = (MarkerKind) e.getItem();
 
             marker = kind.switchKind(marker);
         });
         list.setSelectedItem(MarkerKind.fromMarker(marker));
         return list;
+    }
+
+    private JTextField getLabelInput() {
+        JTextField nameInput = new JTextField(marker.getLabel());
+        nameInput.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateName();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateName();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateName();
+            }
+
+            private void updateName() {
+                marker.setLabel(nameInput.getText());
+
+            }
+        });
+        return nameInput;
+    }
+
+    private JButton getColorButton() {
+        JButton button = new JButton();
+        button.setBackground(this.marker.getColor());
+        button.addActionListener(a -> selectColor(button));
+        return button;
+    }
+
+    private void selectColor(JButton color) {
+        Color selected = this.dialogColorChooser.chooseColor(this.marker.getColor());
+        color.setBackground(selected);
+        this.marker.setColor(selected);
     }
 
     private static class TimeInput extends JPanel {
@@ -171,45 +212,5 @@ public class MarkerEditor extends Container {
                 setValue(max);
             }
         }
-    }
-
-    private JTextField getLabelInput() {
-        JTextField nameInput = new JTextField(marker.getLabel());
-        nameInput.getDocument().addDocumentListener(new DocumentListener() {
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                updateName();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateName();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                updateName();
-            }
-
-            private void updateName() {
-                marker.setLabel(nameInput.getText());
-
-            }
-        });
-        return nameInput;
-    }
-
-    private JButton getColorButton() {
-        JButton button = new JButton();
-        button.setBackground(this.marker.getColor());
-        button.addActionListener(a -> selectColor(button));
-        return button;
-    }
-
-    private void selectColor(JButton color) {
-        Color selected = this.dialogColorChooser.chooseColor(this.marker.getColor());
-        color.setBackground(selected);
-        this.marker.setColor(selected);
     }
 }

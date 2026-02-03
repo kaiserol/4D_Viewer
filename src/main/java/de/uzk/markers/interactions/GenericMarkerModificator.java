@@ -17,7 +17,6 @@ public class GenericMarkerModificator implements MarkerModificator {
     }
 
 
-
     @Override
     public void handleRotate(Point mousePos) {
         Point center = marker.getPos();
@@ -25,13 +24,13 @@ public class GenericMarkerModificator implements MarkerModificator {
         // Winkel zwischen Mauszeiger und Mittelpunkt des Markers
         double newAngleRadians = Math.atan2(mousePos.y - center.y, mousePos.x - center.x);
         // 90° Addieren, damit der Dragpunkt (oben in der Mitte) unter dem Mauszeiger bleibt
-        int newAngle = NumberUtils.normalizeAngle((int)Math.toDegrees(newAngleRadians) + 90);
+        int newAngle = NumberUtils.normalizeAngle((int) Math.toDegrees(newAngleRadians) + 90);
         marker.setRotation(newAngle);
     }
 
     @Override
     public void handleResize(Point mousePos) {
-        if(dragPoint == null) return;
+        if (dragPoint == null) return;
         double x = marker.getPos().x;
         double y = marker.getPos().y;
 
@@ -43,23 +42,22 @@ public class GenericMarkerModificator implements MarkerModificator {
         mousePos = derotate(mousePos);
         Point dragStart = derotate(marker.getScalePoints()[dragPoint.ordinal()]);
 
-        double dx =  (mousePos.getX() - dragStart.getX());
-        double dy =  (mousePos.getY() - dragStart.getY());
+        double dx = (mousePos.getX() - dragStart.getX());
+        double dy = (mousePos.getY() - dragStart.getY());
 
 
         width += dragPoint.x() * dx;
         height += dragPoint.y() * dy;
 
-        double theta =  Math.toRadians(marker.getRotation()) ;
+        double theta = Math.toRadians(marker.getRotation());
         double sin = Math.sin(theta);
         double cos = Math.cos(theta);
 
 
-
-        if(dragPoint.isCenter()) {
+        if (dragPoint.isCenter()) {
             // Nur entlang der y-Achse verschieben
-            x -= ( (dy / 2.) * sin);
-            y += ((dy/ 2.) * cos);
+            x -= ((dy / 2.) * sin);
+            y += ((dy / 2.) * cos);
         } else if (dragPoint.isMiddle()) {
             // Nur entlang der x-Achse Verschieben
             x += ((dx / 2.) * cos);
@@ -78,20 +76,20 @@ public class GenericMarkerModificator implements MarkerModificator {
         boolean flippedX = false, flippedY = false;
         if (width < 0) {
             width = -width;
-            x -= width/2;
+            x -= width / 2;
             flippedX = true;
         }
         if (height < 0) {
             height = -height;
-            y -= height/2;
+            y -= height / 2;
             flippedY = true;
         }
 
         if (flippedX && flippedY) { // Eine Ecke wurde über ihr gegenüber hinweggezogen
             dragPoint = dragPoint.getOpposite();
-        } else if(flippedX) {
+        } else if (flippedX) {
             dragPoint = dragPoint.mirrorY();
-        } else if(flippedY) {
+        } else if (flippedY) {
             dragPoint = dragPoint.mirrorX();
         }
 
@@ -101,8 +99,8 @@ public class GenericMarkerModificator implements MarkerModificator {
         width = Math.round(width);
         height = Math.round(height);
 
-        marker.setSize(new Dimension((int)width, (int)height));
-        marker.setPos(new Point((int)x, (int)y));
+        marker.setSize(new Dimension((int) width, (int) height));
+        marker.setPos(new Point((int) x, (int) y));
 
     }
 
@@ -110,21 +108,23 @@ public class GenericMarkerModificator implements MarkerModificator {
     public void handleMove(Point mousePos) {
         double theta = Math.toRadians(marker.getRotation());
         Dimension size = marker.getSize();
-        double cos =  Math.cos(theta);
+        double cos = Math.cos(theta);
         double sin = Math.sin(theta);
 
-        int x = mousePos.x + (int)(size.width * cos - size.height * sin) / 2;
-        int y = mousePos.y + (int)(size.height * cos + size.width * sin) / 2;
+        int x = mousePos.x + (int) (size.width * cos - size.height * sin) / 2;
+        int y = mousePos.y + (int) (size.height * cos + size.width * sin) / 2;
         marker.setPos(new Point(x, y));
     }
 
     @Override
-    public AbstractMarker getCurrentFocused() { return marker; }
+    public AbstractMarker getCurrentFocused() {
+        return marker;
+    }
 
     @Override
     public MarkerInteractionHandler.EditMode checkEditMode(Point mousePos) {
         Point[] scalePoints = marker.getScalePoints();
-        for(int i = 0; i < scalePoints.length; i++) {
+        for (int i = 0; i < scalePoints.length; i++) {
             if (mousePos.distance(scalePoints[i]) < AbstractMarker.LINE_WIDTH * AbstractMarker.LINE_WIDTH) {
                 dragPoint = DragPoint.values()[i];
                 return MarkerInteractionHandler.EditMode.RESIZE;

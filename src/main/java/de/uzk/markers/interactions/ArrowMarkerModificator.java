@@ -21,8 +21,8 @@ public class ArrowMarkerModificator implements MarkerModificator {
 
     @Override
     public void handleResize(Point mousePos) {
-        if(dragPoint == DragPoint.START) marker.setStart(mousePos);
-        else if(dragPoint == DragPoint.TIP) marker.setTip(mousePos);
+        if (dragPoint == DragPoint.START) marker.setStart(mousePos);
+        else if (dragPoint == DragPoint.TIP) marker.setTip(mousePos);
     }
 
     @Override
@@ -38,10 +38,10 @@ public class ArrowMarkerModificator implements MarkerModificator {
     @Override
     public MarkerInteractionHandler.EditMode checkEditMode(Point mousePos) {
         int distance = AbstractMarker.LINE_WIDTH * AbstractMarker.LINE_WIDTH;
-        if(mousePos.distance(marker.getStart()) <= distance) {
+        if (mousePos.distance(marker.getStart()) <= distance) {
             dragPoint = DragPoint.START;
 
-        } else if(mousePos.distance(marker.getTip()) <= distance) {
+        } else if (mousePos.distance(marker.getTip()) <= distance) {
             dragPoint = DragPoint.TIP;
         } else {
             dragPoint = null;

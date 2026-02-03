@@ -13,20 +13,21 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
 public class GenericMarker extends AbstractMarker {
-    private int rotation;
-    private GenericMarkerShape shape;
-
     // Höhe und Breite
     protected Dimension size;
     // Mittelpunkt des Markers
     protected Point pos;
+    private int rotation;
+    private GenericMarkerShape shape;
 
     public GenericMarker(int start) {
         this(new Point(250, 100), new Dimension(500, 200), start, start, GenericMarkerShape.RECTANGLE, Color.RED, "Marker");
     }
 
     @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
-    public GenericMarker() { this(0); }
+    public GenericMarker() {
+        this(0);
+    }
 
     public GenericMarker(GenericMarker other) {
         this(new Point(other.pos), new Dimension(other.size), other.from, other.to, other.shape, other.color, other.label);
@@ -46,7 +47,7 @@ public class GenericMarker extends AbstractMarker {
         int yMin = Math.min(p1.y, p2.y);
         int yMax = Math.max(p1.y, p2.y);
         setSize(new Dimension(xMax - xMin, yMax - yMin));
-        setPos(new Point(xMin + size.width / 2, yMin + size.height/2));
+        setPos(new Point(xMin + size.width / 2, yMin + size.height / 2));
         setShape(shape);
     }
 
@@ -97,13 +98,13 @@ public class GenericMarker extends AbstractMarker {
         this.shape = shape;
     }
 
+    public int getRotation() {
+        return rotation;
+    }
+
     @JsonSetter("rotation")
     public void setRotation(int newRotation) {
         this.rotation = NumberUtils.normalizeAngle(newRotation);
-    }
-
-    public int getRotation() {
-        return rotation;
     }
 
     public void draw(Graphics2D g2d) {
@@ -127,7 +128,8 @@ public class GenericMarker extends AbstractMarker {
 
     /**
      * @return die linke obere Ecke des Bereichs, in den der Marker gezeichnet werden soll.
-     * */
+     *
+     */
     @JsonIgnore
     public Point getShapeCorner() {
         Point center = pos;
@@ -158,30 +160,29 @@ public class GenericMarker extends AbstractMarker {
         g2d.fill(r);
         g2d.setStroke(new BasicStroke(1));
 
-        g2d.drawLine(topCenter.x , topCenter.y, rotPoint.x, rotPoint.y);
+        g2d.drawLine(topCenter.x, topCenter.y, rotPoint.x, rotPoint.y);
     }
 
     /**
      * @return den Bereich, auf den die Beschriftung des Markers gezeichnet werden soll;
      * Dieser ist so rotiert, dass er relativ zum Bild immer waagerecht und der Text somit leicht
      * lesbar ist.
-     * */
+     *
+     */
     @Override
     @JsonIgnore
     public Shape getLabelArea(Graphics onto) {
         FontMetrics metrics = GraphicsUtils.updateMetrics(onto);
         Point2D corner = getRotationTransform().transform(getShapeCorner(), null);
-        return new Rectangle(
-            new Point((int)corner.getX(), (int)corner.getY()),
-            new Dimension(metrics.stringWidth(label), metrics.getHeight())
-        );
+        return new Rectangle(new Point((int) corner.getX(), (int) corner.getY()), new Dimension(metrics.stringWidth(label), metrics.getHeight()));
 
     }
 
     /**
      * @return die Acht "Drag-Punkte", mit denen der Marker vergrößert oder verkleinert werden kann.
      * Diese sind bereits so rotiert, dass sie auch visuell an den Rändern des Markers liegen.
-     * */
+     *
+     */
     @JsonIgnore
     public Point[] getScalePoints() {
         Point[] points = new Point[8];
@@ -194,7 +195,7 @@ public class GenericMarker extends AbstractMarker {
                 int dx = (bounds.width / 2) * x;
                 int dy = (bounds.height / 2) * y;
 
-                Point2D rotated = rot.transform(new Point(dx + bounds.x,dy + bounds.y), null);
+                Point2D rotated = rot.transform(new Point(dx + bounds.x, dy + bounds.y), null);
                 points[i] = new Point((int) rotated.getX(), (int) rotated.getY());
                 i++;
             }
@@ -207,17 +208,20 @@ public class GenericMarker extends AbstractMarker {
      * @return Den "Drag-Punkt", der benutzt wird, um den Marker zu rotieren.
      * Seine Position ist selbst so rotiert, dass er immer auch visuell über dem Mittelpunkt des
      * Markers angezeigt wird.
-     * */
+     *
+     */
     @JsonIgnore
     public Point getRotatePoint() {
-        Point2D point = getRotationTransform().transform(new Point(pos.x, pos.y - size.height/2 - 100), null);
+        Point2D point = getRotationTransform().transform(new Point(pos.x, pos.y - size.height / 2 - 100), null);
         return new Point((int) point.getX(), (int) point.getY());
     }
 
     /**
      * Hilfsmethode.
+     *
      * @return einen {@link AffineTransform}, der die aktuelle individuelle Rotation des Markers repräsentiert.
-     * */
+     *
+     */
     @JsonIgnore
     public AffineTransform getRotationTransform() {
         return AffineTransform.getRotateInstance(Math.toRadians(rotation), pos.x, pos.y);
@@ -235,8 +239,8 @@ public class GenericMarker extends AbstractMarker {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         GenericMarker that = (GenericMarker) o;
         return super.equals(that) && this.pos.equals(that.pos) && this.size.equals(that.size) && this.shape.equals(that.shape);
 

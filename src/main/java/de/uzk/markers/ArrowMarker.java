@@ -20,22 +20,6 @@ public class ArrowMarker extends AbstractMarker {
         this(new Point(250, 100), new Point(500, 500), 0, 0, Color.RED, "Arrow");
     }
 
-    @JsonGetter("start")
-    public Point getStart() { return start; }
-
-    @JsonSetter("start")
-    public void setStart(Point start) {
-        this.start = start;
-    }
-
-    @JsonGetter("tip")
-    public Point getTip() { return tip; }
-
-    @JsonSetter("tip")
-    public void setTip(Point tip) {
-        this.tip = tip;
-    }
-
     public ArrowMarker(Point start, Point tip, int from, int to, Color color, String label) {
         setStart(start);
         setTip(tip);
@@ -57,6 +41,26 @@ public class ArrowMarker extends AbstractMarker {
         Point[] scalePoints = abstractMarker.getScalePoints();
         setStart(new Point(scalePoints[0]));
         setTip(new Point(scalePoints[scalePoints.length - 1]));
+    }
+
+    @JsonGetter("start")
+    public Point getStart() {
+        return start;
+    }
+
+    @JsonSetter("start")
+    public void setStart(Point start) {
+        this.start = start;
+    }
+
+    @JsonGetter("tip")
+    public Point getTip() {
+        return tip;
+    }
+
+    @JsonSetter("tip")
+    public void setTip(Point tip) {
+        this.tip = tip;
     }
 
     @Override
@@ -83,16 +87,13 @@ public class ArrowMarker extends AbstractMarker {
 
     @Override
     public Point[] getScalePoints() {
-        return new Point[] { start, tip };
+        return new Point[]{start, tip};
     }
 
     @Override
     public Shape getLabelArea(Graphics g2d) {
         FontMetrics metrics = GraphicsUtils.updateMetrics(g2d);
-        return new Rectangle(
-            start,
-            new Dimension(metrics.stringWidth(label), metrics.getHeight())
-        );
+        return new Rectangle(start, new Dimension(metrics.stringWidth(label), metrics.getHeight()));
     }
 
     @Override

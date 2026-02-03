@@ -26,7 +26,8 @@ import static de.uzk.Main.workspace;
  *
  * @see de.uzk.image.ImageEditor
  * @see de.uzk.gui.SensitiveImagePanel
- * */
+ *
+ */
 public class MarkerInteractionHandler extends MouseAdapter {
     private final ImageEditor imageEditor;
     private MarkerModificator selectedMarker;
@@ -122,30 +123,34 @@ public class MarkerInteractionHandler extends MouseAdapter {
         setCursorAndRerender(target, Cursor.DEFAULT_CURSOR);
     }
 
-    /** Überprüfe, ob der Mauszeiger sich über einem der Drag-Points des aktuell ausgewählten Markers befindet.
+    /**
+     * Überprüfe, ob der Mauszeiger sich über einem der Drag-Points des aktuell ausgewählten Markers befindet.
      * Diese Methode geht davon aus, dass momentan ein Marker ausgewählt ist, und berechnet den korrekten <code>EditMode</code>
      * aus dem Punkt, der gehovered wird.
      *
      * @param e Das Event, dessen Position untersucht werden soll
-     * */
+     *
+     */
     private void checkHoveringDragPoint(MouseEvent e) {
         Point actual = getActualPoint(e.getPoint());
         editMode = selectedMarker.checkEditMode(actual);
-        if(editMode == EditMode.RESIZE) {
+        if (editMode == EditMode.RESIZE) {
             setCursorAndRerender(e.getComponent(), Cursor.HAND_CURSOR);
         } else if (editMode == EditMode.ROTATE) {
             setCursorAndRerender(e.getComponent(), Cursor.MOVE_CURSOR);
         }
     }
 
-    /** Berechnet die "tatsächliche" Position des Mauszeigers.
+    /**
+     * Berechnet die "tatsächliche" Position des Mauszeigers.
      * Diese Hilfsmethode ist das Herzstück von MarkerInteractionHandler – sie ermittelt die Position des
      * Mauszeigers relativ zur Zeichenebene, unter Berücksichtigung der Tatsache, dass diese auf verschiedenste
      * Arten skaliert, rotiert usw. wurde.
      *
      * @param event "physische" Position des Mauszeigers
      * @return "tatsächliche" Position des Mauszeigers
-    * */
+     *
+     */
     private Point getActualPoint(Point event) {
         AffineTransform transform = imageEditor.getMarkerTransform();
 
@@ -161,7 +166,8 @@ public class MarkerInteractionHandler extends MouseAdapter {
 
     /**
      * Setzt den Bearbeitungszustand auf Standardwerte zurück.
-     * */
+     *
+     */
     public void unselectMarker() {
         selectedMarker = null;
         editMode = EditMode.NONE;

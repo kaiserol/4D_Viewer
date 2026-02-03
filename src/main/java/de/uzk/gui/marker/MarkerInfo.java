@@ -11,6 +11,7 @@ import de.uzk.utils.ColorUtils;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import java.awt.*;
+
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
@@ -18,8 +19,7 @@ import static de.uzk.config.LanguageHandler.getWord;
 public class MarkerInfo extends JPanel
 /* Nur JPanel erweitern, da diese Komponente dynamisch während UI Updates erstellt wird.
    `extends AreaContainerInteractive` würde während der initialisierung Eventhandler registrieren,
-    was einen Stack-Overflow auslöst */
-{
+    was einen Stack-Overflow auslöst */ {
     private final Gui gui;
     private final AbstractMarker marker;
 
@@ -37,8 +37,7 @@ public class MarkerInfo extends JPanel
     }
 
     private void init() {
-        this.setBorder(new CompoundBorder(
-            BorderFactory.createLineBorder(UIEnvironment.getBorderColor()), // Tatsächliche bBorder
+        this.setBorder(new CompoundBorder(BorderFactory.createLineBorder(UIEnvironment.getBorderColor()), // Tatsächliche bBorder
             BorderFactory.createEmptyBorder(5, 5, 5, 5) // Padding
         ));
         this.setLayout(new GridLayout(1, 3, 5, 0));
@@ -86,16 +85,7 @@ public class MarkerInfo extends JPanel
         edit.addActionListener(a -> {
 
             MarkerEditor editor = new MarkerEditor(marker.copy());
-            int option = JOptionPane.showOptionDialog(
-                gui.getContainer(),
-                editor,
-                getWord("dialog.markers.editMarker"),
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                null,
-                null
-            );
+            int option = JOptionPane.showOptionDialog(gui.getContainer(), editor, getWord("dialog.markers.editMarker"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 
 
             if (option == JOptionPane.OK_OPTION) {

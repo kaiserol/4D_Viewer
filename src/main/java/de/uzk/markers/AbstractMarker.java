@@ -9,10 +9,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
-@JsonSubTypes(value = {
-    @JsonSubTypes.Type(value = GenericMarker.class),
-    @JsonSubTypes.Type(value = ArrowMarker.class)
-})
+@JsonSubTypes(value = {@JsonSubTypes.Type(value = GenericMarker.class), @JsonSubTypes.Type(value = ArrowMarker.class)})
 public abstract class AbstractMarker {
     public static final int LINE_WIDTH = 5;
     // Zeitraum, in dem der Marker sichtbar sein soll
@@ -73,9 +70,6 @@ public abstract class AbstractMarker {
     }
 
 
-
-
-
     public abstract void draw(Graphics2D g2d);
 
     public void drawDragPoints(Graphics2D g2d) {
@@ -102,7 +96,8 @@ public abstract class AbstractMarker {
 
     /**
      * @return Die Punkte, die dem Nutzer zur Bearbeitung hervorgehoben werden sollen.
-     * */
+     *
+     */
     @JsonIgnore
     public abstract Point[] getScalePoints();
 
@@ -115,8 +110,8 @@ public abstract class AbstractMarker {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         AbstractMarker that = (AbstractMarker) o;
         return from == that.from && to == that.to && color.equals(that.color) && label.equals(that.label);
     }

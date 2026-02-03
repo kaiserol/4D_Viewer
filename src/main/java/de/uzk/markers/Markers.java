@@ -11,16 +11,9 @@ import java.util.Objects;
 /**
  * Globales (per-Workspace) Objekt, das alle Marker für alle Bilder im Projekt speichert.
  * Außerdem zur Zentralisierung der Markerserialisierung verwendet.
- * */
+ *
+ */
 public class Markers {
-   public List<AbstractMarker> getAllMarkers() {
-        return this.markers;
-    }
-
-    public void addMarker(AbstractMarker marker) {
-        this.markers.add(marker);
-    }
-
     // Markierungen
     //TODO Bei Deserialisierung einzelne Ungültige Marker überspringen statt alle zu löschen.
     @JsonProperty("markers")
@@ -28,11 +21,6 @@ public class Markers {
 
     public Markers() {
         this.markers = new ArrayList<>();
-    }
-
-    public void save() {
-        Path filePath = PathManager.resolveProjectPath(PathManager.MARKERS_FILE_NAME);
-        PathManager.save(filePath, this);
     }
 
     public static Markers load() {
@@ -43,6 +31,19 @@ public class Markers {
             markers.markers.removeIf(Objects::isNull);
             return markers;
         } else return new Markers();
+    }
+
+    public List<AbstractMarker> getAllMarkers() {
+        return this.markers;
+    }
+
+    public void addMarker(AbstractMarker marker) {
+        this.markers.add(marker);
+    }
+
+    public void save() {
+        Path filePath = PathManager.resolveProjectPath(PathManager.MARKERS_FILE_NAME);
+        PathManager.save(filePath, this);
     }
 
     public void remove(AbstractMarker marker) {
@@ -56,7 +57,8 @@ public class Markers {
 
     /**
      * @return Alle Marker, die zum gegebenen Zeitpunkt zu sehen sind.
-     * */
+     *
+     */
     public List<AbstractMarker> getMarkersForImage(int time) {
         return this.markers.stream().filter(m -> m.shouldRender(time)).toList();
     }
