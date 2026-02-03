@@ -2,18 +2,16 @@ package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
-import de.uzk.gui.marker.GenericMarkerEditor;
 import de.uzk.gui.marker.MarkerEditor;
 import de.uzk.gui.marker.MarkerInfo;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
 import de.uzk.markers.AbstractMarker;
-import de.uzk.markers.ArrowMarker;
+import de.uzk.markers.GenericMarker;
 import de.uzk.utils.ComponentUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.function.Supplier;
 
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -30,16 +28,25 @@ public class TabMarkers extends ObserverContainer<JPanel> {
         container.removeAll();
         container.setLayout(new BorderLayout());
 
-        JButton addGeneric = createAddButton(getWord("menu.markers.addMarker"), () -> new GenericMarkerEditor(workspace.getTime()));
-        JButton addArrow = createAddButton("Add Arrow", () -> new MarkerEditor(new ArrowMarker(workspace.getTime())));
+        JButton addButton = new JButton(getWord("menu.markers.addMarker"));
+        addButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,addButton.getPreferredSize().height));
+        addButton.addActionListener(e -> {
+            MarkerEditor editor = new MarkerEditor(new GenericMarker(workspace.getTime()));
+            int option = JOptionPane.showConfirmDialog(
+                gui.getContainer(),
+                editor,
+                getWord("dialog.markers.newMarker"),
+                JOptionPane.OK_CANCEL_OPTION
+            );
 
-        Box addButtons = new Box(BoxLayout.Y_AXIS);
+            if (option == JOptionPane.OK_OPTION) {
+                workspace.getMarkers().addMarker(editor.getMarker());
+                gui.handleAction(ActionType.ACTION_ADD_MARKER);
+                gui.updateUI();
+            }
+        });
 
-        addButtons.add(addGeneric);
-
-        addButtons.add(addArrow);
-
-        container.add(addButtons, BorderLayout.SOUTH);
+        container.add(addButton, BorderLayout.SOUTH);
 
         if (!currentMarkers.isEmpty()) {
             Box panel = new Box(BoxLayout.Y_AXIS);
@@ -58,30 +65,9 @@ public class TabMarkers extends ObserverContainer<JPanel> {
         container.revalidate();
     }
 
-    private JButton createAddButton(String label, Supplier<MarkerEditor> editorSupplier) {
-        JButton addButton = new JButton(label);
-        addButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,addButton.getPreferredSize().height));
-        addButton.addActionListener(e -> {
-            MarkerEditor editor = editorSupplier.get();
-            int option = JOptionPane.showConfirmDialog(
-                gui.getContainer(),
-                editor,
-                getWord("dialog.markers.newMarker"),
-                JOptionPane.OK_CANCEL_OPTION
-            );
-
-            if (option == JOptionPane.OK_OPTION) {
-                workspace.getMarkers().addMarker(editor.getMarker());
-                gui.handleAction(ActionType.ACTION_ADD_MARKER);
-                gui.updateUI();
-            }
-        });
-        return addButton;
-    }
-
     @Override
     public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.ACTION_ADD_MARKER || actionType == ActionType.ACTION_REMOVE_MARKER) {
+        if (actionType == ActionType.ACTION_ADD_MARKER || actionType == ActionType.ACTION_REMOVE_MARKER || actionType == ActionType.ACTION_EDIT_MARKER) {
             rebuildContainer();
         }
     }

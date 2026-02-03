@@ -1,13 +1,7 @@
 package de.uzk.markers;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.uzk.io.PathManager;
-import tools.jackson.core.JacksonException;
-import tools.jackson.core.JsonParser;
-import tools.jackson.databind.DeserializationContext;
-import tools.jackson.databind.annotation.JsonDeserialize;
-import tools.jackson.databind.deser.std.StdDeserializer;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -56,7 +50,7 @@ public class Markers {
     }
 
     public void replace(AbstractMarker oldMarker, AbstractMarker newMarker) {
-        this.markers.removeIf(m -> m == oldMarker);
+        this.markers.remove(oldMarker);
         this.markers.add(newMarker);
     }
 

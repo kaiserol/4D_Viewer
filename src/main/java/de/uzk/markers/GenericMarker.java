@@ -25,14 +25,28 @@ public class GenericMarker extends AbstractMarker {
         this(new Point(250, 100), new Dimension(500, 200), start, start, GenericMarkerShape.RECTANGLE, Color.RED, "Marker");
     }
 
-    /**
-     * Default-Konstruktor (Rotes 500x200-Rechteck mit Beschriftung "Marker" in der oberen linken Ecke bei t=0)
-     *
-     */
-    public GenericMarker() { this(0); }
-
     public GenericMarker(GenericMarker other) {
         this(new Point(other.pos), new Dimension(other.size), other.from, other.to, other.shape, other.color, other.label);
+        setRotation(other.rotation);
+    }
+
+
+
+    public GenericMarker(AbstractMarker abstractMarker, GenericMarkerShape shape) {
+        setFrom(abstractMarker.getFrom());
+        setTo(abstractMarker.getTo());
+        setColor(abstractMarker.getColor());
+        setLabel(abstractMarker.getLabel());
+        Point[] scalePoints = abstractMarker.getScalePoints();
+        Point p1 = scalePoints[0];
+        Point p2 = scalePoints[scalePoints.length - 1];
+        int xMin = Math.min(p1.x, p2.x);
+        int xMax = Math.max(p1.x, p2.x);
+        int yMin = Math.min(p1.y, p2.y);
+        int yMax = Math.max(p1.y, p2.y);
+        setSize(new Dimension(xMax - xMin, yMax - yMin));
+        setPos(new Point(xMin + size.width / 2, yMin + size.height/2));
+        setShape(shape);
     }
 
     public GenericMarker(Point pos, Dimension size, int from, int to, GenericMarkerShape shape, Color color, String label) {
@@ -43,6 +57,7 @@ public class GenericMarker extends AbstractMarker {
         setColor(color);
         setFrom(from);
         setTo(to);
+
     }
 
     public Point getPos() {
@@ -215,5 +230,15 @@ public class GenericMarker extends AbstractMarker {
     @Override
     public MarkerModificator getSuitableModificator() {
         return new GenericMarkerModificator(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
+        GenericMarker that = (GenericMarker) o;
+        return super.equals(that) && this.pos.equals(that.pos) && this.size.equals(that.size) && this.shape.equals(that.shape);
+
+
     }
 }

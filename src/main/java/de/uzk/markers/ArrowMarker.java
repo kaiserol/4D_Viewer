@@ -16,17 +16,6 @@ public class ArrowMarker extends AbstractMarker {
     private Point start;
     private Point tip;
 
-    public ArrowMarker(int start) {
-        this(new Point(250, 100), new Point(500, 500), start, start, Color.RED, "Arrow");
-    }
-
-    /**
-     * Default-Konstruktor (Rotes 500x200-Rechteck mit Beschriftung "Marker" in der oberen linken Ecke bei t=0)
-     *
-     */
-    public ArrowMarker() { this(0); }
-
-
     @JsonGetter("start")
     public Point getStart() { return start; }
 
@@ -56,6 +45,16 @@ public class ArrowMarker extends AbstractMarker {
         this(new Point(other.getStart()), other.getTip(), other.getFrom(), other.getTo(), other.getColor(), other.getLabel());
     }
 
+    public ArrowMarker(AbstractMarker abstractMarker) {
+        setFrom(abstractMarker.getFrom());
+        setTo(abstractMarker.getTo());
+        setColor(abstractMarker.getColor());
+        setLabel(abstractMarker.getLabel());
+        Point[] scalePoints = abstractMarker.getScalePoints();
+        setStart(new Point(scalePoints[0]));
+        setTip(new Point(scalePoints[scalePoints.length - 1]));
+    }
+
     @Override
     public void draw(Graphics2D g2d) {
         Path2D path = new Path2D.Double();
@@ -80,6 +79,8 @@ public class ArrowMarker extends AbstractMarker {
 
     @Override
     public Point[] getScalePoints() {
+        System.out.println(start);
+        System.out.println(tip);
         return new Point[] { start, tip };
     }
 
@@ -100,5 +101,13 @@ public class ArrowMarker extends AbstractMarker {
     @Override
     public MarkerModificator getSuitableModificator() {
         return new ArrowMarkerModificator(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ArrowMarker that = (ArrowMarker) o;
+        return super.equals(that) && this.start.equals(that.start) && this.tip.equals(that.tip);
     }
 }

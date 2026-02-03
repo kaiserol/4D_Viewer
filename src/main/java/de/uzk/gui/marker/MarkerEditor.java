@@ -3,8 +3,6 @@ package de.uzk.gui.marker;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.dialogs.DialogColorChooser;
 import de.uzk.markers.AbstractMarker;
-import de.uzk.markers.GenericMarker;
-import de.uzk.markers.GenericMarkerShape;
 import de.uzk.markers.interactions.MarkerInteractionHandler;
 import de.uzk.utils.DateTimeUtils;
 
@@ -23,7 +21,7 @@ import static de.uzk.config.LanguageHandler.getWord;
  * Markerposition, -größe und -rotation finden in {@link MarkerInteractionHandler} statt.
  * */
 public class MarkerEditor extends Container {
-    protected final AbstractMarker marker;
+    protected AbstractMarker marker;
     protected GridBagConstraints gbc;
     private final DialogColorChooser dialogColorChooser;
 
@@ -53,6 +51,15 @@ public class MarkerEditor extends Container {
         gbc.gridwidth = 2;
         this.add(getLabelInput(), gbc);
 
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        add(new JLabel(getWord("dialog.markers.kind")), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        add(getKindInput(), gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -96,9 +103,19 @@ public class MarkerEditor extends Container {
         gbc.gridwidth = 2;
         this.add(toInput, gbc);
 
+
     }
 
+    private JComboBox<MarkerKind> getKindInput() {
+        JComboBox<MarkerKind> list = new JComboBox<>(MarkerKind.values());
+        list.addItemListener(e -> {
+            MarkerKind kind =  (MarkerKind) e.getItem();
 
+            marker = kind.switchKind(marker);
+        });
+        list.setSelectedItem(MarkerKind.fromMarker(marker));
+        return list;
+    }
 
     private static class TimeInput extends JPanel {
 

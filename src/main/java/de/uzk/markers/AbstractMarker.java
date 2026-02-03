@@ -100,6 +100,9 @@ public abstract class AbstractMarker {
         g2d.drawString(label, labelArea.getBounds().x, labelArea.getBounds().y + metrics.getAscent());
     }
 
+    /**
+     * @return Die Punkte, die dem Nutzer zur Bearbeitung hervorgehoben werden sollen.
+     * */
     @JsonIgnore
     public abstract Point[] getScalePoints();
 
@@ -109,4 +112,12 @@ public abstract class AbstractMarker {
 
     @JsonIgnore
     public abstract MarkerModificator getSuitableModificator();
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
+        AbstractMarker that = (AbstractMarker) o;
+        return from == that.from && to == that.to && color.equals(that.color) && label.equals(that.label);
+    }
 }

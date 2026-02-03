@@ -5,31 +5,13 @@ import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
-import java.util.Arrays;
 
-import static de.uzk.config.LanguageHandler.getWord;
 
 public enum GenericMarkerShape {
     @JsonEnumDefaultValue
     RECTANGLE,
     ELLIPSE,
     TRIANGLE;
-
-    public static GenericMarkerShape[] sortedValues() {
-        GenericMarkerShape[] values = GenericMarkerShape.values();
-        Arrays.sort(values, (mark1, mark2) -> mark1.toString().compareToIgnoreCase(mark2.toString()));
-        return values;
-    }
-
-    @Override
-    public String toString() {
-        return switch (this) {
-            case RECTANGLE -> getWord("dialog.markers.shape.rectangle");
-            case ELLIPSE -> getWord("dialog.markers.shape.ellipse");
-            case TRIANGLE -> getWord("dialog.markers.shape.triangle");
-        };
-    }
-
     /**
      * Erstellt eine geometrische Figur mit der Form dieser <code>GenericMarkerShape</code> innerhalb
      * des gegebenen Rechtecks.
