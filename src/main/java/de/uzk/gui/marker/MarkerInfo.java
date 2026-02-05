@@ -85,8 +85,8 @@ public class MarkerInfo extends JPanel
         JButton edit = new JButton(ImageLoader.ICON_EDIT);
         edit.setToolTipText(getWord("menu.markers.tooltipEditMarker"));
         edit.addActionListener(a -> {
-
-            MarkerEditor editor = new MarkerEditor(marker.copy());
+            Marker ma = marker.copy();
+            MarkerEditor editor = new MarkerEditor(ma);
             int option = JOptionPane.showOptionDialog(gui.getContainer(), editor, getWord("dialog.markers.editMarker"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 
 

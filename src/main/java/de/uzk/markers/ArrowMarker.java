@@ -30,7 +30,7 @@ public class ArrowMarker extends Marker {
     }
 
     public ArrowMarker(ArrowMarker other) {
-        this(new Point(other.getStart()), other.getTip(), other.getFrom(), other.getTo(), other.getColor(), other.getLabel());
+        this(new Point(other.getStart()), new Point(other.getTip()), other.getFrom(), other.getTo(), other.getColor(), other.getLabel());
     }
 
     public ArrowMarker(Marker abstractMarker) {

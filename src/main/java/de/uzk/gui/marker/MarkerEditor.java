@@ -109,12 +109,13 @@ public class MarkerEditor extends Container {
 
     private JComboBox<MarkerKind> getKindInput() {
         JComboBox<MarkerKind> list = new JComboBox<>(MarkerKind.values());
+
+        list.setSelectedItem(MarkerKind.fromMarker(marker));
         list.addItemListener(e -> {
             MarkerKind kind = (MarkerKind) e.getItem();
 
             marker = kind.switchKind(marker);
         });
-        list.setSelectedItem(MarkerKind.fromMarker(marker));
         return list;
     }
 
