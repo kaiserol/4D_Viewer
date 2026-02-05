@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
-@JsonSubTypes(value = {@JsonSubTypes.Type(value = GenericMarker.class), @JsonSubTypes.Type(value = ArrowMarker.class)})
+@JsonSubTypes(value = {@JsonSubTypes.Type(value = ShapeMarker.class), @JsonSubTypes.Type(value = ArrowMarker.class)})
 public abstract class Marker {
     public static final int LINE_WIDTH = 5;
     // Zeitraum, in dem der Marker sichtbar sein soll

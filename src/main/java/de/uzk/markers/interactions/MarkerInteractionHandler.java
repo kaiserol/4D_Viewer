@@ -74,6 +74,7 @@ public class MarkerInteractionHandler extends MouseAdapter {
 
         if (editMode == EditMode.NONE) {
             editMode = EditMode.MOVE;
+            selectedMarker.beginMove();
             setCursorAndRerender(e.getComponent(), Cursor.MOVE_CURSOR);
         }
 
@@ -83,7 +84,14 @@ public class MarkerInteractionHandler extends MouseAdapter {
     public void mouseReleased(MouseEvent e) {
         if (editMode == EditMode.MOVE) {
             editMode = EditMode.NONE;
+            if(selectedMarker != null) {
+                selectedMarker.finishMove();
+            }
             setCursorAndRerender(e.getComponent(), selectedMarker == null ? Cursor.DEFAULT_CURSOR : Cursor.HAND_CURSOR);
+        } else if(editMode == EditMode.RESIZE) {
+            selectedMarker.finishResize();
+        } else if (editMode == EditMode.ROTATE) {
+            selectedMarker.finishRotate();
         }
     }
 
@@ -135,8 +143,10 @@ public class MarkerInteractionHandler extends MouseAdapter {
         Point actual = getActualPoint(e.getPoint());
         editMode = selectedMarker.checkEditMode(actual);
         if (editMode == EditMode.RESIZE) {
+            selectedMarker.beginResize();
             setCursorAndRerender(e.getComponent(), Cursor.HAND_CURSOR);
         } else if (editMode == EditMode.ROTATE) {
+            selectedMarker.beginRotate();
             setCursorAndRerender(e.getComponent(), Cursor.MOVE_CURSOR);
         }
     }

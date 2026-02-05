@@ -2,7 +2,7 @@ package de.uzk.markers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import de.uzk.markers.interactions.ShapeMarker;
+import de.uzk.markers.interactions.ShapeMarkerModificator;
 import de.uzk.markers.interactions.MarkerModificator;
 import de.uzk.utils.GraphicsUtils;
 import de.uzk.utils.NumberUtils;
@@ -12,7 +12,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
-public class GenericMarker extends Marker {
+public class ShapeMarker extends Marker {
     // Höhe und Breite
     protected Dimension size;
     // Mittelpunkt des Markers
@@ -20,21 +20,21 @@ public class GenericMarker extends Marker {
     private int rotation;
     private MarkerShape shape;
 
-    public GenericMarker(int start) {
+    public ShapeMarker(int start) {
         this(new Point(250, 100), new Dimension(500, 200), start, start, MarkerShape.RECTANGLE, Color.RED, "Marker");
     }
 
     @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
-    public GenericMarker() {
+    public ShapeMarker() {
         this(0);
     }
 
-    public GenericMarker(GenericMarker other) {
+    public ShapeMarker(ShapeMarker other) {
         this(new Point(other.pos), new Dimension(other.size), other.from, other.to, other.shape, other.color, other.label);
         setRotation(other.rotation);
     }
 
-    public GenericMarker(Marker abstractMarker, MarkerShape shape) {
+    public ShapeMarker(Marker abstractMarker, MarkerShape shape) {
         setFrom(abstractMarker.getFrom());
         setTo(abstractMarker.getTo());
         setColor(abstractMarker.getColor());
@@ -51,7 +51,7 @@ public class GenericMarker extends Marker {
         setShape(shape);
     }
 
-    public GenericMarker(Point pos, Dimension size, int from, int to, MarkerShape shape, Color color, String label) {
+    public ShapeMarker(Point pos, Dimension size, int from, int to, MarkerShape shape, Color color, String label) {
         setPos(pos);
         setSize(size);
         setShape(shape);
@@ -229,19 +229,19 @@ public class GenericMarker extends Marker {
 
     @Override
     public Marker copy() {
-        return new GenericMarker(this);
+        return new ShapeMarker(this);
     }
 
     @Override
     public MarkerModificator getSuitableModificator() {
-        return new ShapeMarker(this);
+        return new ShapeMarkerModificator(this);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GenericMarker that = (GenericMarker) o;
+        ShapeMarker that = (ShapeMarker) o;
         return super.equals(that) && this.pos.equals(that.pos) && this.size.equals(that.size) && this.shape.equals(that.shape);
 
 

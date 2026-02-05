@@ -8,7 +8,7 @@ import de.uzk.gui.marker.MarkerInfo;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
 import de.uzk.markers.Marker;
-import de.uzk.markers.GenericMarker;
+import de.uzk.markers.ShapeMarker;
 import de.uzk.utils.ComponentUtils;
 
 import javax.swing.*;
@@ -32,7 +32,7 @@ public class TabMarkers extends ObserverContainer<JPanel> {
         JButton addButton = new JButton(getWord("menu.markers.addMarker"));
         addButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, addButton.getPreferredSize().height));
         addButton.addActionListener(e -> {
-            MarkerEditor editor = new MarkerEditor(new GenericMarker(workspace.getTime()));
+            MarkerEditor editor = new MarkerEditor(new ShapeMarker(workspace.getTime()));
             int option = JOptionPane.showConfirmDialog(gui.getContainer(), editor, getWord("dialog.markers.newMarker"), JOptionPane.OK_CANCEL_OPTION);
 
             if (option == JOptionPane.OK_OPTION) {

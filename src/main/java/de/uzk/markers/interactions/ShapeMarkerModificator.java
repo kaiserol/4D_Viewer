@@ -1,21 +1,34 @@
 package de.uzk.markers.interactions;
 
+import de.uzk.edit.markers.MoveShapeEdit;
+import de.uzk.edit.markers.ResizeShapeEdit;
+import de.uzk.edit.markers.RotateShapeEdit;
 import de.uzk.markers.Marker;
-import de.uzk.markers.GenericMarker;
+import de.uzk.markers.ShapeMarker;
 import de.uzk.utils.NumberUtils;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
-public class ShapeMarker implements MarkerModificator {
-    private final GenericMarker marker;
-    private DragPoint dragPoint = null;
+import static de.uzk.Main.workspace;
 
-    public ShapeMarker(GenericMarker marker) {
+public class ShapeMarkerModificator implements MarkerModificator {
+    private final ShapeMarker marker;
+    private DragPoint dragPoint = null;
+    private MoveShapeEdit moveEdit = null;
+    private ResizeShapeEdit resizeEdit = null;
+    private RotateShapeEdit rotateEdit = null;
+
+    public ShapeMarkerModificator(ShapeMarker marker) {
         this.marker = marker;
     }
 
+
+    @Override
+    public void beginRotate() {
+        rotateEdit = new RotateShapeEdit(marker);
+    }
 
     @Override
     public void handleRotate(Point mousePos) {
@@ -25,26 +38,43 @@ public class ShapeMarker implements MarkerModificator {
         double newAngleRadians = Math.atan2(mousePos.y - center.y, mousePos.x - center.x);
         // 90° Addieren, damit der Dragpunkt (oben in der Mitte) unter dem Mauszeiger bleibt
         int newAngle = NumberUtils.normalizeAngle((int) Math.toDegrees(newAngleRadians) + 90);
+        int dTheta = newAngle - marker.getRotation();
         marker.setRotation(newAngle);
+        rotateEdit.rotate(dTheta);
+    }
+
+    @Override
+    public void finishRotate() {
+        workspace.getEditManager().registerEdit(rotateEdit);
+        rotateEdit = null;
+    }
+
+    @Override
+    public void beginResize() {
+        resizeEdit = new ResizeShapeEdit(marker);
     }
 
     @Override
     public void handleResize(Point mousePos) {
         if (dragPoint == null) return;
-        double x = marker.getPos().x;
-        double y = marker.getPos().y;
 
+        int originalWidth = marker.getSize().width;
+        int originalHeight = marker.getSize().height;
+        int originalX = marker.getPos().x;
+        int originalY = marker.getPos().y;
+
+        double x = originalX;
+        double y = originalY;
 
         // Maße des Markers.
-        double width = marker.getSize().width;
-        double height = marker.getSize().height;
+        double width = originalWidth;
+        double height = originalHeight;
 
         mousePos = derotate(mousePos);
         Point dragStart = derotate(marker.getScalePoints()[dragPoint.ordinal()]);
 
         double dx = (mousePos.getX() - dragStart.getX());
         double dy = (mousePos.getY() - dragStart.getY());
-
 
         width += dragPoint.x() * dx;
         height += dragPoint.y() * dy;
@@ -99,9 +129,22 @@ public class ShapeMarker implements MarkerModificator {
         width = Math.round(width);
         height = Math.round(height);
 
+
         marker.setSize(new Dimension((int) width, (int) height));
         marker.setPos(new Point((int) x, (int) y));
+        resizeEdit.resize((int) width - originalWidth, (int) height - originalHeight, (int) x - originalX, (int) y - originalY);
+    }
 
+    @Override
+    public void finishResize() {
+        workspace.getEditManager().registerEdit(resizeEdit);
+        resizeEdit = null;
+    }
+
+
+    @Override
+    public void beginMove() {
+        moveEdit = new MoveShapeEdit(marker);
     }
 
     @Override
@@ -110,10 +153,19 @@ public class ShapeMarker implements MarkerModificator {
         Dimension size = marker.getSize();
         double cos = Math.cos(theta);
         double sin = Math.sin(theta);
-
-        int x = mousePos.x + (int) (size.width * cos - size.height * sin) / 2;
-        int y = mousePos.y + (int) (size.height * cos + size.width * sin) / 2;
+        int cx = (int) (size.width * cos - size.height * sin) / 2;
+        int cy = (int) (size.height * cos + size.width * sin) / 2;
+        int x = mousePos.x + cx;
+        int y = mousePos.y + cy;
+        Point current = marker.getPos();
         marker.setPos(new Point(x, y));
+        moveEdit.move(x - current.x, y - current.y);
+    }
+
+    @Override
+    public void finishMove() {
+        workspace.getEditManager().registerEdit(moveEdit);
+        moveEdit = null;
     }
 
     @Override

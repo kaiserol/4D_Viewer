@@ -12,13 +12,27 @@ public class EditManager {
         editsUndone = new LinkedList<>();
     }
 
+    public boolean performEdit(MaybeRedundantEdit edit) {
+        if(edit.isRedundant()) return false;
+        return performEdit((Edit)edit);
+    }
+
+    public void registerEdit(MaybeRedundantEdit edit) {
+        if(edit.isRedundant()) return;
+        registerEdit((Edit)edit);
+    }
+
     public boolean performEdit(Edit edit) {
-        boolean valid = edit.perform();
-        if(valid) {
-            editsMade.push(edit);
-            editsUndone.clear();
+        if(edit.perform()) {
+            registerEdit(edit);
+            return true;
         }
-        return valid;
+        return false;
+    }
+
+    public void registerEdit(Edit edit) {
+        editsMade.push(edit);
+        editsUndone.clear();
     }
 
     public ActionType undoLastEdit() {

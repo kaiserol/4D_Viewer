@@ -2,7 +2,7 @@ package de.uzk.gui.marker;
 
 import de.uzk.markers.Marker;
 import de.uzk.markers.ArrowMarker;
-import de.uzk.markers.GenericMarker;
+import de.uzk.markers.ShapeMarker;
 import de.uzk.markers.MarkerShape;
 
 import static de.uzk.config.LanguageHandler.getWord;
@@ -13,7 +13,7 @@ public enum MarkerKind {
     public static MarkerKind fromMarker(Marker marker) {
         if (marker instanceof ArrowMarker) {
             return ARROW;
-        } else if (marker instanceof GenericMarker s) {
+        } else if (marker instanceof ShapeMarker s) {
             return switch (s.getShape()) {
                 case RECTANGLE -> SHAPE_RECTANGLE;
                 case ELLIPSE -> SHAPE_ELLIPSE;
@@ -35,11 +35,11 @@ public enum MarkerKind {
             case SHAPE_TRIANGLE -> MarkerShape.TRIANGLE;
             case ARROW -> throw new IllegalStateException("this == ARROW despite prior if branch");
         };
-        if (marker instanceof GenericMarker gen) {
+        if (marker instanceof ShapeMarker gen) {
             gen.setShape(shape);
             return gen;
         }
-        return new GenericMarker(marker, shape);
+        return new ShapeMarker(marker, shape);
     }
 
     @Override

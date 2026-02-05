@@ -5,11 +5,29 @@ import de.uzk.markers.Marker;
 import java.awt.*;
 
 public interface MarkerModificator {
-    void handleRotate(Point mousePos);
+    default void beginResize() {
+    }
 
     void handleResize(Point mousePos);
 
+    default void finishResize() {
+    }
+
+    default void beginRotate() {
+    }
+
+    void handleRotate(Point mousePos);
+
+    default void finishRotate() {
+    }
+
+    default void beginMove() {
+    }
+
     void handleMove(Point mousePos);
+
+    default void finishMove() {
+    }
 
     MarkerInteractionHandler.EditMode checkEditMode(Point mousePos);
 
