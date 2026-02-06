@@ -7,15 +7,18 @@ import de.uzk.edit.image.*;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.observer.ObserverContainer;
+import de.uzk.io.PathManager;
 import de.uzk.io.SnapshotHelper;
 import de.uzk.utils.ComponentUtils;
 import de.uzk.utils.NumberUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
@@ -83,6 +86,17 @@ public class TabEdit extends ObserverContainer<JPanel> {
         JButton snapshotsButton = new JButton(getWord("menu.edit.takeSnapshot"));
         snapshotsButton.addActionListener(e -> gui.getActionHandler().executeAction(ActionType.SHORTCUT_TAKE_SNAPSHOT));
         ComponentUtils.addRow(this.container, gbc, snapshotsButton, 5);
+
+        JButton openSnapshotsButton = new JButton(getWord("menu.edit.openSnapshotFolder"));
+        openSnapshotsButton.addActionListener(e -> {
+            try {
+                Desktop.getDesktop().open(PathManager.getProjectSnapshotsDirectory().toFile());
+            } catch (IOException ex) {
+                logger.exception(ex, "Could not open snapshot folder '%s'".formatted(PathManager.getProjectSnapshotsDirectory()));
+                JOptionPane.showMessageDialog(null, "Couldn't open folder.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        ComponentUtils.addRow(this.container, gbc, openSnapshotsButton, 5);
     }
 
     // ========================================

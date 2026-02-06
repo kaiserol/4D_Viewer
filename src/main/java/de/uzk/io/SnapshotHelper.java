@@ -29,9 +29,7 @@ public final class SnapshotHelper {
     public static boolean saveSnapshot(BufferedImage image) {
         if (image == null || !workspace.isLoaded()) return false;
 
-        // Wenn das Verzeichnis nicht existiert, wird es erstellt
         Path snapshotsDirectory = PathManager.getProjectSnapshotsDirectory();
-        PathManager.createIfNotExist(snapshotsDirectory);
 
         // Bild zuschneiden
         SnapshotCropper cropper = new SnapshotCropper(image);

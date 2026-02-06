@@ -17,6 +17,7 @@ import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
 import java.awt.event.MouseEvent;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Locale;
 
 import static de.uzk.Main.*;
@@ -227,6 +228,12 @@ public final class UIEnvironment {
         InitialDirectory oldInitialDirectory = settings.getInitialDirectory();
         if (!settings.setInitialDirectory(initialDirectory)) return;
         logger.info("Updating Initial Directory from '%s' to '%s' ...".formatted(oldInitialDirectory, initialDirectory));
+    }
+
+    public static void updateScreenshotDirectory(Path screenshotDirectory) {
+        Path oldScreenshotDirectory = settings.getScreenshotDirectory();
+        if (!settings.setScreenshotDirectory(screenshotDirectory)) return;
+        logger.info("Updating Screenshot Directory from '%s' to '%s'".formatted(oldScreenshotDirectory, screenshotDirectory));
     }
 
     // ========================================

@@ -6,6 +6,7 @@ import de.uzk.io.PathManager;
 import de.uzk.utils.NumberUtils;
 
 import java.nio.file.Path;
+import java.util.Objects;
 
 public class Settings {
     // Einstellungen
@@ -14,6 +15,7 @@ public class Settings {
     private Theme theme;
     private int fontSize;
     private boolean confirmExit;
+    private Path screenshotDirectory;
 
     // Default-Konstanten
     private static final Language DEFAULT_LANGUAGE = Language.getSystemDefault();
@@ -21,6 +23,7 @@ public class Settings {
     private static final InitialDirectory DEFAULT_INITIAL_DIRECTORY = InitialDirectory.ROOT;
     public static final int DEFAULT_FONT_SIZE = 14;
     private static final boolean DEFAULT_CONFIRM_EXIT = true;
+    private static final Path DEFAULT_SCREENSHOT_DIRECTORY = PathManager.DEFAULT_SNAPSHOTS_DIRECTORY;
 
     // MinMax-Konstanten
     public static final int MIN_FONT_SIZE = 8;
@@ -32,13 +35,15 @@ public class Settings {
         @JsonProperty("theme") Theme theme,
         @JsonProperty("fontSize") int fontSize,
         @JsonProperty("confirmExit") boolean confirmExit,
-        @JsonProperty("initialDirectory") InitialDirectory initialDirectory
-    ) {
+        @JsonProperty("initialDirectory") InitialDirectory initialDirectory,
+        @JsonProperty("screenshotDirectory")  Path screenshotDirectory
+     ) {
         this.setLanguage(language);
         this.setTheme(theme);
         this.setFontSize(fontSize);
         this.setConfirmExit(confirmExit);
         this.setInitialDirectory(initialDirectory);
+        this.setScreenshotDirectory(screenshotDirectory);
     }
 
     public Language getLanguage() {
@@ -115,6 +120,21 @@ public class Settings {
         return true;
     }
 
+    public Path getScreenshotDirectory() {
+        return screenshotDirectory;
+    }
+
+    public boolean setScreenshotDirectory(Path screenshotDirectory) {
+        if(screenshotDirectory != null) {
+            if(Objects.equals(this.screenshotDirectory, screenshotDirectory)) return false;
+            this.screenshotDirectory = screenshotDirectory;
+        } else {
+            if(this.screenshotDirectory != null) return false;
+            this.screenshotDirectory = DEFAULT_SCREENSHOT_DIRECTORY;
+        }
+        return true;
+    }
+
     public void save() {
         Path filePath = PathManager.resolveConfigPath(PathManager.SETTINGS_FILE_NAME);
         PathManager.save(filePath, this);
@@ -134,7 +154,8 @@ public class Settings {
             DEFAULT_THEME,
             DEFAULT_FONT_SIZE,
             DEFAULT_CONFIRM_EXIT,
-            DEFAULT_INITIAL_DIRECTORY
+            DEFAULT_INITIAL_DIRECTORY,
+            DEFAULT_SCREENSHOT_DIRECTORY
         );
     }
 }

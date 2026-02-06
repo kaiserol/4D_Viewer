@@ -9,8 +9,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
-import static de.uzk.Main.logger;
-import static de.uzk.Main.workspace;
+import static de.uzk.Main.*;
 
 /**
  * Die Klasse {@code PathManager} verwaltet sämtliche Verzeichnispfade und Dateistrukturen
@@ -67,6 +66,8 @@ public final class PathManager {
     public static final Path CONFIG_FILE_NAME = Path.of("config.json");
     public static final Path MARKERS_FILE_NAME = Path.of("markers.json");
 
+    public static final Path DEFAULT_SNAPSHOTS_DIRECTORY = APP_DIRECTORY.resolve(SNAPSHOTS_DIRECTORY);
+
     // Statische Initialisierung
     static {
         Path appDirectory = getAppRoot();
@@ -119,7 +120,10 @@ public final class PathManager {
     }
 
     public static Path getProjectSnapshotsDirectory() {
-        return getProjectDirectory().resolve(SNAPSHOTS_DIRECTORY);
+        Path projectName = getProjectDirectory().getFileName();
+        Path projectSnapshotsDirectory = settings.getScreenshotDirectory().resolve(projectName);
+        createIfNotExist(projectSnapshotsDirectory);
+        return projectSnapshotsDirectory;
     }
 
     // ========================================

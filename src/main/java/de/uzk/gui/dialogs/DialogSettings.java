@@ -4,6 +4,7 @@ import de.uzk.config.InitialDirectory;
 import de.uzk.config.Language;
 import de.uzk.config.Settings;
 import de.uzk.config.Theme;
+import de.uzk.gui.ScreenshotDirectorySelector;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.utils.ComponentUtils;
@@ -11,6 +12,7 @@ import de.uzk.utils.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.nio.file.Path;
 import java.util.Objects;
 
 import static de.uzk.Main.settings;
@@ -26,6 +28,7 @@ public class DialogSettings {
     private JComboBox<Language> selectLanguage;
     private JComboBox<Theme> selectTheme;
     private JComboBox<InitialDirectory> selectInitialDirectory;
+    private ScreenshotDirectorySelector selectScreenshotDirectory;
     private JSpinner fontSizeSpinner;
     private JCheckBox checkConfirmExit;
     private JButton okButton;
@@ -34,6 +37,7 @@ public class DialogSettings {
     private Language oldLanguage;
     private Theme oldTheme;
     private InitialDirectory oldInitialDirectory;
+    private Path oldScreenshotPath;
     private int oldFontSize;
     private boolean oldConfirmExit;
 
@@ -64,6 +68,7 @@ public class DialogSettings {
         this.oldFontSize = settings.getFontSize();
         this.oldConfirmExit = settings.isConfirmExit();
         this.oldInitialDirectory = settings.getInitialDirectory();
+        this.oldScreenshotPath = settings.getScreenshotDirectory();
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(UIEnvironment.getDefaultBorderLayout());
@@ -113,6 +118,9 @@ public class DialogSettings {
         this.selectInitialDirectory = ComponentUtils.createComboBox(InitialDirectory.values(), null);
         this.selectInitialDirectory.setSelectedItem(this.oldInitialDirectory);
         ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("dialog.settings.initialDirectory"), this.selectInitialDirectory, 10);
+
+        selectScreenshotDirectory = new ScreenshotDirectorySelector(oldScreenshotPath);
+        ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("dialog.settings.screenshotDirectory"), selectScreenshotDirectory, 10);
 
         // Drehfeld (Schriftgröße) hinzufügen
         this.fontSizeSpinner = ComponentUtils.createSpinner(Settings.MIN_FONT_SIZE, Settings.MAX_FONT_SIZE, false, null);
@@ -174,6 +182,7 @@ public class DialogSettings {
             boolean changed = !Objects.equals(this.selectLanguage.getSelectedItem(), this.oldLanguage)
                 || !Objects.equals(this.selectTheme.getSelectedItem(), this.oldTheme)
                 || !Objects.equals(this.selectInitialDirectory.getSelectedItem(), this.oldInitialDirectory)
+                || !Objects.equals(this.selectScreenshotDirectory.getScreenshotDirectory(), this.oldScreenshotPath)
                 || (int) this.fontSizeSpinner.getValue() != this.oldFontSize
                 || this.checkConfirmExit.isSelected() != this.oldConfirmExit;
             this.okButton.setEnabled(changed);
@@ -183,6 +192,7 @@ public class DialogSettings {
         this.selectLanguage.addActionListener(e -> checkChanges.run());
         this.selectTheme.addActionListener(e -> checkChanges.run());
         this.selectInitialDirectory.addActionListener(e -> checkChanges.run());
+        this.selectScreenshotDirectory.addChangeListener(p -> checkChanges.run());
 
         // Listener für JSpinner (FontSize) hinzufügen
         this.fontSizeSpinner.addChangeListener(e -> checkChanges.run());
@@ -198,5 +208,6 @@ public class DialogSettings {
         UIEnvironment.updateInitialDirectory((InitialDirectory) this.selectInitialDirectory.getSelectedItem());
         UIEnvironment.updateFontSize(this.gui, (int) this.fontSizeSpinner.getValue());
         UIEnvironment.updateConfirmExit(this.checkConfirmExit.isSelected());
+        UIEnvironment.updateScreenshotDirectory(this.selectScreenshotDirectory.getScreenshotDirectory());
     }
 }
