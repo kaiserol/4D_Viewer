@@ -103,12 +103,12 @@ public class DialogSettings {
         // Auswahlfeld (Sprache) hinzufügen
         this.selectLanguage = ComponentUtils.createComboBox(Language.sortedValues(), null);
         this.selectLanguage.setSelectedItem(this.oldLanguage);
-        ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("label.language"), this.selectLanguage, 10);
+        ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("dialog.settings.language"), this.selectLanguage, 10);
 
         // Auswahlfeld (Farbschema) hinzufügen
         this.selectTheme = ComponentUtils.createComboBox(Theme.sortedValues(), null);
         this.selectTheme.setSelectedItem(this.oldTheme);
-        ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("label.theme"), this.selectTheme, 10);
+        ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("dialog.settings.theme"), this.selectTheme, 10);
 
         this.selectInitialDirectory = ComponentUtils.createComboBox(InitialDirectory.values(), null);
         this.selectInitialDirectory.setSelectedItem(this.oldInitialDirectory);
@@ -117,7 +117,7 @@ public class DialogSettings {
         // Drehfeld (Schriftgröße) hinzufügen
         this.fontSizeSpinner = ComponentUtils.createSpinner(Settings.MIN_FONT_SIZE, Settings.MAX_FONT_SIZE, false, null);
         this.fontSizeSpinner.setValue(this.oldFontSize);
-        ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("label.fontSize"), this.fontSizeSpinner, 10);
+        ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("dialog.settings.fontSize"), this.fontSizeSpinner, 10);
 
         gbc.gridwidth = 2;
         gbc.weightx = 1;

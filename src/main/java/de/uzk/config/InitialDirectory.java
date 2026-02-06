@@ -5,10 +5,16 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public enum InitialDirectory {
-    ROOT,
-    HOME,
-    LAST_OPENED,
-    CWD;
+    ROOT("root"),
+    HOME("home"),
+    LAST_OPENED("lastOpened"),
+    CWD("cwd");
+
+    private final String value;
+
+    InitialDirectory(String value) {
+        this.value = value;
+    }
 
     @Override
     public String toString() {
@@ -21,5 +27,5 @@ public enum InitialDirectory {
     }
 
     @JsonValue
-    public String getId() { return super.toString().toLowerCase(); }
+    public String getValue() { return value; }
 }
