@@ -1,5 +1,6 @@
 package de.uzk.gui.dialogs;
 
+import de.uzk.config.InitialDirectory;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.ImageFileType;
 import de.uzk.io.PathManager;
@@ -10,9 +11,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Arrays;
 
-import static de.uzk.Main.history;
-import static de.uzk.Main.workspace;
+import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogDirectoryChooser {
@@ -47,7 +48,7 @@ public class DialogDirectoryChooser {
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.putClientProperty("FileChooser.readOnly", Boolean.TRUE);
-        fileChooser.setSelectedFile(getLastDirectory());
+        fileChooser.setCurrentDirectory(getInitialDirectory());
 
         setFileFilter(fileChooser); // Filter setzen
         setTitel(fileChooser); // Dialogtitel setzen
@@ -114,11 +115,11 @@ public class DialogDirectoryChooser {
         contentPanel.setBackground(UIEnvironment.getBackgroundColor());
 
         // Trennzeichen (Zeit)
-        contentPanel.add(new JLabel("Separator Character (Time): "));
+        contentPanel.add(new JLabel(getWord("dialog.openDirectory.timeSeparator")));
         contentPanel.add(new JTextField(workspace.getConfig().getTimeSep()));
 
         // Trennzeichen (Ebene)
-        contentPanel.add(new JLabel("Separator Character (Level): "));
+        contentPanel.add(new JLabel(getWord("dialog.openDirectory.levelSeparator")));
         contentPanel.add(new JTextField(workspace.getConfig().getLevelSep()));
 
         borderPanel.add(contentPanel, BorderLayout.CENTER);
@@ -130,9 +131,18 @@ public class DialogDirectoryChooser {
     // ========================================
     // Hilfsmethoden
     // ========================================
-    private static File getLastDirectory() {
-        Path lastDirectory = history.getLastIfExists();
-        return lastDirectory == null ? PathManager.USER_DIRECTORY.toFile() : lastDirectory.toFile();
+    private static File getInitialDirectory() {
+        File directory = PathManager.USER_DIRECTORY.toFile();
+        if(settings.getInitialDirectory() == InitialDirectory.ROOT) {
+            directory = Arrays.stream(File.listRoots()).filter(File::canRead).findFirst().orElse(directory);
+        } else if(settings.getInitialDirectory() == InitialDirectory.LAST_OPENED) {
+            Path lastDirectory = history.getLastIfExists();
+            directory = lastDirectory != null ? lastDirectory.toFile() : directory;
+        } else if(settings.getInitialDirectory() == InitialDirectory.HOME) {
+            directory = PathManager.USER_HOME_DIRECTORY.toFile();
+        }
+        //Fall InitialDirectory.CWD implizit abgedeckt
+        return directory;
     }
 
     private static ImageFileType getSelectedImageFileType(FileNameExtensionFilter filter) {

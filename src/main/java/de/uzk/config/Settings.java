@@ -10,6 +10,7 @@ import java.nio.file.Path;
 public class Settings {
     // Einstellungen
     private Language language;
+    private InitialDirectory initialDirectory;
     private Theme theme;
     private int fontSize;
     private boolean confirmExit;
@@ -17,6 +18,7 @@ public class Settings {
     // Default-Konstanten
     private static final Language DEFAULT_LANGUAGE = Language.getSystemDefault();
     private static final Theme DEFAULT_THEME = Theme.getDefault();
+    private static final InitialDirectory DEFAULT_INITIAL_DIRECTORY = InitialDirectory.ROOT;
     public static final int DEFAULT_FONT_SIZE = 14;
     private static final boolean DEFAULT_CONFIRM_EXIT = true;
 
@@ -29,12 +31,14 @@ public class Settings {
         @JsonProperty("language") Language language,
         @JsonProperty("theme") Theme theme,
         @JsonProperty("fontSize") int fontSize,
-        @JsonProperty("confirmExit") boolean confirmExit
+        @JsonProperty("confirmExit") boolean confirmExit,
+        @JsonProperty("initialDirectory") InitialDirectory initialDirectory
     ) {
         this.setLanguage(language);
         this.setTheme(theme);
         this.setFontSize(fontSize);
         this.setConfirmExit(confirmExit);
+        this.setInitialDirectory(initialDirectory);
     }
 
     public Language getLanguage() {
@@ -66,6 +70,21 @@ public class Settings {
             // Setzt den Defaultwert, wenn der Wert null ist
             if (this.theme != null) return false;
             this.theme = DEFAULT_THEME;
+        }
+        return true;
+    }
+
+    public InitialDirectory getInitialDirectory() {
+        return this.initialDirectory;
+    }
+
+    public boolean setInitialDirectory(InitialDirectory initialDirectory) {
+        if (initialDirectory != null) {
+            if (this.initialDirectory == initialDirectory) return false;
+            this.initialDirectory = initialDirectory;
+        } else {
+            if (this.initialDirectory != null) return false;
+            this.initialDirectory = DEFAULT_INITIAL_DIRECTORY;
         }
         return true;
     }
@@ -114,7 +133,8 @@ public class Settings {
             DEFAULT_LANGUAGE,
             DEFAULT_THEME,
             DEFAULT_FONT_SIZE,
-            DEFAULT_CONFIRM_EXIT
+            DEFAULT_CONFIRM_EXIT,
+            DEFAULT_INITIAL_DIRECTORY
         );
     }
 }

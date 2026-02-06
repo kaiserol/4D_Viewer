@@ -1,5 +1,6 @@
 package de.uzk.gui.dialogs;
 
+import de.uzk.config.InitialDirectory;
 import de.uzk.config.Language;
 import de.uzk.config.Settings;
 import de.uzk.config.Theme;
@@ -24,6 +25,7 @@ public class DialogSettings {
     // Gui Elemente
     private JComboBox<Language> selectLanguage;
     private JComboBox<Theme> selectTheme;
+    private JComboBox<InitialDirectory> selectInitialDirectory;
     private JSpinner fontSizeSpinner;
     private JCheckBox checkConfirmExit;
     private JButton okButton;
@@ -31,6 +33,7 @@ public class DialogSettings {
     // Alte Werte
     private Language oldLanguage;
     private Theme oldTheme;
+    private InitialDirectory oldInitialDirectory;
     private int oldFontSize;
     private boolean oldConfirmExit;
 
@@ -60,6 +63,7 @@ public class DialogSettings {
         this.oldTheme = settings.getTheme();
         this.oldFontSize = settings.getFontSize();
         this.oldConfirmExit = settings.isConfirmExit();
+        this.oldInitialDirectory = settings.getInitialDirectory();
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(UIEnvironment.getDefaultBorderLayout());
@@ -105,6 +109,10 @@ public class DialogSettings {
         this.selectTheme = ComponentUtils.createComboBox(Theme.sortedValues(), null);
         this.selectTheme.setSelectedItem(this.oldTheme);
         ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("label.theme"), this.selectTheme, 10);
+
+        this.selectInitialDirectory = ComponentUtils.createComboBox(InitialDirectory.values(), null);
+        this.selectInitialDirectory.setSelectedItem(this.oldInitialDirectory);
+        ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("dialog.settings.initialDirectory"), this.selectInitialDirectory, 10);
 
         // Drehfeld (Schriftgröße) hinzufügen
         this.fontSizeSpinner = ComponentUtils.createSpinner(Settings.MIN_FONT_SIZE, Settings.MAX_FONT_SIZE, false, null);
@@ -165,25 +173,29 @@ public class DialogSettings {
         Runnable checkChanges = () -> {
             boolean changed = !Objects.equals(this.selectLanguage.getSelectedItem(), this.oldLanguage)
                 || !Objects.equals(this.selectTheme.getSelectedItem(), this.oldTheme)
+                || !Objects.equals(this.selectInitialDirectory.getSelectedItem(), this.oldInitialDirectory)
                 || (int) this.fontSizeSpinner.getValue() != this.oldFontSize
                 || this.checkConfirmExit.isSelected() != this.oldConfirmExit;
             this.okButton.setEnabled(changed);
         };
 
-        // Listener für JComboBox (Language & Theme) hinzufügen
+        // Listener für JComboBox (Language, Theme & InitialDirectory) hinzufügen
         this.selectLanguage.addActionListener(e -> checkChanges.run());
         this.selectTheme.addActionListener(e -> checkChanges.run());
+        this.selectInitialDirectory.addActionListener(e -> checkChanges.run());
 
         // Listener für JSpinner (FontSize) hinzufügen
         this.fontSizeSpinner.addChangeListener(e -> checkChanges.run());
 
         // Listener für JCheckBox (ConfirmExit) hinzufügen
         this.checkConfirmExit.addActionListener(e -> checkChanges.run());
+
     }
 
     private void applySettings() {
         UIEnvironment.updateLanguage(this.gui, (Language) this.selectLanguage.getSelectedItem());
         UIEnvironment.updateTheme(this.gui, (Theme) this.selectTheme.getSelectedItem());
+        UIEnvironment.updateInitialDirectory((InitialDirectory) this.selectInitialDirectory.getSelectedItem());
         UIEnvironment.updateFontSize(this.gui, (int) this.fontSizeSpinner.getValue());
         UIEnvironment.updateConfirmExit(this.checkConfirmExit.isSelected());
     }

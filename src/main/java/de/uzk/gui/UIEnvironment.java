@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import de.uzk.action.ActionType;
+import de.uzk.config.InitialDirectory;
 import de.uzk.config.Language;
 import de.uzk.config.Theme;
 import de.uzk.io.ImageLoader;
@@ -220,6 +221,12 @@ public final class UIEnvironment {
         boolean oldConfirmExit = settings.isConfirmExit();
         if (!settings.setConfirmExit(confirmExit)) return;
         logger.info("Updating Confirm Exit from '%s' to '%s' ...".formatted(oldConfirmExit, confirmExit));
+    }
+
+    public static void updateInitialDirectory(InitialDirectory initialDirectory) {
+        InitialDirectory oldInitialDirectory = settings.getInitialDirectory();
+        if (!settings.setInitialDirectory(initialDirectory)) return;
+        logger.info("Updating Initial Directory from '%s' to '%s' ...".formatted(oldInitialDirectory, initialDirectory));
     }
 
     // ========================================
