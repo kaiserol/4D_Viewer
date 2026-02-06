@@ -31,7 +31,7 @@ public class ScreenshotDirectorySelector extends JPanel {
         add(textField, BorderLayout.CENTER);
 
         JButton openButton = new JButton(getWord("dialog.settings.screenshotDirectory.change"));
-        openButton.addActionListener(e -> { openDialog(); });
+        openButton.addActionListener(e -> openDialog());
         add(openButton, BorderLayout.EAST);
     }
 

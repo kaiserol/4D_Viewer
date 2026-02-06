@@ -115,6 +115,14 @@ public class DialogSettings {
         this.selectTheme.setSelectedItem(this.oldTheme);
         ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("dialog.settings.theme"), this.selectTheme, 10);
 
+        // Drehfeld (Schriftgröße) hinzufügen
+        this.fontSizeSpinner = ComponentUtils.createSpinner(Settings.MIN_FONT_SIZE, Settings.MAX_FONT_SIZE, false, null);
+        this.fontSizeSpinner.setValue(this.oldFontSize);
+        ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("dialog.settings.fontSize"), this.fontSizeSpinner, 10);
+
+        //2. Abschnitt (Ordnereinstellungen) hinzufügen
+        ComponentUtils.addRow(settingsPanel, gbc, createBoldLabel(getWord("dialog.settings.directories")), 20);
+
         this.selectInitialDirectory = ComponentUtils.createComboBox(InitialDirectory.values(), null);
         this.selectInitialDirectory.setSelectedItem(this.oldInitialDirectory);
         ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("dialog.settings.initialDirectory"), this.selectInitialDirectory, 10);
@@ -122,16 +130,12 @@ public class DialogSettings {
         selectScreenshotDirectory = new ScreenshotDirectorySelector(oldScreenshotPath);
         ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("dialog.settings.screenshotDirectory"), selectScreenshotDirectory, 10);
 
-        // Drehfeld (Schriftgröße) hinzufügen
-        this.fontSizeSpinner = ComponentUtils.createSpinner(Settings.MIN_FONT_SIZE, Settings.MAX_FONT_SIZE, false, null);
-        this.fontSizeSpinner.setValue(this.oldFontSize);
-        ComponentUtils.addLabeledRow(settingsPanel, gbc, getWord("dialog.settings.fontSize"), this.fontSizeSpinner, 10);
 
         gbc.gridwidth = 2;
         gbc.weightx = 1;
         gbc.insets.right = 100;
 
-        // 2. Abschnitt: Fenster-Verhalten hinzufügen
+        // 3. Abschnitt: Fenster-Verhalten hinzufügen
         ComponentUtils.addRow(settingsPanel, gbc, createBoldLabel(getWord("dialog.settings.section.windowBehavior")), 20);
 
         gbc.weightx = 0;
