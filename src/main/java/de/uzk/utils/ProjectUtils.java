@@ -1,5 +1,6 @@
 package de.uzk.utils;
 
+import de.uzk.action.ActionType;
 import de.uzk.gui.Gui;
 import de.uzk.gui.dialogs.DialogDirectoryChooser;
 import de.uzk.gui.dialogs.DialogLoadingImages;
@@ -122,6 +123,8 @@ public final class ProjectUtils {
 
         if (option == JOptionPane.YES_OPTION) {
             logger.info("Clear Images ...");
+
+            gui.handleAction(ActionType.SHORTCUT_CLOSE_PROJECT);
             gui.toggleOff();
         }
     }

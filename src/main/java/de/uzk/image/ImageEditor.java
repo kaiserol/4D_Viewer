@@ -99,6 +99,11 @@ public class ImageEditor {
         newImageAvailable();
     }
 
+    public void clear() {
+        currentImage = null;
+        cache = null;
+    }
+
     /**
      * Überprüft, ob der fokussierte Marker noch existiert.
      * @return Existiert der bisher fokussierte Marker noch?

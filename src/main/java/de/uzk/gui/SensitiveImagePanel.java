@@ -36,6 +36,10 @@ public class SensitiveImagePanel extends JPanel implements MouseListener, MouseM
         this.repaint();
     }
 
+    public void clear() {
+        updateImage(null);
+    }
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
@@ -49,6 +53,8 @@ public class SensitiveImagePanel extends JPanel implements MouseListener, MouseM
             insets = new Dimension((getWidth() - adjustedImageWidth) / 2, (getHeight() - adjustedImageHeight) / 2);
 
             g2d.drawImage(currentImage, insets.width, insets.height, displaySize.width, displaySize.height, null);
+        } else {
+            g2d.clearRect(0, 0, getWidth(), getHeight());
         }
     }
 
