@@ -1,6 +1,6 @@
 package de.uzk.io;
 
-import de.uzk.gui.SnapshotCropper;
+import de.uzk.gui.dialogs.DialogCropSnapshot;
 import de.uzk.image.ImageFileType;
 import de.uzk.utils.DateTimeUtils;
 import de.uzk.utils.GraphicsUtils;
@@ -13,10 +13,10 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static de.uzk.Main.logger;
 import static de.uzk.Main.workspace;
-import static de.uzk.config.LanguageHandler.getWord;
 
 public final class SnapshotHelper {
     /**
@@ -32,12 +32,13 @@ public final class SnapshotHelper {
         Path snapshotsDirectory = PathManager.getProjectSnapshotsDirectory();
 
         // Bild zuschneiden
-        SnapshotCropper cropper = new SnapshotCropper(image);
-        int option = JOptionPane.showConfirmDialog(null, cropper, getWord("dialog.snapshot"), JOptionPane.OK_CANCEL_OPTION);
-        if (option != JOptionPane.OK_OPTION) return false;
+        DialogCropSnapshot dialogCropSnapshot = new DialogCropSnapshot(image);
+        dialogCropSnapshot.setVisible(true);
+        Optional<BufferedImage> result = dialogCropSnapshot.getCroppedImage();
+         if (result.isEmpty()) return false;
 
         // Manche Formate (z.B. JPEG) unterstützen keine Transparenz.
-        image = cropper.getCroppedImage();
+        image = result.get();
         ImageFileType fileType = workspace.getConfig().getImageFileType();
         if (fileType == ImageFileType.GIF || fileType == ImageFileType.JPEG) {
             // Diese Formate unterstützen keine Transparenz (ARGB).
