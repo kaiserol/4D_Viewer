@@ -127,8 +127,6 @@ public class Gui extends ObserverContainer<JFrame> {
         if (workspace.isLoaded()) toggleOn();
         else toggleOff();
 
-        // Fenster packen
-        this.container.pack();
     }
 
     private void createMenuBar() {
