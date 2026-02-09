@@ -55,8 +55,8 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
 
         int scrollBarWidth = UIManager.getInt("ScrollBar.width");
         this.panelView.add(imagePanel, BorderLayout.CENTER);
-        this.panelView.add(createRightSpace(this.scrollBarTime, scrollBarWidth), BorderLayout.SOUTH);
-        this.panelView.add(this.scrollBarLevel, BorderLayout.EAST);
+        this.panelView.add(createRightSpace(this.scrollBarTime, scrollBarWidth), BorderLayout.NORTH);
+        this.panelView.add(this.scrollBarLevel, BorderLayout.WEST);
 
         this.container.add(this.panelView, BorderLayout.CENTER);
         this.container.setMinimumSize(new Dimension(scrollBarWidth * 3, scrollBarWidth * 3));
