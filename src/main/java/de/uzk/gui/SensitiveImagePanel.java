@@ -41,7 +41,7 @@ public class SensitiveImagePanel extends JPanel implements MouseListener, MouseM
         super.paint(g);
         Graphics2D g2d = GraphicsUtils.createHighQualityGraphics2D(g);
         if(this.currentImage != null) {
-            scale = GraphicsUtils.getImageScaleFactor(currentImage, this);
+            scale = GraphicsUtils.getImageScaleFactor(currentImage, getSize());
 
             int adjustedImageWidth = (int) (currentImage.getWidth() * scale);
             int adjustedImageHeight = (int) (currentImage.getHeight() * scale);

@@ -66,12 +66,12 @@ public final class GraphicsUtils {
         return g2d;
     }
 
-    public static double getImageScaleFactor(BufferedImage image, Container container) {
+    public static double getImageScaleFactor(BufferedImage image, Dimension containerDimension) {
         int imgWidth = image.getWidth(null);
         int imgHeight = image.getHeight(null);
 
-        double scaleWidth = (double) container.getWidth() / imgWidth;
-        double scaleHeight = (double) container.getHeight() / imgHeight;
+        double scaleWidth = containerDimension.getWidth() / imgWidth;
+        double scaleHeight = containerDimension.getHeight() / imgHeight;
         return Math.min(scaleWidth, scaleHeight);
     }
 
