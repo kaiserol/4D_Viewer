@@ -23,21 +23,18 @@ import static de.uzk.action.ActionType.*;
 // Zumal soll beim Pressed, mousewheellistener eventuell dann auch auslagern (in AreaImageViewer), damit es
 // eindeutiger ist...
 public class ActionHandler extends KeyAdapter implements MouseWheelListener {
+    // Es werden maximal 20 FPS / 13 FPS (bei gedrehten Bildern) erreicht
+    private static final long UPDATE_INTERVAL_MS = 50;
+    private static final long LONG_UPLOAD_INTERVAL_MS = 75;
     private final Gui gui;
-
     // Dialoge
     private final DialogAbout dialogAbout;
     private final DialogLegal dialogLegal;
     private final DialogHistory dialogHistory;
     private final DialogLogViewer dialogLogViewer;
     private final DialogSettings dialogSettings;
-
     // Zeitmessung, um Bildwechsel zu takten
     private long lastUpdateTime = 0;
-
-    // Es werden maximal 20 FPS / 13 FPS (bei gedrehten Bildern) erreicht
-    private static final long UPDATE_INTERVAL_MS = 50;
-    private static final long LONG_UPLOAD_INTERVAL_MS = 75;
 
     public ActionHandler(Gui gui) {
         this.gui = gui;

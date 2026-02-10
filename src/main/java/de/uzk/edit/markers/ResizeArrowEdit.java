@@ -4,7 +4,6 @@ import de.uzk.action.ActionType;
 import de.uzk.edit.MaybeRedundantEdit;
 import de.uzk.markers.ArrowMarker;
 
-import java.awt.*;
 import java.awt.geom.Point2D;
 
 public class ResizeArrowEdit extends MaybeRedundantEdit {
@@ -30,7 +29,7 @@ public class ResizeArrowEdit extends MaybeRedundantEdit {
 
     @Override
     public boolean perform() {
-        if(isTip) {
+        if (isTip) {
             Point2D tip = marker.getTip();
             marker.setTip(new Point2D.Double(tip.getX() + dx, tip.getY() + dy));
         } else {
@@ -42,7 +41,7 @@ public class ResizeArrowEdit extends MaybeRedundantEdit {
 
     @Override
     public void undo() {
-        if(isTip) {
+        if (isTip) {
             Point2D tip = marker.getTip();
             marker.setTip(new Point2D.Double(tip.getX() - dx, tip.getY() - dy));
         } else {

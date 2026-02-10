@@ -2,13 +2,16 @@ package de.uzk.markers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import de.uzk.markers.interactions.ShapeMarkerModificator;
 import de.uzk.markers.interactions.MarkerModificator;
+import de.uzk.markers.interactions.ShapeMarkerModificator;
 import de.uzk.utils.GraphicsUtils;
 import de.uzk.utils.NumberUtils;
 
 import java.awt.*;
-import java.awt.geom.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 
 public class ShapeMarker extends Marker {
@@ -21,7 +24,7 @@ public class ShapeMarker extends Marker {
     private MarkerShape shape;
 
     public ShapeMarker(int start, String label) {
-        this(new Point2D.Double(250, 100), 500,200, start, start, MarkerShape.RECTANGLE, Color.RED, label);
+        this(new Point2D.Double(250, 100), 500, 200, start, start, MarkerShape.RECTANGLE, Color.RED, label);
     }
 
     @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
@@ -60,19 +63,10 @@ public class ShapeMarker extends Marker {
         setColor(color);
         setFrom(from);
         setTo(to);
-
     }
 
     public Point2D.Double getPos() {
         return pos;
-    }
-
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
     }
 
     @JsonSetter("pos")
@@ -80,15 +74,23 @@ public class ShapeMarker extends Marker {
         this.pos = pos;
     }
 
+    public double getWidth() {
+        return width;
+    }
+
     @JsonSetter("height")
     public void setWidth(double width) {
-        if(width < 0) throw new IllegalArgumentException("Width cannot be negative!");
+        if (width < 0) throw new IllegalArgumentException("Width cannot be negative!");
         this.width = width;
+    }
+
+    public double getHeight() {
+        return height;
     }
 
     @JsonSetter("width")
     public void setHeight(double height) {
-        if(height < 0) throw new IllegalArgumentException("Height cannot be negative!");
+        if (height < 0) throw new IllegalArgumentException("Height cannot be negative!");
         this.height = height;
     }
 
@@ -170,7 +172,7 @@ public class ShapeMarker extends Marker {
         g2d.fill(r);
         g2d.setStroke(new BasicStroke(1));
 
-        g2d.drawLine((int)topCenter.getX(), (int)topCenter.getY(), (int)rotPoint.getX(), (int)rotPoint.getY());
+        g2d.drawLine((int) topCenter.getX(), (int) topCenter.getY(), (int) rotPoint.getX(), (int) rotPoint.getY());
     }
 
     /**
@@ -184,8 +186,7 @@ public class ShapeMarker extends Marker {
     public Shape getLabelArea(Graphics onto) {
         FontMetrics metrics = GraphicsUtils.updateMetrics(onto);
         Point2D corner = getRotationTransform().transform(getShapeCorner(), null);
-        return new Rectangle2D.Double(corner.getX(),  corner.getY(), metrics.stringWidth(label), metrics.getHeight());
-
+        return new Rectangle2D.Double(corner.getX(), corner.getY(), metrics.stringWidth(label), metrics.getHeight());
     }
 
     /**

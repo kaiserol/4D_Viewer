@@ -1,9 +1,9 @@
 package de.uzk.gui.marker;
 
-import de.uzk.markers.Marker;
 import de.uzk.markers.ArrowMarker;
-import de.uzk.markers.ShapeMarker;
+import de.uzk.markers.Marker;
 import de.uzk.markers.MarkerShape;
+import de.uzk.markers.ShapeMarker;
 
 import static de.uzk.config.LanguageHandler.getWord;
 

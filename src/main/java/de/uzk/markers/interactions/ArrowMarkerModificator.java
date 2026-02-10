@@ -28,7 +28,7 @@ public class ArrowMarkerModificator implements MarkerModificator {
 
     @Override
     public void beginResize() {
-        if(dragPoint == null) return;
+        if (dragPoint == null) return;
         resizeEdit = new ResizeArrowEdit(marker, dragPoint == DragPoint.TIP);
     }
 
@@ -39,10 +39,9 @@ public class ArrowMarkerModificator implements MarkerModificator {
             Point2D start = marker.getStart();
             resizeEdit.resize(mousePos.x - start.getX(), mousePos.y - start.getY());
             marker.setStart(mousePos);
-        }
-        else if (dragPoint == DragPoint.TIP) {
+        } else if (dragPoint == DragPoint.TIP) {
             Point2D tip = marker.getTip();
-            resizeEdit.resize(mousePos.x -  tip.getX(), mousePos.y - tip.getY());
+            resizeEdit.resize(mousePos.x - tip.getX(), mousePos.y - tip.getY());
             marker.setTip(mousePos);
         }
 

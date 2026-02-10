@@ -9,6 +9,16 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 public class Settings {
+    public static final int DEFAULT_FONT_SIZE = 14;
+    // MinMax-Konstanten
+    public static final int MIN_FONT_SIZE = 8;
+    public static final int MAX_FONT_SIZE = 20;
+    // Default-Konstanten
+    private static final Language DEFAULT_LANGUAGE = Language.getSystemDefault();
+    private static final Theme DEFAULT_THEME = Theme.getDefault();
+    private static final InitialDirectory DEFAULT_INITIAL_DIRECTORY = InitialDirectory.ROOT;
+    private static final boolean DEFAULT_CONFIRM_EXIT = true;
+    private static final Path DEFAULT_SCREENSHOT_DIRECTORY = PathManager.DEFAULT_SNAPSHOTS_DIRECTORY;
     // Einstellungen
     private Language language;
     private InitialDirectory initialDirectory;
@@ -17,18 +27,6 @@ public class Settings {
     private boolean confirmExit;
     private Path screenshotDirectory;
 
-    // Default-Konstanten
-    private static final Language DEFAULT_LANGUAGE = Language.getSystemDefault();
-    private static final Theme DEFAULT_THEME = Theme.getDefault();
-    private static final InitialDirectory DEFAULT_INITIAL_DIRECTORY = InitialDirectory.ROOT;
-    public static final int DEFAULT_FONT_SIZE = 14;
-    private static final boolean DEFAULT_CONFIRM_EXIT = true;
-    private static final Path DEFAULT_SCREENSHOT_DIRECTORY = PathManager.DEFAULT_SNAPSHOTS_DIRECTORY;
-
-    // MinMax-Konstanten
-    public static final int MIN_FONT_SIZE = 8;
-    public static final int MAX_FONT_SIZE = 20;
-
     @JsonCreator
     public Settings(
         @JsonProperty("language") Language language,
@@ -36,14 +34,33 @@ public class Settings {
         @JsonProperty("fontSize") int fontSize,
         @JsonProperty("confirmExit") boolean confirmExit,
         @JsonProperty("initialDirectory") InitialDirectory initialDirectory,
-        @JsonProperty("screenshotDirectory")  Path screenshotDirectory
-     ) {
+        @JsonProperty("screenshotDirectory") Path screenshotDirectory
+    ) {
         this.setLanguage(language);
         this.setTheme(theme);
         this.setFontSize(fontSize);
         this.setConfirmExit(confirmExit);
         this.setInitialDirectory(initialDirectory);
         this.setScreenshotDirectory(screenshotDirectory);
+    }
+
+    public static Settings load() {
+        Path filePath = PathManager.resolveConfigPath(PathManager.SETTINGS_FILE_NAME);
+
+        Object object = PathManager.load(filePath, Settings.class);
+        if (object instanceof Settings settings) return settings;
+        else return getDefault();
+    }
+
+    private static Settings getDefault() {
+        return new Settings(
+            DEFAULT_LANGUAGE,
+            DEFAULT_THEME,
+            DEFAULT_FONT_SIZE,
+            DEFAULT_CONFIRM_EXIT,
+            DEFAULT_INITIAL_DIRECTORY,
+            DEFAULT_SCREENSHOT_DIRECTORY
+        );
     }
 
     public Language getLanguage() {
@@ -125,11 +142,11 @@ public class Settings {
     }
 
     public boolean setScreenshotDirectory(Path screenshotDirectory) {
-        if(screenshotDirectory != null) {
-            if(Objects.equals(this.screenshotDirectory, screenshotDirectory)) return false;
+        if (screenshotDirectory != null) {
+            if (Objects.equals(this.screenshotDirectory, screenshotDirectory)) return false;
             this.screenshotDirectory = screenshotDirectory;
         } else {
-            if(this.screenshotDirectory != null) return false;
+            if (this.screenshotDirectory != null) return false;
             this.screenshotDirectory = DEFAULT_SCREENSHOT_DIRECTORY;
         }
         return true;
@@ -138,24 +155,5 @@ public class Settings {
     public void save() {
         Path filePath = PathManager.resolveConfigPath(PathManager.SETTINGS_FILE_NAME);
         PathManager.save(filePath, this);
-    }
-
-    public static Settings load() {
-        Path filePath = PathManager.resolveConfigPath(PathManager.SETTINGS_FILE_NAME);
-
-        Object object = PathManager.load(filePath, Settings.class);
-        if (object instanceof Settings settings) return settings;
-        else return getDefault();
-    }
-
-    private static Settings getDefault() {
-        return new Settings(
-            DEFAULT_LANGUAGE,
-            DEFAULT_THEME,
-            DEFAULT_FONT_SIZE,
-            DEFAULT_CONFIRM_EXIT,
-            DEFAULT_INITIAL_DIRECTORY,
-            DEFAULT_SCREENSHOT_DIRECTORY
-        );
     }
 }

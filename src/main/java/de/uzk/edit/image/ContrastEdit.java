@@ -11,7 +11,7 @@ public class ContrastEdit extends ImageEdit {
 
     @Override
     public boolean perform() {
-        return workspace.getConfig().setContrast(workspace.getConfig().getContrast() -  contrastDifference);
+        return workspace.getConfig().setContrast(workspace.getConfig().getContrast() - contrastDifference);
     }
 
     @Override

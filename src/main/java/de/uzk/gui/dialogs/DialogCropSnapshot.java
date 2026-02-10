@@ -32,7 +32,7 @@ public class DialogCropSnapshot extends JDialog {
     }
 
     public Optional<BufferedImage> getCroppedImage() {
-        if(!confirmed) return Optional.empty();
+        if (!confirmed) return Optional.empty();
         return Optional.of(snapshotCropper.getCroppedImage());
     }
 

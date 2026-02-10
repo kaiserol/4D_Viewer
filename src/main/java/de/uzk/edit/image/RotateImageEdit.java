@@ -5,13 +5,13 @@ import static de.uzk.Main.workspace;
 public class RotateImageEdit extends ImageEdit {
     private final int degrees;
 
-    public RotateImageEdit( int newRotation) {
-        this.degrees = workspace.getConfig().getRotation() -  newRotation;
+    public RotateImageEdit(int newRotation) {
+        this.degrees = workspace.getConfig().getRotation() - newRotation;
     }
 
     @Override
     public void undo() {
-         workspace.getConfig().setRotation(workspace.getConfig().getRotation() + degrees);
+        workspace.getConfig().setRotation(workspace.getConfig().getRotation() + degrees);
     }
 
     @Override

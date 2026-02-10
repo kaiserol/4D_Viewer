@@ -67,6 +67,24 @@ public enum LogLevel {
     }
 
     /**
+     * Liefert alle {@link LogLevel}-Werte alphabetisch sortiert nach ihrer
+     * Textdarstellung zurück.
+     *
+     * <p>
+     * Die Sortierung erfolgt anhand des Rückgabewerts von {@link #toString()},
+     * also nach den Klartext-Namen der Protokollebenen, unabhängig von
+     * Groß- und Kleinschreibung.
+     *
+     * @return Ein alphabetisch sortiertes Array aller definierten {@link LogLevel}-Konstanten
+     */
+    public static LogLevel[] sortedValues() {
+        LogLevel[] values = LogLevel.values();
+        Arrays.sort(values, (logLevel1, level2) -> logLevel1.getName().compareToIgnoreCase(level2.getName()));
+        Arrays.sort(values, Comparator.comparing(LogLevel::getName, String.CASE_INSENSITIVE_ORDER));
+        return values;
+    }
+
+    /**
      * Gibt den Klartext-Namen der Protokollebene zurück.
      *
      * @return Klartext-Name der Protokollebene
@@ -97,24 +115,6 @@ public enum LogLevel {
      */
     public Color getColor() {
         return color;
-    }
-
-    /**
-     * Liefert alle {@link LogLevel}-Werte alphabetisch sortiert nach ihrer
-     * Textdarstellung zurück.
-     *
-     * <p>
-     * Die Sortierung erfolgt anhand des Rückgabewerts von {@link #toString()},
-     * also nach den Klartext-Namen der Protokollebenen, unabhängig von
-     * Groß- und Kleinschreibung.
-     *
-     * @return Ein alphabetisch sortiertes Array aller definierten {@link LogLevel}-Konstanten
-     */
-    public static LogLevel[] sortedValues() {
-        LogLevel[] values = LogLevel.values();
-        Arrays.sort(values, (logLevel1, level2) -> logLevel1.getName().compareToIgnoreCase(level2.getName()));
-        Arrays.sort(values, Comparator.comparing(LogLevel::getName, String.CASE_INSENSITIVE_ORDER));
-        return values;
     }
 
     /**

@@ -14,7 +14,10 @@ import de.uzk.utils.ColorUtils;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -54,7 +57,7 @@ public class MarkerInfo extends JPanel
         gbc.weightx = 10;
         gbc.gridheight = 1;
         gbc.gridwidth = 3;
-        gbc.insets = new Insets(0,0,0,10);
+        gbc.insets = new Insets(0, 0, 0, 10);
 
         this.add(getLabel(), gbc);
 
@@ -62,7 +65,7 @@ public class MarkerInfo extends JPanel
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.EAST;
-        gbc.insets = new Insets(0,0,0,0);
+        gbc.insets = new Insets(0, 0, 0, 0);
 
         gbc.gridx += 4;
         gbc.fill = GridBagConstraints.REMAINDER;
@@ -83,7 +86,7 @@ public class MarkerInfo extends JPanel
         field.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     requestFocus();
                 }
             }

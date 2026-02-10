@@ -91,13 +91,12 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
                 imageEditor.clear();
                 imagePanel.clear();
             }
-            case ACTION_EDIT_IMAGE ->
-                imageEditor.updateImage(true);
+            case ACTION_EDIT_IMAGE -> imageEditor.updateImage(true);
 
 
             case ACTION_ADD_MARKER, ACTION_EDIT_MARKER, ACTION_REMOVE_MARKER, ACTION_UPDATE_FONT -> {
                 imageEditor.updateImage(false);
-                if(actionType == ActionType.ACTION_REMOVE_MARKER && !imageEditor.focusedStillExists()) {
+                if (actionType == ActionType.ACTION_REMOVE_MARKER && !imageEditor.focusedStillExists()) {
                     markerInteractionHandler.unselectMarker();
                     imagePanel.setCursor(Cursor.getDefaultCursor());
                     imagePanel.repaint();

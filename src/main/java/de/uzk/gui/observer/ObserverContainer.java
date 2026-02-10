@@ -7,8 +7,8 @@ import de.uzk.image.Axis;
 import java.awt.*;
 
 public abstract class ObserverContainer<T extends Container> implements HandleActionListener, ToggleListener, UpdateImageListener, UpdateThemeListener, AppFocusListener {
-    protected T container;
     protected final Gui gui;
+    protected T container;
 
     public ObserverContainer(T container, Gui gui) {
         setContainer(container);
@@ -22,13 +22,13 @@ public abstract class ObserverContainer<T extends Container> implements HandleAc
         }
     }
 
+    public final T getContainer() {
+        return container;
+    }
+
     private void setContainer(T container) {
         if (container == null) throw new NullPointerException("Container is null.");
         this.container = container;
-    }
-
-    public final T getContainer() {
-        return container;
     }
 
     @Override

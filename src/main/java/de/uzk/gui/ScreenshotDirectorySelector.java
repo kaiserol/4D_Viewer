@@ -10,9 +10,9 @@ import java.util.function.Consumer;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class ScreenshotDirectorySelector extends JPanel {
-    private Path currentDirectory;
     private final JFileChooser fileChooser;
     private final java.util.List<Consumer<Path>> handlers = new ArrayList<>();
+    private Path currentDirectory;
 
     public ScreenshotDirectorySelector(Path screenshotDirectory) {
         this.fileChooser = new JFileChooser();
@@ -44,11 +44,11 @@ public class ScreenshotDirectorySelector extends JPanel {
     }
 
     private void openDialog() {
-       this.fileChooser.showOpenDialog(null);
-       if(fileChooser.getSelectedFile() != null && !Objects.equals(currentDirectory, fileChooser.getSelectedFile().toPath())) {
-           currentDirectory = fileChooser.getSelectedFile().toPath();
-           handlers.forEach(handler -> handler.accept(currentDirectory));
-       }
+        this.fileChooser.showOpenDialog(null);
+        if (fileChooser.getSelectedFile() != null && !Objects.equals(currentDirectory, fileChooser.getSelectedFile().toPath())) {
+            currentDirectory = fileChooser.getSelectedFile().toPath();
+            handlers.forEach(handler -> handler.accept(currentDirectory));
+        }
     }
 
 }

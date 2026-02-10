@@ -46,9 +46,11 @@ public final class GraphicsUtils {
 
     /**
      * Passt die Schriftgröße des gegebenen @{link Graphics}-Objektes an die Einstellungen an.
+     *
      * @param g das {@link Graphics}-Objekt, dessen Schriftgröße modifiziert werden soll.
      * @return eine Kopie der {@link FontMetrics} von <code>g</code>, mit veränderter Schriftgröße.
-     * */
+     *
+     */
     public static FontMetrics updateMetrics(Graphics g) {
         FontMetrics metrics = g.getFontMetrics();
         g.setFont(metrics.getFont().deriveFont((float) settings.getFontSize()));

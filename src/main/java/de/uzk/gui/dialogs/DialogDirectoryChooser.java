@@ -20,6 +20,39 @@ public class DialogDirectoryChooser {
     // Dialoge
     private JFileChooser fileChooser;
 
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
+    private static File getInitialDirectory() {
+        File directory = PathManager.USER_DIRECTORY.toFile();
+        if (settings.getInitialDirectory() == InitialDirectory.ROOT) {
+            directory = Arrays.stream(File.listRoots()).filter(File::canRead).findFirst().orElse(directory);
+        } else if (settings.getInitialDirectory() == InitialDirectory.LAST_OPENED) {
+            Path lastDirectory = history.getLastIfExists();
+            directory = lastDirectory != null ? lastDirectory.toFile() : directory;
+        } else if (settings.getInitialDirectory() == InitialDirectory.HOME) {
+            directory = PathManager.USER_HOME_DIRECTORY.toFile();
+        }
+        //Fall InitialDirectory.CWD implizit abgedeckt
+        return directory;
+    }
+
+    private static ImageFileType getSelectedImageFileType(FileNameExtensionFilter filter) {
+        if (filter == null) return ImageFileType.getDefault();
+
+        String firstExtension = filter.getExtensions()[0];
+        return ImageFileType.fromExtension(firstExtension);
+    }
+
+    private static void resetButtonsMargin(JFileChooser root) {
+        ComponentUtils.findComponentsRecursively(AbstractButton.class, root).forEach(button -> {
+            // Nur Buttons ohne Text (also IconButtons) zurücksetzen
+            if (button.getText() == null || button.getText().isEmpty()) {
+                button.setMargin(UIEnvironment.INSETS_SMALL);
+            }
+        });
+    }
+
     public int showOpenDialog(Window parentWindow) {
         // Dialog anzeigen
         this.fileChooser = createNewFileChooser();
@@ -126,38 +159,5 @@ public class DialogDirectoryChooser {
 
         // Zubehör setzen
         fileChooser.setAccessory(borderPanel);
-    }
-
-    // ========================================
-    // Hilfsmethoden
-    // ========================================
-    private static File getInitialDirectory() {
-        File directory = PathManager.USER_DIRECTORY.toFile();
-        if(settings.getInitialDirectory() == InitialDirectory.ROOT) {
-            directory = Arrays.stream(File.listRoots()).filter(File::canRead).findFirst().orElse(directory);
-        } else if(settings.getInitialDirectory() == InitialDirectory.LAST_OPENED) {
-            Path lastDirectory = history.getLastIfExists();
-            directory = lastDirectory != null ? lastDirectory.toFile() : directory;
-        } else if(settings.getInitialDirectory() == InitialDirectory.HOME) {
-            directory = PathManager.USER_HOME_DIRECTORY.toFile();
-        }
-        //Fall InitialDirectory.CWD implizit abgedeckt
-        return directory;
-    }
-
-    private static ImageFileType getSelectedImageFileType(FileNameExtensionFilter filter) {
-        if (filter == null) return ImageFileType.getDefault();
-
-        String firstExtension = filter.getExtensions()[0];
-        return ImageFileType.fromExtension(firstExtension);
-    }
-
-    private static void resetButtonsMargin(JFileChooser root) {
-        ComponentUtils.findComponentsRecursively(AbstractButton.class, root).forEach(button -> {
-            // Nur Buttons ohne Text (also IconButtons) zurücksetzen
-            if (button.getText() == null || button.getText().isEmpty()) {
-                button.setMargin(UIEnvironment.INSETS_SMALL);
-            }
-        });
     }
 }

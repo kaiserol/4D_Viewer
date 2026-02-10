@@ -26,11 +26,11 @@ import javax.swing.*;
  * Einzelheiten finden Sie in der Lizenz.
  */
 public class Main {
-    public static Logger logger;
     public static final OperatingSystem operationSystem;
     public static final Settings settings;
     public static final History history;
     public static final Workspace workspace;
+    public static Logger logger;
 
     // Statische Initialisierung
     static {

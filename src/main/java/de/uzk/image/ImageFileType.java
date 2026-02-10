@@ -1,6 +1,9 @@
 package de.uzk.image;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import de.uzk.utils.StringUtils;
 
 import java.util.Arrays;
@@ -23,28 +26,6 @@ public enum ImageFileType {
     ImageFileType(String type, String... extensions) {
         this.type = type;
         this.extensions = extensions;
-    }
-
-    public String getType() {
-        return this.type;
-    }
-
-    public String[] getExtensions() {
-        return Arrays.copyOf(this.extensions, this.extensions.length);
-    }
-
-    @JsonIgnore
-    public String getDescription() {
-        return this.type + "-" + getWord("images");
-    }
-
-    @JsonIgnore
-    public String getFullDescription() {
-        String[] formattedExtensions = Arrays.stream(this.extensions).
-                map(ext -> "*." + ext).
-                toArray(String[]::new);
-
-        return getDescription() + " " + StringUtils.formatArray(formattedExtensions, ", ", '(', ')');
     }
 
     public static ImageFileType getDefault() {
@@ -79,6 +60,28 @@ public enum ImageFileType {
         ImageFileType[] values = ImageFileType.values();
         Arrays.sort(values, (type1, type2) -> type1.toString().compareToIgnoreCase(type2.toString()));
         return values;
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public String[] getExtensions() {
+        return Arrays.copyOf(this.extensions, this.extensions.length);
+    }
+
+    @JsonIgnore
+    public String getDescription() {
+        return this.type + "-" + getWord("images");
+    }
+
+    @JsonIgnore
+    public String getFullDescription() {
+        String[] formattedExtensions = Arrays.stream(this.extensions).
+            map(ext -> "*." + ext).
+            toArray(String[]::new);
+
+        return getDescription() + " " + StringUtils.formatArray(formattedExtensions, ", ", '(', ')');
     }
 
     @Override

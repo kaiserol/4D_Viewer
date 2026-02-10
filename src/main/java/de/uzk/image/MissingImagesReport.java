@@ -15,6 +15,34 @@ public class MissingImagesReport {
         this.missingByTime = new HashMap<>();
     }
 
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
+    public static String createImageFileRow(ImageFile imageFile) {
+        String fileName = imageFile.getFileName();
+        int time = imageFile.getTime();
+        int level = imageFile.getLevel();
+
+        String text = "- Image: '%s' (Time=%s, Level=%s)".formatted(fileName, time, level);
+        return text + StringUtils.NEXT_LINE;
+    }
+
+    public static String createImageFileRow(int time, int level) {
+        ImageFile imageFile = workspace.getImageFile(time, level);
+        return createImageFileRow(imageFile);
+    }
+
+    public static String createHeaderText(int count, String type) {
+        String base = count + " " + (count == 1 ? "Image is" : "Images are");
+        return base + " " + type + ":";
+    }
+
+    public static String createReport(String headerText, StringBuilder reportBuilder) {
+        String lineBreaksPattern = "(%s)+$".formatted(StringUtils.NEXT_LINE);
+        String formattedReport = reportBuilder.toString().replaceAll(lineBreaksPattern, "");
+        return headerText + StringUtils.NEXT_LINE + formattedReport;
+    }
+
     public int getMissingImagesCount() {
         return this.missingByTime.values().stream().mapToInt(List::size).sum();
     }
@@ -156,33 +184,5 @@ public class MissingImagesReport {
             String formattedHeaderText = StringUtils.applyColor(StringUtils.wrapBold(headerText), ColorUtils.COLOR_RED);
             return createReport(formattedHeaderText, reportBuilder);
         }
-    }
-
-    // ========================================
-    // Hilfsmethoden
-    // ========================================
-    public static String createImageFileRow(ImageFile imageFile) {
-        String fileName = imageFile.getFileName();
-        int time = imageFile.getTime();
-        int level = imageFile.getLevel();
-
-        String text = "- Image: '%s' (Time=%s, Level=%s)".formatted(fileName, time, level);
-        return text + StringUtils.NEXT_LINE;
-    }
-
-    public static String createImageFileRow(int time, int level) {
-        ImageFile imageFile = workspace.getImageFile(time, level);
-        return createImageFileRow(imageFile);
-    }
-
-    public static String createHeaderText(int count, String type) {
-        String base = count + " " + (count == 1 ? "Image is" : "Images are");
-        return base + " " + type + ":";
-    }
-
-    public static String createReport(String headerText, StringBuilder reportBuilder) {
-        String lineBreaksPattern = "(%s)+$".formatted(StringUtils.NEXT_LINE);
-        String formattedReport = reportBuilder.toString().replaceAll(lineBreaksPattern, "");
-        return headerText + StringUtils.NEXT_LINE + formattedReport;
     }
 }

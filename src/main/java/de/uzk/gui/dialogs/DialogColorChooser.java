@@ -20,17 +20,15 @@ import static de.uzk.Main.settings;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogColorChooser {
-    // Dialoge
-    private final JDialog dialog;
-    private JColorChooser colorChooser;
-
-    // Farben
-    private final List<FavoriteColorButton> favoriteColors;
-    private Color initialColor;
-    private Color selectedColor;
-
     // Favoriten Konstante
     private static final int MAX_FAVORITES = 10;
+    // Dialoge
+    private final JDialog dialog;
+    // Farben
+    private final List<FavoriteColorButton> favoriteColors;
+    private JColorChooser colorChooser;
+    private Color initialColor;
+    private Color selectedColor;
 
     public DialogColorChooser(Window parentWindow) {
         this.dialog = ComponentUtils.createDialog(parentWindow, () -> setSelectedColorAndDispose(this.initialColor));
@@ -38,6 +36,88 @@ public class DialogColorChooser {
         // Favoriten Lister initialisieren
         this.favoriteColors = new ArrayList<>();
     }
+
+    // region (Hilfsmethoden)
+    private static void configureColorChooserPanels(JColorChooser colorChooser) {
+        Stream<AbstractColorChooserPanel> panels = Arrays.stream(colorChooser.getChooserPanels())
+            .filter(panel -> !"swatches rgb".contains(panel.getDisplayName().toLowerCase()));
+
+        // Wenn Swatches oder RGB-Panel vorhanden ist, alle anderen Panels entfernen
+        panels.iterator().forEachRemaining(colorChooser::removeChooserPanel);
+    }
+
+    private static void configureColorChooserUI(JColorChooser root) {
+        // Finde alle Komponenten (rekursiv) innerhalb des ColorChoosers
+        List<JComponent> components = ComponentUtils.findComponentsRecursively(JComponent.class, root);
+
+        // Durchlaufe alle gefundenen Komponenten
+        for (int i = 0; i < components.size(); i++) {
+            JComponent component = components.get(i);
+            JComponent nextComponent = i == components.size() - 1 ? null : components.get(i + 1);
+
+            // Typname der Diagramm-Komponente aus der ColorChooser-API
+            String diagramComponentName = "javax.swing.colorchooser.DiagramComponent";
+            String typeName = component.getClass().getTypeName();
+
+            // Prüfe, ob es sich um eine DiagramComponent handelt
+            if (diagramComponentName.equalsIgnoreCase(typeName)) {
+                // Deaktiviere Rundungen der Diagramm-Komponente (sieht sonst komisch aus)
+                component.putClientProperty("JComponent.roundRect", false);
+            } else if (component instanceof JLabel colorCodeLabel &&
+                nextComponent instanceof JFormattedTextField hexColorTextField) {
+                // Wenn ein JLabel ("Farbcode") direkt vor einem Textfeld steht, konfiguriere es neu
+                colorCodeLabel.setText(getWord("label.colorCode"));
+                colorCodeLabel.setDisplayedMnemonicIndex(0);
+
+                // Stelle sicher, dass Label und Textfeld sichtbar sind (sind sonst nicht sichtbar)
+                colorCodeLabel.setVisible(true);
+                hexColorTextField.setVisible(true);
+            }
+        }
+    }
+
+    private static JLabel createSampleTextLabel(Color background, Color foreground) {
+        JLabel label = new JLabel(getWord("label.sampleText"));
+        label.setBorder(UIEnvironment.BORDER_EMPTY_TINY);
+        if (background != null) {
+            label.setOpaque(true);
+            label.setBackground(background);
+        }
+        if (foreground != null) {
+            label.setForeground(foreground);
+        }
+        return label;
+    }
+
+    private static JLabel createCenteredLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        return label;
+    }
+
+    private static JLabel createColorField(Color background, Consumer<Color> clicked) {
+        JLabel colorField = new JLabel();
+        colorField.setHorizontalAlignment(SwingConstants.CENTER);
+        colorField.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
+        colorField.setPreferredSize(new Dimension(100, 0));
+        colorField.setOpaque(true);
+        colorField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (!SwingUtilities.isLeftMouseButton(e)) return;
+                clicked.accept(colorField.getBackground());
+            }
+        });
+
+        // Aktuelles Farbfeld aktualisieren
+        boolean lightBackground = ColorUtils.calculatePerceivedBrightness(background) > 0.5;
+        colorField.setForeground(lightBackground ? Color.BLACK : Color.WHITE);
+        colorField.setBackground(background);
+        colorField.setText(ColorUtils.colorToHex(background, true));
+
+        return colorField;
+    }
+    // endregion
 
     private void setSelectedColorAndDispose(Color color) {
         this.selectedColor = color;
@@ -215,88 +295,6 @@ public class DialogColorChooser {
         this.dialog.getRootPane().setDefaultButton(okButton);
 
         return buttonsPanel;
-    }
-    // endregion
-
-    // region (Hilfsmethoden)
-    private static void configureColorChooserPanels(JColorChooser colorChooser) {
-        Stream<AbstractColorChooserPanel> panels = Arrays.stream(colorChooser.getChooserPanels())
-            .filter(panel -> !"swatches rgb".contains(panel.getDisplayName().toLowerCase()));
-
-        // Wenn Swatches oder RGB-Panel vorhanden ist, alle anderen Panels entfernen
-        panels.iterator().forEachRemaining(colorChooser::removeChooserPanel);
-    }
-
-    private static void configureColorChooserUI(JColorChooser root) {
-        // Finde alle Komponenten (rekursiv) innerhalb des ColorChoosers
-        List<JComponent> components = ComponentUtils.findComponentsRecursively(JComponent.class, root);
-
-        // Durchlaufe alle gefundenen Komponenten
-        for (int i = 0; i < components.size(); i++) {
-            JComponent component = components.get(i);
-            JComponent nextComponent = i == components.size() - 1 ? null : components.get(i + 1);
-
-            // Typname der Diagramm-Komponente aus der ColorChooser-API
-            String diagramComponentName = "javax.swing.colorchooser.DiagramComponent";
-            String typeName = component.getClass().getTypeName();
-
-            // Prüfe, ob es sich um eine DiagramComponent handelt
-            if (diagramComponentName.equalsIgnoreCase(typeName)) {
-                // Deaktiviere Rundungen der Diagramm-Komponente (sieht sonst komisch aus)
-                component.putClientProperty("JComponent.roundRect", false);
-            } else if (component instanceof JLabel colorCodeLabel &&
-                nextComponent instanceof JFormattedTextField hexColorTextField) {
-                // Wenn ein JLabel ("Farbcode") direkt vor einem Textfeld steht, konfiguriere es neu
-                colorCodeLabel.setText(getWord("label.colorCode"));
-                colorCodeLabel.setDisplayedMnemonicIndex(0);
-
-                // Stelle sicher, dass Label und Textfeld sichtbar sind (sind sonst nicht sichtbar)
-                colorCodeLabel.setVisible(true);
-                hexColorTextField.setVisible(true);
-            }
-        }
-    }
-
-    private static JLabel createSampleTextLabel(Color background, Color foreground) {
-        JLabel label = new JLabel(getWord("label.sampleText"));
-        label.setBorder(UIEnvironment.BORDER_EMPTY_TINY);
-        if (background != null) {
-            label.setOpaque(true);
-            label.setBackground(background);
-        }
-        if (foreground != null) {
-            label.setForeground(foreground);
-        }
-        return label;
-    }
-
-    private static JLabel createCenteredLabel(String text) {
-        JLabel label = new JLabel(text);
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        return label;
-    }
-
-    private static JLabel createColorField(Color background, Consumer<Color> clicked) {
-        JLabel colorField = new JLabel();
-        colorField.setHorizontalAlignment(SwingConstants.CENTER);
-        colorField.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
-        colorField.setPreferredSize(new Dimension(100, 0));
-        colorField.setOpaque(true);
-        colorField.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if (!SwingUtilities.isLeftMouseButton(e)) return;
-                clicked.accept(colorField.getBackground());
-            }
-        });
-
-        // Aktuelles Farbfeld aktualisieren
-        boolean lightBackground = ColorUtils.calculatePerceivedBrightness(background) > 0.5;
-        colorField.setForeground(lightBackground ? Color.BLACK : Color.WHITE);
-        colorField.setBackground(background);
-        colorField.setText(ColorUtils.colorToHex(background, true));
-
-        return colorField;
     }
 
     private FavoriteColorButton createColorButton(Color color, JPanel favoritesPanel) {

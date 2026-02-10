@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 
 /**
  * Ein JPanel, das ein Bild anzeigt und Events verfolgt, welche <i>innerhalb des Bildbereichs</i> auftreten.
+ *
  * @see MarkerInteractionHandler
  * @see de.uzk.image.ImageEditor
  */
@@ -44,7 +45,7 @@ public class SensitiveImagePanel extends JPanel implements MouseListener, MouseM
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = GraphicsUtils.createHighQualityGraphics2D(g);
-        if(this.currentImage != null) {
+        if (this.currentImage != null) {
             scale = GraphicsUtils.getImageScaleFactor(currentImage, getSize());
 
             int adjustedImageWidth = (int) (currentImage.getWidth() * scale);
@@ -61,19 +62,20 @@ public class SensitiveImagePanel extends JPanel implements MouseListener, MouseM
     /**
      * Überprüfe, ob `original` innerhalb des Bildbereiches stattgefunden hat. Falls ja, berechne die Koordinaten des Mauszeigers
      * innerhalb des Bilds, und gib das modifizierte Event an `consumer` weiter
+     *
      * @param original Das `MouseEvent`, das überprüft werden soll.
      * @param consumer Die Handlerfunktion für das modifizierte Event
      */
     private void maybeTriggerEvent(MouseEvent original, Consumer<MouseEvent> consumer) {
         Point originalPoint = original.getPoint();
-        int x = (int) (originalPoint.getX() - insets.width) ;
-        int y = (int) (originalPoint.getY() - insets.height) ;
-        if(x < 0 || x > displaySize.width || y < 0 || y > displaySize.height) {
+        int x = (int) (originalPoint.getX() - insets.width);
+        int y = (int) (originalPoint.getY() - insets.height);
+        if (x < 0 || x > displaySize.width || y < 0 || y > displaySize.height) {
             setCursor(Cursor.getDefaultCursor());
             return;
         }
-        x = (int)(x / scale);
-        y = (int)(y / scale);
+        x = (int) (x / scale);
+        y = (int) (y / scale);
         consumer.accept(new MouseEvent(original.getComponent(), original.getID(), original.getWhen(), original.getModifiersEx(), x, y, original.getClickCount(), original.isPopupTrigger(), original.getButton()));
     }
 
@@ -91,7 +93,7 @@ public class SensitiveImagePanel extends JPanel implements MouseListener, MouseM
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(mouseListener != null) maybeTriggerEvent(e, mouseListener::mouseClicked);
+        if (mouseListener != null) maybeTriggerEvent(e, mouseListener::mouseClicked);
     }
 
     @Override

@@ -16,20 +16,17 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogLogViewer {
-    // Dialoge
-    private final JDialog dialog;
-
-    // Gui Elemente
-    private JTabbedPane tabs;
-    private final Map<LogLevel, JCheckBox> filterCheckboxes;
-
     // Minimale Fenstergrößen
     private static final int MIN_WIDTH = 400;
     private static final int MIN_HEIGHT = 250;
-
     // Maximale „Zielgröße“ des Fensters (nicht zwingend)
     private static final int DEFAULT_MAX_WIDTH = 600;
     private static final int DEFAULT_MAX_HEIGHT = 400;
+    // Dialoge
+    private final JDialog dialog;
+    private final Map<LogLevel, JCheckBox> filterCheckboxes;
+    // Gui Elemente
+    private JTabbedPane tabs;
 
     public DialogLogViewer(Window parentWindow) {
         this.dialog = ComponentUtils.createDialog(parentWindow, null);

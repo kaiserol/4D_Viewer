@@ -4,7 +4,6 @@ import de.uzk.action.ActionType;
 import de.uzk.edit.MaybeRedundantEdit;
 import de.uzk.markers.ShapeMarker;
 
-import java.awt.*;
 import java.awt.geom.Point2D;
 
 public class ResizeShapeEdit extends MaybeRedundantEdit {

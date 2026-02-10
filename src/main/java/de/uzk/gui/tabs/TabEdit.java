@@ -2,7 +2,7 @@ package de.uzk.gui.tabs;
 
 import de.uzk.action.ActionType;
 import de.uzk.config.Config;
-import de.uzk.edit.*;
+import de.uzk.edit.Edit;
 import de.uzk.edit.image.*;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;

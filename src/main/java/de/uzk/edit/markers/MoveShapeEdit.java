@@ -2,7 +2,6 @@ package de.uzk.edit.markers;
 
 import de.uzk.markers.ShapeMarker;
 
-import java.awt.*;
 import java.awt.geom.Point2D;
 
 public class MoveShapeEdit extends MoveMarkerEdit {

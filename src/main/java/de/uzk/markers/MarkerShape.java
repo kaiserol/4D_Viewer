@@ -1,6 +1,7 @@
 package de.uzk.markers;
 
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
@@ -21,7 +22,8 @@ public enum MarkerShape {
     public Shape createShape(Rectangle2D boundingBox) {
         return switch (this) {
             case RECTANGLE -> boundingBox;
-            case ELLIPSE -> new Ellipse2D.Double(boundingBox.getX(), boundingBox.getY(), boundingBox.getWidth(), boundingBox.getHeight());
+            case ELLIPSE ->
+                new Ellipse2D.Double(boundingBox.getX(), boundingBox.getY(), boundingBox.getWidth(), boundingBox.getHeight());
 
             case TRIANGLE -> {
                 Path2D path = new Path2D.Double();

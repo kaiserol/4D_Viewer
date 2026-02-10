@@ -18,7 +18,7 @@ public enum InitialDirectory {
 
     @Override
     public String toString() {
-        return switch(this) {
+        return switch (this) {
             case ROOT -> getWord("dialog.settings.initialDirectory.root");
             case HOME -> getWord("dialog.settings.initialDirectory.home");
             case LAST_OPENED -> getWord("dialog.settings.initialDirectory.lastOpened");
@@ -27,5 +27,7 @@ public enum InitialDirectory {
     }
 
     @JsonValue
-    public String getValue() { return value; }
+    public String getValue() {
+        return value;
+    }
 }

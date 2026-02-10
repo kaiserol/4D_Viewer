@@ -8,11 +8,11 @@ public enum OperatingSystem {
     MACOS,
     OTHER;
 
-    public boolean isMacOS() {
-        return this == MACOS;
-    }
-
     public static OperatingSystem load() {
         return SystemInfo.isWindows ? WINDOWS : SystemInfo.isLinux ? LINUX : SystemInfo.isMacOS ? MACOS : OTHER;
+    }
+
+    public boolean isMacOS() {
+        return this == MACOS;
     }
 }

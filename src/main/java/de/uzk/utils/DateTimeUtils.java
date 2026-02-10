@@ -235,8 +235,8 @@ public final class DateTimeUtils {
      * @return Ein formatierter Zeitstempel im Muster {@code "HH:MM:SS.S"}
      */
     public static String formatFrameTimeStamp(int frame) {
-        double totalSeconds =  frame * workspace.getConfig().getTimeUnit();
-        int fullSeconds = (int)totalSeconds;
+        double totalSeconds = frame * workspace.getConfig().getTimeUnit();
+        int fullSeconds = (int) totalSeconds;
         double seconds = totalSeconds % 60;
         int minute = fullSeconds / 60 % 60;
         int hour = fullSeconds / 60 / 60;

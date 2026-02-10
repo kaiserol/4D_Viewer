@@ -7,7 +7,6 @@ import de.uzk.utils.GraphicsUtils;
 import de.uzk.utils.NumberUtils;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -35,7 +34,7 @@ public final class SnapshotHelper {
         DialogCropSnapshot dialogCropSnapshot = new DialogCropSnapshot(image);
         dialogCropSnapshot.setVisible(true);
         Optional<BufferedImage> result = dialogCropSnapshot.getCroppedImage();
-         if (result.isEmpty()) return false;
+        if (result.isEmpty()) return false;
 
         // Manche Formate (z.B. JPEG) unterstützen keine Transparenz.
         image = result.get();

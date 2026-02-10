@@ -4,7 +4,7 @@ import de.uzk.action.ActionType;
 
 import static de.uzk.Main.workspace;
 
-public class TimeUnitEdit extends Edit{
+public class TimeUnitEdit extends Edit {
     private final double timeUnitDifference;
 
     public TimeUnitEdit(double newTimeUnit) {

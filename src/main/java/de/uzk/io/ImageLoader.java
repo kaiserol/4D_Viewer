@@ -21,30 +21,25 @@ import static de.uzk.Main.settings;
 
 public final class ImageLoader {
     private static final int ICON_SIZE = 16;
-    private static final Map<FlatSVGIcon, ThemeColor> THEME_COLORS = new HashMap<>();
-
-    // App Icon
-    private static final FlatSVGIcon APP_ICON = openFlatSVGIcon("images/4D.svg");
-
     // Bearbeiten Icons
     public static final FlatSVGIcon ICON_EDIT = openFlatSVGIcon("images/icons/edit.svg");
     public static final FlatSVGIcon ICON_PIN = openFlatSVGIcon("images/icons/pin.svg");
     public static final FlatSVGIcon ICON_ARROW_LEFT_TURN = openFlatSVGIcon("images/icons/arrow_left_turn.svg");
     public static final FlatSVGIcon ICON_ARROW_RIGHT_TURN = openFlatSVGIcon("images/icons/arrow_right_turn.svg");
     public static final FlatSVGIcon ICON_DELETE = openFlatSVGIcon("images/icons/x.svg");
-
     // Navigieren Icons
     public static final FlatSVGIcon ICON_ARROW_LEFT_START = openFlatSVGIcon("images/icons/arrow_left_start.svg");
     public static final FlatSVGIcon ICON_ARROW_LEFT = openFlatSVGIcon("images/icons/arrow_left.svg");
     public static final FlatSVGIcon ICON_ARROW_RIGHT = openFlatSVGIcon("images/icons/arrow_right.svg");
     public static final FlatSVGIcon ICON_ARROW_RIGHT_END = openFlatSVGIcon("images/icons/arrow_right_end.svg");
-
     public static final FlatSVGIcon ICON_ARROW_UP_START = openFlatSVGIcon("images/icons/arrow_up_start.svg");
     public static final FlatSVGIcon ICON_ARROW_UP = openFlatSVGIcon("images/icons/arrow_up.svg");
     public static final FlatSVGIcon ICON_ARROW_DOWN = openFlatSVGIcon("images/icons/arrow_down.svg");
     public static final FlatSVGIcon ICON_ARROW_DOWN_END = openFlatSVGIcon("images/icons/arrow_down_end.svg");
-
     public static final FlatSVGIcon ICON_STEP_FORWARD = openFlatSVGIcon("images/icons/step-forward.svg");
+    private static final Map<FlatSVGIcon, ThemeColor> THEME_COLORS = new HashMap<>();
+    // App Icon
+    private static final FlatSVGIcon APP_ICON = openFlatSVGIcon("images/4D.svg");
 
     // Statische Initialisierung
     static {

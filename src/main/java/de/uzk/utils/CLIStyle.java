@@ -21,6 +21,13 @@ public final class CLIStyle {
     private static final String ESC = "\033[";
 
     /**
+     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
+     */
+    private CLIStyle() {
+        // Verhindert die Instanziierung dieser Klasse
+    }
+
+    /**
      * Beispiel für die Nutzung von CLIStyle.
      * Zeigt alle Stile und Farboptionen.
      */
@@ -61,13 +68,6 @@ public final class CLIStyle {
             .italic());
 
         printLine("=== Ende der Demo ===");
-    }
-
-    /**
-     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
-     */
-    private CLIStyle() {
-        // Verhindert die Instanziierung dieser Klasse
     }
 
     /**
@@ -135,19 +135,17 @@ public final class CLIStyle {
          */
         private final String text;
         /**
+         * Liste der angewendeten Stile
+         */
+        private final List<TextStyle> styles;
+        /**
          * Textfarbe
          */
         private Color foregroundColor;
-
         /**
          * Hintergrundfarbe
          */
         private Color backgroundColor;
-
-        /**
-         * Liste der angewendeten Stile
-         */
-        private final List<TextStyle> styles;
 
         /**
          * Konstruktor für die Text-Klasse.

@@ -74,14 +74,6 @@ public enum ActionType {
         this.keyEventType = !this.shortcuts.isEmpty() ? KeyEventType.RELEASED : KeyEventType.NONE;
     }
 
-    public List<Shortcut> getShortcuts() {
-        return this.shortcuts;
-    }
-
-    private KeyEventType getKeyEventType() {
-        return this.keyEventType;
-    }
-
     public static ActionType fromKeyEvent(KeyEvent e) {
         if (e != null) {
             for (ActionType actionType : ActionType.values()) {
@@ -93,6 +85,14 @@ public enum ActionType {
             }
         }
         return null;
+    }
+
+    public List<Shortcut> getShortcuts() {
+        return this.shortcuts;
+    }
+
+    private KeyEventType getKeyEventType() {
+        return this.keyEventType;
     }
 
     /**

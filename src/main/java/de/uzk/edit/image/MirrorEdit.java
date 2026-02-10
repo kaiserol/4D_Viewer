@@ -6,7 +6,8 @@ import static de.uzk.Main.workspace;
 
 /**
  * MirrorX/MirrorY Eigenschaften
- * */
+ *
+ */
 public class MirrorEdit extends ImageEdit {
     private final boolean isMirror;
     private final Function<Boolean, Boolean> setter;
@@ -16,13 +17,21 @@ public class MirrorEdit extends ImageEdit {
         this.setter = setter;
     }
 
-    @Override
-    public boolean perform() { return setter.apply(isMirror); }
+    public static MirrorEdit mirrorXEdit(boolean mirror) {
+        return new MirrorEdit(mirror, workspace.getConfig()::setMirrorX);
+    }
+
+    public static MirrorEdit mirrorYEdit(boolean mirror) {
+        return new MirrorEdit(mirror, workspace.getConfig()::setMirrorY);
+    }
 
     @Override
-    public void undo() { setter.apply(!isMirror); }
+    public boolean perform() {
+        return setter.apply(isMirror);
+    }
 
-    public static MirrorEdit mirrorXEdit(boolean mirror) { return new MirrorEdit(mirror, workspace.getConfig()::setMirrorX); }
-
-    public static MirrorEdit mirrorYEdit(boolean mirror) { return new MirrorEdit(mirror, workspace.getConfig()::setMirrorY); }
+    @Override
+    public void undo() {
+        setter.apply(!isMirror);
+    }
 }

@@ -7,23 +7,24 @@ import java.util.LinkedList;
 public class EditManager {
     private final LinkedList<Edit> editsMade;
     private final LinkedList<Edit> editsUndone;
-    public EditManager( ) {
+
+    public EditManager() {
         editsMade = new LinkedList<>();
         editsUndone = new LinkedList<>();
     }
 
     public boolean performEdit(MaybeRedundantEdit edit) {
-        if(edit.isRedundant()) return false;
-        return performEdit((Edit)edit);
+        if (edit.isRedundant()) return false;
+        return performEdit((Edit) edit);
     }
 
     public void registerEdit(MaybeRedundantEdit edit) {
-        if(edit.isRedundant()) return;
-        registerEdit((Edit)edit);
+        if (edit.isRedundant()) return;
+        registerEdit((Edit) edit);
     }
 
     public boolean performEdit(Edit edit) {
-        if(edit.perform()) {
+        if (edit.perform()) {
             registerEdit(edit);
             return true;
         }
@@ -36,7 +37,7 @@ public class EditManager {
     }
 
     public ActionType undoLastEdit() {
-        if(editsMade.isEmpty()) return null;
+        if (editsMade.isEmpty()) return null;
         Edit last = editsMade.pop();
         last.undo();
         editsUndone.push(last);
@@ -44,7 +45,7 @@ public class EditManager {
     }
 
     public ActionType redoLastEdit() {
-        if(editsUndone.isEmpty()) return null;
+        if (editsUndone.isEmpty()) return null;
         Edit last = editsUndone.pop();
         last.perform();
         editsMade.push(last);

@@ -16,20 +16,17 @@ import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogLoadingImages implements LoadingImageListener {
+    // Für einen schönen Ladeeffekt SLEEP_TIME_NANOS > 0 setzen (1 Millisekunde = 1_000_000 Nanos)
+    private static final int SLEEP_TIME_NANOS = 0;
     // Dialoge
     private final JDialog dialog;
-
     // Gui Elemente
     private JProgressBar progressBar;
     private JTextField textFieldFileName;
     private JLabel labelImagesCount;
-
     // Thread
     private Thread thread;
     private LoadingResult result;
-
-    // Für einen schönen Ladeeffekt SLEEP_TIME_NANOS > 0 setzen (1 Millisekunde = 1_000_000 Nanos)
-    private static final int SLEEP_TIME_NANOS = 0;
 
     public DialogLoadingImages(Window parentWindow) {
         this.dialog = ComponentUtils.createDialog(parentWindow, this::closeThread);

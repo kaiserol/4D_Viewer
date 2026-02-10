@@ -32,6 +32,13 @@ import static de.uzk.Main.logger;
  */
 public final class PropertiesSorter {
     /**
+     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
+     */
+    private PropertiesSorter() {
+        // Verhindert die Instanziierung dieser Klasse
+    }
+
+    /**
      * Hauptmethode zum Testen.
      * <p>
      * Liest alle {@code .properties-Dateien} aus dem Ressourcenordner, sortiert sie und überschreibt sie bei Zustimmung.
@@ -84,13 +91,6 @@ public final class PropertiesSorter {
      */
     private static void printLine(Object object) {
         System.out.println(object);
-    }
-
-    /**
-     * Privater Konstruktor, um eine Instanziierung dieser Klasse zu unterbinden.
-     */
-    private PropertiesSorter() {
-        // Verhindert die Instanziierung dieser Klasse
     }
 
     /**
@@ -327,6 +327,47 @@ public final class PropertiesSorter {
         }
 
         /**
+         * Formatiert eine Property-Zeile nach dem Muster "key=value".
+         * <p>
+         * Erkennt Zeilen, die ein Gleichheitszeichen enthalten, und entfernt
+         * überflüssige Leerzeichen um Schlüssel und Wert. Enthält die Zeile
+         * kein "=", wird sie unverändert zurückgegeben.
+         *
+         * @param line Zu verarbeitende Zeile (nicht {@code null})
+         * @return Die bereinigte Property-Zeile
+         */
+        private static String processPropertyLine(String line) {
+            if (line == null) return "";
+
+            int equalsIndex = line.indexOf('=');
+            if (equalsIndex == -1) return line;
+
+            // Key und Value getrennt trimmen
+            String key = line.substring(0, equalsIndex).trim();
+            String value = line.substring(equalsIndex + 1).trim();
+            return key + "=" + value;
+        }
+
+        /**
+         * Extrahiert den Property-Namen (linke Seite des '=') aus einer Zeile.
+         * <p>
+         * Falls kein Gleichheitszeichen vorhanden ist, wird die gesamte Zeile
+         * getrimmt zurückgegeben.
+         *
+         * @param line Zu analysierende Zeile (nicht {@code null})
+         * @return Die bereinigten Property-Namen
+         */
+        private static String extractKey(String line) {
+            if (line == null) return "";
+
+            int equalsIndex = line.indexOf('=');
+            if (equalsIndex == -1) return line;
+
+            // Nur den linken Teil (Property-Name), getrimmt
+            return line.substring(0, equalsIndex);
+        }
+
+        /**
          * Fügt eine neue Untersektion (als sortiertes Set) hinzu.
          */
         private void addNewSubSection() {
@@ -397,47 +438,6 @@ public final class PropertiesSorter {
             if (this.header == null) return -1;
             if (other.header == null) return 1;
             return this.header.compareToIgnoreCase(other.header);
-        }
-
-        /**
-         * Formatiert eine Property-Zeile nach dem Muster "key=value".
-         * <p>
-         * Erkennt Zeilen, die ein Gleichheitszeichen enthalten, und entfernt
-         * überflüssige Leerzeichen um Schlüssel und Wert. Enthält die Zeile
-         * kein "=", wird sie unverändert zurückgegeben.
-         *
-         * @param line Zu verarbeitende Zeile (nicht {@code null})
-         * @return Die bereinigte Property-Zeile
-         */
-        private static String processPropertyLine(String line) {
-            if (line == null) return "";
-
-            int equalsIndex = line.indexOf('=');
-            if (equalsIndex == -1) return line;
-
-            // Key und Value getrennt trimmen
-            String key = line.substring(0, equalsIndex).trim();
-            String value = line.substring(equalsIndex + 1).trim();
-            return key + "=" + value;
-        }
-
-        /**
-         * Extrahiert den Property-Namen (linke Seite des '=') aus einer Zeile.
-         * <p>
-         * Falls kein Gleichheitszeichen vorhanden ist, wird die gesamte Zeile
-         * getrimmt zurückgegeben.
-         *
-         * @param line Zu analysierende Zeile (nicht {@code null})
-         * @return Die bereinigten Property-Namen
-         */
-        private static String extractKey(String line) {
-            if (line == null) return "";
-
-            int equalsIndex = line.indexOf('=');
-            if (equalsIndex == -1) return line;
-
-            // Nur den linken Teil (Property-Name), getrimmt
-            return line.substring(0, equalsIndex);
         }
     }
 }

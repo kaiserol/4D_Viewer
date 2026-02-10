@@ -47,25 +47,20 @@ public final class PathManager {
     // ---- Hauptpfade im Ressourcenverzeichnis ----
     public static final Path RESOURCES_DIRECTORY = Paths.get("src/main/resources");
     public static final String PROPERTIES_FILE_NAME_PATTERN = "*.properties";
-
+    // ---- Pfade für das Konfigurationsverzeichnis ----
+    public static final Path SETTINGS_FILE_NAME = Path.of("settings.json");
+    public static final Path HISTORY_FILE_NAME = Path.of("history.txt");
+    // ---- Pfade für das Protokollverzeichnis ----
+    public static final String LOG_FILE_NAME_PATTERN = "runtime_%s.log";
+    // ---- Pfade für das Projektverzeichnis ----
+    public static final Path CONFIG_FILE_NAME = Path.of("config.json");
+    public static final Path MARKERS_FILE_NAME = Path.of("markers.json");
     // ---- Pfade für das Appverzeichnis ----
     private static final Path APP_DIRECTORY = Path.of("4D_Viewer");
     private static final Path CONFIG_DIRECTORY = Path.of(".config");
     private static final Path LOGS_DIRECTORY = Path.of(".logs");
     private static final Path PROJECTS_DIRECTORY = Path.of("projects");
     private static final Path SNAPSHOTS_DIRECTORY = Path.of("snapshots");
-
-    // ---- Pfade für das Konfigurationsverzeichnis ----
-    public static final Path SETTINGS_FILE_NAME = Path.of("settings.json");
-    public static final Path HISTORY_FILE_NAME = Path.of("history.txt");
-
-    // ---- Pfade für das Protokollverzeichnis ----
-    public static final String LOG_FILE_NAME_PATTERN = "runtime_%s.log";
-
-    // ---- Pfade für das Projektverzeichnis ----
-    public static final Path CONFIG_FILE_NAME = Path.of("config.json");
-    public static final Path MARKERS_FILE_NAME = Path.of("markers.json");
-
     public static final Path DEFAULT_SNAPSHOTS_DIRECTORY = APP_DIRECTORY.resolve(SNAPSHOTS_DIRECTORY);
 
     // Statische Initialisierung

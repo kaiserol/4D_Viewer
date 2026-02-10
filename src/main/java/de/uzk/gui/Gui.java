@@ -21,20 +21,17 @@ import static de.uzk.Main.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class Gui extends ObserverContainer<JFrame> {
+    // Mindestgröße des Fensters
+    private static final int MIN_WIDTH = 400;
+    private static final int MIN_HEIGHT = 100;
     // Gui Elemente
     private final ActionHandler actionHandler;
-
     // Observer Listener
     private final List<HandleActionListener> handleActionListeners;
     private final List<ToggleListener> toggleListeners;
     private final List<UpdateImageListener> updateImageListeners;
     private final List<UpdateThemeListener> updateThemeListeners;
     private final List<AppFocusListener> appFocusListeners;
-
-    // Mindestgröße des Fensters
-    private static final int MIN_WIDTH = 400;
-    private static final int MIN_HEIGHT = 100;
-
     private boolean hasUnsavedChanges;
 
     public Gui() {
@@ -96,7 +93,7 @@ public class Gui extends ObserverContainer<JFrame> {
 
         // Bilder laden
         // TODO: Warum rausgenommen (für mich)
-       if (!ProjectUtils.loadImagesDirectory(this, history.getLastIfExists(), null, true)) {
+        if (!ProjectUtils.loadImagesDirectory(this, history.getLastIfExists(), null, true)) {
             toggleOff();
         }
 

@@ -46,16 +46,16 @@ public final class CustomMenuBar {
 
         if (node instanceof CustomMenu menu) {
             result.append(indent).
-                    append(menu.getText()).append(StringUtils.NEXT_LINE);
+                append(menu.getText()).append(StringUtils.NEXT_LINE);
             for (CustomMenuBarNode child : menu.getNodes()) {
                 appendNode(result, child, depth + 1);
             }
         } else if (node instanceof CustomMenuItem item) {
             result.append(indent).
-                    append("> ").append(item.getText()).append(StringUtils.NEXT_LINE);
+                append("> ").append(item.getText()).append(StringUtils.NEXT_LINE);
         } else if (node instanceof CustomMenuSeparator) {
             result.append(indent).
-                    append("-".repeat(10)).append(StringUtils.NEXT_LINE);
+                append("-".repeat(10)).append(StringUtils.NEXT_LINE);
         } else {
             // Fallback für unbekannte Knoten
             result.append(indent).append(node.getText()).append(StringUtils.NEXT_LINE);

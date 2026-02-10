@@ -17,24 +17,21 @@ import static de.uzk.Main.*;
 
 // Der Workspace entspricht einem Projekt
 public class Workspace {
+    private final MissingImagesReport missingImagesReport;
+    private final List<Integer> pinTimes;
+    private final EditManager editManager = new EditManager();
     // Konfigurationen und Markierungen
     private Path imagesDirectory;
     private Config config;
     private Markers markers;
-
     // ImageFiles
     private ImageFile[][] matrix;
     private ImageFile currentImageFile;
-    private final MissingImagesReport missingImagesReport;
-
     // Time, Level
     private int time;
     private int level;
     private int maxTime;
     private int maxLevel;
-    private final List<Integer> pinTimes;
-
-    private final EditManager editManager = new EditManager();
 
     public Workspace() {
         this.missingImagesReport = new MissingImagesReport();

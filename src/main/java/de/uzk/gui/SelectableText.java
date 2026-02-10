@@ -42,38 +42,25 @@ import static javax.swing.event.HyperlinkEvent.EventType.*;
 public class SelectableText extends JEditorPane implements HyperlinkListener {
 
     /**
+     * Farbe, die einen aktiven Hyperlink darstellt
+     */
+    private static final Color COLOR_ACTIVE_LINK = ColorUtils.COLOR_BLUE;
+    /**
      * {@code true}, wenn die Command-/Strg-Taste aktuell gedrückt ist
      */
     private volatile boolean commandPressed = false;
-
     /**
      * {@code true}, wenn sich der Mauszeiger aktuell über einem Hyperlink befindet
      */
     private boolean overLink = false;
-
     /**
      * Referenz auf das zuletzt betretene Link-Element (für Styling)
      */
     private Element currentLinkElement = null;
-
     /**
      * Merkt sich den aktuellen Cursor-/Tooltip-Zustand, um unnötige Updates zu vermeiden
      */
     private CursorMode currentCursorMode = CursorMode.TEXT;
-
-    /**
-     * Farbe, die einen aktiven Hyperlink darstellt
-     */
-    private static final Color COLOR_ACTIVE_LINK = ColorUtils.COLOR_BLUE;
-
-    /**
-     * Mögliche Cursor-/Tooltip-Zustände
-     */
-    private enum CursorMode {
-        TEXT,
-        LINK_HOVER,
-        LINK_CTRL_HOVER
-    }
 
     /**
      * Erstellt eine neue {@code SelectableText}-Instanz mit gegebenem HTML-Inhalt.
@@ -118,40 +105,6 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         });
     }
 
-    // ========================================
-    // Innere Klassen
-    // ========================================
-
-    /**
-     * Listener, der Cursor bei Mauseintritt und -austritt aktualisiert
-     */
-    private class PrivateMouseExitListener extends MouseAdapter {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            checkEnteredLinkAt(e.getPoint());
-            updateCursor();
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            resetLinkElement();
-        }
-    }
-
-    /**
-     * Listener, der Cursor bei Mausbewegungen aktualisiert
-     */
-    private class PrivateMouseMotionListener extends MouseMotionAdapter {
-        @Override
-        public void mouseMoved(MouseEvent e) {
-            updateCursor();
-        }
-    }
-
-    // ========================================
-    // HyperlinkListener
-    // ========================================
-
     /**
      * Reagiert auf Hyperlink-Ereignisse (ENTERED, EXITED, ACTIVATED).
      */
@@ -171,6 +124,10 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
             }
         }
     }
+
+    // ========================================
+    // Innere Klassen
+    // ========================================
 
     /**
      * Prüft, ob unter der angegebenen Mausposition ein Hyperlink vorhanden ist.
@@ -194,10 +151,6 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         fireHyperLinkEntered(linkElement, htmlDoc);
     }
 
-    // ========================================
-    // Tastaturüberwachung
-    // ========================================
-
     /**
      * Überwacht systemweit, ob Ctrl/Command gedrückt ist
      */
@@ -217,7 +170,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     }
 
     // ========================================
-    // Cursor- und Tooltip-Logik
+    // HyperlinkListener
     // ========================================
 
     /**
@@ -268,6 +221,10 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         UIEnvironment.setToolTipText(this, null);
     }
 
+    // ========================================
+    // Tastaturüberwachung
+    // ========================================
+
     /**
      * Entfernt Hyperlink-Styling.
      */
@@ -278,7 +235,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     }
 
     // ========================================
-    // Hilfsmethoden
+    // Cursor- und Tooltip-Logik
     // ========================================
 
     /**
@@ -335,6 +292,9 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         return null;
     }
 
+    // ========================================
+    // Hilfsmethoden
+    // ========================================
 
     /**
      * Löst ein {@link HyperlinkEvent} vom Typ {@code ENTERED} für das angegebene Link-Element aus.
@@ -404,5 +364,40 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         htmlDoc.setCharacterAttributes(startIndex, length, set, false);
         revalidate();
         repaint();
+    }
+
+    /**
+     * Mögliche Cursor-/Tooltip-Zustände
+     */
+    private enum CursorMode {
+        TEXT,
+        LINK_HOVER,
+        LINK_CTRL_HOVER
+    }
+
+    /**
+     * Listener, der Cursor bei Mauseintritt und -austritt aktualisiert
+     */
+    private class PrivateMouseExitListener extends MouseAdapter {
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            checkEnteredLinkAt(e.getPoint());
+            updateCursor();
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            resetLinkElement();
+        }
+    }
+
+    /**
+     * Listener, der Cursor bei Mausbewegungen aktualisiert
+     */
+    private class PrivateMouseMotionListener extends MouseMotionAdapter {
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            updateCursor();
+        }
     }
 }

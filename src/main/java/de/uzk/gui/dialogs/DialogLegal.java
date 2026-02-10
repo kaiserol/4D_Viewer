@@ -12,11 +12,10 @@ import java.awt.*;
 import static de.uzk.config.LanguageHandler.getWord;
 
 public class DialogLegal {
-    // Dialoge
-    private final JDialog dialog;
-
     // Maximale Dialogbreite
     private static final int MAX_WIDTH = 500;
+    // Dialoge
+    private final JDialog dialog;
 
     public DialogLegal(Window parentWindow) {
         this.dialog = ComponentUtils.createDialog(parentWindow, null);

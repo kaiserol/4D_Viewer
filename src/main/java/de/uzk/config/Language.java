@@ -12,31 +12,17 @@ public enum Language {
     ENGLISH("English", "en", "UK"),
     GERMAN("German", "de", "DE");
 
-    public boolean isGerman() {
-        return this == GERMAN;
-    }
-
     private final String value;
     private final Locale locale;
-
     Language(String value, String shortForm, String country) {
         if (value == null) throw new NullPointerException("Value is null.");
         if (shortForm == null) throw new NullPointerException("Shortform is null.");
         if (country == null) throw new NullPointerException("Country is null.");
         this.value = value;
         this.locale = new Locale.Builder()
-                .setLanguage(shortForm)
-                .setRegion(country)
-                .build();
-    }
-
-    @JsonValue
-    public String getValue() {
-        return this.value;
-    }
-
-    public Locale getLocale() {
-        return this.locale;
+            .setLanguage(shortForm)
+            .setRegion(country)
+            .build();
     }
 
     public static Language getDefault() {
@@ -64,6 +50,19 @@ public enum Language {
         Language[] values = Language.values();
         Arrays.sort(values, (language1, language2) -> language1.toString().compareToIgnoreCase(language2.toString()));
         return values;
+    }
+
+    public boolean isGerman() {
+        return this == GERMAN;
+    }
+
+    @JsonValue
+    public String getValue() {
+        return this.value;
+    }
+
+    public Locale getLocale() {
+        return this.locale;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package de.uzk.utils;
 
-import de.uzk.edit.Edit;
 import de.uzk.gui.CyclingSpinnerNumberModel;
 
 import javax.swing.*;
@@ -14,7 +13,6 @@ import java.util.EventListener;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Utility-Klasse für häufig verwendete Swing-Komponenten und deren Handhabung.
@@ -213,7 +211,6 @@ public final class ComponentUtils {
         }
         return spinner;
     }
-
 
 
     // ========================================

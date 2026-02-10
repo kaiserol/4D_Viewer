@@ -76,7 +76,7 @@ public class AreaStatsBar extends ObserverContainer<JPanel> {
 
     @Override
     public void handleAction(ActionType actionType) {
-        if(actionType == ActionType.ACTION_UPDATE_UNIT) {
+        if (actionType == ActionType.ACTION_UPDATE_UNIT) {
             updateTime();
             updateLevel();
         }
@@ -92,7 +92,7 @@ public class AreaStatsBar extends ObserverContainer<JPanel> {
     }
 
     private void updateLevel() {
-        double level =  (workspace.getLevel() * workspace.getConfig().getLevelUnit());
+        double level = (workspace.getLevel() * workspace.getConfig().getLevelUnit());
         String levelString = "%.01f μm".formatted(level);
         this.labelLevel.setText(StringUtils.wrapHtml(StringUtils.applyFontSize(
             levelString, 75)));

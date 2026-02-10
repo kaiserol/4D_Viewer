@@ -9,6 +9,31 @@ import de.uzk.utils.NumberUtils;
 import java.nio.file.Path;
 
 public class Config {
+    // MinMax-Konstanten
+    public static final double MIN_TIME_UNIT = 1;
+    public static final double MAX_TIME_UNIT = 600;
+    public static final double MIN_LEVEL_UNIT = 0.1;
+    public static final double MAX_LEVEL_UNIT = 1000;
+    public static final int MIN_BRIGHTNESS = 0;
+    public static final int MAX_BRIGHTNESS = 200;
+    public static final int MIN_CONTRAST = 0;
+    public static final int MAX_CONTRAST = 200;
+    public static final int MIN_ZOOM = 100;
+    public static final int MAX_ZOOM = 500;
+    public static final int MIN_ROTATION = 0;
+    public static final int MAX_ROTATION = 359;
+    // Default-Konstanten
+    private static final ImageFileType DEFAULT_IMAGE_FILE_TYPE = ImageFileType.getDefault();
+    private static final String DEFAULT_TIME_SEP = "X";
+    private static final String DEFAULT_LEVEL_SEP = "L";
+    private static final double DEFAULT_TIME_UNIT = 30.0;
+    private static final double DEFAULT_LEVEL_UNIT = 1.0;
+    private static final boolean DEFAULT_MIRROR_X = false;
+    private static final boolean DEFAULT_MIRROR_Y = false;
+    private static final int DEFAULT_BRIGHTNESS = 100;
+    private static final int DEFAULT_CONTRAST = 100;
+    private static final int DEFAULT_ZOOM = 100;
+    private static final int DEFAULT_ROTATION = 0;
     // Konfigurationen
     private ImageFileType imageFileType;
     private String timeSep;
@@ -21,36 +46,6 @@ public class Config {
     private int contrast;
     private int zoom;
     private int rotation;
-
-    // Default-Konstanten
-    private static final ImageFileType DEFAULT_IMAGE_FILE_TYPE = ImageFileType.getDefault();
-    private static final String DEFAULT_TIME_SEP = "X";
-    private static final String DEFAULT_LEVEL_SEP = "L";
-    private static final double DEFAULT_TIME_UNIT = 30.0;
-    private static final double DEFAULT_LEVEL_UNIT = 1.0;
-
-    private static final boolean DEFAULT_MIRROR_X = false;
-    private static final boolean DEFAULT_MIRROR_Y = false;
-
-    private static final int DEFAULT_BRIGHTNESS = 100;
-    private static final int DEFAULT_CONTRAST = 100;
-    private static final int DEFAULT_ZOOM = 100;
-    private static final int DEFAULT_ROTATION = 0;
-
-    // MinMax-Konstanten
-    public static final double MIN_TIME_UNIT = 1;
-    public static final double MAX_TIME_UNIT = 600;
-    public static final double MIN_LEVEL_UNIT = 0.1;
-    public static final double MAX_LEVEL_UNIT = 1000;
-
-    public static final int MIN_BRIGHTNESS = 0;
-    public static final int MAX_BRIGHTNESS = 200;
-    public static final int MIN_CONTRAST = 0;
-    public static final int MAX_CONTRAST = 200;
-    public static final int MIN_ZOOM = 100;
-    public static final int MAX_ZOOM = 500;
-    public static final int MIN_ROTATION = 0;
-    public static final int MAX_ROTATION = 359;
 
     @JsonCreator
     public Config(
@@ -77,6 +72,32 @@ public class Config {
         this.setContrast(contrast);
         this.setZoom(zoom);
         this.setRotation(rotation);
+    }
+
+    public static Config load() {
+        Path filePath = PathManager.resolveProjectPath(PathManager.CONFIG_FILE_NAME);
+
+        Object object = PathManager.load(filePath, Config.class);
+        if (object instanceof Config config) return config;
+        else return getDefault();
+    }
+
+    public static Config getDefault() {
+        return new Config(
+            DEFAULT_IMAGE_FILE_TYPE,
+            DEFAULT_TIME_SEP,
+            DEFAULT_LEVEL_SEP,
+            DEFAULT_TIME_UNIT,
+            DEFAULT_LEVEL_UNIT,
+
+            DEFAULT_MIRROR_X,
+            DEFAULT_MIRROR_Y,
+
+            DEFAULT_BRIGHTNESS,
+            DEFAULT_CONTRAST,
+            DEFAULT_ZOOM,
+            DEFAULT_ROTATION
+        );
     }
 
     public ImageFileType getImageFileType() {
@@ -240,31 +261,5 @@ public class Config {
     public void save() {
         Path filePath = PathManager.resolveProjectPath(PathManager.CONFIG_FILE_NAME);
         PathManager.save(filePath, this);
-    }
-
-    public static Config load() {
-        Path filePath = PathManager.resolveProjectPath(PathManager.CONFIG_FILE_NAME);
-
-        Object object = PathManager.load(filePath, Config.class);
-        if (object instanceof Config config) return config;
-        else return getDefault();
-    }
-
-    public static Config getDefault() {
-        return new Config(
-            DEFAULT_IMAGE_FILE_TYPE,
-            DEFAULT_TIME_SEP,
-            DEFAULT_LEVEL_SEP,
-            DEFAULT_TIME_UNIT,
-            DEFAULT_LEVEL_UNIT,
-
-            DEFAULT_MIRROR_X,
-            DEFAULT_MIRROR_Y,
-
-            DEFAULT_BRIGHTNESS,
-            DEFAULT_CONTRAST,
-            DEFAULT_ZOOM,
-            DEFAULT_ROTATION
-        );
     }
 }

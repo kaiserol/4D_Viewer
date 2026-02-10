@@ -84,11 +84,11 @@ public class MarkerInteractionHandler extends MouseAdapter {
     public void mouseReleased(MouseEvent e) {
         if (editMode == EditMode.MOVE) {
             editMode = EditMode.NONE;
-            if(selectedMarker != null) {
+            if (selectedMarker != null) {
                 selectedMarker.finishMove();
             }
             setCursorAndRerender(e.getComponent(), selectedMarker == null ? Cursor.DEFAULT_CURSOR : Cursor.HAND_CURSOR);
-        } else if(editMode == EditMode.RESIZE) {
+        } else if (editMode == EditMode.RESIZE) {
             selectedMarker.finishResize();
         } else if (editMode == EditMode.ROTATE) {
             selectedMarker.finishRotate();

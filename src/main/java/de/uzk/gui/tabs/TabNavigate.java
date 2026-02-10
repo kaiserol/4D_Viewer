@@ -107,7 +107,7 @@ public class TabNavigate extends ObserverContainer<JPanel> {
             case TIME -> workspace.getEditManager().performEdit(new TimeUnitEdit(value.doubleValue()));
             case LEVEL -> workspace.getEditManager().performEdit(new LevelUnitEdit(value.doubleValue()));
         };
-        if(success) {
+        if (success) {
             gui.handleAction(ActionType.ACTION_UPDATE_UNIT);
         }
     }
@@ -128,7 +128,7 @@ public class TabNavigate extends ObserverContainer<JPanel> {
 
     @Override
     public void handleAction(ActionType actionType) {
-        if(actionType == ActionType.ACTION_UPDATE_UNIT) {
+        if (actionType == ActionType.ACTION_UPDATE_UNIT) {
             timeUnitSpinner.setValue(workspace.getConfig().getTimeUnit());
             levelUnitSpinner.setValue(workspace.getConfig().getLevelUnit());
         }

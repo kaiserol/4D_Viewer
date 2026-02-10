@@ -27,7 +27,7 @@ public class SnapshotCropper extends JPanel {
     @Override
     public Dimension getPreferredSize() {
 
-        return new Dimension((int)(scale * image.getWidth()), (int)(scale * image.getHeight()));
+        return new Dimension((int) (scale * image.getWidth()), (int) (scale * image.getHeight()));
     }
 
     @Override

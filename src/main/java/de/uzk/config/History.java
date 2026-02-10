@@ -19,6 +19,21 @@ public class History {
         }
     }
 
+    public static History load() {
+        Path filePath = PathManager.resolveConfigPath(PathManager.HISTORY_FILE_NAME);
+
+        Object object = PathManager.load(filePath, History.class);
+        if (object instanceof List<?> list) {
+            List<Path> lines = list.stream().map(line -> Path.of(line == null ? "" : String.valueOf(line))).toList();
+            return new History(lines);
+        }
+        return getDefault();
+    }
+
+    public static History getDefault() {
+        return new History(null);
+    }
+
     public boolean isEmpty() {
         return history.isEmpty();
     }
@@ -57,20 +72,5 @@ public class History {
             .map(p -> p.toAbsolutePath().toString())
             .toList();
         PathManager.save(filePath, lines);
-    }
-
-    public static History load() {
-        Path filePath = PathManager.resolveConfigPath(PathManager.HISTORY_FILE_NAME);
-
-        Object object = PathManager.load(filePath, History.class);
-        if (object instanceof List<?> list) {
-            List<Path> lines = list.stream().map(line -> Path.of(line == null ? "" : String.valueOf(line))).toList();
-            return new History(lines);
-        }
-        return getDefault();
-    }
-
-    public static History getDefault() {
-        return new History(null);
     }
 }

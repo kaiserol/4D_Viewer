@@ -11,18 +11,6 @@ public enum Theme {
     DARK_MODE,
     LIGHT_MODE;
 
-    public boolean isLightMode() {
-        return this == LIGHT_MODE;
-    }
-
-    @JsonValue
-    public String getValue() {
-        return switch (this) {
-            case DARK_MODE -> "Dark";
-            case LIGHT_MODE -> "Light";
-        };
-    }
-
     public static Theme getDefault() {
         return LIGHT_MODE;
     }
@@ -44,6 +32,18 @@ public enum Theme {
         Theme[] values = Theme.values();
         Arrays.sort(values, (theme1, theme2) -> theme1.toString().compareToIgnoreCase(theme2.toString()));
         return values;
+    }
+
+    public boolean isLightMode() {
+        return this == LIGHT_MODE;
+    }
+
+    @JsonValue
+    public String getValue() {
+        return switch (this) {
+            case DARK_MODE -> "Dark";
+            case LIGHT_MODE -> "Light";
+        };
     }
 
     @Override

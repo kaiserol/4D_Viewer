@@ -48,7 +48,7 @@ public class Markers {
     }
 
     public boolean remove(Marker marker) {
-       return this.markers.remove(marker);
+        return this.markers.remove(marker);
     }
 
     public boolean replace(Marker oldMarker, Marker newMarker) {
@@ -57,8 +57,9 @@ public class Markers {
             if (marker == oldMarker) {
                 found.set(true);
                 return newMarker;
+            } else {
+                return marker;
             }
-            else { return marker; }
         });
         return found.get();
     }

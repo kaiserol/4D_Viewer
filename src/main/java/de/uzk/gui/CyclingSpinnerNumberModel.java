@@ -4,6 +4,7 @@ import javax.swing.*;
 
 public class CyclingSpinnerNumberModel extends SpinnerNumberModel {
     private final boolean cycling;
+
     public CyclingSpinnerNumberModel(int value, int minimum, int maximum, int stepSize, boolean cycling) {
         super(value, minimum, maximum, stepSize);
         this.cycling = cycling;

@@ -32,7 +32,7 @@ public class ArrowMarker extends Marker {
     }
 
     public ArrowMarker(ArrowMarker other) {
-        this((Point2D)other.start.clone(), (Point2D)other.tip.clone(), other.getFrom(), other.getTo(), other.getColor(), other.getLabel());
+        this((Point2D) other.start.clone(), (Point2D) other.tip.clone(), other.getFrom(), other.getTo(), other.getColor(), other.getLabel());
     }
 
     public ArrowMarker(Marker abstractMarker) {
@@ -89,7 +89,7 @@ public class ArrowMarker extends Marker {
 
     @Override
     public Point2D[] getScalePoints() {
-        return new Point2D[]{ start, tip };
+        return new Point2D[]{start, tip};
     }
 
     @Override
