@@ -20,13 +20,13 @@ public class ShapeMarker extends Marker {
     private int rotation;
     private MarkerShape shape;
 
-    public ShapeMarker(int start) {
-        this(new Point(250, 100), new Dimension(500, 200), start, start, MarkerShape.RECTANGLE, Color.RED, "Marker");
+    public ShapeMarker(int start, String label) {
+        this(new Point(250, 100), new Dimension(500, 200), start, start, MarkerShape.RECTANGLE, Color.RED, label);
     }
 
     @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
     public ShapeMarker() {
-        this(0);
+        this(0, "DESERIALIZE");
     }
 
     public ShapeMarker(ShapeMarker other) {

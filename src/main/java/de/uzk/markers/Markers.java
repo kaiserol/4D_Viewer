@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Globales (per-Workspace) Objekt, das alle Marker für alle Bilder im Projekt speichert.
@@ -51,11 +52,15 @@ public class Markers {
     }
 
     public boolean replace(Marker oldMarker, Marker newMarker) {
-        if(this.markers.remove(oldMarker)) {
-            this.markers.add(newMarker);
-            return true;
-        }
-        return false;
+        AtomicBoolean found = new AtomicBoolean(false);
+        this.markers.replaceAll(marker -> {
+            if (marker == oldMarker) {
+                found.set(true);
+                return newMarker;
+            }
+            else { return marker; }
+        });
+        return found.get();
     }
 
     /**

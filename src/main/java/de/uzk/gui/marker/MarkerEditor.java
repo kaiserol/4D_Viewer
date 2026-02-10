@@ -44,16 +44,6 @@ public class MarkerEditor extends Container {
         gbc.insets = UIEnvironment.INSETS_DEFAULT;
 
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        this.add(new JLabel(getWord("dialog.markers.label")), gbc);
-
-        gbc.gridx = 1;
-        gbc.gridwidth = 2;
-        this.add(getLabelInput(), gbc);
-
-
-        gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
         add(new JLabel(getWord("dialog.markers.kind")), gbc);
@@ -117,33 +107,6 @@ public class MarkerEditor extends Container {
             marker = kind.switchKind(marker);
         });
         return list;
-    }
-
-    private JTextField getLabelInput() {
-        JTextField nameInput = new JTextField(marker.getLabel());
-        nameInput.getDocument().addDocumentListener(new DocumentListener() {
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                updateName();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateName();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                updateName();
-            }
-
-            private void updateName() {
-                marker.setLabel(nameInput.getText());
-
-            }
-        });
-        return nameInput;
     }
 
     private JButton getColorButton() {

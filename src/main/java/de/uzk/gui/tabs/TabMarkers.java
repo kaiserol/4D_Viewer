@@ -32,7 +32,7 @@ public class TabMarkers extends ObserverContainer<JPanel> {
         JButton addButton = new JButton(getWord("menu.markers.addMarker"));
         addButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, addButton.getPreferredSize().height));
         addButton.addActionListener(e -> {
-            MarkerEditor editor = new MarkerEditor(new ShapeMarker(workspace.getTime()));
+            MarkerEditor editor = new MarkerEditor(new ShapeMarker(workspace.getTime(), "Marker " + workspace.getMarkers().getMarkersForImage(workspace.getTime()).size()));
             int option = JOptionPane.showConfirmDialog(gui.getContainer(), editor, getWord("dialog.markers.newMarker"), JOptionPane.OK_CANCEL_OPTION);
 
             if (option == JOptionPane.OK_OPTION) {
