@@ -48,7 +48,7 @@ public class Config {
     public static final int MIN_CONTRAST = 0;
     public static final int MAX_CONTRAST = 200;
     public static final int MIN_ZOOM = 100;
-    public static final int MAX_ZOOM = 200;
+    public static final int MAX_ZOOM = 500;
     public static final int MIN_ROTATION = 0;
     public static final int MAX_ROTATION = 359;
 
