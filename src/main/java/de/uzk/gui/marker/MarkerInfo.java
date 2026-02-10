@@ -13,8 +13,6 @@ import de.uzk.utils.ColorUtils;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -91,9 +89,6 @@ public class MarkerInfo extends JPanel
             }
         });
         field.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
             @Override
             public void focusLost(FocusEvent e) {
                 workspace.getEditManager().performEdit(new RenameMarkerEdit(marker, field.getText()));
