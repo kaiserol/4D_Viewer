@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 
 
 public enum MarkerShape {
@@ -17,17 +18,17 @@ public enum MarkerShape {
      * @return Die Form, als {@link java.awt.Shape}
      *
      */
-    public Shape createShape(Rectangle boundingBox) {
+    public Shape createShape(Rectangle2D boundingBox) {
         return switch (this) {
             case RECTANGLE -> boundingBox;
-            case ELLIPSE -> new Ellipse2D.Double(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
+            case ELLIPSE -> new Ellipse2D.Double(boundingBox.getX(), boundingBox.getY(), boundingBox.getWidth(), boundingBox.getHeight());
 
             case TRIANGLE -> {
                 Path2D path = new Path2D.Double();
-                double x = boundingBox.x;
-                double y = boundingBox.y;
-                double width = boundingBox.width;
-                double height = boundingBox.height;
+                double x = boundingBox.getX();
+                double y = boundingBox.getY();
+                double width = boundingBox.getWidth();
+                double height = boundingBox.getHeight();
 
                 path.moveTo(x + width / 2, y);
                 path.lineTo(x + width, y + height);

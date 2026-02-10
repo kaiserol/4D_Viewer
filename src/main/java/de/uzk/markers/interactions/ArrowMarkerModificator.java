@@ -6,6 +6,7 @@ import de.uzk.markers.ArrowMarker;
 import de.uzk.markers.Marker;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 import static de.uzk.Main.workspace;
 
@@ -35,13 +36,13 @@ public class ArrowMarkerModificator implements MarkerModificator {
     public void handleResize(Point mousePos) {
 
         if (dragPoint == DragPoint.START) {
-            Point start = marker.getStart();
-            resizeEdit.resize(mousePos.x - start.x, mousePos.y - start.y);
+            Point2D start = marker.getStart();
+            resizeEdit.resize(mousePos.x - start.getX(), mousePos.y - start.getY());
             marker.setStart(mousePos);
         }
         else if (dragPoint == DragPoint.TIP) {
-            Point tip = marker.getTip();
-            resizeEdit.resize(mousePos.x -  tip.x, mousePos.y - tip.y);
+            Point2D tip = marker.getTip();
+            resizeEdit.resize(mousePos.x -  tip.getX(), mousePos.y - tip.getY());
             marker.setTip(mousePos);
         }
 
@@ -60,13 +61,12 @@ public class ArrowMarkerModificator implements MarkerModificator {
 
     @Override
     public void handleMove(Point mousePos) {
-
-        Point start = marker.getStart();
-        Point tip = marker.getTip();
-        int dx = mousePos.x - start.x;
-        int dy = mousePos.y - start.y;
-        marker.setStart(new Point(start.x + dx, start.y + dy));
-        marker.setTip(new Point(tip.x + dx, tip.y + dy));
+        Point2D start = marker.getStart();
+        Point2D tip = marker.getTip();
+        double dx = mousePos.x - start.getX();
+        double dy = mousePos.y - start.getY();
+        marker.setStart(new Point2D.Double(start.getX() + dx, start.getY() + dy));
+        marker.setTip(new Point2D.Double(tip.getX() + dx, tip.getY() + dy));
 
         moveEdit.move(dx, dy);
     }

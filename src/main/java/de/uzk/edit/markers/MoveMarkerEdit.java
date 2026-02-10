@@ -4,15 +4,15 @@ import de.uzk.action.ActionType;
 import de.uzk.edit.MaybeRedundantEdit;
 
 public abstract class MoveMarkerEdit extends MaybeRedundantEdit {
-    private int dx;
-    private int dy;
+    private double dx;
+    private double dy;
 
-    public void move(int dx, int dy) {
+    public void move(double dx, double dy) {
         this.dx += dx;
         this.dy += dy;
     }
 
-    protected abstract void moveMarker(int dx, int dy);
+    protected abstract void moveMarker(double dx, double dy);
 
     @Override
     public boolean isRedundant() {

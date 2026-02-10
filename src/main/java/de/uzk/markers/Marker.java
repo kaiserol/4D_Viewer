@@ -7,6 +7,7 @@ import de.uzk.utils.GraphicsUtils;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes(value = {@JsonSubTypes.Type(value = ShapeMarker.class), @JsonSubTypes.Type(value = ArrowMarker.class)})
@@ -76,9 +77,9 @@ public abstract class Marker {
         g2d = (Graphics2D) g2d.create();
         g2d.setColor(Color.WHITE);
 
-        Point[] scalePoints = getScalePoints();
-        for (Point point : scalePoints) {
-            Shape c = new Ellipse2D.Float(point.x - (float) LINE_WIDTH, point.y - (float) LINE_WIDTH, 2.0f * LINE_WIDTH, 2.0f * LINE_WIDTH);
+        Point2D[] scalePoints = getScalePoints();
+        for (Point2D point : scalePoints) {
+            Shape c = new Ellipse2D.Double(point.getX() - (float) LINE_WIDTH, point.getY() - (float) LINE_WIDTH, 2.0 * LINE_WIDTH, 2.0 * LINE_WIDTH);
             g2d.fill(c);
         }
     }
@@ -99,7 +100,7 @@ public abstract class Marker {
      *
      */
     @JsonIgnore
-    public abstract Point[] getScalePoints();
+    public abstract Point2D[] getScalePoints();
 
     public abstract Shape getLabelArea(Graphics g2d);
 

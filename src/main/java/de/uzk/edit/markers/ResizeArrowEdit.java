@@ -5,19 +5,20 @@ import de.uzk.edit.MaybeRedundantEdit;
 import de.uzk.markers.ArrowMarker;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class ResizeArrowEdit extends MaybeRedundantEdit {
     private final ArrowMarker marker;
     private final boolean isTip;
-    private int dx;
-    private int dy;
+    private double dx;
+    private double dy;
 
     public ResizeArrowEdit(ArrowMarker marker, boolean tip) {
         this.marker = marker;
         isTip = tip;
     }
 
-    public void resize(int dx, int dy) {
+    public void resize(double dx, double dy) {
         this.dx += dx;
         this.dy += dy;
     }
@@ -29,26 +30,24 @@ public class ResizeArrowEdit extends MaybeRedundantEdit {
 
     @Override
     public boolean perform() {
-
         if(isTip) {
-            Point tip = marker.getTip();
-            marker.setTip(new Point(tip.x + dx, tip.y + dy));
+            Point2D tip = marker.getTip();
+            marker.setTip(new Point2D.Double(tip.getX() + dx, tip.getY() + dy));
         } else {
-            Point start = marker.getStart();
-            marker.setStart(new Point(start.x + dx, start.y + dy));
+            Point2D start = marker.getStart();
+            marker.setStart(new Point2D.Double(start.getX() + dx, start.getY() + dy));
         }
-
         return true;
     }
 
     @Override
     public void undo() {
         if(isTip) {
-            Point tip = marker.getTip();
-            marker.setTip(new Point(tip.x - dx, tip.y - dy));
+            Point2D tip = marker.getTip();
+            marker.setTip(new Point2D.Double(tip.getX() - dx, tip.getY() - dy));
         } else {
-            Point start = marker.getStart();
-            marker.setStart(new Point(start.x - dx, start.y - dy));
+            Point2D start = marker.getStart();
+            marker.setStart(new Point2D.Double(start.getX() - dx, start.getY() - dy));
         }
     }
 

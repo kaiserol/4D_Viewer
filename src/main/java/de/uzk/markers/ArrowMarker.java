@@ -8,19 +8,21 @@ import de.uzk.utils.GraphicsUtils;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import static java.lang.Math.sin;
 
 public class ArrowMarker extends Marker {
-    private Point start;
-    private Point tip;
+    private Point2D start;
+    private Point2D tip;
 
     @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
     public ArrowMarker() {
         this(new Point(250, 100), new Point(500, 500), 0, 0, Color.RED, "Arrow");
     }
 
-    public ArrowMarker(Point start, Point tip, int from, int to, Color color, String label) {
+    public ArrowMarker(Point2D start, Point2D tip, int from, int to, Color color, String label) {
         setStart(start);
         setTip(tip);
         setLabel(label);
@@ -30,7 +32,7 @@ public class ArrowMarker extends Marker {
     }
 
     public ArrowMarker(ArrowMarker other) {
-        this(new Point(other.getStart()), new Point(other.getTip()), other.getFrom(), other.getTo(), other.getColor(), other.getLabel());
+        this((Point2D)other.start.clone(), (Point2D)other.tip.clone(), other.getFrom(), other.getTo(), other.getColor(), other.getLabel());
     }
 
     public ArrowMarker(Marker abstractMarker) {
@@ -38,47 +40,47 @@ public class ArrowMarker extends Marker {
         setTo(abstractMarker.getTo());
         setColor(abstractMarker.getColor());
         setLabel(abstractMarker.getLabel());
-        Point[] scalePoints = abstractMarker.getScalePoints();
-        setStart(new Point(scalePoints[0]));
-        setTip(new Point(scalePoints[scalePoints.length - 1]));
+        Point2D[] scalePoints = abstractMarker.getScalePoints();
+        setStart(scalePoints[0]);
+        setTip(scalePoints[scalePoints.length - 1]);
     }
 
     @JsonGetter("start")
-    public Point getStart() {
+    public Point2D getStart() {
         return start;
     }
 
     @JsonSetter("start")
-    public void setStart(Point start) {
+    public void setStart(Point2D start) {
         this.start = start;
     }
 
     @JsonGetter("tip")
-    public Point getTip() {
+    public Point2D getTip() {
         return tip;
     }
 
     @JsonSetter("tip")
-    public void setTip(Point tip) {
+    public void setTip(Point2D tip) {
         this.tip = tip;
     }
 
     @Override
     public void draw(Graphics2D g2d) {
         Path2D path = new Path2D.Double();
-        int dx = tip.x - start.x;
-        int dy = tip.y - start.y;
+        double dx = tip.getX() - start.getX();
+        double dy = tip.getY() - start.getY();
         double baseAngle = Math.atan2(dy, dx);
         double leftAngle = baseAngle + Math.PI / 4;
         double rightAngle = baseAngle - Math.PI / 4;
         double length = Math.sqrt(dx * dx + dy * dy) / 10;
-        path.moveTo(start.x, start.y);
-        path.lineTo(tip.x, tip.y);
-        path.moveTo(tip.x, tip.y);
+        path.moveTo(start.getX(), start.getY());
+        path.lineTo(tip.getX(), tip.getY());
+        path.moveTo(tip.getX(), tip.getY());
 
-        path.lineTo(tip.x - length * Math.cos(leftAngle), tip.y - length * sin(leftAngle));
-        path.moveTo(tip.x, tip.y);
-        path.lineTo(tip.x - length * Math.cos(rightAngle), tip.y - length * sin(rightAngle));
+        path.lineTo(tip.getX() - length * Math.cos(leftAngle), tip.getY() - length * sin(leftAngle));
+        path.moveTo(tip.getX(), tip.getY());
+        path.lineTo(tip.getX() - length * Math.cos(rightAngle), tip.getY() - length * sin(rightAngle));
         g2d.setColor(color);
         g2d.setStroke(new BasicStroke(LINE_WIDTH));
         g2d.draw(path);
@@ -86,14 +88,14 @@ public class ArrowMarker extends Marker {
     }
 
     @Override
-    public Point[] getScalePoints() {
-        return new Point[]{start, tip};
+    public Point2D[] getScalePoints() {
+        return new Point2D[]{ start, tip };
     }
 
     @Override
     public Shape getLabelArea(Graphics g2d) {
         FontMetrics metrics = GraphicsUtils.updateMetrics(g2d);
-        return new Rectangle(start, new Dimension(metrics.stringWidth(label), metrics.getHeight()));
+        return new Rectangle2D.Double(start.getX(), start.getY(), metrics.stringWidth(label), metrics.getHeight());
     }
 
     @Override

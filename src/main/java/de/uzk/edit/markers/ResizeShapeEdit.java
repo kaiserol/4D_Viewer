@@ -5,43 +5,48 @@ import de.uzk.edit.MaybeRedundantEdit;
 import de.uzk.markers.ShapeMarker;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class ResizeShapeEdit extends MaybeRedundantEdit {
     private final ShapeMarker marker;
-    private final Dimension sizeChange = new Dimension();
-    private final Dimension posShift = new Dimension();
+    private double dWidth;
+    private double dHeight;
+    private double dx;
+    private double dy;
 
     public ResizeShapeEdit(ShapeMarker marker) {
         this.marker = marker;
     }
 
-    public void resize(int dW, int dH, int dX, int dY) {
-        sizeChange.width += dW;
-        sizeChange.height += dH;
-        posShift.width += dX;
-        posShift.height += dY;
+    public void resize(double dW, double dH, double dX, double dY) {
+        dWidth += dW;
+        dHeight += dH;
+        dx += dX;
+        dy += dY;
     }
 
     @Override
     public boolean isRedundant() {
-        return (sizeChange.width * sizeChange.width + sizeChange.height * sizeChange.height) <= 25;
+        return (dWidth * dWidth + dHeight * dHeight) <= 25;
     }
 
     @Override
     public boolean perform() {
-        Dimension oldSize = marker.getSize();
-        Point oldPos = marker.getPos();
-        marker.setSize(new Dimension(oldSize.width + sizeChange.width, oldSize.height + sizeChange.height));
-        marker.setPos(new Point(oldPos.x + posShift.width, oldPos.y + posShift.height));
+        double oldWidth = marker.getWidth();
+        double oldHeight = marker.getHeight();
+        Point2D oldPos = marker.getPos();
+        marker.setSize(oldWidth + dWidth, oldHeight + dHeight);
+        marker.setPos(new Point2D.Double(oldPos.getX() + dx, oldPos.getY() + dy));
         return true;
     }
 
     @Override
     public void undo() {
-        Dimension oldSize = marker.getSize();
-        Point oldPos = marker.getPos();
-        marker.setSize(new Dimension(oldSize.width - sizeChange.width, oldSize.height - sizeChange.height));
-        marker.setPos(new Point(oldPos.x - posShift.width, oldPos.y - posShift.height));
+        double oldWidth = marker.getWidth();
+        double oldHeight = marker.getHeight();
+        Point2D oldPos = marker.getPos();
+        marker.setSize(oldWidth - dWidth, oldHeight - dHeight);
+        marker.setPos(new Point2D.Double(oldPos.getX() - dx, oldPos.getY() - dy));
 
     }
 

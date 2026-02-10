@@ -8,20 +8,20 @@ import de.uzk.utils.GraphicsUtils;
 import de.uzk.utils.NumberUtils;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
+import java.awt.geom.*;
+
 
 public class ShapeMarker extends Marker {
     // Höhe und Breite
-    protected Dimension size;
+    protected double width;
+    protected double height;
     // Mittelpunkt des Markers
-    protected Point pos;
+    protected Point2D.Double pos;
     private int rotation;
     private MarkerShape shape;
 
     public ShapeMarker(int start, String label) {
-        this(new Point(250, 100), new Dimension(500, 200), start, start, MarkerShape.RECTANGLE, Color.RED, label);
+        this(new Point2D.Double(250, 100), 500,200, start, start, MarkerShape.RECTANGLE, Color.RED, label);
     }
 
     @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
@@ -30,7 +30,7 @@ public class ShapeMarker extends Marker {
     }
 
     public ShapeMarker(ShapeMarker other) {
-        this(new Point(other.pos), new Dimension(other.size), other.from, other.to, other.shape, other.color, other.label);
+        this(new Point2D.Double(other.pos.getX(), other.pos.getY()), other.width, other.height, other.from, other.to, other.shape, other.color, other.label);
         setRotation(other.rotation);
     }
 
@@ -39,21 +39,22 @@ public class ShapeMarker extends Marker {
         setTo(abstractMarker.getTo());
         setColor(abstractMarker.getColor());
         setLabel(abstractMarker.getLabel());
-        Point[] scalePoints = abstractMarker.getScalePoints();
-        Point p1 = scalePoints[0];
-        Point p2 = scalePoints[scalePoints.length - 1];
-        int xMin = Math.min(p1.x, p2.x);
-        int xMax = Math.max(p1.x, p2.x);
-        int yMin = Math.min(p1.y, p2.y);
-        int yMax = Math.max(p1.y, p2.y);
-        setSize(new Dimension(xMax - xMin, yMax - yMin));
-        setPos(new Point(xMin + size.width / 2, yMin + size.height / 2));
+        Point2D[] scalePoints = abstractMarker.getScalePoints();
+        Point2D p1 = scalePoints[0];
+        Point2D p2 = scalePoints[scalePoints.length - 1];
+        double xMin = Math.min(p1.getX(), p2.getX());
+        double xMax = Math.max(p1.getX(), p2.getX());
+        double yMin = Math.min(p1.getY(), p2.getY());
+        double yMax = Math.max(p1.getX(), p2.getY());
+        setSize(xMax - xMin, yMax - yMin);
+        setPos(new Point2D.Double(xMin + width / 2, yMin + height / 2));
         setShape(shape);
     }
 
-    public ShapeMarker(Point pos, Dimension size, int from, int to, MarkerShape shape, Color color, String label) {
+    public ShapeMarker(Point2D.Double pos, double width, double height, int from, int to, MarkerShape shape, Color color, String label) {
         setPos(pos);
-        setSize(size);
+        setWidth(width);
+        setHeight(height);
         setShape(shape);
         setLabel(label);
         setColor(color);
@@ -62,31 +63,39 @@ public class ShapeMarker extends Marker {
 
     }
 
-    public Point getPos() {
+    public Point2D.Double getPos() {
         return pos;
     }
 
+    public double getWidth() {
+        return width;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
     @JsonSetter("pos")
-    public void setPos(Point pos) {
+    public void setPos(Point2D.Double pos) {
         this.pos = pos;
     }
 
-    public void setWidth(int width) {
-        setSize(new Dimension(width, size.height));
+    @JsonSetter("height")
+    public void setWidth(double width) {
+        if(width < 0) throw new IllegalArgumentException("Width cannot be negative!");
+        this.width = width;
     }
 
-    public void setHeight(int height) {
-        setSize(new Dimension(size.width, height));
+    @JsonSetter("width")
+    public void setHeight(double height) {
+        if(height < 0) throw new IllegalArgumentException("Height cannot be negative!");
+        this.height = height;
     }
 
-    public Dimension getSize() {
-        return size;
-    }
 
-    @JsonSetter("size")
-    public void setSize(Dimension size) {
-        if (size.width < 0 || size.height < 0) throw new IllegalArgumentException("Size cannot be negative!");
-        this.size = size;
+    public void setSize(double width, double height) {
+        setWidth(width);
+        setHeight(height);
     }
 
     public MarkerShape getShape() {
@@ -108,7 +117,7 @@ public class ShapeMarker extends Marker {
     }
 
     public void draw(Graphics2D g2d) {
-        Rectangle actualBounds = getShapeBounds();
+        Rectangle2D actualBounds = getShapeBounds();
         AffineTransform rot = getRotationTransform();
         Shape finalShape = shape.createShape(actualBounds);
 
@@ -131,9 +140,9 @@ public class ShapeMarker extends Marker {
      *
      */
     @JsonIgnore
-    public Point getShapeCorner() {
-        Point center = pos;
-        return new Point(center.x - (size.width / 2), center.y - (size.height / 2));
+    public Point2D getShapeCorner() {
+        Point2D center = pos;
+        return new Point2D.Double(center.getX() - (width / 2), center.getY() - (height / 2));
     }
 
     /**
@@ -144,23 +153,24 @@ public class ShapeMarker extends Marker {
      *
      */
     @JsonIgnore
-    public Rectangle getShapeBounds() {
-        return new Rectangle(getShapeCorner(), size);
+    public Rectangle2D getShapeBounds() {
+        Point2D corner = getShapeCorner();
+        return new Rectangle2D.Double(corner.getX(), corner.getY(), width, height);
     }
 
     @Override
     public void drawDragPoints(Graphics2D g2d) {
         super.drawDragPoints(g2d);
 
-        Point rotPoint = getRotatePoint();
-        Point topCenter = getScalePoints()[3];
+        Point2D rotPoint = getRotatePoint();
+        Point2D topCenter = getScalePoints()[3];
 
         g2d.setColor(Color.WHITE);
-        Shape r = new Ellipse2D.Float(rotPoint.x - (float) LINE_WIDTH, rotPoint.y - (float) LINE_WIDTH, 2.0f * LINE_WIDTH, 2.0f * LINE_WIDTH);
+        Shape r = new Ellipse2D.Double(rotPoint.getX() - (double) LINE_WIDTH, rotPoint.getY() - (double) LINE_WIDTH, 2.0 * LINE_WIDTH, 2.0 * LINE_WIDTH);
         g2d.fill(r);
         g2d.setStroke(new BasicStroke(1));
 
-        g2d.drawLine(topCenter.x, topCenter.y, rotPoint.x, rotPoint.y);
+        g2d.drawLine((int)topCenter.getX(), (int)topCenter.getY(), (int)rotPoint.getX(), (int)rotPoint.getY());
     }
 
     /**
@@ -174,7 +184,7 @@ public class ShapeMarker extends Marker {
     public Shape getLabelArea(Graphics onto) {
         FontMetrics metrics = GraphicsUtils.updateMetrics(onto);
         Point2D corner = getRotationTransform().transform(getShapeCorner(), null);
-        return new Rectangle(new Point((int) corner.getX(), (int) corner.getY()), new Dimension(metrics.stringWidth(label), metrics.getHeight()));
+        return new Rectangle2D.Double(corner.getX(),  corner.getY(), metrics.stringWidth(label), metrics.getHeight());
 
     }
 
@@ -184,19 +194,19 @@ public class ShapeMarker extends Marker {
      *
      */
     @JsonIgnore
-    public Point[] getScalePoints() {
-        Point[] points = new Point[8];
+    @Override
+    public Point2D[] getScalePoints() {
+        Point2D[] points = new Point2D[8];
         AffineTransform rot = getRotationTransform();
-        Rectangle bounds = getShapeBounds();
+        Rectangle2D bounds = getShapeBounds();
         int i = 0;
         for (int x = 0; x <= 2; x++) {
             for (int y = 0; y <= 2; y++) {
                 if (x == 1 && y == 1) continue;
-                int dx = (bounds.width / 2) * x;
-                int dy = (bounds.height / 2) * y;
+                double dx = (bounds.getWidth() / 2) * x;
+                double dy = (bounds.getHeight() / 2) * y;
 
-                Point2D rotated = rot.transform(new Point(dx + bounds.x, dy + bounds.y), null);
-                points[i] = new Point((int) rotated.getX(), (int) rotated.getY());
+                points[i] = rot.transform(new Point2D.Double(dx + bounds.getX(), dy + bounds.getY()), null);
                 i++;
             }
         }
@@ -211,9 +221,8 @@ public class ShapeMarker extends Marker {
      *
      */
     @JsonIgnore
-    public Point getRotatePoint() {
-        Point2D point = getRotationTransform().transform(new Point(pos.x, pos.y - size.height / 2 - 100), null);
-        return new Point((int) point.getX(), (int) point.getY());
+    public Point2D getRotatePoint() {
+        return getRotationTransform().transform(new Point2D.Double(pos.getX(), pos.getY() - height / 2 - 100), null);
     }
 
     /**
@@ -224,7 +233,7 @@ public class ShapeMarker extends Marker {
      */
     @JsonIgnore
     public AffineTransform getRotationTransform() {
-        return AffineTransform.getRotateInstance(Math.toRadians(rotation), pos.x, pos.y);
+        return AffineTransform.getRotateInstance(Math.toRadians(rotation), pos.getX(), pos.getY());
     }
 
     @Override
@@ -242,7 +251,7 @@ public class ShapeMarker extends Marker {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ShapeMarker that = (ShapeMarker) o;
-        return super.equals(that) && this.pos.equals(that.pos) && this.size.equals(that.size) && this.shape.equals(that.shape);
+        return super.equals(that) && this.pos.equals(that.pos) && this.width == that.width && this.height == that.height && this.shape.equals(that.shape);
 
 
     }

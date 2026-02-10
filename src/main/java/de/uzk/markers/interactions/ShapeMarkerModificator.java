@@ -24,7 +24,6 @@ public class ShapeMarkerModificator implements MarkerModificator {
         this.marker = marker;
     }
 
-
     @Override
     public void beginRotate() {
         rotateEdit = new RotateShapeEdit(marker);
@@ -32,10 +31,9 @@ public class ShapeMarkerModificator implements MarkerModificator {
 
     @Override
     public void handleRotate(Point mousePos) {
-        Point center = marker.getPos();
-
+        Point2D center = marker.getPos();
         // Winkel zwischen Mauszeiger und Mittelpunkt des Markers
-        double newAngleRadians = Math.atan2(mousePos.y - center.y, mousePos.x - center.x);
+        double newAngleRadians = Math.atan2(mousePos.y - center.getY(), mousePos.x - center.getX());
         // 90° Addieren, damit der Dragpunkt (oben in der Mitte) unter dem Mauszeiger bleibt
         int newAngle = NumberUtils.normalizeAngle((int) Math.toDegrees(newAngleRadians) + 90);
         int dTheta = newAngle - marker.getRotation();
@@ -58,10 +56,10 @@ public class ShapeMarkerModificator implements MarkerModificator {
     public void handleResize(Point mousePos) {
         if (dragPoint == null) return;
 
-        int originalWidth = marker.getSize().width;
-        int originalHeight = marker.getSize().height;
-        int originalX = marker.getPos().x;
-        int originalY = marker.getPos().y;
+        double originalWidth = marker.getWidth();
+        double originalHeight = marker.getHeight();
+        double originalX = marker.getPos().getX();
+        double originalY = marker.getPos().getY();
 
         double x = originalX;
         double y = originalY;
@@ -70,11 +68,11 @@ public class ShapeMarkerModificator implements MarkerModificator {
         double width = originalWidth;
         double height = originalHeight;
 
-        mousePos = derotate(mousePos);
-        Point dragStart = derotate(marker.getScalePoints()[dragPoint.ordinal()]);
+        Point2D derotatedMousePos = derotate(mousePos);
+        Point2D dragStart = derotate(marker.getScalePoints()[dragPoint.ordinal()]);
 
-        double dx = (mousePos.getX() - dragStart.getX());
-        double dy = (mousePos.getY() - dragStart.getY());
+        double dx = (derotatedMousePos.getX() - dragStart.getX());
+        double dy = (derotatedMousePos.getY() - dragStart.getY());
 
         width += dragPoint.x() * dx;
         height += dragPoint.y() * dy;
@@ -82,7 +80,6 @@ public class ShapeMarkerModificator implements MarkerModificator {
         double theta = Math.toRadians(marker.getRotation());
         double sin = Math.sin(theta);
         double cos = Math.cos(theta);
-
 
         if (dragPoint.isCenter()) {
             // Nur entlang der y-Achse verschieben
@@ -123,16 +120,9 @@ public class ShapeMarkerModificator implements MarkerModificator {
             dragPoint = dragPoint.mirrorX();
         }
 
-        // Rundungsfehler werden bei einfachem Cast sonst schnell visuell sichtbar
-        x = Math.round(x);
-        y = Math.round(y);
-        width = Math.round(width);
-        height = Math.round(height);
-
-
-        marker.setSize(new Dimension((int) width, (int) height));
-        marker.setPos(new Point((int) x, (int) y));
-        resizeEdit.resize((int) width - originalWidth, (int) height - originalHeight, (int) x - originalX, (int) y - originalY);
+        marker.setSize(width, height);
+        marker.setPos(new Point2D.Double(x, y));
+        resizeEdit.resize(width - originalWidth, height - originalHeight, x - originalX, y - originalY);
     }
 
     @Override
@@ -140,7 +130,6 @@ public class ShapeMarkerModificator implements MarkerModificator {
         workspace.getEditManager().registerEdit(resizeEdit);
         resizeEdit = null;
     }
-
 
     @Override
     public void beginMove() {
@@ -150,16 +139,17 @@ public class ShapeMarkerModificator implements MarkerModificator {
     @Override
     public void handleMove(Point mousePos) {
         double theta = Math.toRadians(marker.getRotation());
-        Dimension size = marker.getSize();
+        double width = marker.getWidth();
+        double height = marker.getHeight();
         double cos = Math.cos(theta);
         double sin = Math.sin(theta);
-        int cx = (int) (size.width * cos - size.height * sin) / 2;
-        int cy = (int) (size.height * cos + size.width * sin) / 2;
-        int x = mousePos.x + cx;
-        int y = mousePos.y + cy;
-        Point current = marker.getPos();
-        marker.setPos(new Point(x, y));
-        moveEdit.move(x - current.x, y - current.y);
+        double cx = (width * cos - height * sin) / 2;
+        double cy = (height * cos + width * sin) / 2;
+        double x = mousePos.x + cx;
+        double y = mousePos.y + cy;
+        Point2D current = marker.getPos();
+        marker.setPos(new Point2D.Double(x, y));
+        moveEdit.move(x - current.getX(), y - current.getY());
     }
 
     @Override
@@ -175,7 +165,7 @@ public class ShapeMarkerModificator implements MarkerModificator {
 
     @Override
     public MarkerInteractionHandler.EditMode checkEditMode(Point mousePos) {
-        Point[] scalePoints = marker.getScalePoints();
+        Point2D[] scalePoints = marker.getScalePoints();
         for (int i = 0; i < scalePoints.length; i++) {
             if (mousePos.distance(scalePoints[i]) < Marker.LINE_WIDTH * Marker.LINE_WIDTH) {
                 dragPoint = DragPoint.values()[i];
@@ -183,7 +173,7 @@ public class ShapeMarkerModificator implements MarkerModificator {
             }
         }
 
-        Point rotPoint = marker.getRotatePoint();
+        Point2D rotPoint = marker.getRotatePoint();
         if (mousePos.distance(rotPoint) < Marker.LINE_WIDTH * Marker.LINE_WIDTH) {
 
             return MarkerInteractionHandler.EditMode.ROTATE;
@@ -194,9 +184,8 @@ public class ShapeMarkerModificator implements MarkerModificator {
     }
 
     // Hilfsfunktion; Rotiert `p` gegen den Uhrzeigersinn um `selectedMarker.getRotation()` Grad.
-    private Point derotate(Point p) {
-        Point2D derotated = AffineTransform.getRotateInstance(-Math.toRadians(marker.getRotation())).transform(p, null);
-        return new Point((int) derotated.getX(), (int) derotated.getY());
+    private Point2D derotate(Point2D p) {
+        return AffineTransform.getRotateInstance(-Math.toRadians(marker.getRotation())).transform(p, null);
     }
 
     private enum DragPoint {
