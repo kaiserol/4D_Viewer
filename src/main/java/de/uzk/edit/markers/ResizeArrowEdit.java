@@ -24,7 +24,7 @@ public class ResizeArrowEdit extends MaybeRedundantEdit {
 
     @Override
     public boolean isRedundant() {
-        return (this.dx * this.dx + this.dy * this.dy) <= 25;
+        return (dx * dx + dy * dy) <= 25;
     }
 
     @Override

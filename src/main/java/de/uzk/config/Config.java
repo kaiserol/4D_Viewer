@@ -61,17 +61,17 @@ public class Config {
         @JsonProperty("zoom") int zoom,
         @JsonProperty("rotation") int rotation
     ) {
-        this.setImageFileType(imageFileType);
-        this.setTimeSep(timeSep);
-        this.setLevelSep(levelSep);
-        this.setTimeUnit(timeUnit);
-        this.setLevelUnit(levelUnit);
-        this.setMirrorX(mirrorX);
-        this.setMirrorY(mirrorY);
-        this.setBrightness(brightness);
-        this.setContrast(contrast);
-        this.setZoom(zoom);
-        this.setRotation(rotation);
+        setImageFileType(imageFileType);
+        setTimeSep(timeSep);
+        setLevelSep(levelSep);
+        setTimeUnit(timeUnit);
+        setLevelUnit(levelUnit);
+        setMirrorX(mirrorX);
+        setMirrorY(mirrorY);
+        setBrightness(brightness);
+        setContrast(contrast);
+        setZoom(zoom);
+        setRotation(rotation);
     }
 
     public static Config load() {
@@ -101,7 +101,7 @@ public class Config {
     }
 
     public ImageFileType getImageFileType() {
-        return this.imageFileType;
+        return imageFileType;
     }
 
     public void setImageFileType(ImageFileType imageFileType) {
@@ -115,7 +115,7 @@ public class Config {
     }
 
     public String getTimeSep() {
-        return this.timeSep;
+        return timeSep;
     }
 
     public void setTimeSep(String timeSep) {
@@ -129,7 +129,7 @@ public class Config {
     }
 
     public String getLevelSep() {
-        return this.levelSep;
+        return levelSep;
     }
 
     public void setLevelSep(String levelSep) {
@@ -143,7 +143,7 @@ public class Config {
     }
 
     public double getTimeUnit() {
-        return this.timeUnit;
+        return timeUnit;
     }
 
     public boolean setTimeUnit(double timeUnit) {
@@ -159,7 +159,7 @@ public class Config {
     }
 
     public double getLevelUnit() {
-        return this.levelUnit;
+        return levelUnit;
     }
 
     public boolean setLevelUnit(double levelUnit) {
@@ -175,7 +175,7 @@ public class Config {
     }
 
     public boolean isMirrorX() {
-        return this.mirrorX;
+        return mirrorX;
     }
 
     public boolean setMirrorX(boolean mirrorX) {
@@ -185,7 +185,7 @@ public class Config {
     }
 
     public boolean isMirrorY() {
-        return this.mirrorY;
+        return mirrorY;
     }
 
     public boolean setMirrorY(boolean mirrorY) {
@@ -243,7 +243,7 @@ public class Config {
     }
 
     public int getRotation() {
-        return this.rotation;
+        return rotation;
     }
 
     public boolean setRotation(int rotation) {

@@ -115,7 +115,7 @@ public class ShapeMarker extends Marker {
 
     @JsonSetter("rotation")
     public void setRotation(int newRotation) {
-        this.rotation = NumberUtils.normalizeAngle(newRotation);
+        rotation = NumberUtils.normalizeAngle(newRotation);
     }
 
     public void draw(Graphics2D g2d) {
@@ -252,7 +252,7 @@ public class ShapeMarker extends Marker {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ShapeMarker that = (ShapeMarker) o;
-        return super.equals(that) && this.pos.equals(that.pos) && this.width == that.width && this.height == that.height && this.shape.equals(that.shape);
+        return super.equals(that) && pos.equals(that.pos) && width == that.width && height == that.height && shape.equals(that.shape);
 
 
     }

@@ -6,6 +6,6 @@ import static de.uzk.config.LanguageHandler.getWord;
 
 public class AreaRightsOfUseBanner extends JPanel {
     public AreaRightsOfUseBanner() {
-        this.add(new JLabel(getWord("dialog.legal.text.usage")));
+        add(new JLabel(getWord("dialog.legal.text.usage")));
     }
 }

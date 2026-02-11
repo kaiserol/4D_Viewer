@@ -6,7 +6,7 @@ public class RotateImageEdit extends ImageEdit {
     private final int degrees;
 
     public RotateImageEdit(int newRotation) {
-        this.degrees = workspace.getConfig().getRotation() - newRotation;
+        degrees = workspace.getConfig().getRotation() - newRotation;
     }
 
     @Override

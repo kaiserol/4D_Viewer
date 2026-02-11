@@ -39,19 +39,19 @@ public class Gui extends ObserverContainer<JFrame> {
         super(new JFrame(), null);
 
         // Observer Listener initialisieren
-        this.handleActionListeners = new ArrayList<>();
-        this.toggleListeners = new ArrayList<>();
-        this.updateImageListeners = new ArrayList<>();
-        this.updateThemeListeners = new ArrayList<>();
-        this.appFocusListeners = new ArrayList<>();
+        handleActionListeners = new ArrayList<>();
+        toggleListeners = new ArrayList<>();
+        updateImageListeners = new ArrayList<>();
+        updateThemeListeners = new ArrayList<>();
+        appFocusListeners = new ArrayList<>();
 
         // ActionHandler erstellen
-        this.actionHandler = new ActionHandler(this);
+        actionHandler = new ActionHandler(this);
 
         // Gui erstellen
         build();
 
-        this.registerConfigSaved();
+        registerConfigSaved();
     }
 
     public ActionHandler getActionHandler() {
@@ -68,15 +68,15 @@ public class Gui extends ObserverContainer<JFrame> {
         UIEnvironment.updateFlatLaf();
         UIEnvironment.initImageIcon(this);
 
-        this.container.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
-        this.container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        this.container.addWindowListener(new WindowAdapter() {
+        container.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        container.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 UIEnvironment.closeApp(Gui.this);
             }
         });
-        this.container.addWindowFocusListener(new WindowAdapter() {
+        container.addWindowFocusListener(new WindowAdapter() {
             @Override
             public void windowGainedFocus(WindowEvent e) {
                 appGainedFocus();
@@ -99,23 +99,23 @@ public class Gui extends ObserverContainer<JFrame> {
         }
 
         // Fenster anzeigen
-        this.container.pack();
-        this.container.setLocationRelativeTo(null);
-        this.container.setVisible(true);
+        container.pack();
+        container.setLocationRelativeTo(null);
+        container.setVisible(true);
     }
 
     public void rebuild() {
         logger.info("Rebuilding UI ...");
 
         // Observer Listener zurücksetzen (alte Ereignis-Listener müssen bereinigt werden)
-        this.handleActionListeners.clear();
-        this.toggleListeners.clear();
-        this.updateImageListeners.clear();
-        this.updateThemeListeners.clear();
-        this.appFocusListeners.clear();
+        handleActionListeners.clear();
+        toggleListeners.clear();
+        updateImageListeners.clear();
+        updateThemeListeners.clear();
+        appFocusListeners.clear();
 
         // Inhalt entfernen
-        this.container.getContentPane().removeAll();
+        container.getContentPane().removeAll();
 
         // Menüleiste & Inhalt hinzufügen
         createMenuBar();
@@ -129,12 +129,12 @@ public class Gui extends ObserverContainer<JFrame> {
 
     private void createMenuBar() {
         AppMenuBar menuBar = new AppMenuBar(this);
-        this.container.setJMenuBar(menuBar.getContainer());
+        container.setJMenuBar(menuBar.getContainer());
     }
 
     private void createContent() {
-        this.container.setTitle(getWord("app.name"));
-        this.container.setLayout(new BorderLayout());
+        container.setTitle(getWord("app.name"));
+        container.setLayout(new BorderLayout());
 
         // Panel erstellen
         JPanel mainPanel = new JPanel(UIEnvironment.getDefaultBorderLayout());
@@ -157,7 +157,7 @@ public class Gui extends ObserverContainer<JFrame> {
         mainPanel.add(new AreaRightsOfUseBanner(), BorderLayout.SOUTH);
 
         // Panel zum Container hinzufügen
-        this.container.add(mainPanel);
+        container.add(mainPanel);
 
         // Theme aktualisieren
         updateTheme();
@@ -167,23 +167,23 @@ public class Gui extends ObserverContainer<JFrame> {
     // Observer Registrierung
     // ========================================
     public void registerHandleActionListener(HandleActionListener handleActionListener) {
-        this.handleActionListeners.add(handleActionListener);
+        handleActionListeners.add(handleActionListener);
     }
 
     public void registerToggleListener(ToggleListener toggleListener) {
-        this.toggleListeners.add(toggleListener);
+        toggleListeners.add(toggleListener);
     }
 
     public void registerUpdateImageListener(UpdateImageListener updateImageListener) {
-        this.updateImageListeners.add(updateImageListener);
+        updateImageListeners.add(updateImageListener);
     }
 
     public void registerUpdateThemeListener(UpdateThemeListener updateThemeListener) {
-        this.updateThemeListeners.add(updateThemeListener);
+        updateThemeListeners.add(updateThemeListener);
     }
 
     public void registerAppFocusListener(AppFocusListener appFocusListener) {
-        this.appFocusListeners.add(appFocusListener);
+        appFocusListeners.add(appFocusListener);
     }
 
     // ========================================
@@ -194,7 +194,7 @@ public class Gui extends ObserverContainer<JFrame> {
         if (actionType == null) return;
         switch (actionType) {
             case SHORTCUT_PIN_TIME -> workspace.togglePinTime();
-            case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> this.registerUnsavedChange();
+            case ACTION_EDIT_IMAGE, ACTION_ADD_MARKER, ACTION_REMOVE_MARKER -> registerUnsavedChange();
         }
 
         // Observer ausführen
@@ -253,22 +253,22 @@ public class Gui extends ObserverContainer<JFrame> {
     // Hilfsmethoden
     // ========================================
     public void updateUI() {
-        this.container.revalidate();
-        this.container.repaint();
+        container.revalidate();
+        container.repaint();
     }
 
     public void registerUnsavedChange() {
-        if (!this.hasUnsavedChanges) {
-            this.container.setTitle(this.container.getTitle() + "*");
+        if (!hasUnsavedChanges) {
+            container.setTitle(container.getTitle() + "*");
         }
 
-        this.hasUnsavedChanges = true;
+        hasUnsavedChanges = true;
     }
 
     public void registerConfigSaved() {
-        if (this.hasUnsavedChanges) {
-            this.container.setTitle(this.container.getTitle().replace("*", ""));
+        if (hasUnsavedChanges) {
+            container.setTitle(container.getTitle().replace("*", ""));
         }
-        this.hasUnsavedChanges = false;
+        hasUnsavedChanges = false;
     }
 }

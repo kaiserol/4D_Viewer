@@ -39,7 +39,7 @@ public abstract class Marker {
     }
 
     public boolean shouldRender(int at) {
-        return this.from <= at && this.to >= at;
+        return from <= at && to >= at;
     }
 
     @JsonIgnore
@@ -53,7 +53,7 @@ public abstract class Marker {
 
     @JsonGetter("color")
     private String getHexColor() {
-        return ColorUtils.colorToHex(this.color);
+        return ColorUtils.colorToHex(color);
     }
 
     @JsonSetter("color")

@@ -58,7 +58,7 @@ public class MarkerInteractionHandler extends MouseAdapter {
             setCursorAndRerender(e.getComponent(), Cursor.CROSSHAIR_CURSOR);
 
         } else {
-            this.editMode = EditMode.NONE;
+            editMode = EditMode.NONE;
             imageEditor.setFocusedMarker(null);
             checkHoveringMarker(e);
         }

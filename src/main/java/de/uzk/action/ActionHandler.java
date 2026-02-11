@@ -38,11 +38,11 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
 
     public ActionHandler(Gui gui) {
         this.gui = gui;
-        this.dialogAbout = new DialogAbout(gui.getContainer());
-        this.dialogLegal = new DialogLegal(gui.getContainer());
-        this.dialogHistory = new DialogHistory(gui.getContainer());
-        this.dialogLogViewer = new DialogLogViewer(gui.getContainer());
-        this.dialogSettings = new DialogSettings(gui);
+        dialogAbout = new DialogAbout(gui.getContainer());
+        dialogLegal = new DialogLegal(gui.getContainer());
+        dialogHistory = new DialogHistory(gui.getContainer());
+        dialogLogViewer = new DialogLogViewer(gui.getContainer());
+        dialogSettings = new DialogSettings(gui);
     }
 
     // ========================================

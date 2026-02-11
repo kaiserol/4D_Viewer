@@ -111,16 +111,16 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
     @Override
     public void hyperlinkUpdate(HyperlinkEvent e) {
         if (Objects.equals(e.getEventType(), ENTERED)) {
-            this.overLink = true;
-            this.currentLinkElement = e.getSourceElement();
+            overLink = true;
+            currentLinkElement = e.getSourceElement();
             updateCursor();
         } else if (Objects.equals(e.getEventType(), EXITED)) {
             resetLinkElement();
         } else if (Objects.equals(e.getEventType(), ACTIVATED)) {
-            if (this.commandPressed) {
+            if (commandPressed) {
                 UIEnvironment.openWebLink(e.getURL());
                 updateCursor();
-                this.commandPressed = false;
+                commandPressed = false;
             }
         }
     }
@@ -156,13 +156,13 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      */
     private void setupGlobalKeyListener() {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
-            boolean oldValue = this.commandPressed;
+            boolean oldValue = commandPressed;
             if (e.getID() == KeyEvent.KEY_PRESSED || e.getID() == KeyEvent.KEY_RELEASED) {
-                this.commandPressed = (e.getModifiersEx() & Shortcut.CTRL_DOWN) != 0;
+                commandPressed = (e.getModifiersEx() & Shortcut.CTRL_DOWN) != 0;
             }
 
             // Nur bei Änderung aktualisieren
-            if (this.commandPressed != oldValue) {
+            if (commandPressed != oldValue) {
                 SwingUtilities.invokeLater(this::updateCursor);
             }
             return false;
@@ -178,7 +178,7 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      */
     private void updateCursor() {
         CursorMode newMode;
-        if (this.overLink && this.commandPressed) {
+        if (overLink && commandPressed) {
             newMode = CursorMode.LINK_CTRL_HOVER;
         } else if (overLink) {
             newMode = CursorMode.LINK_HOVER;
@@ -187,8 +187,8 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
         }
 
         // Nur wenn sich der Zustand ändert
-        if (newMode != this.currentCursorMode) {
-            this.currentCursorMode = newMode;
+        if (newMode != currentCursorMode) {
+            currentCursorMode = newMode;
 
             switch (newMode) {
                 case LINK_CTRL_HOVER -> {
@@ -229,9 +229,9 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      * Entfernt Hyperlink-Styling.
      */
     private void resetLinkElement() {
-        this.overLink = false;
+        overLink = false;
         updateCursor();
-        this.currentLinkElement = null;
+        currentLinkElement = null;
     }
 
     // ========================================
@@ -346,14 +346,14 @@ public class SelectableText extends JEditorPane implements HyperlinkListener {
      * @param active {@code true}, wenn der Link aktiv ist, sonst false
      */
     private void applyLinkHoverStyle(boolean active) {
-        if (this.currentLinkElement == null) return;
+        if (currentLinkElement == null) return;
 
         HTMLDocument htmlDoc = getHTMLDocument();
         if (htmlDoc == null) return;
 
         // Wortgrenzen ermitteln
-        int startIndex = this.currentLinkElement.getStartOffset();
-        int endIndex = this.currentLinkElement.getEndOffset();
+        int startIndex = currentLinkElement.getStartOffset();
+        int endIndex = currentLinkElement.getEndOffset();
         int length = Math.max(0, endIndex - startIndex);
 
         // Formatierung

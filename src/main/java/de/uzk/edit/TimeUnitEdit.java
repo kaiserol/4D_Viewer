@@ -8,7 +8,7 @@ public class TimeUnitEdit extends Edit {
     private final double timeUnitDifference;
 
     public TimeUnitEdit(double newTimeUnit) {
-        this.timeUnitDifference = workspace.getConfig().getTimeUnit() - newTimeUnit;
+        timeUnitDifference = workspace.getConfig().getTimeUnit() - newTimeUnit;
 
     }
 

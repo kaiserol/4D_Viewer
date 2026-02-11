@@ -9,7 +9,7 @@ public final class CustomMenu extends CustomMenuBarNode {
 
     public CustomMenu(String name) {
         super(new JMenu(), name);
-        this.nodes = new ArrayList<>();
+        nodes = new ArrayList<>();
     }
 
     public List<CustomMenuBarNode> getNodes() {
@@ -18,8 +18,8 @@ public final class CustomMenu extends CustomMenuBarNode {
 
     public void add(CustomMenuBarNode node) {
         if (node == null) throw new NullPointerException("Node is null.");
-        this.getNodes().add(node);
-        this.getComponent().add(node.getComponent());
+        getNodes().add(node);
+        getComponent().add(node.getComponent());
     }
 
     public void add(CustomMenuBarNode... nodes) {

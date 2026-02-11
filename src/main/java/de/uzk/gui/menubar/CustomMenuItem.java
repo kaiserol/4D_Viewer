@@ -11,8 +11,8 @@ import java.util.List;
 public final class CustomMenuItem extends CustomMenuBarNode {
     public CustomMenuItem(String text, Icon icon, ActionHandler actionHandler, ActionType actionType) {
         this(text);
-        this.setIcon(icon);
-        this.setAction(actionHandler, actionType);
+        setIcon(icon);
+        setAction(actionHandler, actionType);
     }
 
     public CustomMenuItem(String text, ActionHandler actionHandler, ActionType actionType) {
@@ -24,7 +24,7 @@ public final class CustomMenuItem extends CustomMenuBarNode {
     }
 
     private void setIcon(Icon icon) {
-        if (icon != null && this.getComponent() instanceof JMenuItem menuItem) {
+        if (icon != null && getComponent() instanceof JMenuItem menuItem) {
             menuItem.setIcon(icon);
         }
     }

@@ -113,6 +113,6 @@ public class ArrowMarker extends Marker {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ArrowMarker that = (ArrowMarker) o;
-        return super.equals(that) && this.start.equals(that.start) && this.tip.equals(that.tip);
+        return super.equals(that) && start.equals(that.start) && tip.equals(that.tip);
     }
 }

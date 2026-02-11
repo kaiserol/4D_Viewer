@@ -27,16 +27,16 @@ public class MarkerEditor extends Container {
 
     public MarkerEditor(Marker marker) {
         this.marker = marker;
-        this.dialogColorChooser = new DialogColorChooser(null);
+        dialogColorChooser = new DialogColorChooser(null);
         init();
     }
 
     public Marker getMarker() {
-        return this.marker;
+        return marker;
     }
 
     protected void init() {
-        this.setLayout(new GridBagLayout());
+        setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = UIEnvironment.INSETS_DEFAULT;
@@ -53,11 +53,11 @@ public class MarkerEditor extends Container {
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        this.add(new JLabel(getWord("dialog.markers.color")), gbc);
+        add(new JLabel(getWord("dialog.markers.color")), gbc);
 
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        this.add(getColorButton(), gbc);
+        add(getColorButton(), gbc);
 
 
         TimeInput fromInput = new TimeInput(marker.getFrom(), 0, marker.getTo());
@@ -65,32 +65,32 @@ public class MarkerEditor extends Container {
 
         // Diese beiden Handler stellen sicher, dass from <= to
         fromInput.onChange(value -> {
-            this.marker.setFrom(value);
+            marker.setFrom(value);
             toInput.setMinimum(value);
         });
 
         toInput.onChange(value -> {
-            this.marker.setTo(value);
+            marker.setTo(value);
             fromInput.setMaximum(value);
         });
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        this.add(new JLabel(getWord("menu.markers.visibleFromImage")), gbc);
+        add(new JLabel(getWord("menu.markers.visibleFromImage")), gbc);
 
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        this.add(fromInput, gbc);
+        add(fromInput, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        this.add(new JLabel(getWord("menu.markers.visibleToImage")), gbc);
+        add(new JLabel(getWord("menu.markers.visibleToImage")), gbc);
 
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        this.add(toInput, gbc);
+        add(toInput, gbc);
 
 
     }
@@ -109,15 +109,15 @@ public class MarkerEditor extends Container {
 
     private JButton getColorButton() {
         JButton button = new JButton();
-        button.setBackground(this.marker.getColor());
+        button.setBackground(marker.getColor());
         button.addActionListener(a -> selectColor(button));
         return button;
     }
 
     private void selectColor(JButton color) {
-        Color selected = this.dialogColorChooser.chooseColor(this.marker.getColor());
+        Color selected = dialogColorChooser.chooseColor(marker.getColor());
         color.setBackground(selected);
-        this.marker.setColor(selected);
+        marker.setColor(selected);
     }
 
     private static class TimeInput extends JPanel {
@@ -133,7 +133,7 @@ public class MarkerEditor extends Container {
         private void init() {
             setLayout(new GridLayout(1, 2));
 
-            JSpinner numberInput = new JSpinner(this.model);
+            JSpinner numberInput = new JSpinner(model);
             JLabel label = new JLabel("(" + DateTimeUtils.formatFrameTimeStamp(getValue()) + ")", SwingConstants.RIGHT);
             numberInput.addChangeListener(e -> {
                 label.setText("(" + DateTimeUtils.formatFrameTimeStamp(getValue()) + ")");

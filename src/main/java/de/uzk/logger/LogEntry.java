@@ -51,23 +51,23 @@ public class LogEntry {
     public LogEntry(LogLevel level, String msg) {
         if (level == null) throw new NullPointerException("Level is null");
         this.level = level;
-        this.message = msg == null ? "" : msg;
-        this.timestamp = initTimeStamp();
-        this.source = initSource();
+        message = msg == null ? "" : msg;
+        timestamp = initTimeStamp();
+        source = initSource();
     }
 
     /**
      * @return Die Protokollebene des Log-Eintrags
      */
     public LogLevel getLevel() {
-        return this.level;
+        return level;
     }
 
     /**
      * @return Die Nachricht des Log-Eintrags
      */
     public String getMessage() {
-        return this.message;
+        return message;
     }
 
     /**
@@ -75,7 +75,7 @@ public class LogEntry {
      * {@link #initTimeStamp()} verwendet.
      */
     public String getTimeStamp() {
-        return this.timestamp;
+        return timestamp;
     }
 
     /**
@@ -83,7 +83,7 @@ public class LogEntry {
      * wird die Methode {@link #initSource()} verwendet.
      */
     public String getSource() {
-        return this.source;
+        return source;
     }
 
     // ========================================

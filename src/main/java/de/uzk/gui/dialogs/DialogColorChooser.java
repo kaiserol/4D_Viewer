@@ -31,10 +31,10 @@ public class DialogColorChooser {
     private Color selectedColor;
 
     public DialogColorChooser(Window parentWindow) {
-        this.dialog = ComponentUtils.createDialog(parentWindow, () -> setSelectedColorAndDispose(this.initialColor));
+        dialog = ComponentUtils.createDialog(parentWindow, () -> setSelectedColorAndDispose(initialColor));
 
         // Favoriten Lister initialisieren
-        this.favoriteColors = new ArrayList<>();
+        favoriteColors = new ArrayList<>();
     }
 
     // region (Hilfsmethoden)
@@ -120,25 +120,25 @@ public class DialogColorChooser {
     // endregion
 
     private void setSelectedColorAndDispose(Color color) {
-        this.selectedColor = color;
-        this.colorChooser.setColor(color);
-        this.dialog.dispose();
+        selectedColor = color;
+        colorChooser.setColor(color);
+        dialog.dispose();
     }
 
     public Color chooseColor(Color intialColor) {
-        this.dialog.setTitle(getWord("dialog.colorChooser"));
-        this.dialog.getContentPane().removeAll();
-        this.dialog.setLayout(new BorderLayout());
+        dialog.setTitle(getWord("dialog.colorChooser"));
+        dialog.getContentPane().removeAll();
+        dialog.setLayout(new BorderLayout());
 
         // Initialfarbe setzen
-        this.initialColor = intialColor;
-        this.selectedColor = intialColor;
+        initialColor = intialColor;
+        selectedColor = intialColor;
 
         // ColorChooser erstellen
-        this.colorChooser = new JColorChooser(intialColor);
-        this.colorChooser.setPreviewPanel(new JPanel());
-        configureColorChooserPanels(this.colorChooser);
-        configureColorChooserUI(this.colorChooser);
+        colorChooser = new JColorChooser(intialColor);
+        colorChooser.setPreviewPanel(new JPanel());
+        configureColorChooserPanels(colorChooser);
+        configureColorChooserUI(colorChooser);
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(UIEnvironment.getDefaultBorderLayout());
@@ -147,16 +147,16 @@ public class DialogColorChooser {
         contentPanel.add(createPreviewPanel(), BorderLayout.CENTER);
         contentPanel.add(createButtonsPanel(), BorderLayout.SOUTH);
 
-        this.dialog.add(contentPanel, BorderLayout.CENTER);
+        dialog.add(contentPanel, BorderLayout.CENTER);
 
         // Dialog anzeigen
-        this.dialog.pack();
-        this.dialog.setResizable(false);
-        this.dialog.setLocationRelativeTo(this.dialog.getOwner());
-        this.dialog.setVisible(true);
+        dialog.pack();
+        dialog.setResizable(false);
+        dialog.setLocationRelativeTo(dialog.getOwner());
+        dialog.setVisible(true);
 
         // Farbe zurückgeben
-        return this.selectedColor;
+        return selectedColor;
     }
 
     // region (Komponenten-Erzeugung)
@@ -173,16 +173,16 @@ public class DialogColorChooser {
         addButton.addClickedListener(e -> {
             if (!SwingUtilities.isLeftMouseButton(e)) return;
 
-            Color currentColor = this.colorChooser.getColor();
+            Color currentColor = colorChooser.getColor();
             FavoriteColorButton colorButton = createColorButton(currentColor, favoritesPanel);
 
             // Nach dem Plus einfügen
             favoritesPanel.add(colorButton, 1);
-            this.favoriteColors.add(0, colorButton);
-            if (this.favoriteColors.size() > MAX_FAVORITES) {
-                FavoriteColorButton lastButton = this.favoriteColors.get(this.favoriteColors.size() - 1);
+            favoriteColors.add(0, colorButton);
+            if (favoriteColors.size() > MAX_FAVORITES) {
+                FavoriteColorButton lastButton = favoriteColors.get(favoriteColors.size() - 1);
                 favoritesPanel.remove(lastButton);
-                this.favoriteColors.remove(lastButton);
+                favoriteColors.remove(lastButton);
             }
 
             // Revalidierung
@@ -192,7 +192,7 @@ public class DialogColorChooser {
         favoritesPanel.add(addButton);
 
         // Favoriten Panel füllen
-        this.favoriteColors.forEach(button -> favoritesPanel.add(createColorButton(button.color, favoritesPanel)));
+        favoriteColors.forEach(button -> favoritesPanel.add(createColorButton(button.color, favoritesPanel)));
 
         return favoritesPanel;
     }
@@ -211,9 +211,9 @@ public class DialogColorChooser {
         gbc.fill = GridBagConstraints.BOTH;
 
         // ---- Linker Bereich: 3 Labels ----
-        JLabel label1 = createSampleTextLabel(null, this.initialColor);
-        JLabel label2 = createSampleTextLabel(this.initialColor, Color.BLACK);
-        JLabel label3 = createSampleTextLabel(Color.WHITE, this.initialColor);
+        JLabel label1 = createSampleTextLabel(null, initialColor);
+        JLabel label2 = createSampleTextLabel(initialColor, Color.BLACK);
+        JLabel label3 = createSampleTextLabel(Color.WHITE, initialColor);
 
         ComponentUtils.addRow(previewPanel, gbc, label1, 0);
         ComponentUtils.addRow(previewPanel, gbc, label2, 5);
@@ -225,8 +225,8 @@ public class DialogColorChooser {
         gbc.insets = new Insets(0, 10, 0, 0);
 
         // ---- Linker Bereich (oben): 2 Farbfelder ----
-        JLabel currentColorField = createColorField(this.initialColor, this.colorChooser::setColor);
-        JLabel previousColorField = createColorField(this.initialColor, this.colorChooser::setColor);
+        JLabel currentColorField = createColorField(initialColor, colorChooser::setColor);
+        JLabel previousColorField = createColorField(initialColor, colorChooser::setColor);
 
         previewPanel.add(currentColorField, gbc);
         gbc.gridx++;
@@ -243,7 +243,7 @@ public class DialogColorChooser {
         previewPanel.add(createCenteredLabel(getWord("label.previous")), gbc);
 
         // ---- Listener für dynamisches Update ----
-        this.colorChooser.getSelectionModel().addChangeListener(e -> {
+        colorChooser.getSelectionModel().addChangeListener(e -> {
             Color color = colorChooser.getColor();
 
             // Labels aktualisieren
@@ -265,7 +265,7 @@ public class DialogColorChooser {
 
         // ---- Vorschau Panel mit ColorChooser erstellen ----
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(this.colorChooser, BorderLayout.CENTER);
+        panel.add(colorChooser, BorderLayout.CENTER);
         panel.add(previewPanel, BorderLayout.SOUTH);
         return panel;
     }
@@ -275,24 +275,24 @@ public class DialogColorChooser {
 
         // Schaltfläche (Zurücksetzen)
         JButton resetButton = new JButton(getWord("button.reset"));
-        resetButton.addActionListener(e -> this.colorChooser.setColor(this.initialColor));
+        resetButton.addActionListener(e -> colorChooser.setColor(initialColor));
         buttonsPanel.add(resetButton);
 
         // Schaltfläche (Abbrechen)
         JButton cancelButton = new JButton(getWord("button.cancel"));
-        cancelButton.addActionListener(e -> setSelectedColorAndDispose(this.initialColor));
+        cancelButton.addActionListener(e -> setSelectedColorAndDispose(initialColor));
         buttonsPanel.add(cancelButton);
 
         // Schaltfläche (OK)
         JButton okButton = new JButton(getWord("button.ok"));
-        okButton.addActionListener(e -> setSelectedColorAndDispose(this.colorChooser.getColor()));
+        okButton.addActionListener(e -> setSelectedColorAndDispose(colorChooser.getColor()));
         buttonsPanel.add(okButton);
 
         // Gleicht die Größen aller Buttons an
         ComponentUtils.equalizeComponentSizes(buttonsPanel, JButton.class);
 
         // Den OK-Button als Default-Button setzen
-        this.dialog.getRootPane().setDefaultButton(okButton);
+        dialog.getRootPane().setDefaultButton(okButton);
 
         return buttonsPanel;
     }
@@ -301,11 +301,11 @@ public class DialogColorChooser {
         FavoriteColorButton button = new FavoriteColorButton(color, false);
         button.addClickedListener(e -> {
             if (SwingUtilities.isLeftMouseButton(e)) {
-                this.colorChooser.setColor(color);
+                colorChooser.setColor(color);
             } else if (SwingUtilities.isRightMouseButton(e)) {
                 button.showPopupMenu(e, () -> {
                     favoritesPanel.remove(button);
-                    this.favoriteColors.remove(button);
+                    favoriteColors.remove(button);
 
                     // Revalidierung
                     favoritesPanel.revalidate();
@@ -378,7 +378,7 @@ public class DialogColorChooser {
 
             // Statusfarben
             boolean light = settings.getTheme().isLightMode();
-            Color border = ColorUtils.adjustColor((light ? Color.BLACK : Color.WHITE), this.hover ? 0.5f : 0, light);
+            Color border = ColorUtils.adjustColor((light ? Color.BLACK : Color.WHITE), hover ? 0.5f : 0, light);
             Color background = isAddButton ? (light ? Color.WHITE : Color.BLACK) : color;
 
             // Kreis füllen
@@ -391,7 +391,7 @@ public class DialogColorChooser {
             g2.drawOval(x, y, diameter, diameter);
 
             // Plus-Zeichen zeichnen
-            if (this.isAddButton) {
+            if (isAddButton) {
                 int center = size / 2;
                 int addRadius = (int) (diameter / 4.0);
 

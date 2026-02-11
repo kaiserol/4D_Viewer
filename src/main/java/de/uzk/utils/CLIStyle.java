@@ -120,7 +120,7 @@ public final class CLIStyle {
          * @return ANSI-Code
          */
         public int getAnsiCode() {
-            return this.ansiCode;
+            return ansiCode;
         }
     }
 
@@ -154,9 +154,9 @@ public final class CLIStyle {
          */
         private Text(String text) {
             this.text = text;
-            this.foregroundColor = null;
-            this.backgroundColor = null;
-            this.styles = new ArrayList<>();
+            foregroundColor = null;
+            backgroundColor = null;
+            styles = new ArrayList<>();
         }
 
         /**
@@ -166,7 +166,7 @@ public final class CLIStyle {
          * @return Die aktuelle {@code Text} Instanz
          */
         public Text foreground(Color color) {
-            this.foregroundColor = color;
+            foregroundColor = color;
             return this;
         }
 
@@ -177,7 +177,7 @@ public final class CLIStyle {
          * @return Die aktuelle {@code Text} Instanz
          */
         public Text background(Color color) {
-            this.backgroundColor = color;
+            backgroundColor = color;
             return this;
         }
 
@@ -187,7 +187,7 @@ public final class CLIStyle {
          * @return Die aktuelle {@code Text} Instanz
          */
         public Text bold() {
-            this.styles.add(TextStyle.BOLD);
+            styles.add(TextStyle.BOLD);
             return this;
         }
 
@@ -197,7 +197,7 @@ public final class CLIStyle {
          * @return Die aktuelle {@code Text} Instanz
          */
         public Text dim() {
-            this.styles.add(TextStyle.DIM);
+            styles.add(TextStyle.DIM);
             return this;
         }
 
@@ -207,7 +207,7 @@ public final class CLIStyle {
          * @return Die aktuelle {@code Text} Instanz
          */
         public Text italic() {
-            this.styles.add(TextStyle.ITALIC);
+            styles.add(TextStyle.ITALIC);
             return this;
         }
 
@@ -217,7 +217,7 @@ public final class CLIStyle {
          * @return Die aktuelle {@code Text} Instanz
          */
         public Text underline() {
-            this.styles.add(TextStyle.UNDERLINE);
+            styles.add(TextStyle.UNDERLINE);
             return this;
         }
 
@@ -227,7 +227,7 @@ public final class CLIStyle {
          * @return Die aktuelle {@code Text} Instanz
          */
         public Text blink() {
-            this.styles.add(TextStyle.BLINK);
+            styles.add(TextStyle.BLINK);
             return this;
         }
 
@@ -237,7 +237,7 @@ public final class CLIStyle {
          * @return Die aktuelle {@code Text} Instanz
          */
         public Text inverted() {
-            this.styles.add(TextStyle.INVERTED);
+            styles.add(TextStyle.INVERTED);
             return this;
         }
 
@@ -247,7 +247,7 @@ public final class CLIStyle {
          * @return Die aktuelle {@code Text} Instanz
          */
         public Text hidden() {
-            this.styles.add(TextStyle.HIDDEN);
+            styles.add(TextStyle.HIDDEN);
             return this;
         }
 
@@ -257,7 +257,7 @@ public final class CLIStyle {
          * @return Die aktuelle {@code Text} Instanz
          */
         public Text strikethrough() {
-            this.styles.add(TextStyle.STRIKETHROUGH);
+            styles.add(TextStyle.STRIKETHROUGH);
             return this;
         }
 
@@ -270,31 +270,31 @@ public final class CLIStyle {
             List<String> ansiCodes = new ArrayList<>();
 
             // Stile hinzufügen
-            for (TextStyle style : this.styles) {
+            for (TextStyle style : styles) {
                 ansiCodes.add(String.valueOf(style.getAnsiCode()));
             }
 
             // Textfarbe (RGB)
-            if (this.foregroundColor != null) {
+            if (foregroundColor != null) {
                 ansiCodes.add("38;2;" +
-                    this.foregroundColor.getRed() + ";" +
-                    this.foregroundColor.getGreen() + ";" +
-                    this.foregroundColor.getBlue());
+                    foregroundColor.getRed() + ";" +
+                    foregroundColor.getGreen() + ";" +
+                    foregroundColor.getBlue());
             }
 
             // Hintergrundfarbe (RGB)
-            if (this.backgroundColor != null) {
+            if (backgroundColor != null) {
                 ansiCodes.add("48;2;" +
-                    this.backgroundColor.getRed() + ";" +
-                    this.backgroundColor.getGreen() + ";" +
-                    this.backgroundColor.getBlue());
+                    backgroundColor.getRed() + ";" +
+                    backgroundColor.getGreen() + ";" +
+                    backgroundColor.getBlue());
             }
 
             // Escape-Sequenz aufbauen
             String prefix = ESC + String.join(";", ansiCodes) + "m";
             String reset = ESC + TextStyle.RESET.getAnsiCode() + "m";
 
-            return prefix + this.text + reset;
+            return prefix + text + reset;
         }
 
         /**

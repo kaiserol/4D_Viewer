@@ -63,7 +63,7 @@ public class ImageEditor {
      *
      */
     public void onNewImageAvailable(Consumer<BufferedImage> listener) {
-        this.newImageConsumer = listener;
+        newImageConsumer = listener;
     }
 
     /**
@@ -75,7 +75,7 @@ public class ImageEditor {
      *
      */
     public void setFocusedMarker(Marker marker) {
-        this.focusedMarker = marker;
+        focusedMarker = marker;
     }
 
     /**
@@ -88,7 +88,7 @@ public class ImageEditor {
      */
     public void updateImage(boolean needsFullRedraw) {
         needsFullRedraw |= cache == null;
-        this.currentImage = null;
+        currentImage = null;
         if (!workspace.isLoaded()) return;
         BufferedImage newImage = null;
         if (needsFullRedraw) {
@@ -233,7 +233,7 @@ public class ImageEditor {
 
 
     private void newImageAvailable() {
-        if (this.newImageConsumer != null) this.newImageConsumer.accept(this.currentImage);
+        if (newImageConsumer != null) newImageConsumer.accept(currentImage);
     }
 
     //endregion

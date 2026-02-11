@@ -29,29 +29,29 @@ public class DialogLogViewer {
     private JTabbedPane tabs;
 
     public DialogLogViewer(Window parentWindow) {
-        this.dialog = ComponentUtils.createDialog(parentWindow, null);
+        dialog = ComponentUtils.createDialog(parentWindow, null);
 
         // Map initialisieren
-        this.filterCheckboxes = new LinkedHashMap<>();
+        filterCheckboxes = new LinkedHashMap<>();
     }
 
     public void show() {
-        this.dialog.setTitle(getWord("dialog.logViewer"));
-        this.dialog.getContentPane().removeAll();
-        this.dialog.setLayout(new BorderLayout());
+        dialog.setTitle(getWord("dialog.logViewer"));
+        dialog.getContentPane().removeAll();
+        dialog.setLayout(new BorderLayout());
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
-        contentPanel.add(this.tabs = createTabs(), BorderLayout.CENTER);
+        contentPanel.add(tabs = createTabs(), BorderLayout.CENTER);
 
-        this.dialog.add(contentPanel);
+        dialog.add(contentPanel);
 
         // Dialog anzeigen
-        this.dialog.pack();
-        this.resizeWindow();
-        this.dialog.setLocationRelativeTo(this.dialog.getOwner());
-        this.dialog.setVisible(true);
+        dialog.pack();
+        resizeWindow();
+        dialog.setLocationRelativeTo(dialog.getOwner());
+        dialog.setVisible(true);
     }
 
     // ========================================
@@ -64,8 +64,8 @@ public class DialogLogViewer {
         List<LogLevel> blockedLevels = new ArrayList<>(Arrays.stream(LogLevel.values()).filter(l -> l != LogLevel.INFO).toList());
 
         // Eingestellte Protokollebenen ausblenden
-        for (LogLevel level : this.filterCheckboxes.keySet()) {
-            JCheckBox checkBox = this.filterCheckboxes.get(level);
+        for (LogLevel level : filterCheckboxes.keySet()) {
+            JCheckBox checkBox = filterCheckboxes.get(level);
             if (checkBox.isSelected()) blockedLevels.remove(level);
             else blockedLevels.add(level);
         }
@@ -102,7 +102,7 @@ public class DialogLogViewer {
             }
 
             logLevelsPanel.add(checkBox);
-            this.filterCheckboxes.put(level, checkBox);
+            filterCheckboxes.put(level, checkBox);
         }
     }
 
@@ -119,7 +119,7 @@ public class DialogLogViewer {
         if (scrollPane == null || logsText == null) return;
 
         List<LogLevel> blockedLevels = new ArrayList<>();
-        for (Map.Entry<LogLevel, JCheckBox> entry : this.filterCheckboxes.entrySet()) {
+        for (Map.Entry<LogLevel, JCheckBox> entry : filterCheckboxes.entrySet()) {
             if (!entry.getValue().isSelected()) {
                 blockedLevels.add(entry.getKey());
             }
@@ -164,7 +164,7 @@ public class DialogLogViewer {
         int dialogHeight = dialog.getHeight();
 
         // ScrollPane ermitteln
-        JComponent selectedTab = (JComponent) this.tabs.getComponentAt(this.tabs.getSelectedIndex());
+        JComponent selectedTab = (JComponent) tabs.getComponentAt(tabs.getSelectedIndex());
         JScrollPane scrollPane = ComponentUtils.findFirstComponentRecursively(JScrollPane.class, selectedTab);
         if (scrollPane != null) {
             dialogWidth = dialogWidth + scrollPane.getWidth() - scrollPane.getViewport().getView().getWidth();
@@ -185,7 +185,7 @@ public class DialogLogViewer {
         );
 
         // Neue Abmessungen setzen
-        this.dialog.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
-        this.dialog.setSize(new Dimension(newWidth, newHeight));
+        dialog.setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        dialog.setSize(new Dimension(newWidth, newHeight));
     }
 }

@@ -19,7 +19,7 @@ public enum Language {
         if (shortForm == null) throw new NullPointerException("Shortform is null.");
         if (country == null) throw new NullPointerException("Country is null.");
         this.value = value;
-        this.locale = new Locale.Builder()
+        locale = new Locale.Builder()
             .setLanguage(shortForm)
             .setRegion(country)
             .build();
@@ -58,11 +58,11 @@ public enum Language {
 
     @JsonValue
     public String getValue() {
-        return this.value;
+        return value;
     }
 
     public Locale getLocale() {
-        return this.locale;
+        return locale;
     }
 
     @Override

@@ -15,7 +15,7 @@ public class History {
         this.history = new LinkedList<>();
         if (history != null) {
             // Wenn Pfade existieren, müssen sie vom Typ Verzeichnis sein, um hinzugefügt zu werden
-            for (Path path : history) this.add(path);
+            for (Path path : history) add(path);
         }
     }
 
@@ -49,26 +49,26 @@ public class History {
         if (Files.exists(normalized) && !Files.isDirectory(normalized)) return;
 
         // Falls bereits vorhanden, dann löschen
-        this.history.remove(normalized);
+        history.remove(normalized);
 
         // Am Ende hinzufügen
-        this.history.add(normalized);
+        history.add(normalized);
     }
 
     public Path getLastIfExists() {
         if (isEmpty()) return null;
-        Path path = this.history.getLast();
+        Path path = history.getLast();
         if (Files.isDirectory(path)) return path;
         return null;
     }
 
     public List<Path> getAll() {
-        return this.history;
+        return history;
     }
 
     public void save() {
         Path filePath = PathManager.resolveConfigPath(PathManager.HISTORY_FILE_NAME);
-        List<String> lines = this.history.stream()
+        List<String> lines = history.stream()
             .map(p -> p.toAbsolutePath().toString())
             .toList();
         PathManager.save(filePath, lines);

@@ -26,26 +26,26 @@ public class AreaStatsBar extends ObserverContainer<JPanel> {
     }
 
     private void init() {
-        this.container.setLayout(new BorderLayout());
-        this.container.setBorder(UIEnvironment.BORDER_EMPTY_MEDIUM);
+        container.setLayout(new BorderLayout());
+        container.setBorder(UIEnvironment.BORDER_EMPTY_MEDIUM);
 
         // Zeit-Label
-        this.labelTime = new JLabel("", SwingConstants.CENTER);
-        this.container.add(this.labelTime, BorderLayout.CENTER);
+        labelTime = new JLabel("", SwingConstants.CENTER);
+        container.add(labelTime, BorderLayout.CENTER);
 
         // Zeit-Level-Panel
         JPanel panelTimeLevel = new JPanel(UIEnvironment.getDefaultBorderLayout());
         panelTimeLevel.setOpaque(false);
 
         // Zeit-Level-Label
-        this.labelTimeLevel = new JLabel("", SwingConstants.LEFT);
-        this.labelTimeLevel.setOpaque(true);
-        panelTimeLevel.add(this.labelTimeLevel, BorderLayout.WEST);
+        labelTimeLevel = new JLabel("", SwingConstants.LEFT);
+        labelTimeLevel.setOpaque(true);
+        panelTimeLevel.add(labelTimeLevel, BorderLayout.WEST);
 
         // Ebenen-Label
-        this.labelLevel = new JLabel("", SwingConstants.RIGHT);
-        panelTimeLevel.add(this.labelLevel, BorderLayout.EAST);
-        this.container.add(panelTimeLevel, BorderLayout.SOUTH);
+        labelLevel = new JLabel("", SwingConstants.RIGHT);
+        panelTimeLevel.add(labelLevel, BorderLayout.EAST);
+        container.add(panelTimeLevel, BorderLayout.SOUTH);
     }
 
     // ========================================
@@ -87,14 +87,14 @@ public class AreaStatsBar extends ObserverContainer<JPanel> {
     // ========================================
     private void updateTime() {
         String timeString = DateTimeUtils.formatFrameTimeStamp(workspace.getTime());
-        this.labelTime.setText(StringUtils.wrapHtml(StringUtils.wrapBold(StringUtils.applyFontSize(
+        labelTime.setText(StringUtils.wrapHtml(StringUtils.wrapBold(StringUtils.applyFontSize(
             timeString, 175))));
     }
 
     private void updateLevel() {
         double level = (workspace.getLevel() * workspace.getConfig().getLevelUnit());
         String levelString = "%.01f μm".formatted(level);
-        this.labelLevel.setText(StringUtils.wrapHtml(StringUtils.applyFontSize(
+        labelLevel.setText(StringUtils.wrapHtml(StringUtils.applyFontSize(
             levelString, 75)));
     }
 
@@ -103,7 +103,7 @@ public class AreaStatsBar extends ObserverContainer<JPanel> {
         int level = workspace.getLevel();
         String timeString = "%s: %d".formatted(getWord("menu.nav.time"), time);
         String levelString = "%s: %d".formatted(getWord("menu.nav.level"), level);
-        this.labelTimeLevel.setText(StringUtils.wrapHtml(StringUtils.wrapItalic(StringUtils.applyFontSize(
+        labelTimeLevel.setText(StringUtils.wrapHtml(StringUtils.wrapItalic(StringUtils.applyFontSize(
             timeString + " / " + levelString, 75))));
     }
 }

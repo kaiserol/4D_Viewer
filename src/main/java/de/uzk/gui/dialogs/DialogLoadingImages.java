@@ -29,7 +29,7 @@ public class DialogLoadingImages implements LoadingImageListener {
     private LoadingResult result;
 
     public DialogLoadingImages(Window parentWindow) {
-        this.dialog = ComponentUtils.createDialog(parentWindow, this::closeThread);
+        dialog = ComponentUtils.createDialog(parentWindow, this::closeThread);
     }
 
     public LoadingResult load(Path imagesDirectory, ImageFileType imageFileType) {
@@ -42,9 +42,9 @@ public class DialogLoadingImages implements LoadingImageListener {
 
             title += " (" + imageFileType.getDescription() + ")";
         }
-        this.dialog.setTitle(title);
-        this.dialog.getContentPane().removeAll();
-        this.dialog.setLayout(new BorderLayout());
+        dialog.setTitle(title);
+        dialog.getContentPane().removeAll();
+        dialog.setLayout(new BorderLayout());
 
         // Inhalt hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout(20, 20));
@@ -52,22 +52,22 @@ public class DialogLoadingImages implements LoadingImageListener {
         contentPanel.add(createProgressBarPanel(), BorderLayout.CENTER);
         contentPanel.add(createFileNamesPanel(imagesDirectory), BorderLayout.SOUTH);
 
-        this.dialog.add(contentPanel, BorderLayout.CENTER);
+        dialog.add(contentPanel, BorderLayout.CENTER);
 
         // Thread starten
-        this.thread = null;
-        this.result = null;
+        thread = null;
+        result = null;
         startThread(imagesDirectory, imageFileType);
 
         // Dialog anzeigen
-        this.dialog.pack();
-        this.dialog.setResizable(false);
-        this.dialog.setLocationRelativeTo(this.dialog.getOwner());
-        this.dialog.setVisible(true);
+        dialog.pack();
+        dialog.setResizable(false);
+        dialog.setLocationRelativeTo(dialog.getOwner());
+        dialog.setVisible(true);
 
         // Das übergebene LoadingResult wird zurückgegeben, wenn beim Laden der Bilder nichts schiefläuft (es können
         // theoretisch Exceptions auftreten, wodurch LoadingResult null gleichen könnte)
-        return this.result != null ? this.result : LoadingResult.LOADING_INTERRUPTED;
+        return result != null ? result : LoadingResult.LOADING_INTERRUPTED;
     }
 
     // ========================================
@@ -77,16 +77,16 @@ public class DialogLoadingImages implements LoadingImageListener {
         JPanel progressBarPanel = new JPanel(UIEnvironment.getDefaultBorderLayout());
 
         // Fortschrittsbalken hinzufügen
-        this.progressBar = new JProgressBar();
-        this.progressBar.setStringPainted(true);
-        this.progressBar.setIndeterminate(true);
-        this.progressBar.setPreferredSize(new Dimension(0, 20));
-        progressBarPanel.add(this.progressBar, BorderLayout.SOUTH);
+        progressBar = new JProgressBar();
+        progressBar.setStringPainted(true);
+        progressBar.setIndeterminate(true);
+        progressBar.setPreferredSize(new Dimension(0, 20));
+        progressBarPanel.add(progressBar, BorderLayout.SOUTH);
 
         // Anzahl gefundener Bilder hinzufügen
         JPanel imagesFoundPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
         imagesFoundPanel.add(new JLabel(getWord("dialog.loadingImages.foundImages") + ":"));
-        imagesFoundPanel.add(this.labelImagesCount = new JLabel("0"));
+        imagesFoundPanel.add(labelImagesCount = new JLabel("0"));
         progressBarPanel.add(imagesFoundPanel, BorderLayout.CENTER);
 
         return progressBarPanel;
@@ -99,9 +99,9 @@ public class DialogLoadingImages implements LoadingImageListener {
         GridBagConstraints gbc = ComponentUtils.createGridBagConstraints();
 
         // Dateiname hinzufügen
-        this.textFieldFileName = createTextField();
-        this.textFieldFileName.setFocusable(false);
-        ComponentUtils.addLabeledRow(fileNamesPanel, gbc, getWord("name.file"), this.textFieldFileName, 0);
+        textFieldFileName = createTextField();
+        textFieldFileName.setFocusable(false);
+        ComponentUtils.addLabeledRow(fileNamesPanel, gbc, getWord("name.file"), textFieldFileName, 0);
 
         // Verzeichnisname hinzufügen
         JTextField textFieldDirectoryName = createTextField();
@@ -121,19 +121,19 @@ public class DialogLoadingImages implements LoadingImageListener {
     // Thread Methoden
     // ========================================
     private void startThread(Path imagesDirectory, ImageFileType imageFileType) {
-        if (this.thread != null) return;
-        this.thread = new Thread(() -> {
-            this.result = workspace.loadImagesDirectory(imagesDirectory, imageFileType, DialogLoadingImages.this);
-            SwingUtilities.invokeLater(this.dialog::dispose);
+        if (thread != null) return;
+        thread = new Thread(() -> {
+            result = workspace.loadImagesDirectory(imagesDirectory, imageFileType, DialogLoadingImages.this);
+            SwingUtilities.invokeLater(dialog::dispose);
         });
-        this.thread.start();
+        thread.start();
     }
 
     private void closeThread() {
-        if (this.thread != null && this.thread.isAlive()) {
-            this.thread.interrupt();
+        if (thread != null && thread.isAlive()) {
+            thread.interrupt();
             try {
-                this.thread.join();
+                thread.join();
             } catch (InterruptedException e) {
                 logger.error("Failed to join the thread. (Process: Loading images ...)");
             }
@@ -152,8 +152,8 @@ public class DialogLoadingImages implements LoadingImageListener {
     public void onScanningStart(int filesCount, int currentFileNumber, int imagesCount) {
         SwingUtilities.invokeLater(() -> {
             updateProgress(filesCount, currentFileNumber, imagesCount);
-            this.progressBar.setIndeterminate(false);
-            this.progressBar.setMaximum(filesCount);
+            progressBar.setIndeterminate(false);
+            progressBar.setMaximum(filesCount);
         });
     }
 
@@ -164,7 +164,7 @@ public class DialogLoadingImages implements LoadingImageListener {
 
         SwingUtilities.invokeLater(() -> {
             updateProgress(filesCount, currentFileNumber, imagesCount);
-            this.textFieldFileName.setText(path.getFileName().toString());
+            textFieldFileName.setText(path.getFileName().toString());
         });
     }
 
@@ -172,7 +172,7 @@ public class DialogLoadingImages implements LoadingImageListener {
     public void onScanningComplete(int filesCount, int currentFileNumber, int imagesCount) {
         SwingUtilities.invokeLater(() -> {
             updateProgress(filesCount, currentFileNumber, imagesCount);
-            this.progressBar.setIndeterminate(true);
+            progressBar.setIndeterminate(true);
         });
     }
 
@@ -190,8 +190,8 @@ public class DialogLoadingImages implements LoadingImageListener {
     }
 
     private void updateProgress(int filesCount, int currentFileNumber, int imagesCount) {
-        this.progressBar.setValue(currentFileNumber);
-        this.progressBar.setString(currentFileNumber + " / " + filesCount);
-        this.labelImagesCount.setText(String.valueOf(imagesCount));
+        progressBar.setValue(currentFileNumber);
+        progressBar.setString(currentFileNumber + " / " + filesCount);
+        labelImagesCount.setText(String.valueOf(imagesCount));
     }
 }

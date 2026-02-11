@@ -36,35 +36,35 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
     }
 
     private void init() {
-        this.container.setFocusable(true);
-        this.container.setLayout(new BorderLayout());
-        this.container.addFocusListener(new FocusBorderListener());
-        this.container.addMouseListener(new FocusMouseListener());
-        this.container.addMouseWheelListener(gui.getActionHandler());
-        this.container.addKeyListener(gui.getActionHandler());
+        container.setFocusable(true);
+        container.setLayout(new BorderLayout());
+        container.addFocusListener(new FocusBorderListener());
+        container.addMouseListener(new FocusMouseListener());
+        container.addMouseWheelListener(gui.getActionHandler());
+        container.addKeyListener(gui.getActionHandler());
 
         // 1. Kopfbereich mit Statusinformationen hinzufügen
-        JPanel statsBarPanel = new AreaStatsBar(this.gui).getContainer();
-        this.container.add(statsBarPanel, BorderLayout.NORTH);
+        JPanel statsBarPanel = new AreaStatsBar(gui).getContainer();
+        container.add(statsBarPanel, BorderLayout.NORTH);
 
         // 2. Bildbereich mit Scrollbars hinzufügen
-        this.panelView = new JPanel(new BorderLayout());
+        panelView = new JPanel(new BorderLayout());
         imagePanel = new SensitiveImagePanel();
-        this.scrollBarTime = ComponentUtils.createScrollBar(Adjustable.HORIZONTAL, newValue -> handleScrollAction(newValue, Axis.TIME, this.scrollBarTime));
-        this.scrollBarLevel = ComponentUtils.createScrollBar(Adjustable.VERTICAL, newValue -> handleScrollAction(newValue, Axis.LEVEL, this.scrollBarLevel));
+        scrollBarTime = ComponentUtils.createScrollBar(Adjustable.HORIZONTAL, newValue -> handleScrollAction(newValue, Axis.TIME, scrollBarTime));
+        scrollBarLevel = ComponentUtils.createScrollBar(Adjustable.VERTICAL, newValue -> handleScrollAction(newValue, Axis.LEVEL, scrollBarLevel));
 
         int scrollBarWidth = UIManager.getInt("ScrollBar.width");
-        this.panelView.add(imagePanel, BorderLayout.CENTER);
-        this.panelView.add(createRightSpace(this.scrollBarTime, scrollBarWidth), BorderLayout.NORTH);
-        this.panelView.add(this.scrollBarLevel, BorderLayout.WEST);
+        panelView.add(imagePanel, BorderLayout.CENTER);
+        panelView.add(createRightSpace(scrollBarTime, scrollBarWidth), BorderLayout.NORTH);
+        panelView.add(scrollBarLevel, BorderLayout.WEST);
 
-        this.container.add(this.panelView, BorderLayout.CENTER);
-        this.container.setMinimumSize(new Dimension(scrollBarWidth * 3, scrollBarWidth * 3));
+        container.add(panelView, BorderLayout.CENTER);
+        container.setMinimumSize(new Dimension(scrollBarWidth * 3, scrollBarWidth * 3));
 
-        this.imageEditor = new ImageEditor();
-        this.imageEditor.onNewImageAvailable(imagePanel::updateImage);
+        imageEditor = new ImageEditor();
+        imageEditor.onNewImageAvailable(imagePanel::updateImage);
 
-        markerInteractionHandler = new MarkerInteractionHandler(this.imageEditor);
+        markerInteractionHandler = new MarkerInteractionHandler(imageEditor);
         imagePanel.addMouseListener(markerInteractionHandler);
         imagePanel.addMouseMotionListener(markerInteractionHandler);
     }
@@ -115,36 +115,36 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
     @Override
     public void toggleOn() {
         // Komponenten aktivieren
-        ComponentUtils.setEnabled(this.container, true);
+        ComponentUtils.setEnabled(container, true);
 
-        this.imageEditor.updateImage(true);
-        updateScrollBarValuesSecurely(this.scrollBarTime, workspace.getTime(), workspace.getMaxTime());
-        updateScrollBarValuesSecurely(this.scrollBarLevel, workspace.getLevel(), workspace.getMaxLevel());
+        imageEditor.updateImage(true);
+        updateScrollBarValuesSecurely(scrollBarTime, workspace.getTime(), workspace.getMaxTime());
+        updateScrollBarValuesSecurely(scrollBarLevel, workspace.getLevel(), workspace.getMaxLevel());
     }
     //endregion
 
     @Override
     public void toggleOff() {
         // Komponenten deaktivieren
-        ComponentUtils.setEnabled(this.container, false);
+        ComponentUtils.setEnabled(container, false);
 
-        this.imageEditor.updateImage(true);
-        updateScrollBarValuesSecurely(this.scrollBarTime, 0, 0);
-        updateScrollBarValuesSecurely(this.scrollBarLevel, 0, 0);
+        imageEditor.updateImage(true);
+        updateScrollBarValuesSecurely(scrollBarTime, 0, 0);
+        updateScrollBarValuesSecurely(scrollBarLevel, 0, 0);
     }
 
     @Override
     public void update(Axis axis) {
-        this.imageEditor.updateImage(true);
+        imageEditor.updateImage(true);
         switch (axis) {
-            case TIME -> ComponentUtils.setValueSecurely(this.scrollBarTime, workspace.getTime());
-            case LEVEL -> ComponentUtils.setValueSecurely(this.scrollBarLevel, workspace.getLevel());
+            case TIME -> ComponentUtils.setValueSecurely(scrollBarTime, workspace.getTime());
+            case LEVEL -> ComponentUtils.setValueSecurely(scrollBarLevel, workspace.getLevel());
         }
     }
 
     @Override
     public void updateTheme() {
-        setBorder(this.container.hasFocus());
+        setBorder(container.hasFocus());
     }
 
     //region Aktualisierungen
@@ -169,8 +169,8 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
     //region Hilfsmethoden
     private void setBorder(boolean focusedPanel) {
         Color borderColor = focusedPanel ? ColorUtils.COLOR_BLUE : UIEnvironment.getBorderColor();
-        this.container.setBorder(BorderFactory.createLineBorder(borderColor));
-        this.panelView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
+        container.setBorder(BorderFactory.createLineBorder(borderColor));
+        panelView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
     }
 
     //region Innere Klassen

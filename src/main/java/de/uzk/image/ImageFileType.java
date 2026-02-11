@@ -63,21 +63,21 @@ public enum ImageFileType {
     }
 
     public String getType() {
-        return this.type;
+        return type;
     }
 
     public String[] getExtensions() {
-        return Arrays.copyOf(this.extensions, this.extensions.length);
+        return Arrays.copyOf(extensions, extensions.length);
     }
 
     @JsonIgnore
     public String getDescription() {
-        return this.type + "-" + getWord("images");
+        return type + "-" + getWord("images");
     }
 
     @JsonIgnore
     public String getFullDescription() {
-        String[] formattedExtensions = Arrays.stream(this.extensions).
+        String[] formattedExtensions = Arrays.stream(extensions).
             map(ext -> "*." + ext).
             toArray(String[]::new);
 

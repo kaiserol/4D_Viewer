@@ -23,21 +23,21 @@ public class AreaTabs extends ObserverContainer<JPanel> {
     }
 
     private void init() {
-        this.container.setLayout(new BorderLayout());
-        this.container.setMinimumSize(new Dimension(0, 0));
+        container.setLayout(new BorderLayout());
+        container.setMinimumSize(new Dimension(0, 0));
 
         // TabbedPane erstellen
-        this.tabbedPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+        tabbedPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 
         // Erzwingt Fokus nach Tab-Wechsel
-        this.tabbedPane.addChangeListener(e -> this.tabbedPane.requestFocusInWindow());
-        this.tabbedPane.setFocusable(true);
+        tabbedPane.addChangeListener(e -> tabbedPane.requestFocusInWindow());
+        tabbedPane.setFocusable(true);
 
         // Tabs hinzufügen
-        this.tabbedPane.add(getWord("menu.edit"), new TabEdit(this.gui).getContainer());
-        this.tabbedPane.add(getWord("menu.nav"), new TabNavigate(this.gui).getContainer());
-        this.tabbedPane.add(getWord("menu.markers"), new TabMarkers(this.gui).getContainer());
-        this.container.add(this.tabbedPane, BorderLayout.CENTER);
+        tabbedPane.add(getWord("menu.edit"), new TabEdit(gui).getContainer());
+        tabbedPane.add(getWord("menu.nav"), new TabNavigate(gui).getContainer());
+        tabbedPane.add(getWord("menu.markers"), new TabMarkers(gui).getContainer());
+        container.add(tabbedPane, BorderLayout.CENTER);
     }
 
     // ========================================
@@ -46,12 +46,12 @@ public class AreaTabs extends ObserverContainer<JPanel> {
     @Override
     public void updateTheme() {
         // TabbedPane Border aktualisieren
-        this.container.setBorder(BorderFactory.createLineBorder(UIEnvironment.getBorderColor()));
+        container.setBorder(BorderFactory.createLineBorder(UIEnvironment.getBorderColor()));
 
         // Tabs Border aktualisieren
         Border emptyBorder = UIEnvironment.BORDER_EMPTY_DEFAULT;
-        for (int i = 0; i < this.tabbedPane.getTabCount(); i++) {
-            if (this.tabbedPane.getComponentAt(i) instanceof JPanel panel) {
+        for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+            if (tabbedPane.getComponentAt(i) instanceof JPanel panel) {
                 panel.setBorder(emptyBorder);
             }
         }

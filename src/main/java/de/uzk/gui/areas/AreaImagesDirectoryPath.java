@@ -23,17 +23,17 @@ public class AreaImagesDirectoryPath extends ObserverContainer<JPanel> {
     }
 
     private void init() {
-        this.container.setLayout(UIEnvironment.getDefaultBorderLayout());
+        container.setLayout(UIEnvironment.getDefaultBorderLayout());
 
         // Bilder-Verzeichnis Pfad hinzufügen
-        this.txtFieldDirectory = new JTextField();
-        this.txtFieldDirectory.setEditable(false);
-        this.txtFieldDirectory.putClientProperty("JTextField.placeholderText", getWord("imagesDirectory"));
-        this.container.add(this.txtFieldDirectory, BorderLayout.CENTER);
+        txtFieldDirectory = new JTextField();
+        txtFieldDirectory.setEditable(false);
+        txtFieldDirectory.putClientProperty("JTextField.placeholderText", getWord("imagesDirectory"));
+        container.add(txtFieldDirectory, BorderLayout.CENTER);
 
         JButton btnChooseDirectory = new JButton(getWord("menu.project.open"));
         btnChooseDirectory.addActionListener(a -> gui.getActionHandler().executeAction(ActionType.SHORTCUT_OPEN_FOLDER));
-        this.container.add(btnChooseDirectory, BorderLayout.EAST);
+        container.add(btnChooseDirectory, BorderLayout.EAST);
 
     }
 
@@ -61,10 +61,10 @@ public class AreaImagesDirectoryPath extends ObserverContainer<JPanel> {
     private void updateDirectoryText() {
         if (workspace.isLoaded()) {
             Path imagePath = workspace.getCurrentImageFile().getFilePath();
-            this.txtFieldDirectory.setText(imagePath.toAbsolutePath().toString());
+            txtFieldDirectory.setText(imagePath.toAbsolutePath().toString());
         } else {
-            this.txtFieldDirectory.setText(null);
+            txtFieldDirectory.setText(null);
         }
-        this.txtFieldDirectory.setCaretPosition(0);
+        txtFieldDirectory.setCaretPosition(0);
     }
 }

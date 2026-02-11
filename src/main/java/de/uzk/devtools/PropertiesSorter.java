@@ -323,7 +323,7 @@ public final class PropertiesSorter {
          */
         public Section(String header) {
             this.header = header;
-            this.subSections = new ArrayList<>();
+            subSections = new ArrayList<>();
         }
 
         /**
@@ -372,7 +372,7 @@ public final class PropertiesSorter {
          */
         private void addNewSubSection() {
             // TreeSet mit case-insensitive Sortierung
-            this.subSections.add(new TreeSet<>(PROPERTY_NAME_COMPARATOR));
+            subSections.add(new TreeSet<>(PROPERTY_NAME_COMPARATOR));
         }
 
         /**
@@ -384,11 +384,11 @@ public final class PropertiesSorter {
          */
         public void addLine(String line) {
             // Falls keine Untersektion existiert, initialisieren
-            if (this.subSections.isEmpty()) {
+            if (subSections.isEmpty()) {
                 addNewSubSection();
             }
 
-            Set<String> currentSubSection = this.subSections.get(this.subSections.size() - 1);
+            Set<String> currentSubSection = subSections.get(subSections.size() - 1);
             if (line.isBlank()) {
                 // Neue Untersektion nur starten, wenn die aktuelle nicht leer ist
                 if (!currentSubSection.isEmpty()) {
@@ -434,10 +434,10 @@ public final class PropertiesSorter {
          */
         @Override
         public int compareTo(@NotNull Section other) {
-            if (this.header == null && other.header == null) return 0;
-            if (this.header == null) return -1;
+            if (header == null && other.header == null) return 0;
+            if (header == null) return -1;
             if (other.header == null) return 1;
-            return this.header.compareToIgnoreCase(other.header);
+            return header.compareToIgnoreCase(other.header);
         }
     }
 }

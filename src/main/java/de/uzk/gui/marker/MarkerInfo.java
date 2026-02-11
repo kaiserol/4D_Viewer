@@ -38,16 +38,16 @@ public class MarkerInfo extends JPanel
 
     @Override
     public Dimension getMaximumSize() {
-        int height = this.getMinimumSize().height;
+        int height = getMinimumSize().height;
         int width = super.getMaximumSize().width;
         return new Dimension(width, height);
     }
 
     private void init() {
-        this.setBorder(new CompoundBorder(BorderFactory.createLineBorder(UIEnvironment.getBorderColor()), // Tatsächliche bBorder
+        setBorder(new CompoundBorder(BorderFactory.createLineBorder(UIEnvironment.getBorderColor()), // Tatsächliche bBorder
             BorderFactory.createEmptyBorder(5, 5, 5, 5) // Padding
         ));
-        this.setLayout(new GridBagLayout());
+        setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -59,7 +59,7 @@ public class MarkerInfo extends JPanel
         gbc.gridwidth = 3;
         gbc.insets = new Insets(0, 0, 0, 10);
 
-        this.add(getLabel(), gbc);
+        add(getLabel(), gbc);
 
         gbc.weightx = 1;
         gbc.gridy = 0;
@@ -72,10 +72,10 @@ public class MarkerInfo extends JPanel
         add(getJumpButton(), gbc);
 
         gbc.gridx += 1;
-        this.add(getEditButton(), gbc);
+        add(getEditButton(), gbc);
 
         gbc.gridx += 1;
-        this.add(getDeleteButton(), gbc);
+        add(getDeleteButton(), gbc);
 
     }
 

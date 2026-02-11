@@ -21,7 +21,7 @@ public class Markers {
     private final List<Marker> markers;
 
     public Markers() {
-        this.markers = new ArrayList<>();
+        markers = new ArrayList<>();
     }
 
     public static Markers load() {
@@ -35,11 +35,11 @@ public class Markers {
     }
 
     public List<Marker> getAllMarkers() {
-        return this.markers;
+        return markers;
     }
 
     public boolean addMarker(Marker marker) {
-        return this.markers.add(marker);
+        return markers.add(marker);
     }
 
     public void save() {
@@ -48,12 +48,12 @@ public class Markers {
     }
 
     public boolean remove(Marker marker) {
-        return this.markers.remove(marker);
+        return markers.remove(marker);
     }
 
     public boolean replace(Marker oldMarker, Marker newMarker) {
         AtomicBoolean found = new AtomicBoolean(false);
-        this.markers.replaceAll(marker -> {
+        markers.replaceAll(marker -> {
             if (marker == oldMarker) {
                 found.set(true);
                 return newMarker;
@@ -69,7 +69,7 @@ public class Markers {
      *
      */
     public List<Marker> getMarkersForImage(int time) {
-        return this.markers.stream().filter(m -> m.shouldRender(time)).toList();
+        return markers.stream().filter(m -> m.shouldRender(time)).toList();
     }
 
 }

@@ -26,7 +26,7 @@ public abstract class LogOutput {
      * Erzeugt einen neuen LogOutput ohne blockierte Protokollebenen.
      */
     public LogOutput() {
-        this.blockedLevels = new TreeSet<>(Comparator.comparing(LogLevel::getText));
+        blockedLevels = new TreeSet<>(Comparator.comparing(LogLevel::getText));
     }
 
     /**
@@ -35,7 +35,7 @@ public abstract class LogOutput {
      * @param level Zu blockierende Protokollebene
      */
     public void blockLevel(LogLevel level) {
-        this.blockedLevels.add(level);
+        blockedLevels.add(level);
     }
 
     /**
@@ -45,7 +45,7 @@ public abstract class LogOutput {
      * @return {@code true}, wenn die Protokollebene blockiert ist
      */
     public boolean isBlocked(LogLevel level) {
-        return this.blockedLevels.contains(level);
+        return blockedLevels.contains(level);
     }
 
     /**

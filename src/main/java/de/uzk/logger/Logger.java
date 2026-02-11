@@ -41,7 +41,7 @@ public class Logger {
      * Weitere Ausgabekanäle können über {@link #addOutput(LogOutput)} hinzugefügt werden.
      */
     public Logger() {
-        this.outputs = new ArrayList<>();
+        outputs = new ArrayList<>();
 
         // Konsolenausgabe
         LogOutput consoleOutput = new ConsoleOutput();
@@ -53,8 +53,8 @@ public class Logger {
         addOutput(fileOutput);
 
         // HTML-Ausgabe
-        this.htmlOutput = new HtmlOutput();
-        addOutput(this.htmlOutput);
+        htmlOutput = new HtmlOutput();
+        addOutput(htmlOutput);
     }
 
     /**
@@ -68,7 +68,7 @@ public class Logger {
      *                      ausgeschlossen werden sollen
      */
     public String exportHtml(LogLevel... blockedLevels) {
-        return this.htmlOutput.exportHtml(blockedLevels);
+        return htmlOutput.exportHtml(blockedLevels);
     }
 
     /**
@@ -79,7 +79,7 @@ public class Logger {
      */
     public void addOutput(LogOutput output) {
         if (output == null) throw new NullPointerException("Output is null.");
-        this.outputs.add(output);
+        outputs.add(output);
     }
 
     /**

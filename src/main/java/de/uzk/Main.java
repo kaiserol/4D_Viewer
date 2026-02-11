@@ -30,7 +30,7 @@ public class Main {
     public static final Settings settings;
     public static final History history;
     public static final Workspace workspace;
-    public static Logger logger;
+    public static final Logger logger;
 
     // Statische Initialisierung
     static {

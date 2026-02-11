@@ -15,7 +15,7 @@ public final class CustomMenuBar {
         if (menuBar == null) throw new NullPointerException("MenuBar is null.");
         this.menuBar = menuBar;
         this.name = name;
-        this.menus = new ArrayList<>();
+        menus = new ArrayList<>();
     }
 
     public CustomMenuBar() {
@@ -27,13 +27,13 @@ public final class CustomMenuBar {
     }
 
     public List<CustomMenu> getMenus() {
-        return this.menus;
+        return menus;
     }
 
     public void add(CustomMenu menu) {
         if (menu == null) throw new NullPointerException("Menu is null.");
-        this.menuBar.add(menu.getComponent());
-        this.menus.add(menu);
+        menuBar.add(menu.getComponent());
+        menus.add(menu);
     }
 
     public void add(CustomMenu... menus) {

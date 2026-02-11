@@ -71,7 +71,7 @@ public enum ActionType {
         if (shortcuts == null) throw new NullPointerException("Shortcuts are null.");
         if (Arrays.stream(shortcuts).anyMatch(Objects::isNull)) throw new NullPointerException("Shortcut is null.");
         this.shortcuts = List.of(shortcuts);
-        this.keyEventType = !this.shortcuts.isEmpty() ? KeyEventType.RELEASED : KeyEventType.NONE;
+        keyEventType = !this.shortcuts.isEmpty() ? KeyEventType.RELEASED : KeyEventType.NONE;
     }
 
     public static ActionType fromKeyEvent(KeyEvent e) {
@@ -88,11 +88,11 @@ public enum ActionType {
     }
 
     public List<Shortcut> getShortcuts() {
-        return this.shortcuts;
+        return shortcuts;
     }
 
     private KeyEventType getKeyEventType() {
-        return this.keyEventType;
+        return keyEventType;
     }
 
     /**

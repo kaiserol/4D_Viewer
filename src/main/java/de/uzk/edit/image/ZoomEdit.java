@@ -7,7 +7,7 @@ public class ZoomEdit extends ImageEdit {
     private final int percentageDifference;
 
     public ZoomEdit(int percentage) {
-        this.percentageDifference = workspace.getConfig().getZoom() - percentage;
+        percentageDifference = workspace.getConfig().getZoom() - percentage;
     }
 
     @Override

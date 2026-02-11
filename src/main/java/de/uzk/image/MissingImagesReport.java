@@ -12,7 +12,7 @@ public class MissingImagesReport {
     private final Map<Integer, List<Integer>> missingByTime;
 
     public MissingImagesReport() {
-        this.missingByTime = new HashMap<>();
+        missingByTime = new HashMap<>();
     }
 
     // ========================================
@@ -44,11 +44,11 @@ public class MissingImagesReport {
     }
 
     public int getMissingImagesCount() {
-        return this.missingByTime.values().stream().mapToInt(List::size).sum();
+        return missingByTime.values().stream().mapToInt(List::size).sum();
     }
 
     public void clear() {
-        this.missingByTime.clear();
+        missingByTime.clear();
     }
 
     public void logReport(boolean onLoading) {
@@ -78,7 +78,7 @@ public class MissingImagesReport {
         }
 
         // Alte Liste aus Map ableiten
-        List<ImageFile> oldMissingList = getAllMissingImagesFromMap(this.missingByTime);
+        List<ImageFile> oldMissingList = getAllMissingImagesFromMap(missingByTime);
 
         // Prüfen, ob sich etwas geändert hat
         if (hasDifferences(oldMissingList, newMissingList)) {
@@ -92,8 +92,8 @@ public class MissingImagesReport {
         }
 
         // Map aktualisieren
-        this.missingByTime.clear();
-        this.missingByTime.putAll(newMissingByTime);
+        missingByTime.clear();
+        missingByTime.putAll(newMissingByTime);
     }
 
     // ========================================

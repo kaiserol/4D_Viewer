@@ -47,7 +47,7 @@ public class TabMarkers extends ObserverContainer<JPanel> {
         if (!currentMarkers.isEmpty()) {
             Box panel = new Box(BoxLayout.Y_AXIS);
             for (Marker currentMarker : currentMarkers) {
-                JPanel next = new MarkerInfo(currentMarker, this.gui);
+                JPanel next = new MarkerInfo(currentMarker, gui);
 
                 panel.add(next);
                 panel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -70,12 +70,12 @@ public class TabMarkers extends ObserverContainer<JPanel> {
 
     @Override
     public void toggleOn() {
-        ComponentUtils.setEnabled(this.container, true);
+        ComponentUtils.setEnabled(container, true);
     }
 
     @Override
     public void toggleOff() {
-        ComponentUtils.setEnabled(this.container, false);
+        ComponentUtils.setEnabled(container, false);
     }
 
     @Override

@@ -17,11 +17,11 @@ public class SnapshotCropper extends JPanel {
 
     public SnapshotCropper(BufferedImage image) {
         this.image = image;
-        this.imageCropRect = new Rectangle(0, 0, image.getWidth(), image.getHeight());
-        this.dragHandler = new DragHandler();
-        this.addMouseMotionListener(dragHandler);
-        this.addMouseListener(dragHandler);
-        this.scale = GraphicsUtils.getImageScaleFactor(image, new Dimension(800, 600));
+        imageCropRect = new Rectangle(0, 0, image.getWidth(), image.getHeight());
+        dragHandler = new DragHandler();
+        addMouseMotionListener(dragHandler);
+        addMouseListener(dragHandler);
+        scale = GraphicsUtils.getImageScaleFactor(image, new Dimension(800, 600));
     }
 
     @Override
@@ -38,9 +38,9 @@ public class SnapshotCropper extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.clearRect(0, 0, this.getWidth(), this.getHeight());
+        g2d.clearRect(0, 0, getWidth(), getHeight());
         g2d.scale(scale, scale);
-        g.drawImage(this.image, 0, 0, this.image.getWidth(), this.image.getHeight(), null);
+        g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
 
         drawCropRect(g2d);
         dragHandler.drawResizePoints(g2d);
@@ -56,7 +56,7 @@ public class SnapshotCropper extends JPanel {
     }
 
     public BufferedImage getCroppedImage() {
-        return this.image.getSubimage(imageCropRect.x, imageCropRect.y, imageCropRect.width, imageCropRect.height);
+        return image.getSubimage(imageCropRect.x, imageCropRect.y, imageCropRect.width, imageCropRect.height);
     }
 
     private class DragHandler extends MouseAdapter {

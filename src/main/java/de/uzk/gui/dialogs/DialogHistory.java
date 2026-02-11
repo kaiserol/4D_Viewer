@@ -18,26 +18,26 @@ public class DialogHistory {
     private final JDialog dialog;
 
     public DialogHistory(Window parentWindow) {
-        this.dialog = ComponentUtils.createDialog(parentWindow, null);
+        dialog = ComponentUtils.createDialog(parentWindow, null);
     }
 
     public void show() {
-        this.dialog.setTitle(getWord("dialog.history"));
-        this.dialog.getContentPane().removeAll();
-        this.dialog.setLayout(new BorderLayout());
+        dialog.setTitle(getWord("dialog.history"));
+        dialog.getContentPane().removeAll();
+        dialog.setLayout(new BorderLayout());
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBorder(UIEnvironment.BORDER_EMPTY_DEFAULT);
         contentPanel.add(createHistoryPanel(), BorderLayout.CENTER);
 
-        this.dialog.add(contentPanel, BorderLayout.CENTER);
+        dialog.add(contentPanel, BorderLayout.CENTER);
 
         // Dialog anzeigen
-        this.dialog.pack();
-        this.dialog.setResizable(false);
-        this.dialog.setLocationRelativeTo(this.dialog.getOwner());
-        this.dialog.setVisible(true);
+        dialog.pack();
+        dialog.setResizable(false);
+        dialog.setLocationRelativeTo(dialog.getOwner());
+        dialog.setVisible(true);
     }
 
     // ========================================

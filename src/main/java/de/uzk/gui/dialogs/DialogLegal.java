@@ -18,13 +18,13 @@ public class DialogLegal {
     private final JDialog dialog;
 
     public DialogLegal(Window parentWindow) {
-        this.dialog = ComponentUtils.createDialog(parentWindow, null);
+        dialog = ComponentUtils.createDialog(parentWindow, null);
     }
 
     public void show() {
-        this.dialog.setTitle(getWord("dialog.legal"));
-        this.dialog.getContentPane().removeAll();
-        this.dialog.setLayout(new BorderLayout());
+        dialog.setTitle(getWord("dialog.legal"));
+        dialog.getContentPane().removeAll();
+        dialog.setLayout(new BorderLayout());
 
         // Inhalte hinzufügen
         JPanel contentPanel = new JPanel();
@@ -36,13 +36,13 @@ public class DialogLegal {
         contentPanel.add(Box.createVerticalStrut(UIEnvironment.SPACING_DEFAULT));
         contentPanel.add(createSubTitledContentPanel("dialog.legal.subTitle.disclaimer", "dialog.legal.text.disclaimer"));
 
-        this.dialog.add(contentPanel, BorderLayout.CENTER);
+        dialog.add(contentPanel, BorderLayout.CENTER);
 
         // Dialog anzeigen
-        this.dialog.pack();
-        this.dialog.setResizable(false);
-        this.dialog.setLocationRelativeTo(this.dialog.getOwner());
-        this.dialog.setVisible(true);
+        dialog.pack();
+        dialog.setResizable(false);
+        dialog.setLocationRelativeTo(dialog.getOwner());
+        dialog.setVisible(true);
     }
 
     // ========================================

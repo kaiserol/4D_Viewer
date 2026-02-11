@@ -15,12 +15,12 @@ public class AddMarkerEdit extends Edit {
 
     @Override
     public boolean perform() {
-        return workspace.getMarkers().addMarker(this.marker);
+        return workspace.getMarkers().addMarker(marker);
     }
 
     @Override
     public void undo() {
-        workspace.getMarkers().remove(this.marker);
+        workspace.getMarkers().remove(marker);
     }
 
     @Override

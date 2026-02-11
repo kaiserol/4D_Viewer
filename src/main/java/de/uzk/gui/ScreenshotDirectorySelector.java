@@ -15,10 +15,10 @@ public class ScreenshotDirectorySelector extends JPanel {
     private Path currentDirectory;
 
     public ScreenshotDirectorySelector(Path screenshotDirectory) {
-        this.fileChooser = new JFileChooser();
-        this.fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        this.fileChooser.setCurrentDirectory(screenshotDirectory.toFile());
-        this.currentDirectory = screenshotDirectory;
+        fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setCurrentDirectory(screenshotDirectory.toFile());
+        currentDirectory = screenshotDirectory;
         init();
     }
 
@@ -44,7 +44,7 @@ public class ScreenshotDirectorySelector extends JPanel {
     }
 
     private void openDialog() {
-        this.fileChooser.showOpenDialog(null);
+        fileChooser.showOpenDialog(null);
         if (fileChooser.getSelectedFile() != null && !Objects.equals(currentDirectory, fileChooser.getSelectedFile().toPath())) {
             currentDirectory = fileChooser.getSelectedFile().toPath();
             handlers.forEach(handler -> handler.accept(currentDirectory));

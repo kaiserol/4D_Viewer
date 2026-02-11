@@ -36,12 +36,12 @@ public class Settings {
         @JsonProperty("initialDirectory") InitialDirectory initialDirectory,
         @JsonProperty("screenshotDirectory") Path screenshotDirectory
     ) {
-        this.setLanguage(language);
-        this.setTheme(theme);
-        this.setFontSize(fontSize);
-        this.setConfirmExit(confirmExit);
-        this.setInitialDirectory(initialDirectory);
-        this.setScreenshotDirectory(screenshotDirectory);
+        setLanguage(language);
+        setTheme(theme);
+        setFontSize(fontSize);
+        setConfirmExit(confirmExit);
+        setInitialDirectory(initialDirectory);
+        setScreenshotDirectory(screenshotDirectory);
     }
 
     public static Settings load() {
@@ -64,7 +64,7 @@ public class Settings {
     }
 
     public Language getLanguage() {
-        return this.language;
+        return language;
     }
 
     public boolean setLanguage(Language language) {
@@ -81,7 +81,7 @@ public class Settings {
     }
 
     public Theme getTheme() {
-        return this.theme;
+        return theme;
     }
 
     public boolean setTheme(Theme theme) {
@@ -97,7 +97,7 @@ public class Settings {
     }
 
     public InitialDirectory getInitialDirectory() {
-        return this.initialDirectory;
+        return initialDirectory;
     }
 
     public boolean setInitialDirectory(InitialDirectory initialDirectory) {

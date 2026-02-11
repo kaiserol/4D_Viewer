@@ -34,117 +34,117 @@ public class Workspace {
     private int maxLevel;
 
     public Workspace() {
-        this.missingImagesReport = new MissingImagesReport();
-        this.pinTimes = new ArrayList<>();
+        missingImagesReport = new MissingImagesReport();
+        pinTimes = new ArrayList<>();
         reset();
     }
 
     public Path getImagesDirectory() {
-        return this.imagesDirectory;
+        return imagesDirectory;
     }
 
     public Config getConfig() {
-        return this.config;
+        return config;
     }
 
     public EditManager getEditManager() {
-        return this.editManager;
+        return editManager;
     }
 
     public Markers getMarkers() {
-        return this.markers;
+        return markers;
     }
 
     private void loadConfigs(ImageFileType imageFileType) {
-        this.config = Config.load();
-        this.markers = Markers.load();
+        config = Config.load();
+        markers = Markers.load();
         if (imageFileType != null) {
-            this.config.setImageFileType(imageFileType);
+            config.setImageFileType(imageFileType);
         }
     }
 
     public void saveConfigs() {
         if (isLoaded()) {
-            this.config.save();
-            this.markers.save();
+            config.save();
+            markers.save();
         }
     }
 
     public boolean isLoaded() {
-        return this.matrix != null;
+        return matrix != null;
     }
 
     ImageFile getImageFile(int time, int level) {
-        return this.matrix[time][level];
+        return matrix[time][level];
     }
 
     void setImageFile(int time, int level, ImageFile imageFile) {
-        this.matrix[time][level] = imageFile;
+        matrix[time][level] = imageFile;
     }
 
     public ImageFile getCurrentImageFile() {
-        return this.currentImageFile;
+        return currentImageFile;
     }
 
     private void setCurrentImageFile(int time, int level) {
-        this.currentImageFile = getImageFile(time, level);
+        currentImageFile = getImageFile(time, level);
         this.time = currentImageFile.getTime();
         this.level = currentImageFile.getLevel();
     }
 
     public int getTime() {
-        return this.time;
+        return time;
     }
 
     public void setTime(int time) {
         if (!isLoaded() || isTimeInvalid(time)) return;
-        setCurrentImageFile(time, this.currentImageFile.getLevel());
+        setCurrentImageFile(time, currentImageFile.getLevel());
     }
 
     private boolean isTimeInvalid(int time) {
-        if (NumberUtils.valueInRange(time, 0, this.maxTime)) return false;
+        if (NumberUtils.valueInRange(time, 0, maxTime)) return false;
         logger.error("Invalid Time: " + time);
         return true;
     }
 
     public int getLevel() {
-        return this.level;
+        return level;
     }
 
     public void setLevel(int level) {
         if (!isLoaded() || isLevelInvalid(level)) return;
-        setCurrentImageFile(this.currentImageFile.getTime(), level);
+        setCurrentImageFile(currentImageFile.getTime(), level);
     }
 
     private boolean isLevelInvalid(int level) {
-        if (NumberUtils.valueInRange(level, 0, this.maxLevel)) return false;
+        if (NumberUtils.valueInRange(level, 0, maxLevel)) return false;
         logger.error("Invalid Level: " + level);
         return true;
     }
 
     public int getMaxTime() {
-        return this.maxTime;
+        return maxTime;
     }
 
     public int getMaxLevel() {
-        return this.maxLevel;
+        return maxLevel;
     }
 
     public List<Integer> getPinTimes() {
-        return new ArrayList<>(this.pinTimes);
+        return new ArrayList<>(pinTimes);
     }
 
     public boolean isPinned(Integer time) {
         if (!isLoaded() && isTimeInvalid(time)) return false;
-        return this.pinTimes.contains(time);
+        return pinTimes.contains(time);
     }
 
     public void togglePinTime() {
         if (!isLoaded()) return;
 
-        Integer time = this.currentImageFile.getTime();
-        if (isPinned(time)) this.pinTimes.remove(time);
-        else this.pinTimes.add(time);
+        Integer time = currentImageFile.getTime();
+        if (isPinned(time)) pinTimes.remove(time);
+        else pinTimes.add(time);
     }
 
     // ========================================
@@ -153,16 +153,16 @@ public class Workspace {
     public void toFirst(Axis axis) {
         if (!isLoaded()) return;
         switch (axis) {
-            case TIME -> setCurrentImageFile(0, this.currentImageFile.getLevel());
-            case LEVEL -> setCurrentImageFile(this.currentImageFile.getTime(), 0);
+            case TIME -> setCurrentImageFile(0, currentImageFile.getLevel());
+            case LEVEL -> setCurrentImageFile(currentImageFile.getTime(), 0);
         }
     }
 
     public void toLast(Axis axis) {
         if (!isLoaded()) return;
         switch (axis) {
-            case TIME -> setCurrentImageFile(this.maxTime, this.currentImageFile.getLevel());
-            case LEVEL -> setCurrentImageFile(this.currentImageFile.getTime(), this.maxLevel);
+            case TIME -> setCurrentImageFile(maxTime, currentImageFile.getLevel());
+            case LEVEL -> setCurrentImageFile(currentImageFile.getTime(), maxLevel);
         }
     }
 
@@ -170,12 +170,12 @@ public class Workspace {
         if (!isLoaded()) return;
         switch (axis) {
             case TIME -> {
-                int prevTime = Math.max(0, this.currentImageFile.getTime() - 1);
-                setCurrentImageFile(prevTime, this.currentImageFile.getLevel());
+                int prevTime = Math.max(0, currentImageFile.getTime() - 1);
+                setCurrentImageFile(prevTime, currentImageFile.getLevel());
             }
             case LEVEL -> {
-                int prevLevel = Math.max(0, this.currentImageFile.getLevel() - 1);
-                setCurrentImageFile(this.currentImageFile.getTime(), prevLevel);
+                int prevLevel = Math.max(0, currentImageFile.getLevel() - 1);
+                setCurrentImageFile(currentImageFile.getTime(), prevLevel);
             }
         }
     }
@@ -184,12 +184,12 @@ public class Workspace {
         if (!isLoaded()) return;
         switch (axis) {
             case TIME -> {
-                int nextTime = Math.min(this.maxTime, this.currentImageFile.getTime() + 1);
-                setCurrentImageFile(nextTime, this.currentImageFile.getLevel());
+                int nextTime = Math.min(maxTime, currentImageFile.getTime() + 1);
+                setCurrentImageFile(nextTime, currentImageFile.getLevel());
             }
             case LEVEL -> {
-                int nextLevel = Math.min(this.maxLevel, this.currentImageFile.getLevel() + 1);
-                setCurrentImageFile(this.currentImageFile.getTime(), nextLevel);
+                int nextLevel = Math.min(maxLevel, currentImageFile.getLevel() + 1);
+                setCurrentImageFile(currentImageFile.getTime(), nextLevel);
             }
         }
     }
@@ -198,26 +198,26 @@ public class Workspace {
     // Zurücksetzen
     // ========================================
     public void reset() {
-        this.imagesDirectory = null;
-        this.config = Config.getDefault();
-        this.markers = new Markers();
+        imagesDirectory = null;
+        config = Config.getDefault();
+        markers = new Markers();
         clearTemp();
     }
 
     private void clearTemp() {
         // ImageFiles
-        this.matrix = null;
-        this.currentImageFile = null;
+        matrix = null;
+        currentImageFile = null;
 
         // Zeit, Level
-        this.time = 0;
-        this.level = 0;
-        this.maxLevel = 0;
-        this.maxTime = 0;
+        time = 0;
+        level = 0;
+        maxLevel = 0;
+        maxTime = 0;
 
         // Listen leeren
-        this.missingImagesReport.clear();
-        this.pinTimes.clear();
+        missingImagesReport.clear();
+        pinTimes.clear();
     }
 
     // ========================================
@@ -227,23 +227,23 @@ public class Workspace {
         if (imagesDirectory != null && Files.isDirectory(imagesDirectory)) {
             // Prüfe, ob das Verzeichnis bereits in der UI geladen ist
             boolean sameDirectory = Objects.equals(this.imagesDirectory, imagesDirectory);
-            boolean sameFileType = this.config.getImageFileType() == imageFileType;
+            boolean sameFileType = config.getImageFileType() == imageFileType;
             if (sameDirectory && sameFileType) return LoadingResult.DIRECTORY_ALREADY_LOADED;
 
             // Verzeichnis, Config & Markers speichern
             Path oldImagesDirectory = this.imagesDirectory;
-            Config oldConfig = this.config;
-            Markers oldMarkers = this.markers;
-            this.saveConfigs();
+            Config oldConfig = config;
+            Markers oldMarkers = markers;
+            saveConfigs();
 
             // Verzeichnis, Config & Markers laden
             this.imagesDirectory = imagesDirectory;
-            this.loadConfigs(imageFileType);
+            loadConfigs(imageFileType);
 
             // Lade das Verzeichnis, wenn es Bilder hat
             LoadingResult badResult;
             try {
-                if (this.loadImages(progress)) {
+                if (loadImages(progress)) {
                     history.add(imagesDirectory);
                     return LoadingResult.LOADING_SUCCESSFUL;
                 }
@@ -254,8 +254,8 @@ public class Workspace {
 
             // Variablen zurücksetzen
             this.imagesDirectory = oldImagesDirectory;
-            this.config = oldConfig;
-            this.markers = oldMarkers;
+            config = oldConfig;
+            markers = oldMarkers;
             return badResult;
         }
         return LoadingResult.DIRECTORY_DOES_NOT_EXIST;
@@ -266,7 +266,7 @@ public class Workspace {
 
         // Pfade laden
         List<Path> paths;
-        try (DirectoryStream<Path> directory = Files.newDirectoryStream(this.imagesDirectory, Files::isRegularFile)) {
+        try (DirectoryStream<Path> directory = Files.newDirectoryStream(imagesDirectory, Files::isRegularFile)) {
             paths = StreamSupport.stream(directory.spliterator(), true).toList();
         } catch (IOException e) {
             progress.onLoadingComplete(0);
@@ -329,8 +329,8 @@ public class Workspace {
 
         // Matrix vorbereiten
         clearTemp();
-        this.maxTime = tempMaxTime;
-        this.maxLevel = tempMaxLevel;
+        maxTime = tempMaxTime;
+        maxLevel = tempMaxLevel;
 
         // Erstelle die Matrix und setze imageFile auf (time=0, level=0)
         int imagesCount = createMatrix(imageFiles);
@@ -344,9 +344,9 @@ public class Workspace {
     // Erstelle Matrix
     // ========================================
     private int createMatrix(Set<ImageFile> imageFiles) {
-        int tSize = this.maxTime + 1;
-        int lSize = this.maxLevel + 1;
-        this.matrix = new ImageFile[tSize][lSize];
+        int tSize = maxTime + 1;
+        int lSize = maxLevel + 1;
+        matrix = new ImageFile[tSize][lSize];
 
         // Neuen Report aufbauen
         StringBuilder reportBuilder = new StringBuilder();
@@ -379,7 +379,7 @@ public class Workspace {
         if (imagesCount < expectedImagesCount) {
             ImageFile referenceImageFile = imageFiles.stream().findFirst().orElse(null);
             addDummyImageFiles(referenceImageFile);
-            this.missingImagesReport.logReport(true);
+            missingImagesReport.logReport(true);
         }
         return imagesCount;
     }
@@ -407,11 +407,11 @@ public class Workspace {
     // ========================================
 
     public void logMissingImages() {
-        this.missingImagesReport.logReport(false);
+        missingImagesReport.logReport(false);
     }
 
     public String getMissingImagesReport() {
-        return this.missingImagesReport.getHtmlReport();
+        return missingImagesReport.getHtmlReport();
     }
 
     // ========================================
@@ -419,9 +419,9 @@ public class Workspace {
     // ========================================
     public String getImageFileNamePattern() {
         return "(?i)" +                               // Case-insensitive Matching
-            this.config.getTimeSep() + "\\d+" +       // Zeitkomponente (mind. 1 Ziffer)
-            this.config.getLevelSep() + "\\d+" +      // Levelkomponente (mind. 1 Ziffer)
-            "\\." + StringUtils.formatArray(this.config.getImageFileType().getExtensions(), "|", '(', ')') + "$";
+            config.getTimeSep() + "\\d+" +       // Zeitkomponente (mind. 1 Ziffer)
+            config.getLevelSep() + "\\d+" +      // Levelkomponente (mind. 1 Ziffer)
+            "\\." + StringUtils.formatArray(config.getImageFileType().getExtensions(), "|", '(', ')') + "$";
     }
 
     private Path getDummyImageFilePath(int time, int level, ImageFile referenceImageFile) {
@@ -433,19 +433,19 @@ public class Workspace {
         String extension = getExtension(fileName);
 
         // Dynamische Bestandteile erzeugen
-        String timeStr = (this.config.getTimeSep() + "%0" + timeStrLength + "d").formatted(time);
-        String levelStr = (this.config.getLevelSep() + "%0" + levelStrLength + "d").formatted(level);
+        String timeStr = (config.getTimeSep() + "%0" + timeStrLength + "d").formatted(time);
+        String levelStr = (config.getLevelSep() + "%0" + levelStrLength + "d").formatted(level);
         return parentDirectory.resolve(timeStr + levelStr + "." + extension);
     }
 
     private String getTimeStr(String fileName) {
-        int startIndex = fileName.indexOf(this.config.getTimeSep()) + this.config.getTimeSep().length();
-        int endIndex = fileName.lastIndexOf(this.config.getLevelSep());
+        int startIndex = fileName.indexOf(config.getTimeSep()) + config.getTimeSep().length();
+        int endIndex = fileName.lastIndexOf(config.getLevelSep());
         return fileName.substring(startIndex, endIndex);
     }
 
     private String getLevelStr(String fileName) {
-        int startIndex = fileName.indexOf(this.config.getLevelSep()) + this.config.getLevelSep().length();
+        int startIndex = fileName.indexOf(config.getLevelSep()) + config.getLevelSep().length();
         int dotIndex = fileName.lastIndexOf('.');
         return fileName.substring(startIndex, dotIndex);
     }

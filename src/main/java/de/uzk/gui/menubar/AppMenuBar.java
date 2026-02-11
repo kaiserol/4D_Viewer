@@ -24,16 +24,16 @@ public class AppMenuBar extends ObserverContainer<JMenuBar> {
 
     public AppMenuBar(Gui gui) {
         super(new JMenuBar(), gui);
-        this.menuBar = new CustomMenuBar(this.container, "MenuBar");
+        menuBar = new CustomMenuBar(container, "MenuBar");
         init(gui.getActionHandler());
     }
 
     private void init(ActionHandler actionHandler) {
-        this.menuBar.add(getMenuProjects(actionHandler));
-        this.menuBar.add(getMenuEdit(actionHandler));
-        this.menuBar.add(getMenuNavigate(actionHandler));
-        this.menuBar.add(getMenuWindow(actionHandler));
-        this.menuBar.add(getMenuHelp(actionHandler));
+        menuBar.add(getMenuProjects(actionHandler));
+        menuBar.add(getMenuEdit(actionHandler));
+        menuBar.add(getMenuNavigate(actionHandler));
+        menuBar.add(getMenuWindow(actionHandler));
+        menuBar.add(getMenuHelp(actionHandler));
     }
 
     private CustomMenu getMenuProjects(ActionHandler actionHandler) {

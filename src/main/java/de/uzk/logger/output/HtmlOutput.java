@@ -34,7 +34,7 @@ public class HtmlOutput extends LogOutput {
      * den internen Ausgabepuffer.
      */
     public HtmlOutput() {
-        this.entries = new LinkedHashMap<>();
+        entries = new LinkedHashMap<>();
     }
 
     /**
@@ -61,7 +61,7 @@ public class HtmlOutput extends LogOutput {
                 // Nachricht
                 formattedEntry.get(6);
 
-        this.entries.put(StringUtils.wrapPre(result), entry.getLevel());
+        entries.put(StringUtils.wrapPre(result), entry.getLevel());
     }
 
     /**
@@ -74,7 +74,7 @@ public class HtmlOutput extends LogOutput {
     public String exportHtml(LogLevel... blockedLevels) {
         List<String> output = new ArrayList<>();
 
-        for (Map.Entry<String, LogLevel> e : this.entries.entrySet()) {
+        for (Map.Entry<String, LogLevel> e : entries.entrySet()) {
             boolean skip = false;
             if (blockedLevels != null) {
                 for (LogLevel level : blockedLevels) {

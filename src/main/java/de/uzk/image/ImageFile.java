@@ -18,35 +18,35 @@ public class ImageFile implements Comparable<ImageFile> {
         if (time < 0) throw new IllegalArgumentException("Time must be greater than 0.");
         if (level < 0) throw new IllegalArgumentException("Level must be greater than 0.");
         this.filePath = filePath;
-        this.name = filePath.getFileName().toString();
+        name = filePath.getFileName().toString();
         this.time = time;
         this.level = level;
     }
 
     public Path getFilePath() {
-        return this.filePath;
+        return filePath;
     }
 
     public String getFileName() {
-        return this.name;
+        return name;
     }
 
     public int getTime() {
-        return this.time;
+        return time;
     }
 
     public int getLevel() {
-        return this.level;
+        return level;
     }
 
     public boolean exists() {
-        return Files.exists(this.filePath);
+        return Files.exists(filePath);
     }
 
     @Override
     public int compareTo(@NotNull ImageFile imageFile) {
-        if (this.time != imageFile.time) return Integer.compare(this.time, imageFile.time);
-        if (this.level != imageFile.level) return Integer.compare(this.level, imageFile.level);
+        if (time != imageFile.time) return Integer.compare(time, imageFile.time);
+        if (level != imageFile.level) return Integer.compare(level, imageFile.level);
         return filePath.getFileName().compareTo(imageFile.filePath.getFileName());
     }
 
@@ -55,16 +55,16 @@ public class ImageFile implements Comparable<ImageFile> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ImageFile imageFile = (ImageFile) o;
-        return this.time == imageFile.time && this.level == imageFile.level;
+        return time == imageFile.time && level == imageFile.level;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.time, this.level);
+        return Objects.hash(time, level);
     }
 
     @Override
     public String toString() {
-        return this.name;
+        return name;
     }
 }

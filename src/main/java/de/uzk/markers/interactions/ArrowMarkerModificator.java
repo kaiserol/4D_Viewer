@@ -55,7 +55,7 @@ public class ArrowMarkerModificator implements MarkerModificator {
 
     @Override
     public void beginMove() {
-        moveEdit = new MoveArrowEdit(this.marker);
+        moveEdit = new MoveArrowEdit(marker);
     }
 
     @Override

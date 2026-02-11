@@ -27,7 +27,7 @@ public class TabNavigate extends ObserverContainer<JPanel> {
     }
 
     private void init() {
-        this.container.setLayout(new BorderLayout()); //Um die Inputs ganz oben platzieren zu können
+        container.setLayout(new BorderLayout()); //Um die Inputs ganz oben platzieren zu können
 
         JPanel editorPanel = new JPanel(new GridBagLayout());
 
@@ -45,7 +45,7 @@ public class TabNavigate extends ObserverContainer<JPanel> {
 
         // timeSpinner
         SpinnerNumberModel timeSpinnerModel = new SpinnerNumberModel(30, Config.MIN_TIME_UNIT, Config.MAX_TIME_UNIT, 0.1);
-        this.timeUnitSpinner = getUnitSpinner(timeSpinnerModel, Axis.TIME);
+        timeUnitSpinner = getUnitSpinner(timeSpinnerModel, Axis.TIME);
         editorPanel.add(timeUnitSpinner, gbc);
 
         // gbc
@@ -71,7 +71,7 @@ public class TabNavigate extends ObserverContainer<JPanel> {
         gbc.gridheight = 200;
         // timeSpinner
         SpinnerNumberModel levelSpinnerModel = new SpinnerNumberModel(1, Config.MIN_LEVEL_UNIT, Config.MAX_LEVEL_UNIT, 0.1);
-        this.levelUnitSpinner = getUnitSpinner(levelSpinnerModel, Axis.LEVEL);
+        levelUnitSpinner = getUnitSpinner(levelSpinnerModel, Axis.LEVEL);
         editorPanel.add(levelUnitSpinner, gbc);
 
         // gbc
@@ -83,7 +83,7 @@ public class TabNavigate extends ObserverContainer<JPanel> {
         JLabel levelUnitLabel = new JLabel(getWord("menu.nav.level.unit"));
         editorPanel.add(levelUnitLabel, gbc);
 
-        this.container.add(editorPanel, BorderLayout.NORTH);
+        container.add(editorPanel, BorderLayout.NORTH);
     }
 
 
@@ -114,16 +114,16 @@ public class TabNavigate extends ObserverContainer<JPanel> {
 
     @Override
     public void toggleOn() {
-        ComponentUtils.setEnabled(this.container, true);
-        this.timeUnitSpinner.setValue(workspace.getConfig().getTimeUnit());
-        this.levelUnitSpinner.setValue(workspace.getConfig().getLevelUnit());
+        ComponentUtils.setEnabled(container, true);
+        timeUnitSpinner.setValue(workspace.getConfig().getTimeUnit());
+        levelUnitSpinner.setValue(workspace.getConfig().getLevelUnit());
     }
 
     @Override
     public void toggleOff() {
-        ComponentUtils.setEnabled(this.container, false);
-        this.timeUnitSpinner.setValue(workspace.getConfig().getTimeUnit());
-        this.levelUnitSpinner.setValue(workspace.getConfig().getLevelUnit());
+        ComponentUtils.setEnabled(container, false);
+        timeUnitSpinner.setValue(workspace.getConfig().getTimeUnit());
+        levelUnitSpinner.setValue(workspace.getConfig().getLevelUnit());
     }
 
     @Override

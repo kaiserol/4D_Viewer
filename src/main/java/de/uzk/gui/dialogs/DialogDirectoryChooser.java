@@ -55,12 +55,12 @@ public class DialogDirectoryChooser {
 
     public int showOpenDialog(Window parentWindow) {
         // Dialog anzeigen
-        this.fileChooser = createNewFileChooser();
-        return this.fileChooser.showOpenDialog(parentWindow);
+        fileChooser = createNewFileChooser();
+        return fileChooser.showOpenDialog(parentWindow);
     }
 
     public File getDirectory() {
-        File selected = this.fileChooser.getSelectedFile();
+        File selected = fileChooser.getSelectedFile();
         if (selected != null && selected.isFile()) {
             return selected.getParentFile();
         }
@@ -68,7 +68,7 @@ public class DialogDirectoryChooser {
     }
 
     public ImageFileType getSelectedImageFileType() {
-        FileNameExtensionFilter filter = (FileNameExtensionFilter) this.fileChooser.getFileFilter();
+        FileNameExtensionFilter filter = (FileNameExtensionFilter) fileChooser.getFileFilter();
         return getSelectedImageFileType(filter);
     }
 
