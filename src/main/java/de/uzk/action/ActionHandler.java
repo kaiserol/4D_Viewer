@@ -7,14 +7,18 @@ import de.uzk.gui.dialogs.*;
 import de.uzk.image.Axis;
 import de.uzk.utils.ProjectUtils;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.net.URI;
 
 import static de.uzk.Main.settings;
 import static de.uzk.Main.workspace;
 import static de.uzk.action.ActionType.*;
+import static de.uzk.config.LanguageHandler.getWord;
 
 // TODO: navigateImage Methoden (aus der executeAction eventuell in seperate Methode auslagern -> wie vorher). Dadurch
 // dass navigateImage in executeAction enthalten ist, kann es sein, dass die navigateImages
@@ -26,6 +30,7 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
     // Es werden maximal 20 FPS / 13 FPS (bei gedrehten Bildern) erreicht
     private static final long UPDATE_INTERVAL_MS = 50;
     private static final long LONG_UPLOAD_INTERVAL_MS = 75;
+    private static final URI WIKI_URL = URI.create("https://github.com/kaiserol/4D_Viewer/wiki");
     private final Gui gui;
     // Dialoge
     private final DialogAbout dialogAbout;
@@ -115,6 +120,16 @@ public class ActionHandler extends KeyAdapter implements MouseWheelListener {
             case SHORTCUT_SHOW_ABOUT -> dialogAbout.show();
             case SHORTCUT_SHOW_LEGAL -> dialogLegal.show();
             case SHORTCUT_SHOW_HISTORY -> dialogHistory.show();
+            case SHORTCUT_OPEN_WIKI -> {
+                Desktop desktop = UIEnvironment.getDesktopSecurely();
+                if(desktop == null) return;
+                try {
+                    desktop.browse(WIKI_URL);
+                } catch (Exception e) {
+                    String message = getWord("menu.help.openWiki.failed").formatted(WIKI_URL);
+                    JOptionPane.showMessageDialog(gui.getContainer(), message, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
             case SHORTCUT_SHOW_LOG_VIEWER -> dialogLogViewer.show();
         }
     }

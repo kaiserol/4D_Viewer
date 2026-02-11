@@ -106,6 +106,7 @@ public class AppMenuBar extends ObserverContainer<JMenuBar> {
         }
         menuHelp.add(new CustomMenuItem(getWord("menu.help.showLegal"), actionHandler, SHORTCUT_SHOW_LEGAL));
         menuHelp.add(new CustomMenuItem(getWord("menu.help.showHistoryAndCredits"), actionHandler, SHORTCUT_SHOW_HISTORY));
+        menuHelp.add(new CustomMenuItem(getWord("menu.help.openWiki"), ICON_HELP, actionHandler, SHORTCUT_OPEN_WIKI));
         menuHelp.addSeparator();
 
         menuHelp.add(new CustomMenuItem(getWord("menu.help.showLogViewer"), actionHandler, SHORTCUT_SHOW_LOG_VIEWER));

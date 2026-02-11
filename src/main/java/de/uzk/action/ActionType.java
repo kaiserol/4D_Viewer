@@ -54,6 +54,7 @@ public enum ActionType {
     SHORTCUT_SHOW_ABOUT,
     SHORTCUT_SHOW_LEGAL,
     SHORTCUT_SHOW_HISTORY,
+    SHORTCUT_OPEN_WIKI,
     SHORTCUT_SHOW_LOG_VIEWER(new Shortcut(KeyEvent.VK_F12));
 
     private final List<Shortcut> shortcuts;

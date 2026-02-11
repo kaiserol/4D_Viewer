@@ -37,6 +37,7 @@ public final class ImageLoader {
     public static final FlatSVGIcon ICON_ARROW_DOWN = openFlatSVGIcon("images/icons/arrow_down.svg");
     public static final FlatSVGIcon ICON_ARROW_DOWN_END = openFlatSVGIcon("images/icons/arrow_down_end.svg");
     public static final FlatSVGIcon ICON_STEP_FORWARD = openFlatSVGIcon("images/icons/step-forward.svg");
+    public static final FlatSVGIcon ICON_HELP = openFlatSVGIcon("images/icons/help.svg");
     private static final Map<FlatSVGIcon, ThemeColor> THEME_COLORS = new HashMap<>();
     // App Icon
     private static final FlatSVGIcon APP_ICON = openFlatSVGIcon("images/4D.svg");
@@ -62,6 +63,8 @@ public final class ImageLoader {
         THEME_COLORS.put(ICON_ARROW_UP, defaultValue);
         THEME_COLORS.put(ICON_ARROW_DOWN, defaultValue);
         THEME_COLORS.put(ICON_ARROW_DOWN_END, defaultValue);
+
+        THEME_COLORS.put(ICON_HELP, new ThemeColor(ColorUtils.COLOR_BLUE));
     }
 
     /**
