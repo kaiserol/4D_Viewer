@@ -89,8 +89,10 @@ public class TabEdit extends ObserverContainer<JPanel> {
 
         JButton openSnapshotsButton = new JButton(getWord("menu.edit.openSnapshotFolder"));
         openSnapshotsButton.addActionListener(e -> {
+            Desktop desktop = UIEnvironment.getDesktopSecurely();
+            if (desktop == null) return;
             try {
-                Desktop.getDesktop().open(PathManager.getProjectSnapshotsDirectory().toFile());
+                desktop.open(PathManager.getProjectSnapshotsDirectory().toFile());
             } catch (IOException ex) {
                 logger.exception(ex, "Could not open snapshot folder '%s'".formatted(PathManager.getProjectSnapshotsDirectory()));
                 JOptionPane.showMessageDialog(null, "Couldn't open folder.", "Error", JOptionPane.ERROR_MESSAGE);
