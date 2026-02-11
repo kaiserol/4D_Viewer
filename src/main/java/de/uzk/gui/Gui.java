@@ -4,6 +4,7 @@ import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
 import de.uzk.gui.areas.AreaImageViewer;
 import de.uzk.gui.areas.AreaImagesDirectoryPath;
+import de.uzk.gui.areas.AreaRightsOfUseBanner;
 import de.uzk.gui.areas.AreaTabs;
 import de.uzk.gui.menubar.AppMenuBar;
 import de.uzk.gui.observer.*;
@@ -153,6 +154,7 @@ public class Gui extends ObserverContainer<JFrame> {
         splitPane.add(tabs.getContainer());
         splitPane.add(imageViewer.getContainer());
         mainPanel.add(splitPane, BorderLayout.CENTER);
+        mainPanel.add(new AreaRightsOfUseBanner(), BorderLayout.SOUTH);
 
         // Panel zum Container hinzufügen
         this.container.add(mainPanel);
