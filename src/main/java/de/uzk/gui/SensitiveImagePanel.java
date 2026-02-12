@@ -55,7 +55,8 @@ public class SensitiveImagePanel extends JPanel implements MouseListener, MouseM
 
             g2d.drawImage(currentImage, insets.width, insets.height, displaySize.width, displaySize.height, null);
         } else {
-            g2d.clearRect(0, 0, getWidth(), getHeight());
+            g2d.setColor(UIEnvironment.getBackgroundColor());
+            g2d.fillRect(0, 0, getWidth(), getHeight());
         }
     }
 

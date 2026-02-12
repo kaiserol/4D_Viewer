@@ -6,11 +6,11 @@
 
     <groupId>de.uzk</groupId>
     <artifactId>4D_Viewer</artifactId>
-    <version>2.1.1</version>
+    <version>2.1.2-prerelease</version>
 
     <properties>
         <app.name>4D_Viewer</app.name>
-        <app.version>v2_1_1</app.version>
+        <app.version>v2_1_2_prerelease</app.version>
         <app.full-name>${app.name}_${app.version}</app.full-name>
 
         <java.version>20</java.version>

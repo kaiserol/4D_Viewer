@@ -45,7 +45,8 @@ public final class LogsHelper {
         try (FileWriter writer = new FileWriter(filePath.toFile(), true)) {
             writer.write(logEntry + StringUtils.NEXT_LINE);
         } catch (IOException ex) {
-            logger.warn("Could not write in the log-file '%s'.".formatted(filePath.toAbsolutePath()));
+            // System.err statt logger, da sonst wieder versucht würde, in diese Datei zu schreiben
+            System.err.printf("Could not write in the log-file '%s'.%n", filePath.toAbsolutePath());
         }
     }
 
