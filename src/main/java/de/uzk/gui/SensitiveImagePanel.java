@@ -68,6 +68,7 @@ public class SensitiveImagePanel extends JPanel implements MouseListener, MouseM
      * @param consumer Die Handlerfunktion für das modifizierte Event
      */
     private void maybeTriggerEvent(MouseEvent original, Consumer<MouseEvent> consumer) {
+        if(insets == null) return;
         Point originalPoint = original.getPoint();
         int x = (int) (originalPoint.getX() - insets.width);
         int y = (int) (originalPoint.getY() - insets.height);

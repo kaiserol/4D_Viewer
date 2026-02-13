@@ -85,6 +85,7 @@ public final class LogsHelper {
 
         if (!Files.exists(filePath)) {
             try {
+                Files.createDirectories(filePath.getParent());
                 Files.createFile(filePath);
             } catch (IOException e) {
                 logger.warn("Could not create the log-file '%s'.".formatted(filePath.toAbsolutePath()));
