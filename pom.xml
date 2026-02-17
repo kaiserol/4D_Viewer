@@ -6,7 +6,7 @@
 
     <groupId>de.uzk</groupId>
     <artifactId>4D_Viewer</artifactId>
-    <version>2.1.2-prerelease</version>
+    <version>2.1.2-prerelease_2</version>
 
     <properties>
         <app.name>4D_Viewer</app.name>
