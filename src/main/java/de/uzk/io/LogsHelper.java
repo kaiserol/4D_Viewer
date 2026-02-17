@@ -46,7 +46,8 @@ public final class LogsHelper {
             writer.write(logEntry + StringUtils.NEXT_LINE);
         } catch (IOException ex) {
             // System.err statt logger, da sonst wieder versucht würde, in diese Datei zu schreiben
-            System.err.printf("Could not write in the log-file '%s'.%n", filePath.toAbsolutePath());
+            // TODO Was ist mit dem Logfenster?
+            System.err.printf("Could not write in the log-file '%s' Due to IOException.%nCause: %s", filePath.toAbsolutePath(), ex);
         }
     }
 
@@ -88,7 +89,8 @@ public final class LogsHelper {
                 Files.createDirectories(filePath.getParent());
                 Files.createFile(filePath);
             } catch (IOException e) {
-                logger.warn("Could not create the log-file '%s'.".formatted(filePath.toAbsolutePath()));
+                // Keinen Logger verwenden, da sonst zirkulärer Aufruf dieser Methode
+                System.err.printf("ERROR: Could not create the log-file '%s' Due to an IOException.%nCause:%s", filePath.toAbsolutePath(), e);
                 return null;
             }
         }
