@@ -233,6 +233,7 @@ public class ImageEditor {
 
 
     private void newImageAvailable() {
+        workspace.setCurrentImageSize(new Dimension(currentImage.getWidth(), currentImage.getHeight()));
         if (newImageConsumer != null) newImageConsumer.accept(currentImage);
     }
 

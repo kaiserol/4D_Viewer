@@ -6,11 +6,13 @@ import de.uzk.markers.Markers;
 import de.uzk.utils.NumberUtils;
 import de.uzk.utils.StringUtils;
 
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.List;
 import java.util.stream.StreamSupport;
 
 import static de.uzk.Main.*;
@@ -27,6 +29,7 @@ public class Workspace {
     // ImageFiles
     private ImageFile[][] matrix;
     private ImageFile currentImageFile;
+    private Dimension currentImageSize;
     // Time, Level
     private int time;
     private int level;
@@ -53,6 +56,14 @@ public class Workspace {
 
     public Markers getMarkers() {
         return markers;
+    }
+
+    public void setCurrentImageSize(Dimension size) {
+        currentImageSize = size;
+    }
+
+    public Dimension getCurrentImageSize() {
+        return currentImageSize;
     }
 
     private void loadConfigs(ImageFileType imageFileType) {

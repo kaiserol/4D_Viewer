@@ -6,14 +6,11 @@ import de.uzk.markers.interactions.ArrowMarkerModificator;
 import de.uzk.markers.interactions.MarkerModificator;
 import de.uzk.utils.GraphicsUtils;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 
-import static de.uzk.Main.workspace;
 import static java.lang.Math.sin;
 
 public class ArrowMarker extends Marker {
@@ -117,23 +114,5 @@ public class ArrowMarker extends Marker {
         if (o == null || getClass() != o.getClass()) return false;
         ArrowMarker that = (ArrowMarker) o;
         return super.equals(that) && start.equals(that.start) && tip.equals(that.tip);
-    }
-
-    private static Point2D.Double calculateCurrentStart() {
-        try {
-            BufferedImage img = ImageIO.read(workspace.getCurrentImageFile().getFilePath().toFile());
-            return new Point2D.Double((double) img.getWidth() / 2 - 100 , (double) img.getHeight() / 2 - 50);
-        } catch(Exception e) {
-            return new Point2D.Double(250, 100);
-        }
-    }
-
-    private static Point2D.Double calculateCurrentEnd() {
-        try {
-            BufferedImage img = ImageIO.read(workspace.getCurrentImageFile().getFilePath().toFile());
-            return new Point2D.Double((double) img.getWidth() / 2 + 100, (double) img.getHeight() / 2 + 50);
-        } catch(Exception e) {
-            return new Point2D.Double(500, 200);
-        }
     }
 }
