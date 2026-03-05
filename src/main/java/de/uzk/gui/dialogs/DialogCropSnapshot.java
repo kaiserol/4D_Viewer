@@ -15,7 +15,7 @@ public class DialogCropSnapshot extends JDialog {
     private boolean confirmed = false;
 
     public DialogCropSnapshot(BufferedImage image) {
-        super(null, getWord("dialog.snapshot"), Dialog.ModalityType.DOCUMENT_MODAL);
+        super(null, getWord("dialog.snapshot"), ModalityType.DOCUMENT_MODAL);
         snapshotCropper = new SnapshotCropper(image);
         init();
     }

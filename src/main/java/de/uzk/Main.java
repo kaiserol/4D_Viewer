@@ -1,7 +1,5 @@
 package de.uzk;
 
-import de.uzk.config.History;
-import de.uzk.config.OperatingSystem;
 import de.uzk.config.Settings;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.Workspace;
