@@ -6,6 +6,7 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import de.uzk.action.ActionType;
 import de.uzk.config.InitialDirectory;
 import de.uzk.config.Language;
+import de.uzk.config.OperatingSystem;
 import de.uzk.config.Theme;
 import de.uzk.io.ImageLoader;
 import de.uzk.utils.ComponentUtils;
@@ -93,7 +94,7 @@ public final class UIEnvironment {
     // ========================================
     public static void initPlatformProperties() {
         // macOS Eigenschaften
-        if (operationSystem.isMacOS()) {
+        if (OperatingSystem.get().isMacOS()) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
             System.setProperty("apple.awt.application.name", getWord("app.name"));
         }

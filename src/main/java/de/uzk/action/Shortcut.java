@@ -1,5 +1,7 @@
 package de.uzk.action;
 
+import de.uzk.config.OperatingSystem;
+
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -7,11 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static de.uzk.Main.operationSystem;
 
 public class Shortcut {
     public static final int UNDEFINED = 0;
-    public static final int CTRL_DOWN = operationSystem.isMacOS() ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
+    public static final int CTRL_DOWN = OperatingSystem.get().isMacOS() ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
     public static final int ALT_DOWN = InputEvent.ALT_DOWN_MASK;
     public static final int SHIFT_DOWN = InputEvent.SHIFT_DOWN_MASK;
     public static final int ALT_GRAPH_DOWN = InputEvent.ALT_GRAPH_DOWN_MASK;

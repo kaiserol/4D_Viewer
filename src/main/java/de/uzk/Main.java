@@ -26,7 +26,6 @@ import javax.swing.*;
  * Einzelheiten finden Sie in der Lizenz.
  */
 public class Main {
-    public static final OperatingSystem operationSystem;
     public static final Settings settings;
     public static final History history;
     public static final Workspace workspace;
@@ -35,7 +34,6 @@ public class Main {
     // Statische Initialisierung
     static {
         logger = new Logger();
-        operationSystem = OperatingSystem.load();
         settings = Settings.load();
         history = History.load();
         workspace = new Workspace();
