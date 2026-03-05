@@ -4,10 +4,7 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import de.uzk.action.ActionType;
-import de.uzk.config.InitialDirectory;
-import de.uzk.config.Language;
-import de.uzk.config.OperatingSystem;
-import de.uzk.config.Theme;
+import de.uzk.config.*;
 import de.uzk.io.ImageLoader;
 import de.uzk.utils.ComponentUtils;
 
@@ -258,7 +255,7 @@ public final class UIEnvironment {
         // Konfigurationen und Einstellungen abspeichern
         workspace.saveConfigs();
         settings.save();
-        history.save();
+        History.getInstance().save();
 
         // Anwendung beenden
         System.exit(0);

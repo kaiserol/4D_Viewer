@@ -1,6 +1,7 @@
 package de.uzk.utils;
 
 import de.uzk.action.ActionType;
+import de.uzk.config.History;
 import de.uzk.gui.Gui;
 import de.uzk.gui.dialogs.DialogDirectoryChooser;
 import de.uzk.gui.dialogs.DialogLoadingImages;
@@ -13,7 +14,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static de.uzk.Main.history;
 import static de.uzk.Main.logger;
 import static de.uzk.config.LanguageHandler.getWord;
 
@@ -80,7 +80,7 @@ public final class ProjectUtils {
      */
     public static void openRecents(Gui gui) {
         DefaultListModel<Path> model = new DefaultListModel<>();
-        model.addAll(history.getAll());
+        model.addAll(History.getInstance().getAll());
         JList<Path> list = new JList<>(model);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setLayoutOrientation(JList.VERTICAL);

@@ -19,15 +19,21 @@ public class History {
         }
     }
 
-    public static History load() {
-        Path filePath = PathManager.resolveConfigPath(PathManager.HISTORY_FILE_NAME);
+    private static History instance;
 
-        Object object = PathManager.load(filePath, History.class);
-        if (object instanceof List<?> list) {
-            List<Path> lines = list.stream().map(line -> Path.of(line == null ? "" : String.valueOf(line))).toList();
-            return new History(lines);
+    public static History getInstance() {
+        if(instance == null) {
+            Path filePath = PathManager.resolveConfigPath(PathManager.HISTORY_FILE_NAME);
+
+            Object object = PathManager.load(filePath, History.class);
+            if (object instanceof List<?> list) {
+                List<Path> lines = list.stream().map(line -> Path.of(line == null ? "" : String.valueOf(line))).toList();
+                instance = new History(lines);
+            } else {
+                instance = getDefault();
+            }
         }
-        return getDefault();
+        return instance;
     }
 
     public static History getDefault() {

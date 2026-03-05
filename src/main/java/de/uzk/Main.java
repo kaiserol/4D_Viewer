@@ -27,7 +27,6 @@ import javax.swing.*;
  */
 public class Main {
     public static final Settings settings;
-    public static final History history;
     public static final Workspace workspace;
     public static final Logger logger;
 
@@ -35,7 +34,6 @@ public class Main {
     static {
         logger = new Logger();
         settings = Settings.load();
-        history = History.load();
         workspace = new Workspace();
     }
 

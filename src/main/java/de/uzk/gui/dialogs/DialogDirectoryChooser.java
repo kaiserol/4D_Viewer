@@ -1,5 +1,6 @@
 package de.uzk.gui.dialogs;
 
+import de.uzk.config.History;
 import de.uzk.config.InitialDirectory;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.image.ImageFileType;
@@ -28,7 +29,7 @@ public class DialogDirectoryChooser {
         if (settings.getInitialDirectory() == InitialDirectory.ROOT) {
             directory = Arrays.stream(File.listRoots()).filter(File::canRead).findFirst().orElse(directory);
         } else if (settings.getInitialDirectory() == InitialDirectory.LAST_OPENED) {
-            Path lastDirectory = history.getLastIfExists();
+            Path lastDirectory = History.getInstance().getLastIfExists();
             directory = lastDirectory != null ? lastDirectory.toFile() : directory;
         } else if (settings.getInitialDirectory() == InitialDirectory.HOME) {
             directory = PathManager.USER_HOME_DIRECTORY.toFile();

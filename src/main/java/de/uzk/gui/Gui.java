@@ -2,6 +2,7 @@ package de.uzk.gui;
 
 import de.uzk.action.ActionHandler;
 import de.uzk.action.ActionType;
+import de.uzk.config.History;
 import de.uzk.gui.areas.AreaImageViewer;
 import de.uzk.gui.areas.AreaImagesDirectoryPath;
 import de.uzk.gui.areas.AreaRightsOfUseBanner;
@@ -94,7 +95,7 @@ public class Gui extends ObserverContainer<JFrame> {
 
         // Bilder laden
         // TODO: Warum rausgenommen (für mich)
-        if (!ProjectUtils.loadImagesDirectory(this, history.getLastIfExists(), null, true)) {
+        if (!ProjectUtils.loadImagesDirectory(this, History.getInstance().getLastIfExists(), null, true)) {
             toggleOff();
         }
 

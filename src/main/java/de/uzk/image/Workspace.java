@@ -1,6 +1,7 @@
 package de.uzk.image;
 
 import de.uzk.config.Config;
+import de.uzk.config.History;
 import de.uzk.edit.EditManager;
 import de.uzk.markers.Markers;
 import de.uzk.utils.NumberUtils;
@@ -255,7 +256,7 @@ public class Workspace {
             LoadingResult badResult;
             try {
                 if (loadImages(progress)) {
-                    history.add(imagesDirectory);
+                    History.getInstance().add(imagesDirectory);
                     return LoadingResult.LOADING_SUCCESSFUL;
                 }
                 badResult = LoadingResult.DIRECTORY_HAS_NO_IMAGES;
