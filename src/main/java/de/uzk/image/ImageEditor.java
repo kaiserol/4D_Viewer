@@ -193,6 +193,7 @@ public class ImageEditor {
      *
      */
     private double recalculateZoom(BufferedImage source) {
+
         double scale = (workspace.getConfig().getZoom()) / 100.;
         drawArea.width = (int) (source.getWidth() * scale);
         drawArea.height = (int) (source.getHeight() * scale);
@@ -206,6 +207,8 @@ public class ImageEditor {
 
         int width = image.getWidth();
         int height = image.getHeight();
+        int insetX = workspace.getConfig().getInsetX();
+        int insetY = workspace.getConfig().getInsetY();
         double radians = Math.toRadians(config.getRotation());
         boolean mirrorX = config.isMirrorX();
         boolean mirrorY = config.isMirrorY();
@@ -219,15 +222,14 @@ public class ImageEditor {
 
         // Rotate
         at.rotate(radians, width / 2.0, height / 2.0);
+        at.translate(drawArea.x - insetX, drawArea.y - insetY);
 
         imageTransform = at;
         markerTransform = new AffineTransform(at);
 
 
         double scale = recalculateZoom(image);
-        markerTransform.translate(drawArea.x, drawArea.y);
         markerTransform.scale(scale, scale);
-
 
     }
 

@@ -34,6 +34,8 @@ public class Config {
     private static final int DEFAULT_CONTRAST = 100;
     private static final int DEFAULT_ZOOM = 100;
     private static final int DEFAULT_ROTATION = 0;
+    private static final int DEFAULT_INSET_X = 100;
+    private static final int DEFAULT_INSET_Y = 50;
     // Konfigurationen
     private ImageFileType imageFileType;
     private String timeSep;
@@ -46,6 +48,8 @@ public class Config {
     private int contrast;
     private int zoom;
     private int rotation;
+    private int insetX;
+    private int insetY;
 
     @JsonCreator
     public Config(
@@ -59,7 +63,9 @@ public class Config {
         @JsonProperty("brightness") int brightness,
         @JsonProperty("contrast") int contrast,
         @JsonProperty("zoom") int zoom,
-        @JsonProperty("rotation") int rotation
+        @JsonProperty("rotation") int rotation,
+        @JsonProperty("insetX") int insetX,
+        @JsonProperty("insetY") int insetY
     ) {
         setImageFileType(imageFileType);
         setTimeSep(timeSep);
@@ -72,6 +78,7 @@ public class Config {
         setContrast(contrast);
         setZoom(zoom);
         setRotation(rotation);
+        setInsets(insetX, insetY);
     }
 
     public static Config load() {
@@ -96,7 +103,9 @@ public class Config {
             DEFAULT_BRIGHTNESS,
             DEFAULT_CONTRAST,
             DEFAULT_ZOOM,
-            DEFAULT_ROTATION
+            DEFAULT_ROTATION,
+            DEFAULT_INSET_X,
+            DEFAULT_INSET_Y
         );
     }
 
@@ -256,6 +265,19 @@ public class Config {
             this.rotation = DEFAULT_ROTATION;
         }
         return true;
+    }
+
+    public int getInsetX() {
+        return insetX;
+    }
+
+    public int getInsetY() {
+        return insetY;
+    }
+
+    public void setInsets(int x, int y) {
+        insetX = x;
+        insetY = y;
     }
 
     public void save() {

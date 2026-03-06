@@ -6,6 +6,7 @@ import de.uzk.gui.SensitiveImagePanel;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.observer.ObserverContainer;
 import de.uzk.image.Axis;
+import de.uzk.image.ImageDragger;
 import de.uzk.image.ImageEditor;
 import de.uzk.io.SnapshotHelper;
 import de.uzk.markers.interactions.MarkerInteractionHandler;
@@ -64,15 +65,22 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         imageEditor = new ImageEditor();
         imageEditor.onNewImageAvailable(imagePanel::updateImage);
 
-        markerInteractionHandler = new MarkerInteractionHandler(imageEditor) {
+        markerInteractionHandler = new MarkerInteractionHandler(imageEditor);
+        imagePanel.addMouseListener(markerInteractionHandler);
+        imagePanel.addMouseMotionListener(markerInteractionHandler);
+
+        imagePanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (!container.isFocusOwner()) container.requestFocusInWindow();
-                super.mouseClicked(e);
             }
-        };
-        imagePanel.addMouseListener(markerInteractionHandler);
-        imagePanel.addMouseMotionListener(markerInteractionHandler);
+        });
+
+        ImageDragger dragger = new ImageDragger(imageEditor);
+        imagePanel.addMouseListener(dragger);
+        imagePanel.addMouseMotionListener(dragger);
+        container.addKeyListener(dragger);
+
     }
 
     //region Komponenten-Erzeugung
