@@ -4,6 +4,7 @@ import de.uzk.action.ActionType;
 import de.uzk.config.Config;
 import de.uzk.edit.Edit;
 import de.uzk.edit.image.*;
+import de.uzk.edit.markers.MarkerEdit;
 import de.uzk.gui.Gui;
 import de.uzk.gui.UIEnvironment;
 import de.uzk.gui.observer.ObserverContainer;
@@ -28,6 +29,7 @@ public class TabEdit extends ObserverContainer<JPanel> {
     private JSlider contrastSlider, brightnessSlider, zoomSlider;
     private JSpinner degreeSpinner;
     private JLabel snapshots;
+    private JButton centerImage;
 
     public TabEdit(Gui gui) {
         super(new JPanel(), gui);
@@ -70,6 +72,15 @@ public class TabEdit extends ObserverContainer<JPanel> {
             setConfigValue(newValue, workspace.getConfig()::getRotation, RotateImageEdit::new));
         ComponentUtils.addLabeledRow(container, gbc, getWord("menu.edit.rotation"), degreeSpinner, 10);
 
+        centerImage = new JButton(getWord("menu.edit.centerImage"));
+        gbc.gridwidth = 3;
+        centerImage.addActionListener(e -> {
+            workspace.getEditManager().performEdit(new MoveEdit(-workspace.getConfig().getInsetX(), -workspace.getConfig().getInsetY()));
+            gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
+        });
+        ComponentUtils.addRow(container, gbc, centerImage, 15);
+
+
         gbc.gridwidth = 2;
         gbc.weighty = 1;
         gbc.anchor = GridBagConstraints.SOUTHWEST;
@@ -80,7 +91,9 @@ public class TabEdit extends ObserverContainer<JPanel> {
         snapshotsPanel.add(snapshots = new JLabel(), BorderLayout.CENTER);
         ComponentUtils.addRow(container, gbc, snapshotsPanel, 15);
 
+
         gbc.weighty = 0;
+
 
         // Schaltfläche (Momentaufnahme machen) hinzufügen
         JButton snapshotsButton = new JButton(getWord("menu.edit.takeSnapshot"));
@@ -122,7 +135,11 @@ public class TabEdit extends ObserverContainer<JPanel> {
                 gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
             }
             case ACTION_UPDATE_SNAPSHOT_COUNTER -> updateSnapshotCounter();
-            case ACTION_EDIT_IMAGE -> setCorrectValues();
+            case ACTION_EDIT_IMAGE -> {
+                setCorrectValues();
+                centerImage.setEnabled(workspace.getConfig().getInsetX() != 0 ||  workspace.getConfig().getInsetY() != 0);
+
+            }
 
         }
     }
@@ -130,6 +147,7 @@ public class TabEdit extends ObserverContainer<JPanel> {
     @Override
     public void toggleOn() {
         ComponentUtils.setEnabled(container, true);
+        centerImage.setEnabled(workspace.getConfig().getInsetX() != 0 ||  workspace.getConfig().getInsetY() != 0);
 
         setCorrectValues();
         updateSnapshotCounter();

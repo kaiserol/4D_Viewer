@@ -8,6 +8,12 @@ public class MoveEdit extends ImageEdit {
     private int dx;
     private int dy;
 
+    public MoveEdit() {}
+
+    public MoveEdit(int dx, int dy) {
+        update(dx, dy);
+    }
+
     public void update(int dx, int dy) {
         this.dx += dx;
         this.dy += dy;

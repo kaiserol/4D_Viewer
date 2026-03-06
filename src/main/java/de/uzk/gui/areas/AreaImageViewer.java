@@ -76,7 +76,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
             }
         });
 
-        ImageDragger dragger = new ImageDragger(imageEditor);
+        ImageDragger dragger = new ImageDragger(imageEditor, gui);
         imagePanel.addMouseListener(dragger);
         imagePanel.addMouseMotionListener(dragger);
         container.addKeyListener(dragger);

@@ -1,7 +1,10 @@
 package de.uzk.image;
 
+import de.uzk.action.ActionHandler;
+import de.uzk.action.ActionType;
 import de.uzk.config.Config;
 import de.uzk.edit.image.MoveEdit;
+import de.uzk.gui.Gui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,9 +20,11 @@ public class ImageDragger extends MouseAdapter implements KeyListener {
     private MoveEdit moveEdit;
     private Point last;
     private final ImageEditor imageEditor;
+    private final Gui gui;
 
-    public ImageDragger(ImageEditor imageEditor) {
+    public ImageDragger(ImageEditor imageEditor, Gui gui) {
         this.imageEditor = imageEditor;
+        this.gui = gui;
     }
 
     @Override
@@ -46,6 +51,7 @@ public class ImageDragger extends MouseAdapter implements KeyListener {
             workspace.getEditManager().registerEdit(moveEdit);
             moveEdit = null;
             last = null;
+            gui.handleAction(ActionType.ACTION_EDIT_IMAGE);
         }
     }
 

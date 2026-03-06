@@ -34,8 +34,8 @@ public class Config {
     private static final int DEFAULT_CONTRAST = 100;
     private static final int DEFAULT_ZOOM = 100;
     private static final int DEFAULT_ROTATION = 0;
-    private static final int DEFAULT_INSET_X = 100;
-    private static final int DEFAULT_INSET_Y = 50;
+    private static final int DEFAULT_INSET_X = 0;
+    private static final int DEFAULT_INSET_Y = 0;
     // Konfigurationen
     private ImageFileType imageFileType;
     private String timeSep;
