@@ -10,10 +10,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import static de.uzk.Main.workspace;
 
 
 /**
@@ -22,7 +18,6 @@ import static de.uzk.Main.workspace;
  * @see MarkerInteractionHandler
  * @see de.uzk.image.ImageEditor
  */
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public class SensitiveImagePanel extends JPanel implements MouseListener, MouseMotionListener {
     private BufferedImage currentImage;
     private double scale; // Um welchen Faktor wurde das Bild skaliert, um auf das JPanel zu passen?
@@ -151,7 +146,7 @@ public class SensitiveImagePanel extends JPanel implements MouseListener, MouseM
         if((e = shouldTriggerEvent(e)) != null) {
             MouseEvent finalE = e;
             mouseMotionListeners.forEach(listener ->
-            {listener.mouseMoved(finalE);}
+            listener.mouseMoved(finalE)
             );
         }
     }
