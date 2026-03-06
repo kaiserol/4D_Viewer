@@ -8,13 +8,9 @@ public class MoveEdit extends ImageEdit {
     private int dx;
     private int dy;
 
-    public MoveEdit() {
-
-    }
-
     public void update(int dx, int dy) {
-        dx += dx;
-        dy -= dy;
+        this.dx += dx;
+        this.dy += dy;
     }
 
     @Override

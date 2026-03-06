@@ -42,7 +42,7 @@ public class ImageDragger extends MouseAdapter implements KeyListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (shift) {
+        if (moveEdit != null) {
             workspace.getEditManager().registerEdit(moveEdit);
             moveEdit = null;
             last = null;
