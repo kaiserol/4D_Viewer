@@ -14,9 +14,9 @@ public class MoveArrowEdit extends MoveMarkerEdit {
     @Override
     protected void moveMarker(double dx, double dy) {
         Point2D start = marker.getBase();
-        Point2D tip = marker.getTip();
+        Point2D tip = marker.getHead();
         marker.setBase(new Point2D.Double(start.getX() + dx, start.getY() + dy));
-        marker.setTip(new Point2D.Double(tip.getX() + dx, tip.getY() + dy));
+        marker.setHead(new Point2D.Double(tip.getX() + dx, tip.getY() + dy));
 
     }
 

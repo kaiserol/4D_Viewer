@@ -16,7 +16,7 @@ import static java.lang.Math.sin;
 
 public class ArrowMarker extends Marker {
     private Point2D base;
-    private Point2D tip;
+    private Point2D head;
 
     @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
     public ArrowMarker() {
@@ -25,7 +25,7 @@ public class ArrowMarker extends Marker {
 
     public ArrowMarker(Point2D start, Point2D tip, int timeStart, int timeEnd, int levelStart, int levelEnd, int initialTime, int initialLevel, Color color, String label) {
         setBase(start);
-        setTip(tip);
+        setHead(tip);
         setLabel(label);
         setColor(color);
         setTimeStart(timeStart);
@@ -37,7 +37,7 @@ public class ArrowMarker extends Marker {
     }
 
     public ArrowMarker(ArrowMarker other) {
-        this((Point2D) other.base.clone(), (Point2D) other.tip.clone(), other.getTimeStart(), other.getTimeEnd(), other.getLevelStart(), other.getLevelEnd(), other.getInitialTime(), other.getInitialLevel(), other.getColor(), other.getLabel());
+        this((Point2D) other.base.clone(), (Point2D) other.head.clone(), other.getTimeStart(), other.getTimeEnd(), other.getLevelStart(), other.getLevelEnd(), other.getInitialTime(), other.getInitialLevel(), other.getColor(), other.getLabel());
     }
 
     public ArrowMarker(Marker abstractMarker) {
@@ -49,7 +49,7 @@ public class ArrowMarker extends Marker {
         setLabel(abstractMarker.getLabel());
         Point2D[] scalePoints = abstractMarker.getScalePoints();
         setBase(scalePoints[0]);
-        setTip(scalePoints[scalePoints.length - 1]);
+        setHead(scalePoints[scalePoints.length - 1]);
         initialTime = abstractMarker.getInitialTime();
         initialLevel = abstractMarker.getInitialLevel();
     }
@@ -65,31 +65,31 @@ public class ArrowMarker extends Marker {
     }
 
     @JsonGetter("tip")
-    public Point2D getTip() {
-        return tip;
+    public Point2D getHead() {
+        return head;
     }
 
     @JsonSetter("tip")
-    public void setTip(Point2D tip) {
-        this.tip = tip;
+    public void setHead(Point2D head) {
+        this.head = head;
     }
 
     @Override
     public void draw(Graphics2D g2d) {
         Path2D path = new Path2D.Double();
-        double dx = tip.getX() - base.getX();
-        double dy = tip.getY() - base.getY();
+        double dx = head.getX() - base.getX();
+        double dy = head.getY() - base.getY();
         double baseAngle = Math.atan2(dy, dx);
         double leftAngle = baseAngle + Math.PI / 4;
         double rightAngle = baseAngle - Math.PI / 4;
         double length = Math.sqrt(dx * dx + dy * dy) / 10;
         path.moveTo(base.getX(), base.getY());
-        path.lineTo(tip.getX(), tip.getY());
-        path.moveTo(tip.getX(), tip.getY());
+        path.lineTo(head.getX(), head.getY());
+        path.moveTo(head.getX(), head.getY());
 
-        path.lineTo(tip.getX() - length * Math.cos(leftAngle), tip.getY() - length * sin(leftAngle));
-        path.moveTo(tip.getX(), tip.getY());
-        path.lineTo(tip.getX() - length * Math.cos(rightAngle), tip.getY() - length * sin(rightAngle));
+        path.lineTo(head.getX() - length * Math.cos(leftAngle), head.getY() - length * sin(leftAngle));
+        path.moveTo(head.getX(), head.getY());
+        path.lineTo(head.getX() - length * Math.cos(rightAngle), head.getY() - length * sin(rightAngle));
         g2d.setColor(color);
         g2d.setStroke(new BasicStroke(LINE_WIDTH));
         g2d.draw(path);
@@ -98,7 +98,7 @@ public class ArrowMarker extends Marker {
 
     @Override
     public Point2D[] getScalePoints() {
-        return new Point2D[]{base, tip};
+        return new Point2D[]{base, head};
     }
 
     @Override
@@ -122,6 +122,6 @@ public class ArrowMarker extends Marker {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ArrowMarker that = (ArrowMarker) o;
-        return super.equals(that) && base.equals(that.base) && tip.equals(that.tip);
+        return super.equals(that) && base.equals(that.base) && head.equals(that.head);
     }
 }
