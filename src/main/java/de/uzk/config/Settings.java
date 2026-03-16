@@ -12,7 +12,7 @@ public class Settings {
     public static final int DEFAULT_FONT_SIZE = 14;
     // MinMax-Konstanten
     public static final int MIN_FONT_SIZE = 8;
-    public static final int MAX_FONT_SIZE = 20;
+    public static final int MAX_FONT_SIZE = 30;
     // Default-Konstanten
     private static final Language DEFAULT_LANGUAGE = Language.getSystemDefault();
     private static final Theme DEFAULT_THEME = Theme.getDefault();

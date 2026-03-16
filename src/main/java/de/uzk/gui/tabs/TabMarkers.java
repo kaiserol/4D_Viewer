@@ -63,7 +63,7 @@ public class TabMarkers extends ObserverContainer<JPanel> {
 
     @Override
     public void handleAction(ActionType actionType) {
-        if (actionType == ActionType.ACTION_ADD_MARKER || actionType == ActionType.ACTION_REMOVE_MARKER || actionType == ActionType.ACTION_EDIT_MARKER) {
+        if (actionType == ActionType.ACTION_ADD_MARKER || actionType == ActionType.ACTION_REMOVE_MARKER || actionType == ActionType.ACTION_EDIT_MARKER || actionType == ActionType.ACTION_UPDATE_FONT) {
             rebuildContainer();
         }
     }
