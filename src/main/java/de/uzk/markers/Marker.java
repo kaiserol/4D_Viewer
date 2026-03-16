@@ -45,8 +45,8 @@ public abstract class Marker {
         return levelStart;
     }
 
-    public void setLevelStart(int timeStart) {
-        this.timeStart = timeStart;
+    public void setLevelStart(int levelStart) {
+        this.levelStart = levelStart;
     }
 
     public int getLevelEnd() {

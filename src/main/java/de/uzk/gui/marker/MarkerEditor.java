@@ -9,6 +9,7 @@ import de.uzk.utils.DateTimeUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static de.uzk.Main.workspace;
 import static de.uzk.config.LanguageHandler.getWord;
@@ -60,37 +61,69 @@ public class MarkerEditor extends Container {
         add(getColorButton(), gbc);
 
 
-        TimeInput fromInput = new TimeInput(marker.getTimeStart(), 0, marker.getTimeEnd());
-        TimeInput toInput = new TimeInput(marker.getTimeEnd(), marker.getTimeStart(), workspace.getMaxTime());
+        RangeInput timeStart = new RangeInput(marker.getTimeStart(), 0, marker.getTimeEnd(), DateTimeUtils::formatFrameTimeStamp);
+        RangeInput timeEnd = new RangeInput(marker.getTimeEnd(), marker.getTimeStart(), workspace.getMaxTime(), DateTimeUtils::formatFrameTimeStamp);
 
         // Diese beiden Handler stellen sicher, dass from <= to
-        fromInput.onChange(value -> {
+        timeStart.onChange(value -> {
             marker.setTimeStart(value);
-            toInput.setMinimum(value);
+            timeEnd.setMinimum(value);
         });
 
-        toInput.onChange(value -> {
+        timeEnd.onChange(value -> {
             marker.setTimeEnd(value);
-            fromInput.setMaximum(value);
+            timeStart.setMaximum(value);
         });
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        add(new JLabel(getWord("menu.markers.visibleFromImage")), gbc);
+        add(new JLabel(getWord("menu.markers.timeStart")), gbc);
 
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        add(fromInput, gbc);
+        add(timeStart, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        add(new JLabel(getWord("menu.markers.visibleToImage")), gbc);
+        add(new JLabel(getWord("menu.markers.timeEnd")), gbc);
 
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        add(toInput, gbc);
+        add(timeEnd, gbc);
+
+        RangeInput levelStart = new RangeInput(marker.getLevelStart(), 0, marker.getLevelEnd(), this::levelFormat);
+        RangeInput levelEnd = new RangeInput(marker.getLevelEnd(), marker.getLevelStart(), workspace.getMaxLevel(), this::levelFormat);
+
+        // Diese beiden Handler stellen sicher, dass from <= to
+        levelStart.onChange(value -> {
+            marker.setLevelStart(value);
+            levelEnd.setMinimum(value);
+        });
+
+        levelEnd.onChange(value -> {
+            marker.setLevelEnd(value);
+            levelStart.setMaximum(value);
+        });
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        add(new JLabel(getWord("menu.markers.levelStart")), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        add(levelStart, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        add(new JLabel(getWord("menu.markers.levelEnd")), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        add(levelEnd, gbc);
 
 
     }
@@ -120,13 +153,19 @@ public class MarkerEditor extends Container {
         marker.setColor(selected);
     }
 
-    private static class TimeInput extends JPanel {
+    private String levelFormat(int level) {
+        return "%.2f nm".formatted(level * workspace.getConfig().getLevelUnit());
+    }
+
+    private static class  RangeInput extends JPanel {
 
         private final SpinnerNumberModel model;
         private transient Consumer<Integer> changed;
+        private final Function<Integer, String> labelFormatter;
 
-        public TimeInput(int value, int minTime, int maxTime) {
+        public RangeInput(int value, int minTime, int maxTime, Function<Integer, String> labelFormatter) {
             model = new SpinnerNumberModel(value, minTime, maxTime, 1);
+            this.labelFormatter = labelFormatter;
             init();
         }
 
@@ -134,9 +173,9 @@ public class MarkerEditor extends Container {
             setLayout(new GridLayout(1, 2));
 
             JSpinner numberInput = new JSpinner(model);
-            JLabel label = new JLabel("(" + DateTimeUtils.formatFrameTimeStamp(getValue()) + ")", SwingConstants.RIGHT);
+            JLabel label = new JLabel("(" + labelFormatter.apply(getValue()) + ")", SwingConstants.RIGHT);
             numberInput.addChangeListener(e -> {
-                label.setText("(" + DateTimeUtils.formatFrameTimeStamp(getValue()) + ")");
+                label.setText("(" + labelFormatter.apply(getValue()) + ")");
                 changed.accept(getValue());
             });
 
@@ -174,5 +213,7 @@ public class MarkerEditor extends Container {
                 setValue(max);
             }
         }
+
+
     }
 }
