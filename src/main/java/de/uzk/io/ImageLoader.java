@@ -38,6 +38,10 @@ public final class ImageLoader {
     public static final FlatSVGIcon ICON_ARROW_DOWN_END = openFlatSVGIcon("images/icons/arrow_down_end.svg");
     public static final FlatSVGIcon ICON_STEP_FORWARD = openFlatSVGIcon("images/icons/step-forward.svg");
     public static final FlatSVGIcon ICON_HELP = openFlatSVGIcon("images/icons/help.svg");
+
+    public static final FlatSVGIcon ICON_EYE_OPEN = openFlatSVGIcon("images/icons/eye_open.svg");
+    public static final FlatSVGIcon ICON_EYE_CLOSED = openFlatSVGIcon("images/icons/eye_closed.svg");
+
     private static final Map<FlatSVGIcon, ThemeColor> THEME_COLORS = new HashMap<>();
     // App Icon
     private static final FlatSVGIcon APP_ICON = openFlatSVGIcon("images/4D.svg");

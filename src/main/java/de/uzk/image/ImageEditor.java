@@ -154,6 +154,7 @@ public class ImageEditor {
 
         boolean focusedMarkerStillExists = false;
         for (Marker marker : markers) {
+            if(marker.isHidden()) continue;
             marker.draw(g2d);
             focusedMarkerStillExists |= marker == focusedMarker;
         }

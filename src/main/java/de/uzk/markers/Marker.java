@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import de.uzk.markers.interactions.MarkerModificator;
 import de.uzk.utils.ColorUtils;
 import de.uzk.utils.GraphicsUtils;
+import de.uzk.utils.NumberUtils;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -25,6 +26,8 @@ public abstract class Marker {
     // Aussehen
     protected Color color;
     protected String label;
+    // Temporär verstecken
+    protected boolean hidden;
 
     public int getTimeStart() {
         return timeStart;
@@ -66,8 +69,16 @@ public abstract class Marker {
         return initialLevel;
     }
 
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
     public boolean shouldRender(int t, int y) {
-        return timeStart <= t && timeEnd >= t && levelStart <= y && levelEnd >= y;
+        return NumberUtils.valueInRange(t, timeStart, timeEnd) && NumberUtils.valueInRange(y, levelStart, levelEnd);
     }
 
     @JsonIgnore

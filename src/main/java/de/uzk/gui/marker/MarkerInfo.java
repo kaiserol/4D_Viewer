@@ -75,6 +75,9 @@ public class MarkerInfo extends JPanel
         add(getEditButton(), gbc);
 
         gbc.gridx += 1;
+        add(getHideButton(), gbc);
+
+        gbc.gridx += 1;
         add(getDeleteButton(), gbc);
 
     }
@@ -131,6 +134,22 @@ public class MarkerInfo extends JPanel
             }
         });
         return edit;
+    }
+
+    private JButton getHideButton() {
+        JButton hideButton = new JButton(ImageLoader.ICON_ARROW_RIGHT);
+        Runnable updateButton = () -> {
+            hideButton.setIcon(marker.isHidden() ? ImageLoader.ICON_EYE_OPEN : ImageLoader.ICON_EYE_CLOSED);
+            hideButton.setBackground(marker.isHidden() ? ColorUtils.COLOR_BLUE : Color.GRAY);
+        };
+        updateButton.run();
+        hideButton.addActionListener(e -> {
+            marker.setHidden(!marker.isHidden());
+            updateButton.run();
+            gui.handleAction(ActionType.ACTION_EDIT_MARKER);
+            gui.updateUI();
+        });
+        return hideButton;
     }
 
     private JButton getDeleteButton() {
