@@ -1,6 +1,7 @@
 package de.uzk.markers.interactions;
 
 
+import de.uzk.edit.markers.AddMarkerEdit;
 import de.uzk.image.ImageEditor;
 import de.uzk.markers.Marker;
 import org.intellij.lang.annotations.MagicConstant;
@@ -73,6 +74,11 @@ public class MarkerInteractionHandler extends MouseAdapter {
         }
 
         if (editMode == EditMode.NONE) {
+            if(e.isControlDown()) {
+                Marker copy = selectedMarker.getCurrentFocused().copy();
+                workspace.getEditManager().performEdit(new AddMarkerEdit(copy));
+                selectedMarker = copy.getSuitableModificator();
+            }
             editMode = EditMode.MOVE;
             selectedMarker.beginMove();
             setCursorAndRerender(e.getComponent(), Cursor.MOVE_CURSOR);
