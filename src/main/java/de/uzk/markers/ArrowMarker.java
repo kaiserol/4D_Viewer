@@ -20,10 +20,10 @@ public class ArrowMarker extends Marker {
 
     @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
     public ArrowMarker() {
-        this(new Point(250, 100), new Point(500, 500), 0, workspace.getMaxTime(), 0, workspace.getMaxLevel(), Color.RED, "Arrow");
+        this(new Point(250, 100), new Point(500, 500), 0, workspace.getMaxTime(), 0, workspace.getMaxLevel(), 0, 0, Color.RED, "Arrow");
     }
 
-    public ArrowMarker(Point2D start, Point2D tip, int timeStart, int timeEnd, int levelStart, int levelEnd, Color color, String label) {
+    public ArrowMarker(Point2D start, Point2D tip, int timeStart, int timeEnd, int levelStart, int levelEnd, int initialTime, int initialLevel, Color color, String label) {
         setBase(start);
         setTip(tip);
         setLabel(label);
@@ -32,10 +32,12 @@ public class ArrowMarker extends Marker {
         setTimeEnd(timeEnd);
         setLevelStart(levelStart);
         setLevelEnd(levelEnd);
+        this.initialTime = initialTime;
+        this.initialLevel = initialLevel;
     }
 
     public ArrowMarker(ArrowMarker other) {
-        this((Point2D) other.base.clone(), (Point2D) other.tip.clone(), other.getTimeStart(), other.getTimeEnd(), other.getLevelStart(), other.getLevelEnd(), other.getColor(), other.getLabel());
+        this((Point2D) other.base.clone(), (Point2D) other.tip.clone(), other.getTimeStart(), other.getTimeEnd(), other.getLevelStart(), other.getLevelEnd(), other.getInitialTime(), other.getInitialLevel(), other.getColor(), other.getLabel());
     }
 
     public ArrowMarker(Marker abstractMarker) {
@@ -48,6 +50,8 @@ public class ArrowMarker extends Marker {
         Point2D[] scalePoints = abstractMarker.getScalePoints();
         setBase(scalePoints[0]);
         setTip(scalePoints[scalePoints.length - 1]);
+        initialTime = abstractMarker.getInitialTime();
+        initialLevel = abstractMarker.getInitialLevel();
     }
 
     @JsonGetter("start")

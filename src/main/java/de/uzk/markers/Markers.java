@@ -1,5 +1,6 @@
 package de.uzk.markers;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.uzk.io.PathManager;
 
@@ -36,6 +37,7 @@ public class Markers {
         } else return new Markers();
     }
 
+    @JsonIgnore
     public List<Marker> getAllMarkers() {
         return markers;
     }
@@ -70,6 +72,7 @@ public class Markers {
      * @return Alle Marker, die zum gegebenen Zeitpunkt zu sehen sind.
      *
      */
+    @JsonIgnore
     public List<Marker> getCurrentVisibleMarkers() {
         return markers.stream().filter(m -> m.shouldRender(workspace.getTime(), workspace.getLevel())).toList();
     }

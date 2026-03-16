@@ -1,7 +1,6 @@
 package de.uzk.markers;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.*;
 import de.uzk.markers.interactions.MarkerModificator;
 import de.uzk.markers.interactions.ShapeMarkerModificator;
 import de.uzk.utils.GraphicsUtils;
@@ -25,19 +24,35 @@ public class ShapeMarker extends Marker {
     private int rotation;
     private MarkerShape shape;
 
-    public ShapeMarker(String label) {
-        this(new Point2D.Double(), 500, 200, 0, workspace.getMaxTime(), 0, workspace.getMaxLevel(), MarkerShape.RECTANGLE, Color.RED, label);
+
+    public ShapeMarker(Point2D.Double pos, double width, double height, int timeStart, int timeEnd, int levelStart, int levelEnd, int initialTime, int initialLevel, MarkerShape shape, Color color, String label) {
+        setPos(pos);
+        setWidth(width);
+        setHeight(height);
+        setShape(shape);
+        setLabel(label);
+        setColor(color);
+        setTimeStart(timeStart);
+        setTimeEnd(timeEnd);
+        setLevelStart(levelStart);
+        setLevelEnd(levelEnd);
+        this.initialTime = initialTime;
+        this.initialLevel = initialLevel;
+    }
+
+    public ShapeMarker(int initialTime, int initialLevel, String label) {
+        this(new Point2D.Double(), 500, 200, 0, workspace.getMaxTime(), 0, workspace.getMaxLevel(), initialTime, initialLevel, MarkerShape.RECTANGLE, Color.RED, label);
         Dimension size = workspace.getCurrentImageSize();
         pos = new Point2D.Double((double) size.width / 2, (double) size.height / 2);
     }
 
-    @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
+    @SuppressWarnings("unused")
     public ShapeMarker() {
-        this( "DESERIALIZE");
+        this(0, 0, "DESERIALIZE");
     }
 
     public ShapeMarker(ShapeMarker other) {
-        this(new Point2D.Double(other.pos.getX(), other.pos.getY()), other.width, other.height, other.timeStart, other.timeEnd, other.levelStart, other.levelEnd, other.shape, other.color, other.label);
+        this(new Point2D.Double(other.pos.getX(), other.pos.getY()), other.width, other.height, other.timeStart, other.timeEnd, other.levelStart, other.levelEnd, other.initialTime, other.initialLevel, other.shape, other.color, other.label);
         setRotation(other.rotation);
     }
 
@@ -58,26 +73,15 @@ public class ShapeMarker extends Marker {
         setSize(xMax - xMin, yMax - yMin);
         setPos(new Point2D.Double(xMin + width / 2, yMin + height / 2));
         setShape(shape);
-    }
-
-    public ShapeMarker(Point2D.Double pos, double width, double height, int timeStart, int timeEnd, int levelStart, int levelEnd, MarkerShape shape, Color color, String label) {
-        setPos(pos);
-        setWidth(width);
-        setHeight(height);
-        setShape(shape);
-        setLabel(label);
-        setColor(color);
-        setTimeStart(timeStart);
-        setTimeEnd(timeEnd);
-        setLevelStart(levelStart);
-        setLevelEnd(levelEnd);
+        initialTime = abstractMarker.getInitialTime();
+        initialLevel = abstractMarker.getInitialLevel();
     }
 
     public Point2D.Double getPos() {
         return pos;
     }
 
-    @JsonSetter("pos")
+
     public void setPos(Point2D.Double pos) {
         this.pos = pos;
     }
@@ -86,7 +90,7 @@ public class ShapeMarker extends Marker {
         return width;
     }
 
-    @JsonSetter("height")
+
     public void setWidth(double width) {
         if (width < 0) throw new IllegalArgumentException("Width cannot be negative!");
         this.width = width;
@@ -96,13 +100,12 @@ public class ShapeMarker extends Marker {
         return height;
     }
 
-    @JsonSetter("width")
     public void setHeight(double height) {
         if (height < 0) throw new IllegalArgumentException("Height cannot be negative!");
         this.height = height;
     }
 
-
+    @JsonIgnore
     public void setSize(double width, double height) {
         setWidth(width);
         setHeight(height);
@@ -112,7 +115,7 @@ public class ShapeMarker extends Marker {
         return shape;
     }
 
-    @JsonSetter("shape")
+
     public void setShape(MarkerShape shape) {
         this.shape = shape;
     }
@@ -121,7 +124,7 @@ public class ShapeMarker extends Marker {
         return rotation;
     }
 
-    @JsonSetter("rotation")
+
     public void setRotation(int newRotation) {
         rotation = NumberUtils.normalizeAngle(newRotation);
     }

@@ -19,6 +19,9 @@ public abstract class Marker {
     // Ebenen, auf denen der Marker sichtbar sein soll
     protected int levelStart;
     protected int levelEnd;
+    //
+    protected int initialTime;
+    protected int initialLevel;
     // Aussehen
     protected Color color;
     protected String label;
@@ -27,7 +30,6 @@ public abstract class Marker {
         return timeStart;
     }
 
-    @JsonSetter("from")
     public void setTimeStart(int timeStart) {
         this.timeStart = timeStart;
     }
@@ -36,7 +38,6 @@ public abstract class Marker {
         return timeEnd;
     }
 
-    @JsonSetter("to")
     public void setTimeEnd(int timeEnd) {
         this.timeEnd = timeEnd;
     }
@@ -55,6 +56,14 @@ public abstract class Marker {
 
     public void setLevelEnd(int levelEnd) {
         this.levelEnd = levelEnd;
+    }
+
+    public int getInitialTime() {
+        return initialTime;
+    }
+
+    public int getInitialLevel() {
+        return initialLevel;
     }
 
     public boolean shouldRender(int t, int y) {
@@ -84,7 +93,6 @@ public abstract class Marker {
         return label;
     }
 
-    @JsonSetter("label")
     public void setLabel(String label) {
         this.label = label;
     }

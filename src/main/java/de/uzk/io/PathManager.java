@@ -160,7 +160,7 @@ public final class PathManager {
                 throw new IllegalArgumentException("Unsupported data type for the file '%s'.".formatted(filePath.getFileName()));
             }
         } catch (Exception e) {
-            logger.warn("Could not write in the %s-file '%s'.".formatted(fileBaseName, filePath.toAbsolutePath()));
+            logger.warn("Could not write in the %s-file '%s': %s".formatted(fileBaseName, filePath.toAbsolutePath(), e));
         }
     }
 
@@ -183,7 +183,7 @@ public final class PathManager {
                 return Files.readAllLines(filePath);
             }
         } catch (Exception e) {
-            logger.warn("Could not read from the %s-file '%s'.".formatted(fileBaseName, filePath.toAbsolutePath()));
+            logger.warn("Could not read from the %s-file '%s': %s".formatted(fileBaseName, filePath.toAbsolutePath(), e));
             return null;
         }
     }

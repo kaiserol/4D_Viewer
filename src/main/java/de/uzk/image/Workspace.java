@@ -30,7 +30,7 @@ public class Workspace {
     // ImageFiles
     private ImageFile[][] matrix;
     private ImageFile currentImageFile;
-    private Dimension currentImageSize;
+    private Dimension currentImageSize = new Dimension(0, 0);
     // Time, Level
     private int time;
     private int level;
