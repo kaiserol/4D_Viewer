@@ -107,7 +107,7 @@ public class MarkerInfo extends JPanel
 
         jump.setToolTipText(getWord("menu.markers.tooltipJumpToMarker").formatted(marker.getLabel()));
         jump.addActionListener(a -> {
-            workspace.setTime(marker.getFrom());
+            workspace.setTime(marker.getTimeStart());
             gui.update(Axis.TIME);
         });
         return jump;

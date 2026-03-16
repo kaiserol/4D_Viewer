@@ -119,7 +119,7 @@ public class ImageEditor {
      *
      */
     public boolean focusedStillExists() {
-        boolean focusedExists = workspace.getMarkers().getMarkersForImage(workspace.getTime()).contains(focusedMarker);
+        boolean focusedExists = workspace.getMarkers().getCurrentVisibleMarkers().contains(focusedMarker);
         if (!focusedExists) {
             focusedMarker = null;
         }
@@ -149,7 +149,7 @@ public class ImageEditor {
         Graphics2D g2d = GraphicsUtils.createHighQualityGraphics2D(result.getGraphics());
         g2d.drawImage(cache, 0, 0, null);
 
-        java.util.List<Marker> markers = workspace.getMarkers().getMarkersForImage(workspace.getTime());
+        java.util.List<Marker> markers = workspace.getMarkers().getCurrentVisibleMarkers();
         g2d.transform(markerTransform);
 
         boolean focusedMarkerStillExists = false;

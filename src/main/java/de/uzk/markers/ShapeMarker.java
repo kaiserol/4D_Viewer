@@ -25,25 +25,27 @@ public class ShapeMarker extends Marker {
     private int rotation;
     private MarkerShape shape;
 
-    public ShapeMarker(int start, String label) {
-        this(new Point2D.Double(), 500, 200, start, start, MarkerShape.RECTANGLE, Color.RED, label);
+    public ShapeMarker(String label) {
+        this(new Point2D.Double(), 500, 200, 0, workspace.getMaxTime(), 0, workspace.getMaxLevel(), MarkerShape.RECTANGLE, Color.RED, label);
         Dimension size = workspace.getCurrentImageSize();
         pos = new Point2D.Double((double) size.width / 2, (double) size.height / 2);
     }
 
     @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
     public ShapeMarker() {
-        this(0, "DESERIALIZE");
+        this( "DESERIALIZE");
     }
 
     public ShapeMarker(ShapeMarker other) {
-        this(new Point2D.Double(other.pos.getX(), other.pos.getY()), other.width, other.height, other.from, other.to, other.shape, other.color, other.label);
+        this(new Point2D.Double(other.pos.getX(), other.pos.getY()), other.width, other.height, other.timeStart, other.timeEnd, other.levelStart, other.levelEnd, other.shape, other.color, other.label);
         setRotation(other.rotation);
     }
 
     public ShapeMarker(Marker abstractMarker, MarkerShape shape) {
-        setFrom(abstractMarker.getFrom());
-        setTo(abstractMarker.getTo());
+        setTimeStart(abstractMarker.getTimeStart());
+        setTimeEnd(abstractMarker.getTimeEnd());
+        setLevelStart(abstractMarker.getLevelStart());
+        setLevelEnd(abstractMarker.getLevelEnd());
         setColor(abstractMarker.getColor());
         setLabel(abstractMarker.getLabel());
         Point2D[] scalePoints = abstractMarker.getScalePoints();
@@ -58,15 +60,17 @@ public class ShapeMarker extends Marker {
         setShape(shape);
     }
 
-    public ShapeMarker(Point2D.Double pos, double width, double height, int from, int to, MarkerShape shape, Color color, String label) {
+    public ShapeMarker(Point2D.Double pos, double width, double height, int timeStart, int timeEnd, int levelStart, int levelEnd, MarkerShape shape, Color color, String label) {
         setPos(pos);
         setWidth(width);
         setHeight(height);
         setShape(shape);
         setLabel(label);
         setColor(color);
-        setFrom(from);
-        setTo(to);
+        setTimeStart(timeStart);
+        setTimeEnd(timeEnd);
+        setLevelStart(levelStart);
+        setLevelEnd(levelEnd);
     }
 
     public Point2D.Double getPos() {

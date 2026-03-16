@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static de.uzk.Main.workspace;
+
 /**
  * Globales (per-Workspace) Objekt, das alle Marker für alle Bilder im Projekt speichert.
  * Außerdem zur Zentralisierung der Markerserialisierung verwendet.
@@ -68,8 +70,8 @@ public class Markers {
      * @return Alle Marker, die zum gegebenen Zeitpunkt zu sehen sind.
      *
      */
-    public List<Marker> getMarkersForImage(int time) {
-        return markers.stream().filter(m -> m.shouldRender(time)).toList();
+    public List<Marker> getCurrentVisibleMarkers() {
+        return markers.stream().filter(m -> m.shouldRender(workspace.getTime(), workspace.getLevel())).toList();
     }
 
 }

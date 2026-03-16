@@ -60,17 +60,17 @@ public class MarkerEditor extends Container {
         add(getColorButton(), gbc);
 
 
-        TimeInput fromInput = new TimeInput(marker.getFrom(), 0, marker.getTo());
-        TimeInput toInput = new TimeInput(marker.getTo(), marker.getFrom(), workspace.getMaxTime());
+        TimeInput fromInput = new TimeInput(marker.getTimeStart(), 0, marker.getTimeEnd());
+        TimeInput toInput = new TimeInput(marker.getTimeEnd(), marker.getTimeStart(), workspace.getMaxTime());
 
         // Diese beiden Handler stellen sicher, dass from <= to
         fromInput.onChange(value -> {
-            marker.setFrom(value);
+            marker.setTimeStart(value);
             toInput.setMinimum(value);
         });
 
         toInput.onChange(value -> {
-            marker.setTo(value);
+            marker.setTimeEnd(value);
             fromInput.setMaximum(value);
         });
 

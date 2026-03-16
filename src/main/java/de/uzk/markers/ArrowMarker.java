@@ -11,48 +11,53 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import static de.uzk.Main.workspace;
 import static java.lang.Math.sin;
 
 public class ArrowMarker extends Marker {
-    private Point2D start;
+    private Point2D base;
     private Point2D tip;
 
     @SuppressWarnings("unused") // Jackson benutzt diesen Konstruktor zur Deserialisierung
     public ArrowMarker() {
-        this(new Point(250, 100), new Point(500, 500), 0, 0, Color.RED, "Arrow");
+        this(new Point(250, 100), new Point(500, 500), 0, workspace.getMaxTime(), 0, workspace.getMaxLevel(), Color.RED, "Arrow");
     }
 
-    public ArrowMarker(Point2D start, Point2D tip, int from, int to, Color color, String label) {
-        setStart(start);
+    public ArrowMarker(Point2D start, Point2D tip, int timeStart, int timeEnd, int levelStart, int levelEnd, Color color, String label) {
+        setBase(start);
         setTip(tip);
         setLabel(label);
         setColor(color);
-        setFrom(from);
-        setTo(to);
+        setTimeStart(timeStart);
+        setTimeEnd(timeEnd);
+        setLevelStart(levelStart);
+        setLevelEnd(levelEnd);
     }
 
     public ArrowMarker(ArrowMarker other) {
-        this((Point2D) other.start.clone(), (Point2D) other.tip.clone(), other.getFrom(), other.getTo(), other.getColor(), other.getLabel());
+        this((Point2D) other.base.clone(), (Point2D) other.tip.clone(), other.getTimeStart(), other.getTimeEnd(), other.getLevelStart(), other.getLevelEnd(), other.getColor(), other.getLabel());
     }
 
     public ArrowMarker(Marker abstractMarker) {
-        setFrom(abstractMarker.getFrom());
-        setTo(abstractMarker.getTo());
+        setTimeStart(abstractMarker.getTimeStart());
+        setTimeEnd(abstractMarker.getTimeEnd());
+        setLevelStart(abstractMarker.getLevelStart());
+        setLevelEnd(abstractMarker.getLevelEnd());
         setColor(abstractMarker.getColor());
         setLabel(abstractMarker.getLabel());
         Point2D[] scalePoints = abstractMarker.getScalePoints();
-        setStart(scalePoints[0]);
+        setBase(scalePoints[0]);
         setTip(scalePoints[scalePoints.length - 1]);
     }
 
     @JsonGetter("start")
-    public Point2D getStart() {
-        return start;
+    public Point2D getBase() {
+        return base;
     }
 
     @JsonSetter("start")
-    public void setStart(Point2D start) {
-        this.start = start;
+    public void setBase(Point2D base) {
+        this.base = base;
     }
 
     @JsonGetter("tip")
@@ -68,13 +73,13 @@ public class ArrowMarker extends Marker {
     @Override
     public void draw(Graphics2D g2d) {
         Path2D path = new Path2D.Double();
-        double dx = tip.getX() - start.getX();
-        double dy = tip.getY() - start.getY();
+        double dx = tip.getX() - base.getX();
+        double dy = tip.getY() - base.getY();
         double baseAngle = Math.atan2(dy, dx);
         double leftAngle = baseAngle + Math.PI / 4;
         double rightAngle = baseAngle - Math.PI / 4;
         double length = Math.sqrt(dx * dx + dy * dy) / 10;
-        path.moveTo(start.getX(), start.getY());
+        path.moveTo(base.getX(), base.getY());
         path.lineTo(tip.getX(), tip.getY());
         path.moveTo(tip.getX(), tip.getY());
 
@@ -89,13 +94,13 @@ public class ArrowMarker extends Marker {
 
     @Override
     public Point2D[] getScalePoints() {
-        return new Point2D[]{start, tip};
+        return new Point2D[]{base, tip};
     }
 
     @Override
     public Shape getLabelArea(Graphics g2d) {
         FontMetrics metrics = GraphicsUtils.updateMetrics(g2d);
-        return new Rectangle2D.Double(start.getX(), start.getY(), metrics.stringWidth(label), metrics.getHeight());
+        return new Rectangle2D.Double(base.getX(), base.getY(), metrics.stringWidth(label), metrics.getHeight());
     }
 
     @Override
@@ -113,6 +118,6 @@ public class ArrowMarker extends Marker {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ArrowMarker that = (ArrowMarker) o;
-        return super.equals(that) && start.equals(that.start) && tip.equals(that.tip);
+        return super.equals(that) && base.equals(that.base) && tip.equals(that.tip);
     }
 }

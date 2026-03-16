@@ -14,32 +14,51 @@ import java.awt.geom.Point2D;
 public abstract class Marker {
     public static final int LINE_WIDTH = 5;
     // Zeitraum, in dem der Marker sichtbar sein soll
-    protected int from;
-    protected int to;
+    protected int timeStart;
+    protected int timeEnd;
+    // Ebenen, auf denen der Marker sichtbar sein soll
+    protected int levelStart;
+    protected int levelEnd;
     // Aussehen
     protected Color color;
     protected String label;
 
-    public int getFrom() {
-        return from;
+    public int getTimeStart() {
+        return timeStart;
     }
 
     @JsonSetter("from")
-    public void setFrom(int from) {
-        this.from = from;
+    public void setTimeStart(int timeStart) {
+        this.timeStart = timeStart;
     }
 
-    public int getTo() {
-        return to;
+    public int getTimeEnd() {
+        return timeEnd;
     }
 
     @JsonSetter("to")
-    public void setTo(int to) {
-        this.to = to;
+    public void setTimeEnd(int timeEnd) {
+        this.timeEnd = timeEnd;
     }
 
-    public boolean shouldRender(int at) {
-        return from <= at && to >= at;
+    public int getLevelStart() {
+        return levelStart;
+    }
+
+    public void setLevelStart(int timeStart) {
+        this.timeStart = timeStart;
+    }
+
+    public int getLevelEnd() {
+        return levelEnd;
+    }
+
+    public void setLevelEnd(int levelEnd) {
+        this.levelEnd = levelEnd;
+    }
+
+    public boolean shouldRender(int t, int y) {
+        return timeStart <= t && timeEnd >= t && levelStart <= y && levelEnd >= y;
     }
 
     @JsonIgnore
@@ -114,6 +133,6 @@ public abstract class Marker {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Marker that = (Marker) o;
-        return from == that.from && to == that.to && color.equals(that.color) && label.equals(that.label);
+        return timeStart == that.timeStart && timeEnd == that.timeEnd && color.equals(that.color) && label.equals(that.label);
     }
 }

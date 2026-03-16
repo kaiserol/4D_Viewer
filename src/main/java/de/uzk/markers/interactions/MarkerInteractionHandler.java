@@ -116,7 +116,7 @@ public class MarkerInteractionHandler extends MouseAdapter {
     private void checkHoveringMarker(MouseEvent e) {
         Component target = e.getComponent();
         Point actual = getActualPoint(e.getPoint());
-        for (Marker m : workspace.getMarkers().getMarkersForImage(workspace.getTime())) {
+        for (Marker m : workspace.getMarkers().getCurrentVisibleMarkers()) {
             Shape area = m.getLabelArea(target.getGraphics());
             if (area.contains(actual)) {
                 if (selectedMarker == null) {
