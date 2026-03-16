@@ -33,8 +33,8 @@ public class ResizeArrowEdit extends MaybeRedundantEdit {
             Point2D tip = marker.getTip();
             marker.setTip(new Point2D.Double(tip.getX() + dx, tip.getY() + dy));
         } else {
-            Point2D start = marker.getStart();
-            marker.setStart(new Point2D.Double(start.getX() + dx, start.getY() + dy));
+            Point2D start = marker.getBase();
+            marker.setBase(new Point2D.Double(start.getX() + dx, start.getY() + dy));
         }
         return true;
     }
@@ -45,8 +45,8 @@ public class ResizeArrowEdit extends MaybeRedundantEdit {
             Point2D tip = marker.getTip();
             marker.setTip(new Point2D.Double(tip.getX() - dx, tip.getY() - dy));
         } else {
-            Point2D start = marker.getStart();
-            marker.setStart(new Point2D.Double(start.getX() - dx, start.getY() - dy));
+            Point2D start = marker.getBase();
+            marker.setBase(new Point2D.Double(start.getX() - dx, start.getY() - dy));
         }
     }
 

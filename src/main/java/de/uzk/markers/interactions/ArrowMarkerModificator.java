@@ -36,9 +36,9 @@ public class ArrowMarkerModificator implements MarkerModificator {
     public void handleResize(Point mousePos) {
 
         if (dragPoint == DragPoint.START) {
-            Point2D start = marker.getStart();
+            Point2D start = marker.getBase();
             resizeEdit.resize(mousePos.x - start.getX(), mousePos.y - start.getY());
-            marker.setStart(mousePos);
+            marker.setBase(mousePos);
         } else if (dragPoint == DragPoint.TIP) {
             Point2D tip = marker.getTip();
             resizeEdit.resize(mousePos.x - tip.getX(), mousePos.y - tip.getY());
@@ -60,11 +60,11 @@ public class ArrowMarkerModificator implements MarkerModificator {
 
     @Override
     public void handleMove(Point mousePos) {
-        Point2D start = marker.getStart();
+        Point2D start = marker.getBase();
         Point2D tip = marker.getTip();
         double dx = mousePos.x - start.getX();
         double dy = mousePos.y - start.getY();
-        marker.setStart(new Point2D.Double(start.getX() + dx, start.getY() + dy));
+        marker.setBase(new Point2D.Double(start.getX() + dx, start.getY() + dy));
         marker.setTip(new Point2D.Double(tip.getX() + dx, tip.getY() + dy));
 
         moveEdit.move(dx, dy);
@@ -79,7 +79,7 @@ public class ArrowMarkerModificator implements MarkerModificator {
     @Override
     public MarkerInteractionHandler.EditMode checkEditMode(Point mousePos) {
         int distance = Marker.LINE_WIDTH * Marker.LINE_WIDTH;
-        if (mousePos.distance(marker.getStart()) <= distance) {
+        if (mousePos.distance(marker.getBase()) <= distance) {
             dragPoint = DragPoint.START;
 
         } else if (mousePos.distance(marker.getTip()) <= distance) {
