@@ -47,7 +47,7 @@ public class ShapeMarker extends ResizableMarker {
     }
 
     public ShapeMarker(Marker abstractMarker, MarkerShape shape) {
-        copyFrom(abstractMarker);
+
         Point2D[] scalePoints = abstractMarker.getScalePoints();
         Point2D p1 = scalePoints[0];
         Point2D p2 = scalePoints[scalePoints.length - 1];
@@ -55,6 +55,7 @@ public class ShapeMarker extends ResizableMarker {
         setWidth(Math.abs(p1.getX() - center.getX()) + Math.abs(p2.getX() - center.getX()));
         setHeight(Math.abs(p1.getY() - center.getY()) + Math.abs(p2.getY() - center.getY()));
         setShape(shape);
+        copyFrom(abstractMarker);
     }
 
     public MarkerShape getShape() {

@@ -41,22 +41,21 @@ public class ArrowMarker extends Marker {
     }
 
     public ArrowMarker(Marker abstractMarker) {
-        copyFrom(abstractMarker);
         Point2D[] scalePoints = abstractMarker.getScalePoints();
         setBase(scalePoints[0]);
         setHead(scalePoints[scalePoints.length - 1]);
+        copyFrom(abstractMarker);
     }
 
     public ArrowMarker(RotatableMarker rotatableMarker) {
         this((Marker) rotatableMarker);
-        if (rotatableMarker instanceof PointMarker) {
-            setBase(new Point(250, 100));
-            setHead(new Point(500, 500));
-            return;
-        }
-        Point2D newBase = new Point2D.Double(base.getX() - rotatableMarker.getWidth() / 2, base.getY() - rotatableMarker.getHeight() / 2);
-        setBase(newBase);
-        setHead(rotatableMarker.getCenter());
+
+        Point2D center = rotatableMarker.getCenter();
+        double width = rotatableMarker.getWidth();
+        double height = rotatableMarker.getHeight();
+
+        setBase(new Point2D.Double(center.getX() - width / 2, center.getY() - height/ 2));
+        setHead(new Point2D.Double(center.getX() + width / 2, center.getY() + height/ 2));
     }
 
     @JsonGetter("start")

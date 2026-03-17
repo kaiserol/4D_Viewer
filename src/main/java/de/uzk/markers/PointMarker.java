@@ -29,11 +29,11 @@ public class PointMarker extends RotatableMarker {
     }
 
     public PointMarker(Marker abstractMarker, PointMarkerShape shape) {
-        copyFrom(abstractMarker);
         Point2D[] scalePoints = abstractMarker.getScalePoints();
         Point2D p1 = scalePoints[0];
         Point2D p2 = scalePoints[scalePoints.length - 1];
         setCenter(GraphicsUtils.getCenter(p1, p2));
+        copyFrom(abstractMarker);
         setShape(shape);
     }
 

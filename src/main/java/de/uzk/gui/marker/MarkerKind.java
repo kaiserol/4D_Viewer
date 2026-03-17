@@ -31,9 +31,11 @@ public enum MarkerKind {
     }
 
     public Marker switchKind(Marker marker) {
+        if(fromMarker(marker) == this) {
+            return marker;
+        }
         if (this == ARROW) {
-            if (marker instanceof ArrowMarker) return marker;
-            else if (marker instanceof RotatableMarker rotatable) {
+            if (marker instanceof RotatableMarker rotatable) {
                 return new ArrowMarker(rotatable);
             }
             return new ArrowMarker(marker);

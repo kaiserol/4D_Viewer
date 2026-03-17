@@ -23,11 +23,12 @@ import static de.uzk.config.LanguageHandler.getWord;
 public class MarkerEditor extends Container {
     private final DialogColorChooser dialogColorChooser;
     protected Marker marker;
+    private final Marker initial;
     protected GridBagConstraints gbc;
 
 
     public MarkerEditor(Marker marker) {
-        this.marker = marker;
+        this.marker = initial = marker;
         dialogColorChooser = new DialogColorChooser(null);
         init();
     }
@@ -135,7 +136,11 @@ public class MarkerEditor extends Container {
         list.addItemListener(e -> {
             MarkerKind kind = (MarkerKind) e.getItem();
 
-            marker = kind.switchKind(marker);
+            if(kind != MarkerKind.fromMarker(initial)) {
+                marker = kind.switchKind(marker);
+            } else {
+                marker = initial;
+            }
         });
         return list;
     }
