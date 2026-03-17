@@ -1,5 +1,6 @@
 package de.uzk.markers.interactions;
 
+import de.uzk.edit.markers.MoveRotatableEdit;
 import de.uzk.edit.markers.RotateMarkerEdit;
 import de.uzk.markers.Marker;
 import de.uzk.markers.RotatableMarker;
@@ -13,6 +14,7 @@ import static de.uzk.Main.workspace;
 public abstract class RotatableMarkerModificator<T extends RotatableMarker> implements MarkerModificator {
     protected final T marker;
     protected RotateMarkerEdit edit;
+    private MoveRotatableEdit moveEdit = null;
 
     protected RotatableMarkerModificator(T marker) {
         this.marker = marker;
@@ -33,6 +35,33 @@ public abstract class RotatableMarkerModificator<T extends RotatableMarker> impl
         int dTheta = newAngle - marker.getRotation();
         marker.setRotation(newAngle);
         edit.rotate(dTheta);
+    }
+
+    @Override
+    public void beginMove() {
+        moveEdit = new MoveRotatableEdit(marker);
+    }
+
+    @Override
+    public void handleMove(Point mousePos) {
+        double theta = Math.toRadians(marker.getRotation());
+        double width = marker.getWidth();
+        double height = marker.getHeight();
+        double cos = Math.cos(theta);
+        double sin = Math.sin(theta);
+        double cx = (width * cos - height * sin) / 2;
+        double cy = (height * cos + width * sin) / 2;
+        double x = mousePos.x + cx;
+        double y = mousePos.y + cy;
+        Point2D current = marker.getCenter();
+        marker.setCenter(new Point2D.Double(x, y));
+        moveEdit.move(x - current.getX(), y - current.getY());
+    }
+
+    @Override
+    public void finishMove() {
+        workspace.getEditManager().registerEdit(moveEdit);
+        moveEdit = null;
     }
 
     @Override
