@@ -41,21 +41,19 @@ public class ArrowMarker extends Marker {
     }
 
     public ArrowMarker(Marker abstractMarker) {
-        setTimeStart(abstractMarker.getTimeStart());
-        setTimeEnd(abstractMarker.getTimeEnd());
-        setLevelStart(abstractMarker.getLevelStart());
-        setLevelEnd(abstractMarker.getLevelEnd());
-        setColor(abstractMarker.getColor());
-        setLabel(abstractMarker.getLabel());
+        copyFrom(abstractMarker);
         Point2D[] scalePoints = abstractMarker.getScalePoints();
         setBase(scalePoints[0]);
         setHead(scalePoints[scalePoints.length - 1]);
-        initialTime = abstractMarker.getInitialTime();
-        initialLevel = abstractMarker.getInitialLevel();
     }
 
     public ArrowMarker(RotatableMarker rotatableMarker) {
         this((Marker) rotatableMarker);
+        if (rotatableMarker instanceof PointMarker) {
+            setBase(new Point(250, 100));
+            setHead(new Point(500, 500));
+            return;
+        }
         Point2D newBase = new Point2D.Double(base.getX() - rotatableMarker.getWidth() / 2, base.getY() - rotatableMarker.getHeight() / 2);
         setBase(newBase);
         setHead(rotatableMarker.getCenter());

@@ -154,4 +154,15 @@ public abstract class Marker {
         Marker that = (Marker) o;
         return timeStart == that.timeStart && timeEnd == that.timeEnd && color.equals(that.color) && label.equals(that.label);
     }
+
+    protected void copyFrom(Marker other) {
+        setTimeStart(other.getTimeStart());
+        setTimeEnd(other.getTimeEnd());
+        setLevelStart(other.getLevelStart());
+        setLevelEnd(other.getLevelEnd());
+        setColor(other.getColor());
+        setLabel(other.getLabel());
+        initialTime = other.getInitialTime();
+        initialLevel = other.getInitialLevel();
+    }
 }

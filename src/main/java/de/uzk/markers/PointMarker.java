@@ -29,12 +29,7 @@ public class PointMarker extends RotatableMarker {
     }
 
     public PointMarker(Marker abstractMarker, PointMarkerShape shape) {
-        setTimeStart(abstractMarker.getTimeStart());
-        setTimeEnd(abstractMarker.getTimeEnd());
-        setLevelStart(abstractMarker.getLevelStart());
-        setLevelEnd(abstractMarker.getLevelEnd());
-        setColor(abstractMarker.getColor());
-        setLabel(abstractMarker.getLabel());
+        copyFrom(abstractMarker);
         Point2D[] scalePoints = abstractMarker.getScalePoints();
         Point2D p1 = scalePoints[0];
         Point2D p2 = scalePoints[scalePoints.length - 1];
@@ -44,7 +39,6 @@ public class PointMarker extends RotatableMarker {
 
     @Override
     protected Point2D getRotatePointPosition() {
-
         return new Point2D.Double(center.getX(), center.getY() - SIZE * 3.0/2);
     }
 

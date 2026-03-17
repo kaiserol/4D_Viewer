@@ -53,12 +53,7 @@ public class ShapeMarker extends RotatableMarker {
     }
 
     public ShapeMarker(Marker abstractMarker, MarkerShape shape) {
-        setTimeStart(abstractMarker.getTimeStart());
-        setTimeEnd(abstractMarker.getTimeEnd());
-        setLevelStart(abstractMarker.getLevelStart());
-        setLevelEnd(abstractMarker.getLevelEnd());
-        setColor(abstractMarker.getColor());
-        setLabel(abstractMarker.getLabel());
+        copyFrom(abstractMarker);
         Point2D[] scalePoints = abstractMarker.getScalePoints();
         Point2D p1 = scalePoints[0];
         Point2D p2 = scalePoints[scalePoints.length - 1];
@@ -66,8 +61,6 @@ public class ShapeMarker extends RotatableMarker {
         setWidth(Math.abs(p1.getX() - center.getX()) + Math.abs(p2.getX() - center.getX()));
         setHeight(Math.abs(p1.getY() - center.getY()) + Math.abs(p2.getY() - center.getY()));
         setShape(shape);
-        initialTime = abstractMarker.getInitialTime();
-        initialLevel = abstractMarker.getInitialLevel();
     }
 
     public ShapeMarker(RotatableMarker marker, MarkerShape shape) {
