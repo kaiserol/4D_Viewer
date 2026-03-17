@@ -33,9 +33,9 @@ public class ResizeShapeEdit extends MaybeRedundantEdit {
     public boolean perform() {
         double oldWidth = marker.getWidth();
         double oldHeight = marker.getHeight();
-        Point2D oldPos = marker.getPos();
+        Point2D oldPos = marker.getCenter();
         marker.setSize(oldWidth + dWidth, oldHeight + dHeight);
-        marker.setPos(new Point2D.Double(oldPos.getX() + dx, oldPos.getY() + dy));
+        marker.setCenter(new Point2D.Double(oldPos.getX() + dx, oldPos.getY() + dy));
         return true;
     }
 
@@ -43,9 +43,9 @@ public class ResizeShapeEdit extends MaybeRedundantEdit {
     public void undo() {
         double oldWidth = marker.getWidth();
         double oldHeight = marker.getHeight();
-        Point2D oldPos = marker.getPos();
+        Point2D oldPos = marker.getCenter();
         marker.setSize(oldWidth - dWidth, oldHeight - dHeight);
-        marker.setPos(new Point2D.Double(oldPos.getX() - dx, oldPos.getY() - dy));
+        marker.setCenter(new Point2D.Double(oldPos.getX() - dx, oldPos.getY() - dy));
 
     }
 

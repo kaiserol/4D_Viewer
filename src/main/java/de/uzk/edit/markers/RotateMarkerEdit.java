@@ -2,13 +2,13 @@ package de.uzk.edit.markers;
 
 import de.uzk.action.ActionType;
 import de.uzk.edit.MaybeRedundantEdit;
-import de.uzk.markers.ShapeMarker;
+import de.uzk.markers.RotatableMarker;
 
-public class RotateShapeEdit extends MaybeRedundantEdit {
-    private final ShapeMarker marker;
+public class RotateMarkerEdit extends MaybeRedundantEdit {
+    private final RotatableMarker marker;
     private int degrees;
 
-    public RotateShapeEdit(ShapeMarker marker) {
+    public RotateMarkerEdit(RotatableMarker marker) {
         this.marker = marker;
     }
 

@@ -54,6 +54,13 @@ public class ArrowMarker extends Marker {
         initialLevel = abstractMarker.getInitialLevel();
     }
 
+    public ArrowMarker(RotatableMarker rotatableMarker) {
+        this((Marker) rotatableMarker);
+        Point2D newBase = new Point2D.Double(base.getX() - rotatableMarker.getWidth() / 2, base.getY() - rotatableMarker.getHeight() / 2);
+        setBase(newBase);
+        setHead(rotatableMarker.getCenter());
+    }
+
     @JsonGetter("start")
     public Point2D getBase() {
         return base;

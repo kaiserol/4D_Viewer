@@ -49,6 +49,7 @@ public class ArrowMarkerModificator implements MarkerModificator {
 
     @Override
     public void finishResize() {
+        if(resizeEdit == null) return;
         workspace.getEditManager().registerEdit(resizeEdit);
         resizeEdit = null;
     }

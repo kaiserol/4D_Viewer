@@ -2,10 +2,8 @@ package de.uzk.markers.interactions;
 
 import de.uzk.edit.markers.MoveShapeEdit;
 import de.uzk.edit.markers.ResizeShapeEdit;
-import de.uzk.edit.markers.RotateShapeEdit;
 import de.uzk.markers.Marker;
 import de.uzk.markers.ShapeMarker;
-import de.uzk.utils.NumberUtils;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -13,38 +11,13 @@ import java.awt.geom.Point2D;
 
 import static de.uzk.Main.workspace;
 
-public class ShapeMarkerModificator implements MarkerModificator {
-    private final ShapeMarker marker;
+public class ShapeMarkerModificator extends RotatableMarkerModificator<ShapeMarker> {
     private DragPoint dragPoint = null;
     private MoveShapeEdit moveEdit = null;
     private ResizeShapeEdit resizeEdit = null;
-    private RotateShapeEdit rotateEdit = null;
 
     public ShapeMarkerModificator(ShapeMarker marker) {
-        this.marker = marker;
-    }
-
-    @Override
-    public void beginRotate() {
-        rotateEdit = new RotateShapeEdit(marker);
-    }
-
-    @Override
-    public void handleRotate(Point mousePos) {
-        Point2D center = marker.getPos();
-        // Winkel zwischen Mauszeiger und Mittelpunkt des Markers
-        double newAngleRadians = Math.atan2(mousePos.y - center.getY(), mousePos.x - center.getX());
-        // 90° Addieren, damit der Dragpunkt (oben in der Mitte) unter dem Mauszeiger bleibt
-        int newAngle = NumberUtils.normalizeAngle((int) Math.toDegrees(newAngleRadians) + 90);
-        int dTheta = newAngle - marker.getRotation();
-        marker.setRotation(newAngle);
-        rotateEdit.rotate(dTheta);
-    }
-
-    @Override
-    public void finishRotate() {
-        workspace.getEditManager().registerEdit(rotateEdit);
-        rotateEdit = null;
+        super(marker);
     }
 
     @Override
@@ -58,8 +31,8 @@ public class ShapeMarkerModificator implements MarkerModificator {
 
         double originalWidth = marker.getWidth();
         double originalHeight = marker.getHeight();
-        double originalX = marker.getPos().getX();
-        double originalY = marker.getPos().getY();
+        double originalX = marker.getCenter().getX();
+        double originalY = marker.getCenter().getY();
 
         double x = originalX;
         double y = originalY;
@@ -121,7 +94,7 @@ public class ShapeMarkerModificator implements MarkerModificator {
         }
 
         marker.setSize(width, height);
-        marker.setPos(new Point2D.Double(x, y));
+        marker.setCenter(new Point2D.Double(x, y));
         resizeEdit.resize(width - originalWidth, height - originalHeight, x - originalX, y - originalY);
     }
 
@@ -147,8 +120,8 @@ public class ShapeMarkerModificator implements MarkerModificator {
         double cy = (height * cos + width * sin) / 2;
         double x = mousePos.x + cx;
         double y = mousePos.y + cy;
-        Point2D current = marker.getPos();
-        marker.setPos(new Point2D.Double(x, y));
+        Point2D current = marker.getCenter();
+        marker.setCenter(new Point2D.Double(x, y));
         moveEdit.move(x - current.getX(), y - current.getY());
     }
 
@@ -173,14 +146,7 @@ public class ShapeMarkerModificator implements MarkerModificator {
             }
         }
 
-        Point2D rotPoint = marker.getRotatePoint();
-        if (mousePos.distance(rotPoint) < Marker.LINE_WIDTH * Marker.LINE_WIDTH) {
-
-            return MarkerInteractionHandler.EditMode.ROTATE;
-        } else {
-            return MarkerInteractionHandler.EditMode.RESIZE;
-        }
-
+        return super.checkEditMode(mousePos);
     }
 
     // Hilfsfunktion; Rotiert `p` gegen den Uhrzeigersinn um `selectedMarker.getRotation()` Grad.

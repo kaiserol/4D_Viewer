@@ -1,6 +1,7 @@
 package de.uzk.utils;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 import static de.uzk.Main.settings;
@@ -77,4 +78,13 @@ public final class GraphicsUtils {
         return Math.min(scaleWidth, scaleHeight);
     }
 
+    public static Point2D.Double getCenter(Point2D p1, Point2D p2) {
+        double xMin = Math.min(p1.getX(), p2.getX());
+        double xMax = Math.max(p1.getX(), p2.getX());
+        double yMin = Math.min(p1.getY(), p2.getY());
+        double yMax = Math.max(p1.getX(), p2.getY());
+        double dx = xMax - xMin;
+        double dy = yMax - yMin;
+        return new Point2D.Double(xMin + dx/2, yMin + dy/2);
+    }
 }
