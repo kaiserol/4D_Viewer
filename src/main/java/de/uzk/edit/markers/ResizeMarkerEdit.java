@@ -2,18 +2,18 @@ package de.uzk.edit.markers;
 
 import de.uzk.action.ActionType;
 import de.uzk.edit.MaybeRedundantEdit;
-import de.uzk.markers.ShapeMarker;
+import de.uzk.markers.ResizableMarker;
 
 import java.awt.geom.Point2D;
 
-public class ResizeShapeEdit extends MaybeRedundantEdit {
-    private final ShapeMarker marker;
+public class ResizeMarkerEdit extends MaybeRedundantEdit {
+    private final ResizableMarker marker;
     private double dWidth;
     private double dHeight;
     private double dx;
     private double dy;
 
-    public ResizeShapeEdit(ShapeMarker marker) {
+    public ResizeMarkerEdit(ResizableMarker marker) {
         this.marker = marker;
     }
 

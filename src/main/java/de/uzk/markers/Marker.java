@@ -126,8 +126,7 @@ public abstract class Marker {
         g2d = (Graphics2D) g2d.create();
         Shape labelArea = getLabelArea(g2d);
         g2d.fill(labelArea);
-        boolean lightColor = ColorUtils.calculatePerceivedBrightness(color) > 0.5;
-        g2d.setColor(lightColor ? Color.BLACK : Color.WHITE);
+        g2d.setColor(ColorUtils.getTextColor(color));
 
         FontMetrics metrics = GraphicsUtils.updateMetrics(g2d);
         g2d.drawString(label, labelArea.getBounds().x, labelArea.getBounds().y + metrics.getAscent());

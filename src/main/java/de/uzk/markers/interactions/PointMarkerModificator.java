@@ -1,6 +1,6 @@
 package de.uzk.markers.interactions;
 
-import de.uzk.edit.markers.MovePointEdit;
+import de.uzk.edit.markers.MoveRotatableEdit;
 import de.uzk.markers.Marker;
 import de.uzk.markers.PointMarker;
 import de.uzk.markers.PointMarkerShape;
@@ -11,7 +11,7 @@ import java.awt.geom.Point2D;
 import static de.uzk.Main.workspace;
 
 public class PointMarkerModificator extends RotatableMarkerModificator<PointMarker> {
-    private MovePointEdit edit;
+    private MoveRotatableEdit edit;
     public PointMarkerModificator(PointMarker marker) { super(marker); }
 
     @Override
@@ -21,7 +21,7 @@ public class PointMarkerModificator extends RotatableMarkerModificator<PointMark
 
     @Override
     public void beginMove() {
-        edit = new MovePointEdit(marker);
+        edit = new MoveRotatableEdit(marker);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package de.uzk.markers.interactions;
 
-import de.uzk.edit.markers.MoveShapeEdit;
-import de.uzk.edit.markers.ResizeShapeEdit;
+import de.uzk.edit.markers.MoveRotatableEdit;
+import de.uzk.edit.markers.ResizeMarkerEdit;
 import de.uzk.markers.Marker;
-import de.uzk.markers.ShapeMarker;
+import de.uzk.markers.ResizableMarker;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -11,18 +11,18 @@ import java.awt.geom.Point2D;
 
 import static de.uzk.Main.workspace;
 
-public class ShapeMarkerModificator extends RotatableMarkerModificator<ShapeMarker> {
+public class ResizableMarkerModificator<T extends ResizableMarker> extends RotatableMarkerModificator<T> {
     private DragPoint dragPoint = null;
-    private MoveShapeEdit moveEdit = null;
-    private ResizeShapeEdit resizeEdit = null;
+    private MoveRotatableEdit moveEdit = null;
+    private ResizeMarkerEdit resizeEdit = null;
 
-    public ShapeMarkerModificator(ShapeMarker marker) {
+    public ResizableMarkerModificator(T marker) {
         super(marker);
     }
 
     @Override
     public void beginResize() {
-        resizeEdit = new ResizeShapeEdit(marker);
+        resizeEdit = new ResizeMarkerEdit(marker);
     }
 
     @Override
@@ -100,13 +100,14 @@ public class ShapeMarkerModificator extends RotatableMarkerModificator<ShapeMark
 
     @Override
     public void finishResize() {
+        if(edit == null) return;
         workspace.getEditManager().registerEdit(resizeEdit);
         resizeEdit = null;
     }
 
     @Override
     public void beginMove() {
-        moveEdit = new MoveShapeEdit(marker);
+        moveEdit = new MoveRotatableEdit(marker);
     }
 
     @Override

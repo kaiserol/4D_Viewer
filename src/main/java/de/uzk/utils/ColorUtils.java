@@ -67,6 +67,10 @@ public final class ColorUtils {
         return ((0.299 * r) + (0.587 * g) + (0.114 * b)) / 255;
     }
 
+    public static Color getTextColor(Color background) {
+       return calculatePerceivedBrightness(background) > 0.5 ? Color.BLACK : Color.WHITE;
+    }
+
     /**
      * Passt einen Farbwert an, indem er entweder aufgehellt oder abgedunkelt wird.
      *

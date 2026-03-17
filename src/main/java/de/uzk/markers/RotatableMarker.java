@@ -66,5 +66,22 @@ public abstract class RotatableMarker extends Marker {
     }
 
     public abstract double getWidth();
+
     public abstract double getHeight();
+
+    @Override
+    protected void copyFrom(Marker marker) {
+        super.copyFrom(marker);
+        if (marker instanceof RotatableMarker rotatableMarker) {
+            setCenter(rotatableMarker.getCenter());
+            setRotation(rotatableMarker.getRotation());
+        }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!super.equals(other)) return false;
+        RotatableMarker that = (RotatableMarker) other;
+        return rotation == that.rotation && center.equals(that.center) && getWidth() == that.getWidth() && getHeight() == that.getHeight();
+    }
 }
