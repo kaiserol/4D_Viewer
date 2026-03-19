@@ -65,7 +65,7 @@ public class AreaImageViewer extends ObserverContainer<JPanel> {
         imageEditor = new ImageEditor();
         imageEditor.onNewImageAvailable(imagePanel::updateImage);
 
-        markerInteractionHandler = new MarkerInteractionHandler(imageEditor);
+        markerInteractionHandler = new MarkerInteractionHandler(imageEditor, gui);
         imagePanel.addMouseListener(markerInteractionHandler);
         imagePanel.addMouseMotionListener(markerInteractionHandler);
 

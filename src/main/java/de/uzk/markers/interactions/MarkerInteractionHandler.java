@@ -2,6 +2,8 @@ package de.uzk.markers.interactions;
 
 
 import de.uzk.edit.markers.AddMarkerEdit;
+import de.uzk.gui.Gui;
+import de.uzk.gui.marker.MarkerContextMenu;
 import de.uzk.image.ImageEditor;
 import de.uzk.markers.Marker;
 import org.intellij.lang.annotations.MagicConstant;
@@ -31,11 +33,13 @@ import static de.uzk.Main.workspace;
  */
 public class MarkerInteractionHandler extends MouseAdapter {
     private final ImageEditor imageEditor;
+    private final Gui gui;
     private MarkerModificator selectedMarker;
     private EditMode editMode = EditMode.NONE;
 
-    public MarkerInteractionHandler(ImageEditor imageEditor) {
+    public MarkerInteractionHandler(ImageEditor imageEditor, Gui gui) {
         this.imageEditor = imageEditor;
+        this.gui = gui;
     }
 
     //region Maus-Tracking
@@ -52,12 +56,13 @@ public class MarkerInteractionHandler extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (selectedMarker == null) return;
-
         if (e.getClickCount() >= 2) {
             editMode = EditMode.RESIZE;
             imageEditor.setFocusedMarker(selectedMarker.getCurrentFocused());
             setCursorAndRerender(e.getComponent(), Cursor.CROSSHAIR_CURSOR);
 
+        } else if(e.getButton() == MouseEvent.BUTTON3) {
+            new MarkerContextMenu(selectedMarker.getCurrentFocused(), gui).show(e.getComponent(), e.getX() + 50, e.getY());
         } else {
             editMode = EditMode.NONE;
             imageEditor.setFocusedMarker(null);
