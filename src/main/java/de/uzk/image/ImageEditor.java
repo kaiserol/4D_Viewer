@@ -11,6 +11,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.function.Consumer;
 
 import static de.uzk.Main.logger;
@@ -153,7 +154,8 @@ public class ImageEditor {
         g2d.transform(markerTransform);
 
         boolean focusedMarkerStillExists = false;
-        for (Marker marker : markers) {
+        for (int i = markers.size() - 1; i >= 0; i--) { // Java Version 20 -> List#reverse unsupported
+            Marker marker = markers.get(i);
             if(marker.isHidden()) continue;
             marker.draw(g2d);
             focusedMarkerStillExists |= marker == focusedMarker;
