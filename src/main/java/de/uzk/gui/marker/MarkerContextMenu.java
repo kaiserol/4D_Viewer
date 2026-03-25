@@ -7,20 +7,15 @@ import de.uzk.edit.markers.RenameMarkerEdit;
 import de.uzk.gui.Gui;
 import de.uzk.io.ImageLoader;
 import de.uzk.markers.Marker;
-import de.uzk.utils.ColorUtils;
-import de.uzk.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import java.awt.*;
 import java.awt.event.*;
 
 import static de.uzk.Main.workspace;
-import static de.uzk.config.LanguageHandler.getWord;
 
 public class MarkerContextMenu extends JPopupMenu{
     private static final Color[] COLOR_OPTIONS = {
