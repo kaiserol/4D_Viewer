@@ -11,7 +11,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.function.Consumer;
 
 import static de.uzk.Main.logger;

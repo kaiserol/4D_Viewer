@@ -31,7 +31,7 @@ public class MarkerContextMenu extends JPopupMenu{
     };
 
     private final Marker initial;
-    private Marker marker;
+    private final Marker marker;
     private final Gui gui;
 
     public MarkerContextMenu(Marker marker, Gui gui) {
@@ -42,8 +42,6 @@ public class MarkerContextMenu extends JPopupMenu{
     }
 
     private void initialize() {
-        MarkerEditor markerEditor = new MarkerEditor(marker);
-
         JPanel titlePanel = new JPanel();
         titlePanel.add(getLabelInput());
         titlePanel.add(getHideButton());
